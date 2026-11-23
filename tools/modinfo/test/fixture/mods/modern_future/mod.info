@@ -1,0 +1,5 @@
+{Mod
+{Name "modern_future"}
+{Require "as64+"}
+{MinGameVersion "3.302"}
+}

@@ -1,0 +1,16 @@
+{"form":"limmap/1","part":"chk-chk-vfs","codes":{
+"MOD_DELETE_REFERENCED":{"tool":"vfs","sev":"crash","lim":["VFS-35"],"at":"tools/vfs/chk.js:50","class":"crash","why":"mod.info/patch Delete removes a file other indexed data still names"},
+"WARN_SHADER_PARTIAL":{"tool":"vfs","sev":"crash","lim":["VFS-57"],"at":"tools/vfs/chk.js:95","class":"crash","why":"mod ships part of a shader include family, not all of it"},
+"VER_CRASH":{"tool":"modinfo","sev":"crash","lim":["VFS-59"],"at":"tools/modinfo/modinfo.js:94","class":"crash","why":"modern Min above as64 build 3.301: refusal crashes startup"},
+"MOD_LIST_WORKSHOP_ID":{"tool":"vfs","sev":"silent","lim":["VFS-53"],"at":"tools/vfs/chk.js:114","class":"silent","why":"mod list line is a numeric Workshop id, not the title"},
+"WARN_VIDEO_MISSION_PATH":{"tool":"vfs","sev":"silent","lim":["VFS-58"],"at":"tools/vfs/chk.js:128","class":"silent","why":"mission video not in mission folder as start/tactical/strategic.avi"},
+"MOD_ORDER_UNDECLARED":{"tool":"conflicts","sev":"review","lim":["VFS-15"],"at":"tools/conflicts/conflicts.js:167","class":"review","why":"two mods replace one file, no Require chain orders them"}
+},"result":{
+"VFS-35":{"state":"built","code":"MOD_DELETE_REFERENCED","why":null},
+"VFS-57":{"state":"built","code":"WARN_SHADER_PARTIAL","why":null},
+"VFS-59":{"state":"built","code":"VER_CRASH","why":null},
+"VFS-53":{"state":"built","code":"MOD_LIST_WORKSHOP_ID","why":null},
+"VFS-54":{"state":"had","code":"MOD_MODE","why":null},
+"VFS-58":{"state":"built","code":"WARN_VIDEO_MISSION_PATH","why":null},
+"VFS-15":{"state":"built","code":"MOD_ORDER_UNDECLARED","why":null}
+}}

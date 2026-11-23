@@ -1,0 +1,8 @@
+{Mod
+ {Name "x"}
+ {MinGameVersion "3.262"}
+ {MaxGameVersion "3.262"}
+ {Require "moda"}
+ {Delete "resource/set/base_only.set"}
+ {Delete "set/keep.set"}
+}

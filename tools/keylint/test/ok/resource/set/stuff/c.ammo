@@ -1,0 +1,4 @@
+{bullet
+ {tag "bullet76"}
+ {damage add cumulative {distance 2} {damage 50}}
+}

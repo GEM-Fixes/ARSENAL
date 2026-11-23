@@ -1,0 +1,29 @@
+{game_entity
+	(include "/properties/fcrew.ext")
+	{volume "body1"
+		{tags "body"}
+	}
+	{volume "turret1"
+		{tags "turret"}
+	}
+	("f_crew")
+	("f_vis" vb(mgun2))
+	("f_seat" p(seat1) b(seat01))
+	{sensor
+		{visor "main"
+			{bone "visor1"}
+		}
+	}
+	{Weaponry
+		{place "gun"
+			{type "mgun_rot"}
+			{foresight "foresight1"}
+			{gunner "gunner"}
+			{LinkBone "mgun_rot"}
+		}
+	}
+	{Extension "ok.mdl"}
+	{bone "turret"
+		{speed 0.0065}
+	}
+}

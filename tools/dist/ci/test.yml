@@ -1,0 +1,84 @@
+# ARSENAL small package on Windows, Linux and macOS (owner's decision 2026-11-10,.
+# Manual trigger only. This file is NOT active here: GitHub reads workflows from .github/workflows/ only, and whether it goes
+# there is the owner's call. What it proves on each system: the small zip builds, its launcher runs `help` with the runner's
+# Node.js 26 on PATH, then (PATH without node) the first start downloads the pinned Node.js from nodejs.org, checks the sha256,
+# unpacks only the node binary and runs; the second start does not download; then the whole test suite runs.
+# Author: Imperator_Aug (ARSENAL)
+name: arsenal-small-package
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  small:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: node 26
+        uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+      - name: build the small zip
+        shell: bash
+        run: |
+          node tools/dist/zip.js --small --ver ci --no-gemindex --no-ww2sources --no-pdf --out-dir "$RUNNER_TEMP/small"
+      - name: unpack (Linux, macOS; unzip applies the 0755 mode of the sh launchers)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          cd "$RUNNER_TEMP/small"
+          unzip -q ARSENAL-ci-small.zip
+          test -x ARSENAL-ci/arsenal
+          test -x ARSENAL-ci/arsenal-gui
+      - name: unpack (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Expand-Archive -Path "$env:RUNNER_TEMP/small/ARSENAL-ci-small.zip" -DestinationPath "$env:RUNNER_TEMP/small"
+      - name: launcher with node 26 on PATH (Linux, macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          cd "$RUNNER_TEMP/small/ARSENAL-ci"
+          command ./arsenal help
+          command ./arsenal --version
+      - name: launcher with node 26 on PATH (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          cd /d "%RUNNER_TEMP%\small\ARSENAL-ci"
+          call ARSENAL.cmd help || exit /b 1
+          call ARSENAL.cmd --version || exit /b 1
+      - name: first start without node on PATH downloads the pinned Node.js (Linux, macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          cd "$RUNNER_TEMP/small/ARSENAL-ci"
+          if env PATH=/usr/bin:/bin:/usr/sbin:/sbin sh -c 'command -v node'; then echo "a node is in /usr/bin or /bin: the download path is not exercised"; exit 1; fi
+          env PATH=/usr/bin:/bin:/usr/sbin:/sbin ./arsenal help 2> first.err
+          cat first.err
+          grep -q 'first start: downloading Node.js' first.err
+          test -x node/*/node
+          env PATH=/usr/bin:/bin:/usr/sbin:/sbin ./arsenal help 2> second.err
+          if grep -q 'downloading' second.err; then echo "second start downloaded again"; exit 1; fi
+      - name: first start without node on PATH downloads the pinned Node.js (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          cd /d "%RUNNER_TEMP%\small\ARSENAL-ci"
+          set "PATH=%SystemRoot%\System32;%SystemRoot%"
+          call ARSENAL.cmd help 2> first.err || exit /b 1
+          type first.err
+          findstr /c:"first start: downloading Node.js" first.err || exit /b 1
+          call ARSENAL.cmd help 2> second.err || exit /b 1
+          findstr /c:"downloading" second.err && exit /b 1
+          exit /b 0
+      - name: test suite
+        shell: bash
+        run: |
+          sh tools/test-all.sh

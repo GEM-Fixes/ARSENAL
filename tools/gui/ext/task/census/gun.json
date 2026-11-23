@@ -1,0 +1,2560 @@
+{
+ "thing": "gun",
+ "files": [
+  "resource/set/stuff/{gun,mgun,rifle,rifle/sniper,rifle/ptr,smg,pistol,bazooka,reactive,flame,bombing,melee,special}/<name>[.weapon]",
+  "resource/set/stuff/**/<x>.pattern ({from \"pattern <x>\"}), resource/set/stuff/<class>/.presets, resource/set/small.firearms.accuracy, resource/set/stuff/bullet.pattern, resource/set/stuff/thrower.hand",
+  "resource/set/ballistics.set (curves)",
+  "resource/entity/inventory/-weapon/<entity>/<entity>.{def,mdl,ply,mtl,dds} (hand model, skin, preview camera)",
+  "resource/sound/weapon/shot/<path>/ and resource/sound/weapon/reload/<path>/ (*.wav, folder.set); resource/sound/sound.set (loudness classes)",
+  "resource/set/stuff/_settings/<fsm>.fsm (carry/handling sets)",
+  "resource/set/interaction_entity/human.inc (hand flash/case by tag), resource/set/interaction_entity/muzzle.inc (vehicle muzzle_<size>)",
+  "vehicle resource/entity/-vehicle/**/<v>.def + resource/properties/*.ext ({weaponry {place}}, {extender \"inventory\" {box}})",
+  "resource/set/breed/mp/<army>/<breed>.set ({inventory {item}})",
+  "resource/interface/text/desc.lng or mod localization #<file>.lng (desc/weapon/<name>)"
+ ],
+ "groups": [
+  {
+   "id": "id",
+   "name": "What it is and what it copies"
+  },
+  {
+   "id": "model",
+   "name": "Model and skin"
+  },
+  {
+   "id": "ammo",
+   "name": "Ammunition it takes"
+  },
+  {
+   "id": "fire",
+   "name": "Range, speed, reload, rate of fire"
+  },
+  {
+   "id": "aim",
+   "name": "Aiming"
+  },
+  {
+   "id": "accuracy",
+   "name": "Spread and accuracy"
+  },
+  {
+   "id": "burst",
+   "name": "Bursts"
+  },
+  {
+   "id": "damage",
+   "name": "Penetration and damage"
+  },
+  {
+   "id": "special",
+   "name": "Special aimed shot"
+  },
+  {
+   "id": "sound",
+   "name": "Sounds"
+  },
+  {
+   "id": "anim",
+   "name": "Soldier animations"
+  },
+  {
+   "id": "effects",
+   "name": "Flash, smoke, shell case"
+  },
+  {
+   "id": "inventory",
+   "name": "Inventory"
+  },
+  {
+   "id": "ui",
+   "name": "Cursor and sight"
+  },
+  {
+   "id": "mount",
+   "name": "Mounted on a vehicle"
+  },
+  {
+   "id": "carry",
+   "name": "Who carries it"
+  },
+  {
+   "id": "text",
+   "name": "Name text"
+  }
+ ],
+ "vars": [
+  {
+   "key": "gun.id",
+   "where": "file name set/stuff/<class>/<name>[.weapon]",
+   "type": "text",
+   "plain": "The new weapon's own name; the game also reads its tags from the file name split on dots.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "mosin",
+     "mg34",
+     "75mm_pak40",
+     "bazooka"
+    ]
+   },
+   "count": 222,
+   "group": "id",
+   "ref": null,
+   "tool": "gen gun name / gen clone tags",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.class",
+   "where": "folder set/stuff/<class>/",
+   "type": "choice",
+   "plain": "Which family folder the weapon file sits in: cannon, machine gun, rifle, sub-machine gun, pistol, launcher, rocket artillery, flame, bombs, melee, special.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "gun",
+     "mgun",
+     "rifle",
+     "rifle/sniper",
+     "rifle/ptr",
+     "smg",
+     "pistol",
+     "bazooka",
+     "reactive",
+     "flame",
+     "bombing",
+     "melee",
+     "special"
+    ]
+   },
+   "count": 222,
+   "group": "id",
+   "ref": null,
+   "tool": "gen gun (gun/ only) / gen clone (same folder as the base)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.type",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: root word",
+   "type": "choice",
+   "plain": "What kind of weapon the engine builds: one that fires shells or bullets, a flame thrower, a bomb drop, or a thrower.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "weapon_bullet",
+     "weapon_flame",
+     "weapon_bombing",
+     "weapon_throwing"
+    ]
+   },
+   "count": 28,
+   "group": "id",
+   "ref": null,
+   "tool": "gen clone (inherits it)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.from",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {from \"x\"}",
+   "type": "ref",
+   "plain": "The weapon or pattern this one copies; everything not written here comes from it.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "pattern rifle",
+     "pattern mgun",
+     "pattern gun",
+     "pattern bullet",
+     "75mm_pak39"
+    ]
+   },
+   "count": 223,
+   "group": "id",
+   "ref": "stuff (weapon or pattern)",
+   "tool": "gen gun like / gen clone stuff",
+   "limit": "KEY-19",
+   "tag": "V"
+  },
+  {
+   "key": "gun.tag",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {tag \"...\"}",
+   "type": "list",
+   "plain": "Words that say what the weapon is (rifle, mgun, smg, pistol, sniper, rocketlauncher, to_hand ...); they pick the soldier's animations, skill and effects.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "autorifle",
+     "gun",
+     "mgun_light",
+     "mrl gun",
+     "itemin2hands",
+     "weapon",
+     "mrl",
+     "mrl -gun"
+    ]
+   },
+   "count": 59,
+   "group": "id",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/tag, op add)",
+   "limit": "HUM-27",
+   "tag": "V"
+  },
+  {
+   "key": "gun.mass",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {mass}",
+   "type": "number",
+   "plain": "How heavy the weapon is.",
+   "unit": "kg",
+   "vanilla": {
+    "min": 0.3,
+    "max": 1000
+   },
+   "count": 30,
+   "group": "id",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/mass, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.desc",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {desc \"key\"}",
+   "type": "text",
+   "plain": "Optional text key to use for the name instead of the one made from the tags.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "desc/weapon/air_missile"
+    ]
+   },
+   "count": 3,
+   "group": "text",
+   "ref": "localization key",
+   "tool": "gen set (entity file:<stuff key>, path <root>/desc, op add)",
+   "limit": "LOC-15",
+   "tag": "V"
+  },
+  {
+   "key": "gun.entity",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {entity \"x\"}",
+   "type": "ref",
+   "plain": "The 3D model the soldier holds and that lies on the ground: an entity under entity/inventory/.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "flame_thrower",
+     "bazooka",
+     "crow_bar",
+     "besa",
+     "browningm2",
+     "maxim_inv",
+     "mosin",
+     "m18rr"
+    ]
+   },
+   "count": 109,
+   "group": "model",
+   "ref": "entity def (inventory model)",
+   "tool": "gen set (entity file:<stuff key>, path <root>/entity, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.model.def",
+   "where": "entity/inventory/-weapon/<e>/<e>.def",
+   "type": "file",
+   "plain": "The model's own small file: it includes stuff_small.ext and names the .mdl (Extension).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "air_bomb.mdl",
+     "flaergun_ammo.mdl",
+     "medkit.mdl",
+     "radio_station.mdl",
+     "sandbag_kit.mdl",
+     "flaergun.mdl",
+     "20cm_rocket_ammo.mdl",
+     "30cm_rocket_ammo.mdl"
+    ]
+   },
+   "count": 326,
+   "group": "model",
+   "ref": "entity def",
+   "tool": "gen clone (entity + as, copy_assets)",
+   "limit": "KEY-32",
+   "tag": "V"
+  },
+  {
+   "key": "gun.model.item",
+   "where": "entity/inventory/.../<e>.def: {extender \"stuff\" {item \"tags\"}}",
+   "type": "ref",
+   "plain": "Ties the model back to the weapon so a dropped model becomes that weapon when picked up.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "mg34",
+     "air_bomb",
+     "cap1_ger",
+     "fieldcap_ger",
+     "crow_bar",
+     "grenade smoke",
+     "ammo 20cm_rocket",
+     "ammo 30cm_rocket"
+    ]
+   },
+   "count": 319,
+   "group": "model",
+   "ref": "stuff tags",
+   "tool": "gen set on the def (path actor/extender/item)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.model.mdl",
+   "where": "entity/inventory/-weapon/<e>/<e>.mdl (+ .ply LODs)",
+   "type": "file",
+   "plain": "The skeleton and meshes of the hand model (or the barrel model for a mounted gun, which is part of the vehicle model).",
+   "unit": null,
+   "vanilla": null,
+   "count": 326,
+   "group": "model",
+   "ref": "model .mdl/.ply",
+   "tool": "Models page (stage, open, check)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.model.bone.foresight",
+   "where": ".mdl bone \"foresight<N>\"",
+   "type": "text",
+   "plain": "The muzzle point of the model: shots, flash and the sight start here; the weapon's foresight key names it.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "foresight3",
+     "foresight1",
+     "foresight2"
+    ]
+   },
+   "count": 91,
+   "group": "model",
+   "ref": "model bone",
+   "tool": "Models page",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.model.bone.handle",
+   "where": ".mdl bone \"handle\"",
+   "type": "text",
+   "plain": "The grip point where the soldier's hand holds the weapon.",
+   "unit": null,
+   "vanilla": null,
+   "count": 130,
+   "group": "model",
+   "ref": "model bone",
+   "tool": "Models page",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.model.bone.fxshell",
+   "where": ".mdl bone \"fxshell\"",
+   "type": "text",
+   "plain": "The point where empty cases fly out.",
+   "unit": null,
+   "vanilla": null,
+   "count": 77,
+   "group": "model",
+   "ref": "model bone",
+   "tool": "Models page",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.model.bone.fxshot",
+   "where": ".mdl bone \"fxshot\"",
+   "type": "text",
+   "plain": "Launchers only: the back end where the back-blast puff comes out.",
+   "unit": null,
+   "vanilla": null,
+   "count": 5,
+   "group": "model",
+   "ref": "model bone",
+   "tool": "Models page",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.model.volume",
+   "where": ".mdl {Volume \"body\"} {Volume \"select\"}",
+   "type": "list",
+   "plain": "Boxes around the model used to click on it and to let bullets hit it on the ground.",
+   "unit": null,
+   "vanilla": null,
+   "count": 141,
+   "group": "model",
+   "ref": "model volume",
+   "tool": "Models page",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.skin.texture",
+   "where": "entity/inventory/-weapon/<e>/*.dds (+ _sp.dds), named in the .mtl",
+   "type": "file",
+   "plain": "The pictures painted on the model (colour and shine).",
+   "unit": null,
+   "vanilla": null,
+   "count": 300,
+   "group": "model",
+   "ref": "texture .dds",
+   "tool": "/art/copy (game files) or task upload",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "gun.skin.mtl",
+   "where": "entity/inventory/-weapon/<e>/*.mtl",
+   "type": "file",
+   "plain": "The material file that says which textures the meshes use.",
+   "unit": null,
+   "vanilla": null,
+   "count": 300,
+   "group": "model",
+   "ref": "material .mtl",
+   "tool": "/art/copy",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "gun.icon.preview",
+   "where": ".mdl {Extender \"preview\" {\"Stuff\"|\"Stuff_primary\" {camera ..} {lights ..}}}",
+   "type": "list",
+   "plain": "The inventory picture is the 3D model drawn live; this block sets the camera and lights of that picture.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "inventory",
+   "ref": "model block",
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "gun.fillingvisible",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {fillingVisible \"prefix\"}",
+   "type": "text",
+   "plain": "Shows the loaded rounds on the model, using bones named prefix01, prefix02 ...",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "rocket",
+     "faustrocket",
+     "piatrocket",
+     "bomb",
+     "em_mk3_ammo",
+     "type2at_ammo"
+    ]
+   },
+   "count": 15,
+   "group": "model",
+   "ref": "model bone prefix",
+   "tool": "gen set (entity file:<stuff key>, path <root>/fillingVisible, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.bullet_view",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {bullet_view \"entity\" {tail \"e\" \"bone\"}}",
+   "type": "ref",
+   "plain": "The look of the shell while it flies, for this weapon, with an optional trail.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "howitzer_shell",
+     "shell_ap_600"
+    ]
+   },
+   "count": 3,
+   "group": "model",
+   "ref": "entity (flying shell)",
+   "tool": "gen set (entity file:<stuff key>, path <root>/bullet_view, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.filling.tags",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {filling \"tags\" n [max]}",
+   "type": "ref",
+   "plain": "Which ammunition the weapon takes, by its tags (for a cannon the shell family such as bullet75).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "bullet75",
+     "ammo rifle 5",
+     "ammo pistol 32",
+     "ammo rifle 10",
+     "ammo mgun 250",
+     "bullet37",
+     "bullet88",
+     "ammo pistol 30"
+    ]
+   },
+   "count": 214,
+   "group": "ammo",
+   "ref": "ammo stuff tags",
+   "tool": "gen set (entity file:<stuff key>, path <root>/filling, op add) (gen weapon swaps the family on a vehicle)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.filling.magazine",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {filling \"tags\" <n>}",
+   "type": "number",
+   "plain": "How many rounds one load holds (magazine or belt); 1 when left out.",
+   "unit": "rounds",
+   "vanilla": {
+    "min": 1,
+    "max": 250,
+    "common": [
+     5,
+     10,
+     30,
+     32,
+     100,
+     250
+    ]
+   },
+   "count": 214,
+   "group": "ammo",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/filling, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.filling.max",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {filling \"tags\" n <max>}",
+   "type": "number",
+   "plain": "Most rounds a carrier holds for this weapon (rounded to whole loads).",
+   "unit": "rounds",
+   "vanilla": null,
+   "count": 0,
+   "group": "ammo",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/filling, op add)",
+   "limit": "HUM-20",
+   "tag": "I"
+  },
+  {
+   "key": "gun.ammolocked",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {ammoLocked}",
+   "type": "bool",
+   "plain": "The ammunition cannot be taken out or changed (one-shot launchers).",
+   "unit": null,
+   "vanilla": null,
+   "count": 2,
+   "group": "ammo",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/ammoLocked, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.preloaded",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {preloaded}",
+   "type": "bool",
+   "plain": "The weapon comes already loaded.",
+   "unit": null,
+   "vanilla": null,
+   "count": 5,
+   "group": "ammo",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/preloaded, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.calibre",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {calibre}",
+   "type": "number",
+   "plain": "Bore of the weapon; decides how much thin armour counts against it. Taken from a bulletNN ammo name when left out.",
+   "unit": "mm",
+   "vanilla": {
+    "min": 7.62,
+    "max": 50
+   },
+   "count": 10,
+   "group": "ammo",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/calibre, op add)",
+   "limit": "KEY-10",
+   "tag": "V"
+  },
+  {
+   "key": "gun.parameters",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {parameters \"ammo tags\" {..}}",
+   "type": "list",
+   "plain": "Own values for one kind of ammunition (range, damage table, speed, spread ...), used when the loaded round carries all these tags.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "fg",
+     "apcr",
+     "sm"
+    ]
+   },
+   "count": 50,
+   "group": "ammo",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/parameters, op add) / gen gun pen (apcr follows)",
+   "limit": "KEY-09",
+   "tag": "V"
+  },
+  {
+   "key": "gun.rechargetime",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {rechargeTime}",
+   "type": "number",
+   "plain": "Reload time once the magazine is empty (for a cannon: time to the next shell).",
+   "unit": "s",
+   "vanilla": {
+    "min": 0.01,
+    "max": 180
+   },
+   "count": 111,
+   "group": "fire",
+   "ref": null,
+   "tool": "gen gun recharge / Balance page Reload s / gen set (entity file:<stuff key>, path <root>/rechargeTime, op add)",
+   "limit": "HUM-11",
+   "tag": "V"
+  },
+  {
+   "key": "gun.recoverytime",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {recoveryTime} or (\"recoveryTime\" r(rounds per minute))",
+   "type": "number",
+   "plain": "Pause after each shot (bolt or cycle); sets the rate of fire. Presets write it as rounds per minute.",
+   "unit": "s",
+   "vanilla": {
+    "min": 0,
+    "max": 60
+   },
+   "count": 109,
+   "group": "fire",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/recoveryTime, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.reloadanimbonus",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {reloadAnimBonus}",
+   "type": "number",
+   "plain": "Shortens the soldier's reload animation and its sound.",
+   "unit": "s",
+   "vanilla": {
+    "min": 0.5,
+    "max": 15
+   },
+   "count": 4,
+   "group": "fire",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/reloadAnimBonus, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.range",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {range effective longest} or (\"range_<preset>\")",
+   "type": "list",
+   "plain": "Two distances: where the unit opens fire on its own, and the farthest shot the player can order.",
+   "unit": "m",
+   "vanilla": {
+    "min": 3,
+    "max": 450
+   },
+   "count": 111,
+   "group": "fire",
+   "ref": null,
+   "tool": "gen gun range (preset) / Units recipe Longer rifle range / gen set (entity file:<stuff key>, path <root>/range, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.aimrange",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {aimRange}",
+   "type": "number",
+   "plain": "Range the damage curve and the computer's aiming use, when the weapon sets it apart from range.",
+   "unit": "m",
+   "vanilla": {
+    "min": 1,
+    "max": 9999999999
+   },
+   "count": 13,
+   "group": "fire",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/aimRange, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.maxrange",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {maxRange}",
+   "type": "number",
+   "plain": "The absolute farthest a shot can go; no limit when left out.",
+   "unit": "m",
+   "vanilla": {
+    "min": 25,
+    "max": 500
+   },
+   "count": 8,
+   "group": "fire",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/maxRange, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.speed",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {speed} or (\"speed\" s(m/s))",
+   "type": "number",
+   "plain": "How fast the shell flies. Presets take the real muzzle speed in m/s and halve it.",
+   "unit": "game units (m/s / 2)",
+   "vanilla": {
+    "min": 0.5,
+    "max": 450
+   },
+   "count": 170,
+   "group": "fire",
+   "ref": null,
+   "tool": "gen gun speed / gen set (entity file:<stuff key>, path <root>/speed, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.gravity",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {gravity}",
+   "type": "number",
+   "plain": "How strongly the shell drops in flight (1 = normal, 0 = none).",
+   "unit": "factor",
+   "vanilla": {
+    "min": 0,
+    "max": 35
+   },
+   "count": 35,
+   "group": "fire",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/gravity, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.reactive",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {reactive}",
+   "type": "bool",
+   "plain": "Marks a rocket: no gravity, a little wobble, burns out past its range.",
+   "unit": null,
+   "vanilla": {
+    "min": 0,
+    "max": 0
+   },
+   "count": 4,
+   "group": "fire",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/reactive, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.aimtype",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {aimType}",
+   "type": "choice",
+   "plain": "How it aims: flat (direct), lobbed like a mortar (curved), or either (adaptive).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "direct",
+     "curved",
+     "adaptive"
+    ]
+   },
+   "count": 15,
+   "group": "fire",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/aimType, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.curve",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {curve \"name\"}",
+   "type": "ref",
+   "plain": "How the shell's strength falls with distance, by a named curve.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "linear",
+     "cumulative",
+     "bullet",
+     "gun_std",
+     "gun_light",
+     "gun_medium",
+     "gun_heavy"
+    ]
+   },
+   "count": 8,
+   "group": "fire",
+   "ref": "curve in set/ballistics.set",
+   "tool": "gen set (entity file:<stuff key>, path <root>/curve, op add)",
+   "limit": "DMG-29",
+   "tag": "V"
+  },
+  {
+   "key": "gun.ballistics.curve_points",
+   "where": "set/ballistics.set {\"name\" {x y} ..}",
+   "type": "list",
+   "plain": "A new energy curve of your own: pairs of distance (share of range) and strength.",
+   "unit": null,
+   "vanilla": null,
+   "count": 7,
+   "group": "fire",
+   "ref": null,
+   "tool": null,
+   "limit": "KEY-11",
+   "tag": "V"
+  },
+  {
+   "key": "gun.aimingtolerance",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {AimingTolerance}",
+   "type": "number",
+   "plain": "How far off target the barrel may still point and fire.",
+   "unit": "deg",
+   "vanilla": {
+    "min": 0.1,
+    "max": 40
+   },
+   "count": 37,
+   "group": "aim",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/AimingTolerance, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.spreadtolerance",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {SpreadTolerance}",
+   "type": "number",
+   "plain": "The unit waits to fire while moving makes it less accurate than this.",
+   "unit": "factor",
+   "vanilla": {
+    "min": 0.4,
+    "max": 0.7
+   },
+   "count": 1,
+   "group": "aim",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/SpreadTolerance, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.relaxationtime",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {RelaxationTime}",
+   "type": "number",
+   "plain": "Settling (aim) time after the gun stops turning.",
+   "unit": "s",
+   "vanilla": {
+    "min": 0,
+    "max": 2
+   },
+   "count": 21,
+   "group": "aim",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/RelaxationTime, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.lockfiredistancetime",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {LockFireDistanceTime}",
+   "type": "number",
+   "plain": "Blocks the next shot until this time has passed. No vanilla weapon sets it.",
+   "unit": "s",
+   "vanilla": null,
+   "count": 0,
+   "group": "aim",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/LockFireDistanceTime, op add)",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "gun.zeroingaccuracy",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {ZeroingAccuracy f f ..}",
+   "type": "list",
+   "plain": "Spread factors for each sight setting after the first (later settings less accurate).",
+   "unit": null,
+   "vanilla": {
+    "min": 0.6,
+    "max": 0.95
+   },
+   "count": 8,
+   "group": "aim",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/ZeroingAccuracy, op add)",
+   "limit": "KEY-28",
+   "tag": "V"
+  },
+  {
+   "key": "gun.foresight",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {foresight \"name\"}",
+   "type": "text",
+   "plain": "Which muzzle bone and sight view the weapon uses.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "foresight",
+     "Foresight3",
+     "foresight1",
+     "pivot_front",
+     "Foresight1",
+     "Foresight2"
+    ]
+   },
+   "count": 25,
+   "group": "ui",
+   "ref": "model bone prefix",
+   "tool": "gen set (entity file:<stuff key>, path <root>/foresight, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.automatic",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {automatic}",
+   "type": "bool",
+   "plain": "The weapon fires bursts.",
+   "unit": null,
+   "vanilla": null,
+   "count": 35,
+   "group": "burst",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/automatic, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.automatic_ai",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {automatic_ai}",
+   "type": "bool",
+   "plain": "Fires bursts only when the computer controls it.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "burst",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/automatic_ai, op add)",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "gun.tracefreq",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {TraceFreq}",
+   "type": "number",
+   "plain": "Every how many shots a tracer shows (0 = never).",
+   "unit": null,
+   "vanilla": {
+    "min": 0,
+    "max": 1
+   },
+   "count": 5,
+   "group": "fire",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/TraceFreq, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.disablericochet",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {DisableRicochet}",
+   "type": "bool",
+   "plain": "Its shots never bounce off armour.",
+   "unit": null,
+   "vanilla": null,
+   "count": 6,
+   "group": "damage",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/DisableRicochet, op add)",
+   "limit": "DMG-09",
+   "tag": "V"
+  },
+  {
+   "key": "gun.burst.short",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {burst {short n dev}} or (\"burst_short|medium|long\")",
+   "type": "list",
+   "plain": "Length of a short burst and its random spread.",
+   "unit": "rounds",
+   "vanilla": {
+    "min": 0.3,
+    "max": 9
+   },
+   "count": 68,
+   "group": "burst",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/burst/short, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.burst.long",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {burst {long n dev}}",
+   "type": "list",
+   "plain": "Length of a long burst and its random spread.",
+   "unit": "rounds",
+   "vanilla": {
+    "min": 0.5,
+    "max": 30
+   },
+   "count": 24,
+   "group": "burst",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/burst/long, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.burst.min",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {burst {min n}}",
+   "type": "number",
+   "plain": "Fewest rounds fired per trigger pull (rocket salvos, howitzer series).",
+   "unit": "rounds",
+   "vanilla": {
+    "min": 1,
+    "max": 30
+   },
+   "count": 26,
+   "group": "burst",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/burst/min, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.burst.noaiming",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {burst {noaiming}}",
+   "type": "bool",
+   "plain": "Does not re-aim between the rounds of a burst.",
+   "unit": null,
+   "vanilla": null,
+   "count": 11,
+   "group": "burst",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/burst/noaiming, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.burst.rangekoef",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {burst {rangeKoef}}",
+   "type": "number",
+   "plain": "Share of the range inside which long bursts are used (0.33 when left out).",
+   "unit": "share of range",
+   "vanilla": null,
+   "count": 0,
+   "group": "burst",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/burst/rangeKoef, op add)",
+   "limit": "AI-07",
+   "tag": "I"
+  },
+  {
+   "key": "gun.spreading.radius",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {spreading <n> ..}",
+   "type": "number",
+   "plain": "Size of the circle shots land in at full range (first number of the spreading block).",
+   "unit": "m",
+   "vanilla": {
+    "min": 0.1,
+    "max": 10.5
+   },
+   "count": 41,
+   "group": "accuracy",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/spreading, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.accuracy_preset",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: (\"accuracy_<preset>\")",
+   "type": "choice",
+   "plain": "A ready spread table by name (rifle, smg, mgun, sniper_rifle, low, medium, high ...).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "minimum",
+     "low",
+     "medium",
+     "high",
+     "maximum",
+     "rifle",
+     "automatic_rifle",
+     "carabine",
+     "smg",
+     "pistol",
+     "mgun",
+     "sniper_rifle",
+     "ptr",
+     "dshk",
+     "boost"
+    ]
+   },
+   "count": 94,
+   "group": "accuracy",
+   "ref": null,
+   "tool": "gen gun accuracy (cannon presets only)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.spreading.radiustable",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {spreading {RadiusTable {dist radius} ..}}",
+   "type": "list",
+   "plain": "Spread radius at each distance; wins over the other spread keys.",
+   "unit": "m, m",
+   "vanilla": null,
+   "count": 48,
+   "group": "accuracy",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/spreading/RadiusTable, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.spreading.spreadradius",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {spreading {SpreadRadius}}",
+   "type": "number",
+   "plain": "Spread circle at full range when there is no table.",
+   "unit": "m",
+   "vanilla": {
+    "min": 0.5,
+    "max": 18
+   },
+   "count": 11,
+   "group": "accuracy",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/spreading/SpreadRadius, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.spreading.radiusfunction",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {spreading {RadiusFunction x y ..}}",
+   "type": "list",
+   "plain": "A curve of spread by share of range, multiplied by SpreadRadius.",
+   "unit": null,
+   "vanilla": {
+    "min": 0,
+    "max": 5
+   },
+   "count": 5,
+   "group": "accuracy",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/spreading/RadiusFunction, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.spreading.spreadpower",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {spreading {SpreadPower}}",
+   "type": "number",
+   "plain": "Higher values pull more shots to the centre of the circle.",
+   "unit": null,
+   "vanilla": {
+    "min": 1,
+    "max": 10
+   },
+   "count": 12,
+   "group": "accuracy",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/spreading/SpreadPower, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.spreading.spreadxyratio",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {spreading {SpreadXYRatio}}",
+   "type": "number",
+   "plain": "Stretches the circle into an ellipse along the line of fire.",
+   "unit": null,
+   "vanilla": {
+    "min": 0.8,
+    "max": 5
+   },
+   "count": 5,
+   "group": "accuracy",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/spreading/SpreadXYRatio, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.spreading.spreadyadjust",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {spreading {SpreadYadjust}}",
+   "type": "number",
+   "plain": "Tilts the spread in height.",
+   "unit": "deg",
+   "vanilla": {
+    "min": 0.5,
+    "max": 15
+   },
+   "count": 4,
+   "group": "accuracy",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/spreading/SpreadYadjust, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.spreading.burstaccuracy",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {spreading {BurstAccuracy % % ..}}",
+   "type": "list",
+   "plain": "Accuracy of each round in a burst in percent; later rounds spread more (recoil climb).",
+   "unit": "%",
+   "vanilla": {
+    "min": 50,
+    "max": 100
+   },
+   "count": 6,
+   "group": "accuracy",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/spreading/BurstAccuracy, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.spreading.burstrecoverytime",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {spreading {BurstRecoveryTime}}",
+   "type": "number",
+   "plain": "Time after a burst until accuracy is back to the first value.",
+   "unit": "s",
+   "vanilla": {
+    "min": 0.25,
+    "max": 0.5
+   },
+   "count": 2,
+   "group": "accuracy",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/spreading/BurstRecoveryTime, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.spreading.burstspread_unused",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {spreading {BurstSpreadCount|Delta|Width}}",
+   "type": "number",
+   "plain": "Read by the game but used by nothing; changing them does nothing.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "accuracy",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "gun.recoil",
+   "where": "no weapon key: hand weapons = BurstAccuracy; mounted guns = barrel recoil animation in the vehicle model",
+   "type": "text",
+   "plain": "There is no recoil number; climb comes from BurstAccuracy and the kick you see is a model animation.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "accuracy",
+   "ref": null,
+   "tool": "Models page (animation operations) for the barrel kick",
+   "limit": "HUM-39",
+   "tag": "I"
+  },
+  {
+   "key": "gun.projectiledamage",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {projectileDamage}",
+   "type": "number",
+   "plain": "Armour piercing at the muzzle when there is no table; also fills the soldier damage when that is missing.",
+   "unit": "mm",
+   "vanilla": {
+    "min": 3,
+    "max": 10000
+   },
+   "count": 87,
+   "group": "damage",
+   "ref": null,
+   "tool": "gen gun damage / gen set (entity file:<stuff key>, path <root>/projectileDamage, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.projectiledamagetable",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {projectileDamageTable {dist pen} ..} or (\"damage\" a() b() c() d() e())",
+   "type": "list",
+   "plain": "Armour piercing by distance; the presets take five values for 100, 500, 1000, 1500 and 2000 m.",
+   "unit": "m, mm",
+   "vanilla": null,
+   "count": 74,
+   "group": "damage",
+   "ref": null,
+   "tool": "gen gun pen / pen_scale / gen set (entity file:<stuff key>, path <root>/projectileDamageTable, op add)",
+   "limit": "DMG-02",
+   "tag": "V"
+  },
+  {
+   "key": "gun.projectiledamageclip",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {projectileDamageClip}",
+   "type": "number",
+   "plain": "Cap on the piercing value.",
+   "unit": "mm",
+   "vanilla": {
+    "min": 3,
+    "max": 20
+   },
+   "count": 6,
+   "group": "damage",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/projectileDamageClip, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.projectiledamagethreshold",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {projectileDamageThreshold} or (\"caliber_<preset>\")",
+   "type": "number",
+   "plain": "How much of a plate the shell must spend to break it (1 or more).",
+   "unit": "factor",
+   "vanilla": {
+    "min": 1,
+    "max": 1.5
+   },
+   "count": 77,
+   "group": "damage",
+   "ref": null,
+   "tool": "gen gun caliber (preset) / gen set (entity file:<stuff key>, path <root>/projectileDamageThreshold, op add)",
+   "limit": "DMG-19",
+   "tag": "V"
+  },
+  {
+   "key": "gun.healthdamage",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {healthDamage}",
+   "type": "number",
+   "plain": "Damage to soldiers per hit.",
+   "unit": null,
+   "vanilla": {
+    "min": 75,
+    "max": 500
+   },
+   "count": 29,
+   "group": "damage",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/healthDamage, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.healthdamageclip",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {healthDamageClip}",
+   "type": "number",
+   "plain": "Cap on the damage to soldiers.",
+   "unit": null,
+   "vanilla": {
+    "min": 500,
+    "max": 500
+   },
+   "count": 1,
+   "group": "damage",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/healthDamageClip, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.ricochetdamageclip",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {RicochetDamageClip}",
+   "type": "number",
+   "plain": "Cap on the damage a bounced shot does. No vanilla weapon sets it.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "damage",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/RicochetDamageClip, op add)",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "gun.ricochetenergydamping",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {RicochetEnergyDamping {angle factor} ..}",
+   "type": "list",
+   "plain": "How much strength a bounced shot keeps, by hit angle.",
+   "unit": "deg, factor",
+   "vanilla": null,
+   "count": 1,
+   "group": "damage",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/RicochetEnergyDamping, op add)",
+   "limit": "DMG-09",
+   "tag": "V"
+  },
+  {
+   "key": "gun.overmatchdamping",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {OvermatchDamping {angle factor} ..}",
+   "type": "list",
+   "plain": "How much a thin plate counts against this shell at each angle.",
+   "unit": "deg, factor",
+   "vanilla": null,
+   "count": 1,
+   "group": "damage",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/OvermatchDamping, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.special.mode",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {special {mode}}",
+   "type": "choice",
+   "plain": "The special shot: an aimed shot (aim) or a remote detonation (detonate).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "aim",
+     "detonate"
+    ]
+   },
+   "count": 2,
+   "group": "special",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/special/mode, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.special.preparetime",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {special {PrepareTime}}",
+   "type": "number",
+   "plain": "How long the soldier aims before the special shot.",
+   "unit": "s",
+   "vanilla": {
+    "min": 3,
+    "max": 3.5
+   },
+   "count": 2,
+   "group": "special",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/special/PrepareTime, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.special.preparecursor",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {special {PrepareCursor}}",
+   "type": "ref",
+   "plain": "Mouse cursor while the special shot is chosen.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "aimed_shot"
+    ]
+   },
+   "count": 2,
+   "group": "special",
+   "ref": "cursor in interface/cursor",
+   "tool": "gen set (entity file:<stuff key>, path <root>/special/PrepareCursor, op add)",
+   "limit": "UI-21",
+   "tag": "V"
+  },
+  {
+   "key": "gun.special.accuracy",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {special {accuracy}}",
+   "type": "number",
+   "plain": "Divides the spread of the special shot.",
+   "unit": "factor",
+   "vanilla": {
+    "min": 2.5,
+    "max": 2.5
+   },
+   "count": 1,
+   "group": "special",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/special/accuracy, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.special.damage",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {special {damage f [dev]}}",
+   "type": "list",
+   "plain": "Damage factor of the special shot instead of the distance curve.",
+   "unit": "factor",
+   "vanilla": {
+    "values": [
+     "2.5"
+    ]
+   },
+   "count": 1,
+   "group": "special",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/special/damage, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.special.throw_off",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {special {throw_off}}",
+   "type": "bool",
+   "plain": "The special shot can knock the target down.",
+   "unit": null,
+   "vanilla": null,
+   "count": 2,
+   "group": "special",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/special/throw_off, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.special.throw_off_always",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {special {throw_off_always}}",
+   "type": "bool",
+   "plain": "Every shot knocks the target down (shotguns). Not copied by from.",
+   "unit": null,
+   "vanilla": null,
+   "count": 1,
+   "group": "special",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/special/throw_off_always, op add)",
+   "limit": "KEY-19",
+   "tag": "V"
+  },
+  {
+   "key": "gun.firesound",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {fireSound \"path\"}",
+   "type": "ref",
+   "plain": "Shot sound: a file or folder under sound/weapon/shot/ (a folder plays a random file each shot).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "gun/howitzer/152mm_ml20",
+     "reactive/nebelwerfer_burst",
+     "gun/howitzer/105mm_m2a1",
+     "pistol/silent/welrod",
+     "reactive/katyusha_burst",
+     "reactive/grnd_launch",
+     "gun/37mm_pak35",
+     "gun/37mm_61-k"
+    ]
+   },
+   "count": 192,
+   "group": "sound",
+   "ref": "sound file or folder",
+   "tool": "gen set (entity file:<stuff key>, path <root>/fireSound, op add) (Art page sound view reads it)",
+   "limit": "GPL-15",
+   "tag": "V"
+  },
+  {
+   "key": "gun.reloadsound",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {reloadSound \"path\"}",
+   "type": "ref",
+   "plain": "Reload sound under sound/weapon/reload/.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "tankgun_r04",
+     "mp44",
+     "gun_r04",
+     "rifle_bolt_five",
+     "gun_r02",
+     "gun_r03",
+     "m1carbine",
+     "tankgun_r02"
+    ]
+   },
+   "count": 146,
+   "group": "sound",
+   "ref": "sound file or folder",
+   "tool": "gen set (entity file:<stuff key>, path <root>/reloadSound, op add)",
+   "limit": "GPL-15",
+   "tag": "V"
+  },
+  {
+   "key": "gun.sound.files",
+   "where": "sound/weapon/shot/<path>/*.wav (and reload/)",
+   "type": "file",
+   "plain": "The sound files themselves (one or several variants).",
+   "unit": null,
+   "vanilla": null,
+   "count": 400,
+   "group": "sound",
+   "ref": "wav",
+   "tool": "/art/copy (game sounds) or task upload; tools/lib/wav writes PCM16/IMA",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "gun.sound.loudness",
+   "where": "sound/weapon/shot/<path>/folder.set {loudness \"class\"}",
+   "type": "choice",
+   "plain": "How far the shot is heard: a loudness class from sound/sound.set.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "shoot muted",
+     "shoot normal",
+     "shoot loud",
+     "reactive",
+     "artillery",
+     "canonade",
+     "reload",
+     "default"
+    ]
+   },
+   "count": 30,
+   "group": "sound",
+   "ref": "loudness in sound/sound.set",
+   "tool": null,
+   "limit": "VIS-27",
+   "tag": "V"
+  },
+  {
+   "key": "gun.sound.signal",
+   "where": "sound folder.set {signal shot <m>}",
+   "type": "list",
+   "plain": "Radius in which soldiers notice the shot.",
+   "unit": "m",
+   "vanilla": {
+    "values": [
+     "shot 50"
+    ]
+   },
+   "count": 10,
+   "group": "sound",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.sound.volume",
+   "where": "sound folder.set {volume}",
+   "type": "number",
+   "plain": "Volume factor for the folder.",
+   "unit": "factor",
+   "vanilla": {
+    "values": [
+     "1.0",
+     "1.2"
+    ]
+   },
+   "count": 10,
+   "group": "sound",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.sound.tail",
+   "where": "no key in as64",
+   "type": "text",
+   "plain": "There is no separate echo or tail sound; the tail is part of the shot wav.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "sound",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "gun.states.prepare",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {states {prepare \"state\"}}",
+   "type": "text",
+   "plain": "Stance-machine state used to get the weapon ready.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "anim",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/states/prepare, op add)",
+   "limit": "HUM-29",
+   "tag": "I"
+  },
+  {
+   "key": "gun.states.unprepare",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {states {unprepare}}",
+   "type": "text",
+   "plain": "State used to put the weapon away.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "anim",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/states/unprepare, op add)",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "gun.states.reload",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {states {reload}}",
+   "type": "text",
+   "plain": "Reload animation state.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "reload",
+     "reload-bazooka"
+    ]
+   },
+   "count": 4,
+   "group": "anim",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/states/reload, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.states.unload",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {states {unload}}",
+   "type": "text",
+   "plain": "Unload animation state.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "unload",
+     "unload-bazooka"
+    ]
+   },
+   "count": 4,
+   "group": "anim",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/states/unload, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.states.fire",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {states {fire}}",
+   "type": "text",
+   "plain": "Fire animation state.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "fire",
+     "fire-bazooka"
+    ]
+   },
+   "count": 4,
+   "group": "anim",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/states/fire, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.states.aim",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {states {aim}}",
+   "type": "text",
+   "plain": "Aim animation state.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "aim",
+     "aim-bazooka",
+     "aim-thrower"
+    ]
+   },
+   "count": 4,
+   "group": "anim",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/states/aim, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.states.can_aim",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {states {can_aim}}",
+   "type": "text",
+   "plain": "State that tests whether the soldier can aim now.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "can-aim",
+     "can-aim-bazooka",
+     "can-aim-thrower"
+    ]
+   },
+   "count": 4,
+   "group": "anim",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/states/can_aim, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.inventory.fsm",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {inventory {fsm \"x\"}}",
+   "type": "choice",
+   "plain": "Which carry and handling set the soldier uses (file set/stuff/_settings/<x>.fsm).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "smg",
+     "pistol",
+     "bazooka",
+     "stuff",
+     "belt",
+     "hand-only"
+    ]
+   },
+   "count": 9,
+   "group": "anim",
+   "ref": "set/stuff/_settings/*.fsm",
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/fsm, op add)",
+   "limit": "HUM-26",
+   "tag": "V"
+  },
+  {
+   "key": "gun.anim.mode_tag",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: weapon tag (pistol smg rifle mgun rocketlauncher sniper flame_thrower ..)",
+   "type": "choice",
+   "plain": "The class word in the tags picks the soldier's animation set and which skill perk counts; animation names come from the engine.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "rifle",
+     "smg",
+     "pistol",
+     "mgun",
+     "autorifle",
+     "sniper",
+     "rocketlauncher",
+     "flame_thrower",
+     "shotgun"
+    ]
+   },
+   "count": 59,
+   "group": "anim",
+   "ref": "engine weapon modes",
+   "tool": "gen set (entity file:<stuff key>, path <root>/tag, op add)",
+   "limit": "HUM-30",
+   "tag": "V"
+  },
+  {
+   "key": "gun.fx.hand",
+   "where": "set/interaction_entity/human.inc {on \"link_weapon\"}, picked by weapon tag",
+   "type": "choice",
+   "plain": "Muzzle flash and empty-case effect of a hand weapon, chosen by its class tag (pistol, shotgun, rifle, smg, mgun, flame_thrower).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "flash_gun_small + shell_smg",
+     "flash_gun_big + shell_shotgun",
+     "flash_gun_small + shell_mgun",
+     "flash_gun_big + shell_mgun",
+     "flamer_fire"
+    ]
+   },
+   "count": 6,
+   "group": "effects",
+   "ref": "interaction + fx entities",
+   "tool": "gen set (entity file:<stuff key>, path <root>/tag, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.fx.mount_muzzle",
+   "where": "vehicle def {props .. \"muzzle_<size>\"}",
+   "type": "choice",
+   "plain": "Muzzle flash, smoke and dust of a mounted gun, picked by a size word on the vehicle.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "muzzle_zenite",
+     "muzzle_minimum",
+     "muzzle_small",
+     "muzzle_medium",
+     "muzzle_large",
+     "muzzle_maximum"
+    ]
+   },
+   "count": 194,
+   "group": "effects",
+   "ref": "set/interaction_entity/muzzle.inc",
+   "tool": "gen set (vehicle def, path game_entity/props)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.fx.backblast",
+   "where": "human.inc {on fire \"hand_right\"} {spawn \"bazooka_shot\" \"fxshot\"}",
+   "type": "text",
+   "plain": "Back-blast puff of a shoulder launcher, at the model's fxshot bone.",
+   "unit": null,
+   "vanilla": null,
+   "count": 1,
+   "group": "effects",
+   "ref": "fx entity bazooka_shot",
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.inventory.size",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {inventory {size w h}}",
+   "type": "list",
+   "plain": "How many inventory cells the weapon takes (width and height).",
+   "unit": "cells",
+   "vanilla": {
+    "min": 1,
+    "max": 6
+   },
+   "count": 25,
+   "group": "inventory",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/size, op add)",
+   "limit": "HUM-23",
+   "tag": "V"
+  },
+  {
+   "key": "gun.inventory.weight",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {inventory {weight}}",
+   "type": "number",
+   "plain": "Inventory weight (load on the soldier).",
+   "unit": null,
+   "vanilla": {
+    "min": 10,
+    "max": 1000
+   },
+   "count": 20,
+   "group": "inventory",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/weight, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.inventory.link_bone",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {inventory {link_bone}}",
+   "type": "text",
+   "plain": "Body bone the weapon hangs on when slung (gun_back).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "gun_back"
+    ]
+   },
+   "count": 9,
+   "group": "inventory",
+   "ref": "human bone",
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/link_bone, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.inventory.handle_bone",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {inventory {handle_bone}}",
+   "type": "text",
+   "plain": "Bone of the model used as the hand grip in place of handle.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "handle_box"
+    ]
+   },
+   "count": 3,
+   "group": "inventory",
+   "ref": "model bone",
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/handle_bone, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.inventory.noview",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets: {inventory {noView}}",
+   "type": "bool",
+   "plain": "Not shown in the inventory (built-in vehicle weapons).",
+   "unit": null,
+   "vanilla": null,
+   "count": 8,
+   "group": "inventory",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/noView, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.cursor",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {cursor}",
+   "type": "ref",
+   "plain": "Mouse cursor when aiming this weapon.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "cannon_on",
+     "cannon_on_fg",
+     "zenite_on",
+     "carbine_on",
+     "smg_on"
+    ]
+   },
+   "count": 26,
+   "group": "ui",
+   "ref": "cursor in interface/cursor",
+   "tool": "gen set (entity file:<stuff key>, path <root>/cursor, op add)",
+   "limit": "UI-21",
+   "tag": "V"
+  },
+  {
+   "key": "gun.cursorreloading",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {cursorReloading}",
+   "type": "ref",
+   "plain": "Cursor while it reloads.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "cannon_reload_fg",
+     "zenite_reload",
+     "cannon_reload",
+     "carbine_reload",
+     "smg_reload"
+    ]
+   },
+   "count": 20,
+   "group": "ui",
+   "ref": "cursor",
+   "tool": "gen set (entity file:<stuff key>, path <root>/cursorReloading, op add)",
+   "limit": "UI-21",
+   "tag": "V"
+  },
+  {
+   "key": "gun.crosshair",
+   "where": "stuff file set/stuff/<class>/<name>[.weapon] or its pattern/presets or {parameters}: {crosshair} {crosshairReloading}",
+   "type": "ref",
+   "plain": "Crosshair in direct control, and while reloading. No vanilla weapon sets it.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "ui",
+   "ref": "cursor",
+   "tool": "gen set (entity file:<stuff key>, path <root>/crosshair, op add)",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "gun.mount.place",
+   "where": "vehicle def/ext {weaponry {place \"name\" ..}}",
+   "type": "text",
+   "plain": "The mount on a vehicle or gun (main gun, coaxial MG, AA MG ...).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "mgun1 abm_mgun",
+     "mgun abm_mgun",
+     "mgun2 abm_mgun",
+     "gun abm_medium",
+     "gun abm_field_gun",
+     "gun abm_low",
+     "mgun abm_mgun_heavy",
+     "gun abm_high"
+    ]
+   },
+   "count": 272,
+   "group": "mount",
+   "ref": null,
+   "tool": "gen weapon place",
+   "limit": "HUM-25",
+   "tag": "V"
+  },
+  {
+   "key": "gun.mount.weapon",
+   "where": "vehicle def/ext {weaponry {place \"name\" ..}}: {weapon \"gun\" filled|filling \"ammo tags\" n}",
+   "type": "ref",
+   "plain": "Which weapon sits on the mount and its first load.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "mg34 filled",
+     "dt filled",
+     "browning_m19 filled",
+     "type1hmg filled",
+     "besa filled",
+     "type99lmg filled",
+     "75mm_m3 filling ammo bullet75 ap 1",
+     "88mm_kwk43 filling ammo bullet88 ap 1"
+    ]
+   },
+   "count": 255,
+   "group": "mount",
+   "ref": "weapon stuff",
+   "tool": "gen weapon (entity, weapon, place)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.mount.type",
+   "where": "vehicle def/ext {weaponry {place \"name\" ..}}: {type}",
+   "type": "choice",
+   "plain": "Kind of mount, used by the panel and bots.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "mgun_hull",
+     "mgun_coaxial",
+     "mgun_aa",
+     "mgun_main",
+     "mgun_rear",
+     "secondary_flamer",
+     "secondary_main",
+     "mgun_right"
+    ]
+   },
+   "count": 148,
+   "group": "mount",
+   "ref": null,
+   "tool": "gen set (vehicle def path)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.mount.basic",
+   "where": "vehicle def/ext {weaponry {place \"name\" ..}}: {basic}",
+   "type": "bool",
+   "plain": "Marks the unit's main weapon.",
+   "unit": null,
+   "vanilla": null,
+   "count": 122,
+   "group": "mount",
+   "ref": null,
+   "tool": "gen set (vehicle def path)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.mount.gunner",
+   "where": "vehicle def/ext {weaponry {place \"name\" ..}}: {gunner}",
+   "type": "text",
+   "plain": "Crew seat that aims this mount.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "driver",
+     "gunner2",
+     "commander",
+     "gunner",
+     "gunner3",
+     "gunner1",
+     "charger"
+    ]
+   },
+   "count": 124,
+   "group": "mount",
+   "ref": null,
+   "tool": "gen set (vehicle def path)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.mount.charger",
+   "where": "vehicle def/ext {weaponry {place \"name\" ..}}: {charger}",
+   "type": "text",
+   "plain": "Crew seat that loads it.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "driver",
+     "gunner",
+     "gunner2",
+     "commander",
+     "gunner1",
+     "gunner3",
+     "charger"
+    ]
+   },
+   "count": 162,
+   "group": "mount",
+   "ref": null,
+   "tool": "gen set (vehicle def path)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.mount.shooter",
+   "where": "vehicle def/ext {weaponry {place \"name\" ..}}: {shooter}",
+   "type": "text",
+   "plain": "Crew seat that fires it (aircraft).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "shooter_r",
+     "shooter_b"
+    ]
+   },
+   "count": 3,
+   "group": "mount",
+   "ref": null,
+   "tool": "gen set (vehicle def path)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.mount.foresight",
+   "where": "vehicle def/ext {weaponry {place \"name\" ..}}: {foresight}",
+   "type": "text",
+   "plain": "Muzzle bone of the vehicle model for this mount.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "foresight4",
+     "foresight5",
+     "foresight3",
+     "foresight6",
+     "foresight2",
+     "foresight9",
+     "foresight10",
+     "foresight13"
+    ]
+   },
+   "count": 93,
+   "group": "mount",
+   "ref": "vehicle model bone",
+   "tool": "gen set (vehicle def path)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.mount.linkbone",
+   "where": "vehicle def/ext {weaponry {place \"name\" ..}}: {LinkBone}",
+   "type": "text",
+   "plain": "Bone the mount turns with.",
+   "unit": null,
+   "vanilla": {
+    "min": 0,
+    "max": 0,
+    "common": [
+     "mgun_rot",
+     "mgun2",
+     "mgun",
+     "mgun1",
+     "mgun1_rot",
+     "mgun3",
+     "hull_gun"
+    ]
+   },
+   "count": 68,
+   "group": "mount",
+   "ref": "vehicle model bone",
+   "tool": "gen set (vehicle def path)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.mount.linkanimation",
+   "where": "vehicle def/ext {weaponry {place \"name\" ..}}: {LinkAnimation}",
+   "type": "text",
+   "plain": "Animation played with the mount, or off.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "off"
+    ]
+   },
+   "count": 63,
+   "group": "mount",
+   "ref": null,
+   "tool": "gen set (vehicle def path)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.mount.rotate",
+   "where": "vehicle def/ext {weaponry {place \"name\" ..}}: {Rotate}",
+   "type": "bool",
+   "plain": "The mount turns.",
+   "unit": null,
+   "vanilla": null,
+   "count": 46,
+   "group": "mount",
+   "ref": null,
+   "tool": "gen set (vehicle def path)",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "gun.mount.barrels",
+   "where": "vehicle def/ext {weaponry {place \"name\" ..}}: {Barrels}",
+   "type": "number",
+   "plain": "How many barrels the mount fires from.",
+   "unit": null,
+   "vanilla": {
+    "min": 1,
+    "max": 60
+   },
+   "count": 34,
+   "group": "mount",
+   "ref": null,
+   "tool": "gen set (vehicle def path)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.mount.stationaryfiring",
+   "where": "vehicle def/ext {weaponry {place \"name\" ..}}: {StationaryFiring}",
+   "type": "bool",
+   "plain": "Fires only while the unit stands still.",
+   "unit": null,
+   "vanilla": null,
+   "count": 33,
+   "group": "mount",
+   "ref": null,
+   "tool": "gen set (vehicle def path)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.mount.restoreikafteraim",
+   "where": "vehicle def/ext {weaponry {place \"name\" ..}}: {RestoreIKAfterAim}",
+   "type": "bool",
+   "plain": "Turns back to rest after aiming.",
+   "unit": null,
+   "vanilla": null,
+   "count": 138,
+   "group": "mount",
+   "ref": null,
+   "tool": "gen set (vehicle def path)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.mount.sequentialaim",
+   "where": "vehicle def/ext {weaponry {place \"name\" ..}}: {SequentialAim}",
+   "type": "number",
+   "plain": "Turns first, then raises the barrel.",
+   "unit": null,
+   "vanilla": null,
+   "count": 1,
+   "group": "mount",
+   "ref": null,
+   "tool": "gen set (vehicle def path)",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "gun.mount.accuracybymotion",
+   "where": "vehicle def/ext {weaponry {place \"name\" ..}}: {AccuracyByMotion {maxlinearspeed}{bylinearspeed}{maxangularspeed}{byangularspeed}{disordertime}{ordertime}} or (\"abm_<preset>\")",
+   "type": "list",
+   "plain": "How much accuracy drops while the vehicle moves or turns.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "abm_low",
+     "abm_medium",
+     "abm_high",
+     "abm_mgun",
+     "abm_mgun_heavy",
+     "abm_field_gun"
+    ]
+   },
+   "count": 221,
+   "group": "mount",
+   "ref": null,
+   "tool": null,
+   "limit": "KEY-02",
+   "tag": "V"
+  },
+  {
+   "key": "gun.mount.restoreiktime",
+   "where": "properties/*.ext {weaponry {RestoreIKTime}}",
+   "type": "number",
+   "plain": "Delay before a turret that stopped aiming turns back to rest.",
+   "unit": null,
+   "vanilla": null,
+   "count": 3,
+   "group": "mount",
+   "ref": null,
+   "tool": "gen set (file path)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.mount.manualaccuracy",
+   "where": "{weaponry {ManualAccuracy}}",
+   "type": "number",
+   "plain": "Divides spread under direct control.",
+   "unit": null,
+   "vanilla": null,
+   "count": 3,
+   "group": "mount",
+   "ref": null,
+   "tool": "gen set (file path)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.mount.current",
+   "where": "{weaponry {current \"place\"}}",
+   "type": "text",
+   "plain": "Mount selected when the unit is created.",
+   "unit": null,
+   "vanilla": null,
+   "count": 3,
+   "group": "mount",
+   "ref": null,
+   "tool": "gen set (file path)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gun.carry.breed_item",
+   "where": "set/breed/mp/<army>/<breed>.set {inventory {item \"gun\" filled}}",
+   "type": "list",
+   "plain": "Which soldiers carry the weapon, loaded.",
+   "unit": null,
+   "vanilla": null,
+   "count": 281,
+   "group": "carry",
+   "ref": "breed",
+   "tool": "gen breed set (+inventory/item)",
+   "limit": "HUM-21",
+   "tag": "I"
+  },
+  {
+   "key": "gun.carry.ammo_item",
+   "where": "breed {inventory {item \"ammo tags\" n}}",
+   "type": "list",
+   "plain": "Spare ammunition the soldier carries for it.",
+   "unit": null,
+   "vanilla": null,
+   "count": 281,
+   "group": "carry",
+   "ref": "ammo stuff",
+   "tool": "gen breed set (+inventory/item)",
+   "limit": "HUM-20",
+   "tag": "I"
+  },
+  {
+   "key": "gun.carry.in_hands",
+   "where": "breed {inventory {in_hands n}}",
+   "type": "number",
+   "plain": "Which item line the soldier holds at start (counts item lines from 0).",
+   "unit": null,
+   "vanilla": null,
+   "count": 279,
+   "group": "carry",
+   "ref": null,
+   "tool": "gen breed set (inventory/in_hands)",
+   "limit": "HUM-21",
+   "tag": "V"
+  },
+  {
+   "key": "gun.carry.vehicle_box",
+   "where": "vehicle def {extender \"inventory\" {box {item \"tags\" n {user \"place\"}}}}",
+   "type": "list",
+   "plain": "Rounds stored in the vehicle, and which mount they feed.",
+   "unit": null,
+   "vanilla": null,
+   "count": 301,
+   "group": "carry",
+   "ref": null,
+   "tool": "gen weapon (swaps family only) / gen set",
+   "limit": "HUM-23",
+   "tag": "V"
+  },
+  {
+   "key": "gun.carry.supply",
+   "where": "properties/resupply_generic.inc {extender \"supply_zone\" {resupply {item ..}}}",
+   "type": "list",
+   "plain": "Which supply trucks or crates refill it.",
+   "unit": null,
+   "vanilla": null,
+   "count": 1,
+   "group": "carry",
+   "ref": null,
+   "tool": "gen set",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "gun.text.name",
+   "where": "interface/text desc.lng (or mod #file.lng) key desc/weapon/<name>",
+   "type": "text",
+   "plain": "The weapon's name in the game.",
+   "unit": null,
+   "vanilla": null,
+   "count": 1,
+   "group": "text",
+   "ref": "localization",
+   "tool": "gen gun display / gen clone name / gen text",
+   "limit": "LOC-15",
+   "tag": "V"
+  },
+  {
+   "key": "gun.text.stats",
+   "where": "desc.lng desc/weapon/... stat lines",
+   "type": "text",
+   "plain": "Optional stat text under the name (range, penetration) with colour tags.",
+   "unit": null,
+   "vanilla": null,
+   "count": 1,
+   "group": "text",
+   "ref": "localization",
+   "tool": "gen text",
+   "limit": "LOC-28",
+   "tag": "I"
+  },
+  {
+   "key": "gun.text.type",
+   "where": "desc.lng desc/weapon/type/<type>",
+   "type": "text",
+   "plain": "Label of the mount kind in the vehicle weapon panel.",
+   "unit": null,
+   "vanilla": null,
+   "count": 1,
+   "group": "text",
+   "ref": "localization",
+   "tool": "gen text",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "gun.throw",
+   "where": "thrower.hand / melee: {throw {range}{startAngle}{constantSpeed}{spreading}}",
+   "type": "list",
+   "plain": "For throwing weapons: how far and how they throw (see the item census).",
+   "unit": null,
+   "vanilla": null,
+   "count": 6,
+   "group": "fire",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/throw, op add)",
+   "limit": null,
+   "tag": "V"
+  }
+ ],
+ "gaps": [
+  "gen gun writes only cannons in set/stuff/gun/ (recharge, speed, pen, damage, range/accuracy/caliber presets): rifles, MGs, SMGs, pistols, launchers need gen clone + raw set rows -> extend op gun with class (rifle|mgun|smg|pistol|bazooka|reactive|flame) and fields rof (rounds/min -> recoveryTime), burst, spread, health, filling, sounds",
+  "rate of fire is written as (\"recoveryTime\" r(rpm)) and accuracy/burst as presets in non-cannon folders: no op picks those presets -> op gun fields rof and preset names validated against <class>/.presets",
+  "per-ammo {parameters \"tags\"} blocks other than the apcr pen table: no op -> op gun field params: {tags: {range, speed, pen, recharge}}",
+  "new sound folder (wavs + folder.set loudness, signal, volume) has no write step -> op sound (name, files, loudness, signal, volume, kind shot|reload) writing resource/sound/weapon/<kind>/<name>/",
+  "hand/inventory model of a new weapon: no op clones an inventory entity and re-points {extender \"stuff\" {item}} -> op stuffmodel (like entity, as, item tags, textures)",
+  "inventory picture = {Extender \"preview\"} camera block in the .mdl: no tool edits it -> op stuffmodel copies the base camera; a camera editor on the Models page later",
+  "who carries it: breed inventory lines (item, filled, ammo count, in_hands) only via raw gen breed set -> op kit (breed, item, filled|count, in_hands, ammo)",
+  "vehicle ammo box lines (item count, user place) beyond the family swap of gen weapon -> op box (entity, item tags, count, user)",
+  "AccuracyByMotion on a mount is a macro (\"abm_<preset>\"): no op picks it -> gen weapon field abm (preset name)",
+  "new energy curve in set/ballistics.set: no op (whole-file override) -> op curve (name, points) appending to a mod copy",
+  "recoil: no key; barrel kick is a model animation -> Models page animation hand-off, no gen op",
+  "new soldier animations for a new weapon class: engine-chosen names (HUM-30) -> outside-program hand-off only",
+  "sound loudness class, signal radius, volume live in folder.set: covered by op sound above"
+ ]
+}

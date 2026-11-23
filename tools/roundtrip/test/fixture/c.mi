@@ -1,0 +1,4 @@
+{mission
+  ; no trailing newline after the last brace
+  {"objective" "reach" {x 10} {y 20}}
+}

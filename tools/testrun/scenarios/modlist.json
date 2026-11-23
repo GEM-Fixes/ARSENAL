@@ -1,0 +1,13 @@
+{
+  "name": "modlist",
+  "rows": ["TST-13"],
+  "mode": "menu",
+  "mods": [],
+  "params": { "mod": "" },
+  "steps": [
+    { "cmd": "mod_list", "expect": "\"name\":\"{mod}\"" }
+  ],
+  "verdict": [
+    { "log": "Exception \\*{5}", "want": false }
+  ]
+}

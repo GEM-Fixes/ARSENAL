@@ -1,0 +1,41 @@
+{
+  "name": "mis-12",
+  "rows": [
+    "MIS-12"
+  ],
+  "fixture": [
+    "mis-12"
+  ],
+  "src": [
+    "(not part of this release)",
+    "(not part of this release)"
+  ],
+  "note": "Pass: exec of a mod cfg and a dbg_ var both answer over the -control pipe. testrun always passes -console, so the \"needs -console\" half is not separated. Retail 3.262 not covered.",
+  "steps": [
+    {
+      "wait": 1
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "exec \"mis12.cfg\"",
+      "match": "trs_mis12_marker",
+      "want": true
+    },
+    {
+      "reply": "dbg_pathSearchLimit",
+      "match": "^dbg_pathSearchLimit = 60\\b",
+      "want": true
+    }
+  ],
+  "mode": "menu",
+  "mods": [
+    "as64+",
+    "mis-12"
+  ],
+  "params": {}
+}

@@ -1,0 +1,16 @@
+{select_ammo
+ {human in_bush
+  {"bullet"}
+ }
+ {human
+  {"bullet"}
+ }
+ {tank in_cover
+  {"shell ap"}
+ }
+ {car
+ }
+ {cannon
+  {"shell fg"}
+ }
+}

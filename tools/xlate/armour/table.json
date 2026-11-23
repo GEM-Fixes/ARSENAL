@@ -1,0 +1,807 @@
+{
+ "meta": {
+  "seed": 67,
+  "pairs": 426,
+  "stems": 426,
+  "heldOutStems": 160,
+  "rows": 679,
+  "rule": "mode of non-zero GoH volume thickness per part and face, copied; peer value otherwise"
+ },
+ "peer": {
+  "tank_medium": {
+   "body": {
+    "front": 60,
+    "side": 30,
+    "rear": 30,
+    "top": 15
+   },
+   "turret": {
+    "front": 42,
+    "side": 27.5,
+    "rear": 25,
+    "top": 19.5
+   }
+  },
+  "tank_heavy": {
+   "body": {
+    "front": 125,
+    "side": 77.5,
+    "rear": 67.5,
+    "top": 27.5
+   },
+   "turret": {
+    "front": 100,
+    "side": 85,
+    "rear": 70,
+    "top": 27.5
+   }
+  },
+  "tank_light": {
+   "body": {
+    "front": 23.5,
+    "side": 15,
+    "rear": 14.5,
+    "top": 8
+   },
+   "turret": {
+    "front": 20,
+    "side": 15,
+    "rear": 15,
+    "top": 10
+   }
+  },
+  "btr": {
+   "body": {
+    "front": 10,
+    "side": 10,
+    "rear": 10,
+    "top": 7
+   }
+  },
+  "cannon": {
+   "body": {
+    "front": 10,
+    "side": 10,
+    "rear": 10,
+    "top": 10
+   },
+   "turret": {
+    "front": 7,
+    "side": 7,
+    "rear": 7,
+    "top": 7
+   }
+  },
+  "car": {
+   "body": {
+    "front": 15,
+    "side": 15,
+    "rear": 15,
+    "top": 15
+   }
+  }
+ },
+ "classes": {
+  "tank_medium": {
+   "stems": 36,
+   "heldStems": 15,
+   "heldRows": 88,
+   "held_mode": {
+    "n": 88,
+    "median": 0,
+    "p75": 0.33333333333333326,
+    "within25": 61
+   },
+   "held_peer": {
+    "n": 88,
+    "median": 0.25,
+    "p75": 0.40217391304347827
+   },
+   "all_mode": {
+    "n": 208,
+    "median": 0,
+    "p75": 0.2857142857142857,
+    "exact": 111
+   },
+   "all_mode_vanilla": {
+    "n": 56,
+    "median": 0,
+    "p75": 0.33333333333333337
+   },
+   "use": "mode",
+   "p5": {
+    "body_front": 30
+   },
+   "p95": {
+    "body_front": 100
+   },
+   "confidence": "ok"
+  },
+  "tank_heavy": {
+   "stems": 8,
+   "heldStems": 2,
+   "heldRows": 12,
+   "held_mode": {
+    "n": 12,
+    "median": 0,
+    "p75": 2.04,
+    "within25": 7
+   },
+   "held_peer": {
+    "n": 12,
+    "median": 0.1373355263157895,
+    "p75": 0.3125
+   },
+   "all_mode": {
+    "n": 52,
+    "median": 0.02499999999999991,
+    "p75": 0.6042105263157895,
+    "exact": 20
+   },
+   "all_mode_vanilla": {
+    "n": 28,
+    "median": 0.0677506775067751,
+    "p75": 0.6875
+   },
+   "use": "mode",
+   "note": "held-back 12 rows / 2 stems, median 0%; 8 stems",
+   "p5": {
+    "body_front": 60
+   },
+   "p95": {
+    "body_front": 250
+   },
+   "confidence": "weak"
+  },
+  "tank_light": {
+   "stems": 26,
+   "heldStems": 8,
+   "heldRows": 63,
+   "held_mode": {
+    "n": 59,
+    "median": 0,
+    "p75": 0.25,
+    "within25": 46
+   },
+   "held_peer": {
+    "n": 63,
+    "median": 0.33333333333333326,
+    "p75": 0.47777777777777775
+   },
+   "all_mode": {
+    "n": 183,
+    "median": 0,
+    "p75": 0.33333333333333326,
+    "exact": 104
+   },
+   "all_mode_vanilla": {
+    "n": 36,
+    "median": 0.17692307692307685,
+    "p75": 0.5
+   },
+   "use": "mode",
+   "p5": {
+    "body_front": 10
+   },
+   "p95": {
+    "body_front": 45
+   },
+   "confidence": "ok"
+  },
+  "btr": {
+   "stems": 1,
+   "heldStems": 0,
+   "heldRows": 0,
+   "held_mode": {
+    "n": 0,
+    "median": null,
+    "p75": null,
+    "within25": 0
+   },
+   "held_peer": {
+    "n": 0,
+    "median": null,
+    "p75": null
+   },
+   "all_mode": {
+    "n": 4,
+    "median": 0,
+    "p75": 0.4285714285714286,
+    "exact": 3
+   },
+   "all_mode_vanilla": {
+    "n": 4,
+    "median": 0,
+    "p75": 0.4285714285714286
+   },
+   "use": "peer",
+   "note": "not a tank class: AS2 areas are constants per class"
+  },
+  "cannon": {
+   "stems": 18,
+   "heldStems": 5,
+   "heldRows": 40,
+   "held_mode": {
+    "n": 36,
+    "median": 0.19999999999999996,
+    "p75": 0.19999999999999996,
+    "within25": 36
+   },
+   "held_peer": {
+    "n": 40,
+    "median": 0,
+    "p75": 0
+   },
+   "all_mode": {
+    "n": 136,
+    "median": 0.19999999999999996,
+    "p75": 0.19999999999999996,
+    "exact": 0
+   },
+   "all_mode_vanilla": {
+    "n": 8,
+    "median": 0.19999999999999996,
+    "p75": 0.19999999999999996
+   },
+   "use": "peer",
+   "note": "not a tank class: AS2 areas are constants per class"
+  },
+  "car": {
+   "stems": 18,
+   "heldStems": 5,
+   "heldRows": 20,
+   "held_mode": {
+    "n": 20,
+    "median": 0.8666666666666667,
+    "p75": 0.8666666666666667,
+    "within25": 0
+   },
+   "held_peer": {
+    "n": 20,
+    "median": 0,
+    "p75": 0
+   },
+   "all_mode": {
+    "n": 72,
+    "median": 0.8666666666666667,
+    "p75": 0.8666666666666667,
+    "exact": 0
+   },
+   "all_mode_vanilla": {
+    "n": 0,
+    "median": null,
+    "p75": null
+   },
+   "use": "peer",
+   "note": "not a tank class: AS2 areas are constants per class"
+  }
+ },
+ "units": {
+  "tank_medium": [
+   {
+    "stem": "archer",
+    "src": "vanilla",
+    "held": true,
+    "miss": [
+     "body.front goh 20 as2 30",
+     "body.side goh 20 as2 15",
+     "body.top goh 10 as2 15"
+    ]
+   },
+   {
+    "stem": "jagdpanther",
+    "src": "vanilla",
+    "held": false,
+    "miss": [
+     "body.rear goh 10 as2 40",
+     "body.top goh 80 as2 25"
+    ]
+   },
+   {
+    "stem": "nashorn",
+    "src": "vanilla",
+    "held": false,
+    "miss": [
+     "body.side goh 20 as2 30",
+     "body.rear goh 20 as2 30",
+     "body.top goh 15 as2 22"
+    ]
+   },
+   {
+    "stem": "ostwind",
+    "src": "vanilla",
+    "held": true,
+    "miss": [
+     "body.rear goh 10 as2 30"
+    ]
+   },
+   {
+    "stem": "stug3g",
+    "src": "vanilla",
+    "held": false,
+    "miss": [
+     "body.top goh 30 as2 50"
+    ]
+   },
+   {
+    "stem": "stuh42",
+    "src": "vanilla",
+    "held": false,
+    "miss": [
+     "body.top goh 30 as2 50"
+    ]
+   },
+   {
+    "stem": "m4a3_105",
+    "src": "vanilla",
+    "held": false,
+    "miss": [
+     "body.front goh 107.9 as2 64",
+     "body.top goh 51 as2 22",
+     "turret.rear goh 51 as2 25",
+     "turret.top goh 51 as2 25"
+    ]
+   },
+   {
+    "stem": "su100",
+    "src": "vanilla",
+    "held": true,
+    "miss": [
+     "body.rear goh 75 as2 45",
+     "body.top goh 75 as2 22"
+    ]
+   },
+   {
+    "stem": "su122",
+    "src": "vanilla",
+    "held": false,
+    "miss": [
+     "body.top goh 45 as2 22"
+    ]
+   },
+   {
+    "stem": "s35",
+    "src": "valour",
+    "held": true,
+    "miss": [
+     "body.front goh 47 as2 36",
+     "turret.top goh 40 as2 30"
+    ]
+   },
+   {
+    "stem": "m10wolverine_fr",
+    "src": "valour",
+    "held": true,
+    "miss": [
+     "body.side goh 25 as2 19",
+     "turret.front goh 35 as2 57"
+    ]
+   },
+   {
+    "stem": "m4a3_75_fr",
+    "src": "valour",
+    "held": true,
+    "miss": [
+     "turret.rear goh 64 as2 51"
+    ]
+   },
+   {
+    "stem": "m4a3_76_fr",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "turret.front goh 64 as2 88"
+    ]
+   },
+   {
+    "stem": "m7_fr",
+    "src": "valour",
+    "held": true,
+    "miss": [
+     "body.front goh 40 as2 64",
+     "body.top goh 40 as2 20"
+    ]
+   },
+   {
+    "stem": "stug4g",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.rear goh 20 as2 30",
+     "body.top goh 16 as2 22"
+    ]
+   },
+   {
+    "stem": "wolverine",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.side goh 25 as2 19"
+    ]
+   },
+   {
+    "stem": "turan3",
+    "src": "valour",
+    "held": true,
+    "miss": [
+     "body.front goh 50 as2 80",
+     "body.side goh 25 as2 35",
+     "body.rear goh 25 as2 35",
+     "body.top goh 13 as2 25",
+     "turret.top goh 13 as2 25"
+    ]
+   },
+   {
+    "stem": "m10525",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.side goh 45 as2 25",
+     "body.rear goh 45 as2 25",
+     "body.top goh 25 as2 14"
+    ]
+   },
+   {
+    "stem": "m7546",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.rear goh 45 as2 35",
+     "body.top goh 25 as2 15"
+    ]
+   },
+   {
+    "stem": "m1139",
+    "src": "valour",
+    "held": true,
+    "miss": [
+     "body.side goh 25 as2 14",
+     "body.rear goh 25 as2 14",
+     "body.top goh 14 as2 10",
+     "turret.top goh 14 as2 7"
+    ]
+   },
+   {
+    "stem": "m1441",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.top goh 14 as2 6",
+     "turret.top goh 14 as2 6"
+    ]
+   },
+   {
+    "stem": "m1542",
+    "src": "valour",
+    "held": true,
+    "miss": [
+     "body.side goh 25 as2 42",
+     "body.top goh 14 as2 6",
+     "turret.top goh 14 as2 6"
+    ]
+   },
+   {
+    "stem": "m15_contraereo",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.top goh 14 as2 6",
+     "turret.front goh 15 as2 42",
+     "turret.side goh 15 as2 25",
+     "turret.rear goh 15 as2 25",
+     "turret.top goh 15 as2 6"
+    ]
+   },
+   {
+    "stem": "m7518",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.top goh 10 as2 15"
+    ]
+   },
+   {
+    "stem": "m7534",
+    "src": "valour",
+    "held": true,
+    "miss": [
+     "body.top goh 10 as2 15"
+    ]
+   },
+   {
+    "stem": "m7532",
+    "src": "valour",
+    "held": true,
+    "miss": [
+     "body.top goh 10 as2 15"
+    ]
+   }
+  ],
+  "tank_heavy": [
+   {
+    "stem": "jagdtiger",
+    "src": "vanilla",
+    "held": true,
+    "miss": [
+     "body.rear goh 25 as2 80",
+     "body.top goh 250 as2 40"
+    ]
+   },
+   {
+    "stem": "sturmtiger",
+    "src": "vanilla",
+    "held": false,
+    "miss": [
+     "body.top goh 150 as2 40"
+    ]
+   },
+   {
+    "stem": "m26_pershing",
+    "src": "vanilla",
+    "held": true,
+    "miss": [
+     "body.rear goh 76 as2 51",
+     "body.top goh 76 as2 22",
+     "turret.top goh 76 as2 25"
+    ]
+   },
+   {
+    "stem": "isu152",
+    "src": "vanilla",
+    "held": false,
+    "miss": [
+     "body.top goh 65 as2 30"
+    ]
+   },
+   {
+    "stem": "kv85",
+    "src": "vanilla",
+    "held": false,
+    "miss": [
+     "body.front goh 40 as2 100",
+     "body.rear goh 40 as2 75",
+     "turret.rear goh 100 as2 60",
+     "turret.top goh 100 as2 20"
+    ]
+   },
+   {
+    "stem": "black_prince",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.front goh 38.1 as2 152",
+     "body.rear goh 38.1 as2 51",
+     "body.top goh 38.1 as2 20",
+     "turret.front goh 50.8 as2 152",
+     "turret.side goh 152.4 as2 95",
+     "turret.top goh 19.1 as2 50"
+    ]
+   }
+  ],
+  "tank_light": [
+   {
+    "stem": "wespe",
+    "src": "vanilla",
+    "held": false,
+    "miss": [
+     "body.top goh 8 as2 15"
+    ]
+   },
+   {
+    "stem": "lvt4",
+    "src": "vanilla",
+    "held": true,
+    "miss": [
+     "body.front goh 6.4 as2 38",
+     "body.side goh 6.4 as2 25",
+     "body.rear goh 6.4 as2 25"
+    ]
+   },
+   {
+    "stem": "bt7a",
+    "src": "vanilla",
+    "held": false,
+    "miss": [
+     "body.front goh 20 as2 13",
+     "body.side goh 19 as2 13",
+     "body.rear goh 6 as2 13"
+    ]
+   },
+   {
+    "stem": "su76",
+    "src": "vanilla",
+    "held": false,
+    "miss": [
+     "body.rear goh 15 as2 10",
+     "body.top goh 25 as2 6"
+    ]
+   },
+   {
+    "stem": "t60",
+    "src": "vanilla",
+    "held": true,
+    "miss": [
+     "body.side goh 20 as2 15",
+     "body.top goh 13 as2 10"
+    ]
+   },
+   {
+    "stem": "t70",
+    "src": "vanilla",
+    "held": false,
+    "miss": [
+     "body.rear goh 5 as2 25",
+     "body.top goh 10 as2 15",
+     "turret.front goh 35 as2 65",
+     "turret.top goh 15 as2 10"
+    ]
+   },
+   {
+    "stem": "h39",
+    "src": "valour",
+    "held": true,
+    "miss": [
+     "body.rear goh 40 as2 30",
+     "body.top goh 22 as2 12",
+     "turret.top goh 14 as2 44"
+    ]
+   },
+   {
+    "stem": "r35",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.top goh 25 as2 14",
+     "turret.top goh 35 as2 12"
+    ]
+   },
+   {
+    "stem": "m5a1_fr",
+    "src": "valour",
+    "held": true,
+    "miss": [
+     "body.front goh 38 as2 29",
+     "body.top goh 13 as2 29",
+     "turret.top goh 13 as2 38"
+    ]
+   },
+   {
+    "stem": "m8_fr",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.top goh 13 as2 10",
+     "turret.side goh 38 as2 25",
+     "turret.rear goh 38 as2 25",
+     "turret.top goh 38 as2 25"
+    ]
+   },
+   {
+    "stem": "ft17",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.front goh 16 as2 22",
+     "body.rear goh 16 as2 10",
+     "turret.front goh 16 as2 22",
+     "turret.side goh 16 as2 11",
+     "turret.rear goh 16 as2 8"
+    ]
+   },
+   {
+    "stem": "marder139",
+    "src": "valour",
+    "held": true,
+    "miss": [
+     "body.top goh 15 as2 8"
+    ]
+   },
+   {
+    "stem": "su5",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.top goh 10 as2 15",
+     "turret.top goh 15 as2 10"
+    ]
+   },
+   {
+    "stem": "a20",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.side goh 25 as2 16",
+     "body.top goh 10 as2 16",
+     "turret.side goh 25 as2 16",
+     "turret.rear goh 25 as2 16",
+     "turret.top goh 10 as2 16"
+    ]
+   },
+   {
+    "stem": "toldi2",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.front goh 25 as2 35"
+    ]
+   },
+   {
+    "stem": "pzkpfw38t_hun",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "turret.front goh 15 as2 25"
+    ]
+   },
+   {
+    "stem": "fiat3000",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.front goh 16 as2 10",
+     "body.side goh 16 as2 10",
+     "body.rear goh 16 as2 10",
+     "body.top goh 8 as2 6",
+     "turret.front goh 16 as2 10",
+     "turret.side goh 16 as2 10",
+     "turret.rear goh 16 as2 10"
+    ]
+   },
+   {
+    "stem": "tks-20mm",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.top goh 6 as2 3"
+    ]
+   },
+   {
+    "stem": "tks-mg",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "body.top goh 6 as2 3"
+    ]
+   },
+   {
+    "stem": "vickersedw",
+    "src": "valour",
+    "held": true,
+    "miss": [
+     "turret.top goh 10 as2 15"
+    ]
+   },
+   {
+    "stem": "vickersejw",
+    "src": "valour",
+    "held": false,
+    "miss": [
+     "turret.top goh 10 as2 15"
+    ]
+   }
+  ]
+ },
+ "pooled": {
+  "tank_classes_using_mode_heldback": {
+   "n": 147,
+   "median": 0,
+   "p75": 0.30000000000000004,
+   "p90": 0.6666666666666667,
+   "within25": 107
+  },
+  "same_rows_peer_value": {
+   "n": 151,
+   "median": 0.27659574468085113,
+   "p75": 0.4642857142857143,
+   "p90": 0.6666666666666667,
+   "within25": 74
+  },
+  "vanilla_only_heldback": {
+   "n": 32,
+   "median": 0,
+   "p75": 0.33333333333333337,
+   "p90": 0.744,
+   "within25": 21
+  }
+ }
+}

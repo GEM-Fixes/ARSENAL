@@ -1,0 +1,49 @@
+{
+  "name": "mis-30",
+  "draft": true,
+  "rows": [
+    "MIS-30"
+  ],
+  "mode": "mp",
+  "fixture": [
+    "mis-30"
+  ],
+  "mods": [
+    "as64+",
+    "mis-30"
+  ],
+  "params": {
+    "map": "multi/1v1_road:combat"
+  },
+  "src": [
+    " (Link failed warning)",
+    " (cmd_task: unknown name ignored if Get returns null)",
+    " (selector zone not found = empty set, no message)",
+    " (Unknown zone warning)"
+  ],
+  "note": "combat.mi = stock copy + {Link} with an undefined entity id + a start trigger: task with undefined name, delete with selector on undefined zone, fog_in_zone on undefined zone. Pass: dangling Link warns 'Link failed' at load and the mission keeps loading; the script gets past the dangling task and selector to the last action (its 'Unknown zone' warning is the marker), with no exception. So engine reaction = warn or silent no-op, never fatal, and WARN stays the right severity. Row's vanilla Link form is {Link a b c}; fixture uses the {Link a {b \"seat\"}} form seen in vanilla 02b_usa-bastogne, [T] that the plain form behaves the same. [T] trigger runs with empty condition. [T] g_tasks.Get on an undefined name: source not read to the end, a crash would show as the exception verdict. [T] format %04x case, regex allows either.",
+  "steps": [
+    {
+      "wait_log": "Unknown zone trs_mis30_end",
+      "timeout": 45
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "log": "Link failed: no entity to link 0*[fF]00[eE]",
+      "want": true
+    },
+    {
+      "log": "Unknown zone trs_mis30_end",
+      "want": true
+    },
+    {
+      "log": "Unknown zone trs_mis30_no_zone",
+      "want": false
+    }
+  ]
+}

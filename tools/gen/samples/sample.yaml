@@ -1,0 +1,55 @@
+# One example of every op, on real vanilla names (Soviet T-34, BT-7A, ZiS-2, rifle squad; map 1v1_road). Every name below exists in the game.
+# Try it: gen sample.yaml --target as64 --plan   (writes nothing). Edit names to taste; each op is explained on its own line.
+#   gen sample.yaml --target as64 --game <AS2 dir> --out <mods dir>/gen_sample --no-gate --no-stat [--plan] [--json]
+name: gen_sample
+title: Gen Sample
+ops:
+  - op: mod
+    title: Gen Sample
+  - op: clone                     # copy a unit's definition under a new name (same model)
+    entity: bt7a
+    as: gen_bt7a
+    name: Gen BT-7A
+  - op: set                       # change one value inside a unit definition
+    rows:
+      - "bt7a,game_entity/targetClass#1,\"heavy_tank\""
+  - op: armor                     # armor thickness: 4 numbers front side rear top (_ keeps), or name the part first
+    entity: t34_0
+    value: "turret 60 _ _ _"
+  - op: text                      # change a display name (AS2: goes into a copy of the vanilla desc.lng so it wins)
+    key: desc/entity/zis2
+    text: Gen anti-tank gun
+  - op: roster                    # put the new unit on the Soviet purchase list, copying the BT-7A card
+    unit: gen_bt7a
+    like: bt7a
+    army: rus
+    fields: {cost: 150}
+  - op: card                      # change the price of an existing card
+    unit: t34_0
+    army: rus
+    fields: {cost: 130}
+  - op: breed                     # a new soldier type, copied from the Soviet rifleman
+    name: gen_rifle
+    army: rus
+    like: rifle
+    set: {"icon_priority#1": "2"}
+  - op: squad                     # a new infantry squad, copied from the Soviet riflemen squad
+    name: gen_riflemen
+    army: rus
+    like: riflemans
+    members: ["squadleader:1", "gen_rifle:5"]
+    display: Gen riflemen
+    fields: {cost: 100}
+    bots: true                    # AI bots buy only units listed in bot.data.lua; true adds this squad there
+  - op: map-clone                 # copy a multiplayer map under a new name
+    map: map/multi/1v1_road
+    name: gen_road
+  - op: mission-clone             # make a game mode for another map (battle_zones -> combat)
+    map: map/multi/8v8_market
+    from: battle_zones
+    to: combat
+  - op: place                     # put one object on a map (position in map units, 20 units = 1 m)
+    map: multi/1v1_spring
+    entity: house_n1_af
+    pos: "100,200"
+    dir: 90

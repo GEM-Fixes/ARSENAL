@@ -1,0 +1,5 @@
+fixture/b.tsv:6: LNG_ROW_STALE "desc/info/squad/s1" source changed since extract; row skipped
+fixture/b.tsv:11: LNG_ROW_UNKNOWN key "desc/entity/nokey" not in localization/desc.lng
+fixture/b.tsv:7: WARN_LNG_PARAM_MISMATCH "desc/squad/sq(ger)" placeholders [%s] differ from source [%d]
+fixture/b.tsv:12: LNG_ROW_UNKNOWN file "localization/nofile.lng" is not a text file of this mod; not created (LOC-01/LOC-18)
+4 findings

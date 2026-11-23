@@ -1,0 +1,205 @@
+{
+  "form": "limclass/1",
+  "area": "TST2",
+  "rows": {
+    "TST-20": {
+      "chk": "never",
+      "class": "info",
+      "why": "flag only skips clan chat",
+      "never": "engine flag effect, needs game"
+    },
+    "TST-21": {
+      "chk": "built",
+      "class": "silent",
+      "why": "next pipe command errors until stage active"
+    },
+    "TST-22": {
+      "chk": "built",
+      "class": "silent",
+      "why": "fresh instance profile has mods listed but not mounted"
+    },
+    "TST-23": {
+      "chk": "built",
+      "class": "silent",
+      "why": "short pipe timeout fails while game loads"
+    },
+    "TST-24": {
+      "chk": "built",
+      "class": "silent",
+      "why": "mp_start right after mp_ready fails first try"
+    },
+    "TST-25": {
+      "chk": "never",
+      "class": "silent",
+      "why": "dropped mod makes a not-mounted check pass falsely",
+      "never": "game rewrites options at exit, runtime"
+    },
+    "TST-26": {
+      "chk": "never",
+      "class": "review",
+      "why": "empty side loses; scenario intent decides",
+      "never": "runtime match rule"
+    },
+    "TST-27": {
+      "chk": "todo",
+      "class": "cosmetic",
+      "why": "wrong exec path replies file not found",
+      "tool": "testrun",
+      "how": "exec command path without leading slash outside resource/at/ in scenarios"
+    },
+    "TST-28": {
+      "chk": "never",
+      "class": "info",
+      "why": "commands exist only in as64; test coverage fact",
+      "never": "exe command set fact"
+    },
+    "TST-29": {
+      "chk": "never",
+      "class": "info",
+      "why": "flag may be ignored by installed as64",
+      "never": "flag effect known only live"
+    },
+    "TST-30": {
+      "chk": "never",
+      "class": "info",
+      "why": "GoH mod enable by options file; workflow",
+      "never": "GoH workflow fact"
+    },
+    "TST-31": {
+      "chk": "never",
+      "class": "info",
+      "why": "GoH menu driving fact",
+      "never": "GoH menu driving workflow fact"
+    },
+    "TST-32": {
+      "chk": "built",
+      "class": "silent",
+      "why": "dry run leaves stale log scored as result"
+    },
+    "TST-33": {
+      "chk": "never",
+      "class": "silent",
+      "why": "match does not end; assertion on end fails",
+      "never": "runtime match end rule"
+    },
+    "TST-34": {
+      "chk": "built",
+      "class": "crash",
+      "why": "unplaced map point is fatal on host",
+      "tool": "milint",
+      "how": "map points team/order count against map.info maxPlayers for lobby size"
+    },
+    "TST-35": {
+      "chk": "never",
+      "class": "silent",
+      "why": "instance 0 mod list changes under the tool",
+      "never": "changes at runtime when user plays"
+    },
+    "TST-36": {
+      "chk": "built",
+      "class": "silent",
+      "why": "unmounted mod gets 0 findings and no message"
+    },
+    "TST-37": {
+      "chk": "built",
+      "class": "silent",
+      "why": "build refcheck refuses unmounted folder"
+    },
+    "TST-38": {
+      "chk": "built",
+      "class": "silent",
+      "why": "statsheet shows no rows for from-only clone"
+    },
+    "TST-39": {
+      "chk": "never",
+      "class": "info",
+      "why": "speed ceiling under -game",
+      "never": "measured engine speed"
+    },
+    "TST-40": {
+      "chk": "never",
+      "class": "silent",
+      "why": "distant fire orders give slow or no kills",
+      "never": "needs the game to measure"
+    },
+    "TST-41": {
+      "chk": "never",
+      "class": "silent",
+      "why": "editor Reload keeps cached textures and models",
+      "never": "editor runtime behaviour"
+    },
+    "TST-42": {
+      "chk": "never",
+      "class": "silent",
+      "why": "editor Stop overwrites a disk edit made between",
+      "never": "editor runtime behaviour"
+    },
+    "TST-43": {
+      "chk": "never",
+      "class": "info",
+      "why": "what Reload rereads; restart otherwise",
+      "never": "editor workflow fact"
+    },
+    "TST-44": {
+      "chk": "never",
+      "class": "review",
+      "why": "what counts as a vehicle kill is a judgement",
+      "never": "kill criterion depends on test intent"
+    },
+    "TST-45": {
+      "chk": "never",
+      "class": "info",
+      "why": "accelerated quant measurement caveat",
+      "never": "measured engine behaviour"
+    },
+    "TST-46": {
+      "chk": "never",
+      "class": "silent",
+      "why": "vehicle stalls after one shot on fire order",
+      "never": "needs the game"
+    }
+  },
+  "dead": [
+    {
+      "row": "TST-21",
+      "tool": "testrun",
+      "code": "TESTRUN_STAGE_TIMEOUT",
+      "fix": {
+        "code": "TESTRUN_STAGE_TIMEOUT"
+      }
+    },
+    {
+      "row": "TST-22",
+      "tool": "testrun",
+      "code": "TESTRUN_LOG_FOREIGN",
+      "fix": {
+        "code": "TESTRUN_LOG_FOREIGN"
+      }
+    },
+    {
+      "row": "TST-23",
+      "tool": "testrun",
+      "code": "TESTRUN_WAIT_TIMEOUT",
+      "fix": {
+        "code": "TESTRUN_WAIT_TIMEOUT"
+      }
+    },
+    {
+      "row": "TST-24",
+      "tool": "testrun",
+      "code": "TESTRUN_CMD_FAIL",
+      "fix": {
+        "code": "TESTRUN_CMD_FAIL"
+      }
+    },
+    {
+      "row": "TST-32",
+      "tool": "prove",
+      "code": "PROVE_NO_RUN",
+      "fix": {
+        "code": null,
+        "why": "renamed: prove prints PROVE_NO_RUN as plain stderr text, testrun emits WARN_TESTRUN_DRY_IMPLIED"
+      }
+    }
+  ]
+}

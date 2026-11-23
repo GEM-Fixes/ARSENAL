@@ -1,0 +1,21 @@
+{
+ "form": "limclass/1",
+ "area": "ENG",
+ "rows": {
+  "ENG-01": {"chk": "never", "class": "crash", "why": "ERROR_MSG aborts load with box", "never": "engine internals"},
+  "ENG-02": {"chk": "built", "class": "crash", "why": "unknown entity type: fatal error with message"},
+  "ENG-03": {"chk": "never", "class": "crash", "why": "raw entity load in MP outside quant is fatal", "never": "runtime MP only"},
+  "ENG-04": {"chk": "built", "class": "silent", "why": "second def ignored, only a log line"},
+  "ENG-05": {"chk": "never", "class": "info", "why": "lazy parse timing, fact", "never": "engine behaviour"},
+  "ENG-06": {"chk": "built", "class": "silent", "why": "dup of KEY-07"},
+  "ENG-07": {"chk": "built", "class": "silent", "why": "dup of INT-10"},
+  "ENG-08": {"chk": "never", "class": "info", "why": "variable quant length, fact", "never": "engine timing"},
+  "ENG-09": {"chk": "never", "class": "info", "why": "MP speed request ignored, fact", "never": "engine behaviour"},
+  "ENG-10": {"chk": "never", "class": "info", "why": "MP quant granularity fixed by server, fact", "never": "engine behaviour"},
+  "ENG-11": {"chk": "never", "class": "info", "why": "timers fire at quant granularity, fact", "never": "engine timing"},
+  "ENG-12": {"chk": "never", "class": "desync", "why": "RNG outside quant desyncs MP", "never": "engine runtime only"},
+  "ENG-13": {"chk": "never", "class": "desync", "why": "data mismatch between machines desyncs MP", "never": "needs two machines compared"},
+  "ENG-14": {"chk": "never", "class": "desync", "why": "FPU state differing desyncs clients", "never": "machine state, not mod data"}
+ },
+ "dead": []
+}

@@ -1,0 +1,6 @@
+{Mod
+{Name "parse_quote"}
+{Desc "Module request: on with AS64+ s "double", made for it."}
+{MinGameVersion "3.262"}
+{MaxGameVersion "3.262"}
+}

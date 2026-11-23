@@ -1,0 +1,120 @@
+{
+ "form": "limclass/1",
+ "area": "HUM",
+ "rows": {
+  "HUM-01": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unexpected token load error"
+  },
+  "HUM-02": {
+   "chk": "never",
+   "class": "info",
+   "why": "engine rule, perks cannot cut drain",
+   "never": "engine rule, nothing to misconfigure"
+  },
+  "HUM-03": {
+   "chk": "built",
+   "class": "silent",
+   "why": "typo overwrites stay row"
+  },
+  "HUM-04": {
+   "chk": "never",
+   "class": "silent",
+   "why": "heavy carry walks, no message",
+   "never": "runtime movement limit lookup"
+  },
+  "HUM-05": {
+   "chk": "never",
+   "class": "info",
+   "why": "engine sets only tag, no drain",
+   "never": "engine fact for soft code authors"
+  },
+  "HUM-06": {
+   "chk": "built",
+   "class": "silent",
+   "why": "no die effect means immortal",
+   "tool": "ialint",
+   "how": "health damage handler with no {die} reachable"
+  },
+  "HUM-07": {
+   "chk": "built",
+   "class": "silent",
+   "why": "throw effects fail with error log"
+  },
+  "HUM-08": {
+   "chk": "never",
+   "class": "cosmetic",
+   "why": "decal cap, visual only",
+   "never": "engine cap, visual only"
+  },
+  "HUM-09": {
+   "chk": "never",
+   "class": "info",
+   "why": "engine fact: no suppression",
+   "never": "engine fact, nothing to hit"
+  },
+  "HUM-10": {
+   "chk": "never",
+   "class": "cosmetic",
+   "why": "morale recovery delay, minor",
+   "never": "runtime morale behaviour"
+  },
+  "HUM-11": {
+   "chk": "built",
+   "class": "silent",
+   "why": "perk inert, no message",
+   "tool": "humlint",
+   "how": "weapon_reload perk listed in breed or ability set"
+  },
+  "HUM-12": {
+   "chk": "never",
+   "class": "review",
+   "why": "ids exist, no prototype; syntax unknown",
+   "never": "syntax unverified, needs a game test"
+  },
+  "HUM-13": {
+   "chk": "built",
+   "class": "silent",
+   "why": "wrong level value silent in play"
+  },
+  "HUM-14": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unknown ability load error"
+  },
+  "HUM-15": {
+   "chk": "never",
+   "class": "review",
+   "why": "perk order matters, intent-dependent",
+   "never": "order choice depends on intent"
+  },
+  "HUM-16": {
+   "chk": "built",
+   "class": "silent",
+   "why": "reload key inert, no message"
+  },
+  "HUM-17": {
+   "chk": "built",
+   "class": "silent",
+   "why": "stacked ranks give nothing, no message",
+   "tool": "humlint",
+   "how": "breed lists several veterancy ranks at once"
+  },
+  "HUM-18": {
+   "chk": "built",
+   "class": "silent",
+   "why": "default skeleton skin, warning only"
+  }
+ },
+ "dead": [
+  {
+   "row": "HUM-13",
+   "tool": "keylint",
+   "code": "WARN_PERK_LEVEL",
+   "fix": {
+    "code": "WARN_PERK_LEVEL"
+   }
+  }
+ ]
+}

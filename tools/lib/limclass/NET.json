@@ -1,0 +1,120 @@
+{
+ "form": "limclass/1",
+ "area": "NET",
+ "rows": {
+  "NET-01": {
+   "chk": "built",
+   "class": "desync",
+   "why": "same-size edits pass lobby, OOS in play"
+  },
+  "NET-02": {
+   "chk": "never",
+   "class": "desync",
+   "never": "runtime, per-machine script state",
+   "why": "extra RNG draw shifts rolls on one machine"
+  },
+  "NET-03": {
+   "chk": "never",
+   "class": "desync",
+   "never": "runtime sync hash",
+   "why": "divergence hidden by partial hashing"
+  },
+  "NET-04": {
+   "chk": "never",
+   "class": "info",
+   "never": "engine behaviour, nothing to mistype",
+   "why": "how OOS is handled"
+  },
+  "NET-05": {
+   "chk": "never",
+   "class": "info",
+   "never": "engine design, no migration",
+   "why": "host loss ends match"
+  },
+  "NET-06": {
+   "chk": "never",
+   "class": "silent",
+   "never": "needs the replay and same mods",
+   "why": "data change makes replay diverge quietly"
+  },
+  "NET-07": {
+   "chk": "never",
+   "class": "review",
+   "never": "depends on save and def changes",
+   "why": "load with changed defs may alter entities"
+  },
+  "NET-08": {
+   "chk": "never",
+   "class": "info",
+   "never": "duplicate row",
+   "why": "duplicate of INT-10"
+  },
+  "NET-09": {
+   "chk": "never",
+   "class": "info",
+   "never": "engine setting fact",
+   "why": "flag gates join only"
+  },
+  "NET-10": {
+   "chk": "never",
+   "class": "silent",
+   "never": "network layer, runtime",
+   "why": "foreign packets dropped without message"
+  },
+  "NET-11": {
+   "chk": "never",
+   "class": "silent",
+   "never": "engine format limit",
+   "why": "long steps truncated in replay quant"
+  },
+  "NET-12": {
+   "chk": "never",
+   "class": "silent",
+   "never": "engine step table, runtime",
+   "why": "long steps slow game speed"
+  },
+  "NET-13": {
+   "chk": "built",
+   "class": "info",
+   "why": "build mismatch refuses play, message shown"
+  },
+  "NET-14": {
+   "chk": "never",
+   "class": "desync",
+   "never": "runtime UI state",
+   "why": "selection differences hashed into crc"
+  },
+  "NET-15": {
+   "chk": "never",
+   "class": "info",
+   "never": "engine session rule",
+   "why": "join denied once game running"
+  },
+  "NET-16": {
+   "chk": "built",
+   "class": "crash",
+   "why": "replay aborts on version or mods mismatch"
+  },
+  "NET-17": {
+   "chk": "built",
+   "class": "info",
+   "why": "CRC emulation detail for tools"
+  },
+  "NET-18": {
+   "chk": "built",
+   "class": "info",
+   "why": "CRC alignment caveat for tools"
+  },
+  "NET-19": {
+   "chk": "built",
+   "class": "info",
+   "why": "wildcard matching detail for tools"
+  },
+  "NET-20": {
+   "chk": "built",
+   "class": "info",
+   "why": "instance flag, duplicate of TST-22"
+  }
+ },
+ "dead": []
+}

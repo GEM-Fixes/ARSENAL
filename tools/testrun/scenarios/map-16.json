@@ -1,0 +1,102 @@
+{
+  "name": "map-16",
+  "rows": [
+    "MAP-16"
+  ],
+  "mode": "mp",
+  "fixture": [
+    "map-16"
+  ],
+  "mods": [
+    "as64+",
+    "map-16"
+  ],
+  "params": {
+    "map": "multi/1v1_road:combat"
+  },
+  "prepare": [
+    {
+      "argv": [
+        "node",
+        "tools/clone-entity/clone-entity.js",
+        "--game",
+        "{game}",
+        "--out",
+        "{mods}/map-16",
+        "--entity",
+        "flag_ring",
+        "--as",
+        "trs_m16",
+        "--copy-assets"
+      ]
+    },
+    {
+      "argv": [
+        "node",
+        "tools/place-entity/place-entity.js",
+        "{mods}/map-16",
+        "--game",
+        "{game}",
+        "--mods",
+        "map-16",
+        "--map",
+        "multi/1v1_road",
+        "--entity",
+        "trs_m16",
+        "--pos",
+        "0,0"
+      ]
+    },
+    {
+      "argv": [
+        "node",
+        "tools/place-entity/place-entity.js",
+        "{mods}/map-16",
+        "--game",
+        "{game}",
+        "--mods",
+        "map-16",
+        "--map",
+        "multi/1v1_road",
+        "--entity",
+        "trs_m16",
+        "--pos",
+        "200,0"
+      ]
+    },
+    {
+      "argv": [
+        "node",
+        "tools/place-entity/place-entity.js",
+        "{mods}/map-16",
+        "--game",
+        "{game}",
+        "--mods",
+        "map-16",
+        "--map",
+        "multi/1v1_road",
+        "--entity",
+        "trs_m16",
+        "--pos",
+        "0,200"
+      ]
+    }
+  ],
+  "src": [
+    " (g_unitsPerMeter)",
+    "(not part of this release)",
+    "(not part of this release)"
+  ],
+  "manual": "three flag_ring markers at map units (0,0) (200,0) (0,200). In game: which screen direction is +x / +y, and how far apart in metres (walk a unit / weapon range readout / ruler): 200 units = 10 m means 20 units per metre (tree value), else the 3.262 value differs. Unit-scale check is by eye.",
+  "steps": [
+    {
+      "wait": 120
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    }
+  ]
+}

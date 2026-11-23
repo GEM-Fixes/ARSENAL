@@ -1,0 +1,41 @@
+{mission
+	{Entity "map_point" 0xc000
+		{Position -2829.61 -861.58}
+		{xform zl -1.77}
+		{Extender "map_point"
+			{name b1}
+			{team b}
+			{phase 0}
+			{order 1}
+			{visor SpawnPoint}
+		}
+		{Player 0}
+		{MID 1}
+	}
+	{Entity "map_point" 0xc007
+		{Position 2501.09 1228.63}
+		{xform zl 177.45}
+		{Extender "map_point"
+			{name a1}
+			{team a}
+			{phase 0}
+			{order 1}
+			{visor SpawnPoint}
+		}
+		{Player 0}
+		{MID 9}
+	}
+	{Entity "map_point" 0xc008
+		{Position 2551.09 1228.63}
+		{xform zl 177.45}
+		{Extender "map_point"
+			{name a2}
+			{team a}
+			{phase 0}
+			{order 2}
+			{visor SpawnPoint}
+		}
+		{Player 0}
+		{MID 10}
+	}
+}

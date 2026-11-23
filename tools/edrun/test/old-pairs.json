@@ -1,0 +1,8 @@
+[
+  {"name": "tank", "class": "vehicle", "shooter": "t34_0", "crew": ["mp/rus/tankman", "mp/rus/tankman"], "foe": "gaz67b", "foeCrew": ["mp/ger/rifle"], "watch": true, "ground": 5},
+  {"name": "gun", "class": "gun", "shooter": "zis2", "crew": ["mp/rus/rifle", "mp/rus/rifle"], "foe": "gaz67b", "foeCrew": ["mp/ger/rifle"], "rear": true, "face": 30, "dist": 250},
+  {"name": "inf", "class": "infantry", "shooter": "mp/rus/rifle", "foe": "mp/ger/rifle", "count": 4},
+  {"name": "mv", "class": "vehicle", "shooter": "t34_0", "crew": ["mp/rus/tankman"], "move": {"dy": 100}},
+  {"name": "am", "class": "vehicle", "shooter": "pz6bh", "crew": ["mp/ger/tankman"], "foe": "t34_0", "foeCrew": ["mp/rus/tankman"], "ammo": "fg", "ammoBox": ["ammo bullet76 ap", "ammo bullet76 fg"], "reorder": 30, "mark": "not moveable", "foeFire": true, "control": true},
+  {"name": "dc", "class": "vehicle", "shooter": "t34_0", "crew": ["mp/rus/tankman"], "foe": "gaz67b", "foeCrew": ["mp/ger/rifle"], "mark": "destroyed_components:body", "never": true, "sx": 100, "free": true}
+]

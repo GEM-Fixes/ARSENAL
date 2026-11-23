@@ -1,0 +1,24 @@
+; invented GoH-form panel list (uilint GoH tables test)
+{panel_control
+	{gc_cp_state_hatch
+		{position 0 0}
+		{condition "tank hatch"}
+	}
+	{gc_cp_lock_ammo
+		{position 1 0}
+		{condition "-helicopter"}
+	}
+	{myfort
+		{position 2 0}
+		{condition "human medic disabled"}
+	}
+	{airstrike
+		{position 3 0}
+	}
+	{hedgehog
+		{position 0 1}
+	}
+	{gc_cp_browse_special
+		{position 1 1}
+	}
+}

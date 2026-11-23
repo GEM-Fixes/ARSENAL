@@ -1,0 +1,12 @@
+{weapon "rifle" ; comment after code
+	{damage 10 -5 0x1F 1.5 on}
+	{name "semi;inside" off}
+	{#tag "a\"b" %count}
+	(include "base.inc")
+	(define "MACRO" 1)
+	{bad "unterminated ; not a comment
+	}
+	{fold "a{" ; {
+		{x 1}
+	}
+}

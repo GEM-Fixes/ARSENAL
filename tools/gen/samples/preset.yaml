@@ -1,0 +1,10 @@
+# Lets each player buy at most 2 flamethrowers and 1 sniper in the standard multiplayer preset (presets_all.inc, standard_all).
+# Edit: file (under set/multiplayer/games), name (a preset or all) and set: {key: value}; "tag=N" sets one limit, "-tag" drops it.
+# gen preset.yaml --target as64 --game <AS2 dir> --out <mods dir>/my_preset --no-stat   (add --plan first: writes nothing)
+name: my_preset
+title: My Preset
+ops:
+  - op: preset
+    file: presets_all.inc
+    name: standard_all
+    set: {unitLimits: "flamer=2;sniper_only=1"}

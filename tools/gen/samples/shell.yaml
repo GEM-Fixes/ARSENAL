@@ -1,0 +1,13 @@
+# A heavier HE shell bullet76.he2 for 76 mm guns, a copy of bullet76.fg with its own two blast layers.
+# Edit id (family.type: guns of that family get it), like and the values; blast = "energy inner outer" per layer, the first replaces the inherited ones.
+# gen shell.yaml --target as64 --game <AS2 dir> --out <mods dir>/my_shell --no-stat   (add --plan first)
+name: my_shell
+title: My Shell
+ops:
+  - op: shell
+    id: bullet76.he2
+    like: bullet76.fg
+    mass: 7
+    blast:
+      - 4 0.5 6
+      - 1 6 12

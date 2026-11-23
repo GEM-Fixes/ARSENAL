@@ -1,0 +1,18 @@
+ARSENAL modding tools and documentation
+Copyright 2026 GEM-Fixes
+Author: Imperator_Aug (see CREDITS.md)
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+The licence covers the paths listed in LICENSING.md, section 1: the modding
+tools, their tests, and the project's own documentation.
+
+It does not cover, and this product does not relicense:
+  - any game, its program or its data: text, textures, models, sounds, maps
+    and archives of any game or mod
+  - other programs the tools can start or download, each of which keeps its
+    own licence
+  - the Node.js runtime bundled into any built single-file executable
+    (MIT licence; its text must ship with a distributed executable)
+
+Men of War, Assault Squad, Call to Arms and Gates of Hell are the property of
+their respective owners. This project is not affiliated with or endorsed by them.

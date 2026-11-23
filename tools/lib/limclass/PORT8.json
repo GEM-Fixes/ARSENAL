@@ -1,0 +1,170 @@
+{
+  "form": "limclass/1",
+  "area": "PORT8",
+  "rows": {
+    "PORT-165": {
+      "chk": "built",
+      "class": "crash",
+      "why": "SetItem crash voids the game",
+      "tool": "donorfit",
+      "how": "bare {weapon \"name\"} where an ammo file has the same name"
+    },
+    "PORT-166": {
+      "chk": "built",
+      "class": "crash",
+      "why": "Bone not found stops the load",
+      "tool": "defcheck",
+      "how": "def {bone} block naming a bone absent from the mdl"
+    },
+    "PORT-167": {
+      "chk": "built",
+      "class": "silent",
+      "why": "silent default environment, white haze",
+      "tool": "goh2as2",
+      "how": "map Environment id with no preset file in mod or AS2"
+    },
+    "PORT-168": {
+      "chk": "built",
+      "class": "cosmetic",
+      "why": "ground draws wrong without land textures",
+      "tool": "goh2as2",
+      "how": "land texture keys and mtlN.mtl entries of the ported map"
+    },
+    "PORT-169": {
+      "chk": "never",
+      "class": "info",
+      "why": "cause attribution of a crash, test result",
+      "never": "games result, nothing in files to flag"
+    },
+    "PORT-170": {
+      "chk": "built",
+      "class": "crash",
+      "why": "Cannot link not game_entity object at spawn",
+      "tool": "goh2as2",
+      "how": "{place} children of pulled defs missing from the mod"
+    },
+    "PORT-171": {
+      "chk": "built",
+      "class": "crash",
+      "why": "unexpected token fatal on light.inc",
+      "tool": "defcheck",
+      "how": "GoH {Extender \"light\" {preset ...}} form instead of lamp and lightfx"
+    },
+    "PORT-172": {
+      "chk": "built",
+      "class": "crash",
+      "why": "game died in ",
+      "tool": "goh2as2",
+      "how": "Sprite \"x.mtl\" siblings of stamp and bush defs absent"
+    },
+    "PORT-173": {
+      "chk": "never",
+      "class": "info",
+      "why": "closure rule, comment lines skipped",
+      "never": "tool rule about comments, nothing to hit"
+    },
+    "PORT-174": {
+      "chk": "never",
+      "class": "info",
+      "why": "schema scope fact for keylint",
+      "never": "keylint vocab choice, workflow fact"
+    },
+    "PORT-175": {
+      "chk": "never",
+      "class": "info",
+      "why": "GoH text is .pot, tool reads none",
+      "never": "missing reader, workflow fact"
+    },
+    "PORT-176": {
+      "chk": "never",
+      "class": "info",
+      "why": "sdllint false positive only",
+      "never": "tool false positive to fix in sdllint"
+    },
+    "PORT-177": {
+      "chk": "never",
+      "class": "info",
+      "why": "test method advice",
+      "never": "test method, runtime kill times"
+    },
+    "PORT-178": {
+      "chk": "built",
+      "class": "silent",
+      "why": "unit never aims, no message",
+      "tool": "wpn",
+      "how": "gun place and template chain both lack a foresight"
+    },
+    "PORT-179": {
+      "chk": "never",
+      "class": "review",
+      "why": "class-peer armour values, judgement",
+      "never": "balance rule choice, runtime kills"
+    },
+    "PORT-180": {
+      "chk": "built",
+      "class": "silent",
+      "why": "gun turns and never fires",
+      "tool": "wpn",
+      "how": "gun template chain without foresight"
+    },
+    "PORT-181": {
+      "chk": "never",
+      "class": "silent",
+      "why": "template choice makes gun miss, no message",
+      "never": "effect only seen in game"
+    },
+    "PORT-182": {
+      "chk": "never",
+      "class": "review",
+      "why": "mode copy armour overstated, judgement",
+      "never": "armour fidelity, needs game"
+    },
+    "PORT-183": {
+      "chk": "built",
+      "class": "review",
+      "why": "donor keeps own armour, depends on intent",
+      "tool": "goh2as2",
+      "how": "donor def with armor_spa_* keys, translated block not written"
+    },
+    "PORT-184": {
+      "chk": "built",
+      "class": "crash",
+      "why": "unexpected token in AS2 loader",
+      "tool": "goh2as2",
+      "how": "sequence keys events or additive in a human table"
+    },
+    "PORT-185": {
+      "chk": "never",
+      "class": "info",
+      "why": "engine fact on clips and skeleton",
+      "never": "engine design fact, test by game"
+    },
+    "PORT-186": {
+      "chk": "built",
+      "class": "crash",
+      "why": "lamp break raises app error and crashes",
+      "tool": "defcheck",
+      "how": "{extender \"light\"} with {lamp N} but no lamp_glassN bone in mdl"
+    },
+    "PORT-187": {
+      "chk": "built",
+      "class": "crash",
+      "why": "whole map load stops on unknown pather",
+      "tool": "goh2as2",
+      "how": "map-placed unit defs with GoH pather name or unmapped weapon stuff"
+    },
+    "PORT-188": {
+      "chk": "built",
+      "class": "crash",
+      "why": "tank crush of unnumbered obstacle crashes",
+      "tool": "strlint",
+      "how": "ported entity {obstacleID} names absent from obstacles.reg of mod and vanilla"
+    },
+    "PORT-189": {
+      "chk": "built",
+      "class": "silent",
+      "why": "soldier aims and never fires, no log line"
+    }
+  },
+  "dead": []
+}

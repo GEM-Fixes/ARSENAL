@@ -1,0 +1,11 @@
+; clean constructs: comments with # and { inside are fine
+{ok "path/with-dash.x" "has ; and # inside" 1.5 -2e3 0x1F 0.5e1 5. +3}
+(define "d" {k %v} {n "%w"})
+("d" v(1) w(x))
+(define "d2" {k %0 %1})
+("d2" args 7 "s")
+{sum (+ 1 (* 2 3) 4) (- 5 1)}
+{m (mod "mp" 1)} {n (mod not "coop" 2)} {o (mod "game:foo" 1) (mod "dl_hard" 2)}
+{## disabled 1} {#+ collapsed 2}
+{eq = 5 x = y}
+{cp1251 "caf\xE9"}

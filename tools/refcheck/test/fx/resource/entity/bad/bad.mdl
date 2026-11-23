@@ -1,0 +1,3 @@
+{Skeleton
+	{bone "b" {VolumeView "gone.ply"}} ;@REF_MESH_MISSING
+}

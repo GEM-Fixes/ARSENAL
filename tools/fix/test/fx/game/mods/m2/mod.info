@@ -1,0 +1,6 @@
+{Mod
+	{Name "M Two"}
+	{Desc "fixture"}
+	{MinGameVersion "3.262.1"}
+	{MaxGameVersion "3.262.1"}
+}

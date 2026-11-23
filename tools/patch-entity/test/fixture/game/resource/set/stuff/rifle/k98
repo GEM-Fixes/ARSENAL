@@ -1,0 +1,6 @@
+{rifle
+	{tag "weapon rifle bolt"}
+	{entity "k98"}
+	{healthDamage 50}
+	{damage blastwave 10}
+}

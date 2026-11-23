@@ -1,0 +1,15 @@
+# An inventory model my_mg42_inv (a copy of the mg42 one) for a new machine gun my_mg42, made by the gun op above it.
+# Edit id, like (a folder under resource/entity/inventory/<group>/) and item (the weapon or item that shows this model).
+# gen stuffmodel.yaml --target as64 --game <AS2 dir> --out <mods dir>/my_model --no-stat   (add --plan first)
+name: my_model
+title: My Model
+ops:
+  - op: gun
+    name: my_mg42
+    like: mg42
+    class: mg
+    rof: 1400
+  - op: stuffmodel
+    id: my_mg42_inv
+    like: mg42
+    item: my_mg42

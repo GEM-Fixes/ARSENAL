@@ -1,0 +1,16 @@
+[00:00:00] Steam Application ID: 400750
+[00:00:00] Scanning mods in x:/fixture/mods/
+[00:00:01] Found 2 available mods
+[00:00:01] Mount package x:/fixture/resource/gamelogic.pak with 8969 entries
+[00:00:03] CMD: "X:/fixture/binaries/x64/call_to_arms.exe"
+[00:00:09] Build: 2026.09.23 14:05 - x64 - fixture - 0x0
+[00:00:09] Product: CALL TO ARMS - GATES OF HELL - v1.067.0 - standard x64
+[00:00:19] Mod: applying mods
+[00:00:19] Mod: applying new mods
+[00:00:19] Mod: activate mod fixmod
+[00:00:30] No Stuff found for tags 'bullet75_ita cu' (may lead to crash) (/set/stuff/ammo/fixmod.set, 12)
+[00:00:30] Resource not found - /entity/fixmod/gone.mdl (eiorepository.cpp:242) @ [main_loop]
+[00:00:32] Phase <c(cec7c3)f(roboto_mono)>Loading... took 14012.7ms.
+[00:02:51] /texture/common/service/selection_circle.dds: No MIP levels! (/entity/service/selection_circle/selection_circle.def, 3)
+[00:03:12] GameThreadStart
+[00:03:40] No Stuff found for tags 'late_only' (may lead to crash) (/set/stuff/ammo/fixmod.set, 20)

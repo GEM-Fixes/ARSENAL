@@ -1,0 +1,11 @@
+# Changes one argument of a macro call in a vanilla def: the track marks of the T-34 (t34_0) are spaced wider (("tank_trace" step(0.52)) -> step(0.7)).
+# Edit: entity, macro (the called name), arg (a named argument, args, or a position) and value; or rename: another macro.
+# gen macro.yaml --target as64 --game <AS2 dir> --out <mods dir>/my_macro --no-stat   (add --plan first: writes nothing)
+name: my_macro
+title: My Macro
+ops:
+  - op: macro
+    entity: t34_0
+    macro: tank_trace
+    arg: step
+    value: 0.7

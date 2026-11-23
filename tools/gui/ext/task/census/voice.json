@@ -1,0 +1,1412 @@
+{
+ "thing": "voice",
+ "game": [
+  "as64",
+  "mowas2"
+ ],
+ "made": "2026-11-12 wave 0 census; read from talk.set, set/talk/*, sound/human/talk tree and the game's talk behaviour (modweb has no voice topic yet)",
+ "files": [
+  "resource/set/talk.set ({talk \"<event>\" {phrase {language}{voice}{sound}{text}} {freq}}, define \"phrases\")",
+  "resource/set/talk/<talker>/<talk>.set (situation schedule: Condition, Immediate, Priority, Timeout)",
+  "resource/sound/human/talk/<voice>/<folder>/v<N>/*.wav (+ folder.set)",
+  "resource/sound/human/talk/vehicle/... and .../cannon/... (vehicle and gun crew lines)",
+  "resource/set/sound.set (loudness and percent rows for talk)",
+  "resource/set/breed/.../<name>.set {voice} or {nationality} (link from a soldier)",
+  "resource/interface/text/*.lng talk/<key> (shown text)"
+ ],
+ "groups": [
+  {
+   "id": "id",
+   "name": "Voice set name and speakers"
+  },
+  {
+   "id": "link",
+   "name": "How a soldier gets his voice"
+  },
+  {
+   "id": "phrase",
+   "name": "Line settings"
+  },
+  {
+   "id": "events",
+   "name": "Moments the soldier speaks"
+  },
+  {
+   "id": "sound",
+   "name": "Sound files and their folder settings"
+  },
+  {
+   "id": "schedule",
+   "name": "Situation talk rules"
+  },
+  {
+   "id": "shared",
+   "name": "Shared by every voice (advanced)"
+  }
+ ],
+ "vars": [
+  {
+   "key": "voice.id",
+   "where": "set/talk.set phrase {language \"<id>\"} and folder sound/human/talk/<id>/",
+   "type": "text",
+   "plain": "The voice set name; a soldier with this voice speaks lines whose language is this name.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "rus",
+     "ger",
+     "ger2",
+     "eng",
+     "usa",
+     "jap"
+    ]
+   },
+   "count": 6,
+   "group": "id",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "voice languages in talk.set"
+  },
+  {
+   "key": "voice.link.breed_voice",
+   "where": "set/breed/.../<name>.set > {voice \"<id>\"}",
+   "type": "ref",
+   "plain": "A soldier type points at a voice set here; when absent his nationality is his voice.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "(absent)"
+    ]
+   },
+   "count": 0,
+   "group": "link",
+   "ref": "soldier breed.voice",
+   "tool": "gen breed set:+voice",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "voice.link.nationality",
+   "where": "set/breed/.../<name>.set > {nationality}",
+   "type": "choice",
+   "plain": "The fallback voice: the soldier speaks with his nationality name when no voice is set.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "rus",
+     "ger",
+     "ger2",
+     "eng",
+     "usa",
+     "jap"
+    ]
+   },
+   "count": 286,
+   "group": "link",
+   "ref": "soldier breed.nationality",
+   "tool": "gen breed set:nationality",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "voice.link.vehicle",
+   "where": "vehicle talk: the voice of the first seated crew member",
+   "type": "ref",
+   "plain": "Tanks and guns speak with the voice of the first crewman in a seat.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "first occupant"
+    ]
+   },
+   "count": 0,
+   "group": "link",
+   "ref": "soldier breed.voice",
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "voice.talker",
+   "where": "{extender \"talk\" {talker \"human|tank|cannon\"}} in properties/*.ext or the unit .def",
+   "type": "choice",
+   "plain": "Which situation rules the unit uses: soldier, tank or gun.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "human",
+     "tank",
+     "cannon"
+    ]
+   },
+   "count": 3,
+   "group": "link",
+   "ref": "set/talk/<talker>/",
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "voice.variants",
+   "where": "{phrase {voice N}}; each soldier draws a variant at spawn (random 0..15 mod count + 1)",
+   "type": "number",
+   "plain": "How many different speakers the voice set has; each soldier gets one at random and keeps it.",
+   "unit": "speakers",
+   "vanilla": {
+    "values": [
+     1,
+     2,
+     3
+    ],
+    "common": [
+     "rus 3",
+     "others 2"
+    ]
+   },
+   "count": 6,
+   "group": "id",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "voice languages in talk.set"
+  },
+  {
+   "key": "voice.phrase.language",
+   "where": "set/talk.set {talk} > {phrase {language \"<id>\"}}",
+   "type": "ref",
+   "plain": "Which voice set the line belongs to.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "rus",
+     "ger",
+     "ger2",
+     "eng",
+     "usa",
+     "jap"
+    ]
+   },
+   "count": 25,
+   "group": "phrase",
+   "ref": "voice.id",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk blocks in talk.set"
+  },
+  {
+   "key": "voice.phrase.voice",
+   "where": "{phrase {voice N}}",
+   "type": "number",
+   "plain": "Which speaker of the voice set says the line.",
+   "unit": "index",
+   "vanilla": {
+    "values": [
+     1,
+     2,
+     3
+    ]
+   },
+   "count": 25,
+   "group": "phrase",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk blocks in talk.set"
+  },
+  {
+   "key": "voice.phrase.sound",
+   "where": "{phrase {sound \"/sound/human/talk/<lang>/<folder>/v<N>\"}}",
+   "type": "file",
+   "plain": "The sound folder (or file) played; one file is picked at random from the folder.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "/sound/human/talk/rus/selection_of_units/v1"
+    ]
+   },
+   "count": 25,
+   "group": "phrase",
+   "ref": "sound folder",
+   "tool": "/api/x/art/sound",
+   "limit": "FMT-14",
+   "tag": "V",
+   "count_of": "talk blocks in talk.set"
+  },
+  {
+   "key": "voice.phrase.text",
+   "where": "{phrase {text \"<key>\"}} → localization talk/<key> (tank_/cannon_ prefix by unit)",
+   "type": "text",
+   "plain": "Text shown above the unit when it speaks; shown for 2 seconds plus a little per letter.",
+   "unit": "",
+   "vanilla": {
+    "common": []
+   },
+   "count": 0,
+   "group": "phrase",
+   "ref": "localization talk/",
+   "tool": "gen text",
+   "limit": "LOC-02",
+   "tag": "I"
+  },
+  {
+   "key": "voice.phrase.text_dbg",
+   "where": "{phrase {text_dbg \"...\"}}",
+   "type": "text",
+   "plain": "Debug text shown in place of the localized line (developer use).",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "phrase",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "voice.talk.freq",
+   "where": "set/talk.set {talk \"<name>\" {freq f}}",
+   "type": "number",
+   "plain": "Chance the line is spoken when its moment comes (1 = always).",
+   "unit": "chance",
+   "vanilla": {
+    "values": [
+     0.2,
+     0.5,
+     1
+    ]
+   },
+   "count": 25,
+   "group": "phrase",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk blocks in talk.set"
+  },
+  {
+   "key": "voice.phrases.list",
+   "where": "set/talk.set define \"phrases\" ((\"phrase_voice\" <talk> <lang> N <folder>) ...) ; ger2 uses phrase_voice_ger (German sounds)",
+   "type": "list",
+   "plain": "The list that ties every voice set and speaker to each moment; a new voice set adds its lines here.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "rus 1-3",
+     "ger 1-2",
+     "ger2 1-2 (ger sounds)",
+     "eng 1-2",
+     "usa 1-2",
+     "jap 1-2"
+    ]
+   },
+   "count": 1,
+   "group": "phrase",
+   "ref": null,
+   "tool": null,
+   "limit": "SDL-17",
+   "tag": "V"
+  },
+  {
+   "key": "voice.event.selection",
+   "where": "set/talk.set {talk \"selection\"} phrases; sound folder selection_of_units",
+   "type": "list",
+   "plain": "Lines spoken when: He is selected.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "selection_of_units"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.executing_order",
+   "where": "set/talk.set {talk \"executing_order\"} phrases; sound folder executing_an_order",
+   "type": "list",
+   "plain": "Lines spoken when: He gets a move or action order.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "executing_an_order"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.injuring",
+   "where": "set/talk.set {talk \"injuring\"} phrases; sound folder scream_of_pain",
+   "type": "list",
+   "plain": "Lines spoken when: He is wounded.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 0.2",
+     "scream_of_pain"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.things_look_blue",
+   "where": "set/talk.set {talk \"things_look_blue\"} phrases; sound folder things_look_blue / retreat",
+   "type": "list",
+   "plain": "Lines spoken when: His side is losing badly near him (low health, outnumbered).",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "things_look_blue / retreat"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.aimed_shot",
+   "where": "set/talk.set {talk \"aimed_shot\"} phrases; sound folder shot_from_a_sniper_rifle",
+   "type": "list",
+   "plain": "Lines spoken when: He fires a sniper aimed shot.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 0.5",
+     "shot_from_a_sniper_rifle"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.bazooka_shot",
+   "where": "set/talk.set {talk \"bazooka_shot\"} phrases; sound folder shot_from_a_bazooka",
+   "type": "list",
+   "plain": "Lines spoken when: He fires a rocket launcher.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "shot_from_a_bazooka"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.throwing_grenade",
+   "where": "set/talk.set {talk \"throwing_grenade\"} phrases; sound folder throwing_a_grenade",
+   "type": "list",
+   "plain": "Lines spoken when: He throws a grenade.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "throwing_a_grenade"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.in_action",
+   "where": "set/talk.set {talk \"in_action\"} phrases; sound folder in_action / cover_fire / cries_in_battle",
+   "type": "list",
+   "plain": "Lines spoken when: He is fighting.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 0.2",
+     "in_action / cover_fire / cries_in_battle"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.death_cry",
+   "where": "set/talk.set {talk \"death_cry\"} phrases; sound folder death_cry",
+   "type": "list",
+   "plain": "Lines spoken when: He dies.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "death_cry"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.ill_take_ammo",
+   "where": "set/talk.set {talk \"ill_take_ammo\"} phrases; sound folder ill_take_ammo",
+   "type": "list",
+   "plain": "Lines spoken when: He picks up ammunition.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 0.2",
+     "ill_take_ammo"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.ill_take_grenades",
+   "where": "set/talk.set {talk \"ill_take_grenades\"} phrases; sound folder ill_take_grenades",
+   "type": "list",
+   "plain": "Lines spoken when: He picks up grenades.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 0.2",
+     "ill_take_grenades"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.repair_end",
+   "where": "set/talk.set {talk \"repair_end\"} phrases; sound folder maintenance_is_finished",
+   "type": "list",
+   "plain": "Lines spoken when: He finishes a repair.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "maintenance_is_finished"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.kill_enemy",
+   "where": "set/talk.set {talk \"kill_enemy\"} phrases; sound folder enemy_is_destroyed / jubilation",
+   "type": "list",
+   "plain": "Lines spoken when: He kills an enemy.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "enemy_is_destroyed / jubilation"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.attack",
+   "where": "set/talk.set {talk \"attack\"} phrases; sound folder attack",
+   "type": "list",
+   "plain": "Lines spoken when: He gets an attack order.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "attack"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.idle",
+   "where": "set/talk.set {talk \"idle\"} phrases; sound folder idle lines",
+   "type": "list",
+   "plain": "Lines spoken when: He stands with nothing to do.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 0.2",
+     "idle lines"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.alert",
+   "where": "set/talk.set {talk \"alert\"} phrases; sound folder alert",
+   "type": "list",
+   "plain": "Lines spoken when: A mission script calls for an alarm line.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "alert"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.amazement",
+   "where": "set/talk.set {talk \"amazement\"} phrases; sound folder amazement",
+   "type": "list",
+   "plain": "Lines spoken when: A mission script calls for a surprised line.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "amazement"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "human"
+  },
+  {
+   "key": "voice.event.tank_executing_order",
+   "where": "set/talk.set {talk \"tank_executing_order\"} phrases; sound folder vehicle executing_an_order",
+   "type": "list",
+   "plain": "Lines spoken when: A tank gets a move or action order.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "vehicle executing_an_order"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "tank"
+  },
+  {
+   "key": "voice.event.tank_in_action",
+   "where": "set/talk.set {talk \"tank_in_action\"} phrases; sound folder vehicle in_action",
+   "type": "list",
+   "plain": "Lines spoken when: A tank is fighting.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "vehicle in_action"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "tank"
+  },
+  {
+   "key": "voice.event.tank_burning",
+   "where": "set/talk.set {talk \"tank_burning\"} phrases; sound folder vehicle burning",
+   "type": "list",
+   "plain": "Lines spoken when: A tank is on fire.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "vehicle burning"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "tank"
+  },
+  {
+   "key": "voice.event.tank_attack",
+   "where": "set/talk.set {talk \"tank_attack\"} phrases; sound folder vehicle in_action",
+   "type": "list",
+   "plain": "Lines spoken when: A tank gets an attack order.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "vehicle in_action"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "tank"
+  },
+  {
+   "key": "voice.event.cannon_executing_order",
+   "where": "set/talk.set {talk \"cannon_executing_order\"} phrases; sound folder cannon executing_an_order",
+   "type": "list",
+   "plain": "Lines spoken when: A gun crew gets an order.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "cannon executing_an_order"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "cannon"
+  },
+  {
+   "key": "voice.event.cannon_in_action",
+   "where": "set/talk.set {talk \"cannon_in_action\"} phrases; sound folder cannon in_action",
+   "type": "list",
+   "plain": "Lines spoken when: A gun crew is fighting.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "cannon in_action"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "cannon"
+  },
+  {
+   "key": "voice.event.cannon_leave",
+   "where": "set/talk.set {talk \"cannon_leave\"} phrases; sound folder cannon leave",
+   "type": "list",
+   "plain": "Lines spoken when: A gun crew leaves the gun.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "cannon leave"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "cannon"
+  },
+  {
+   "key": "voice.event.cannon_attack",
+   "where": "set/talk.set {talk \"cannon_attack\"} phrases; sound folder cannon in_action",
+   "type": "list",
+   "plain": "Lines spoken when: A gun crew gets an attack order.",
+   "unit": "",
+   "vanilla": {
+    "common": [
+     "freq 1",
+     "cannon in_action"
+    ]
+   },
+   "count": 1,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V",
+   "count_of": "talk block in talk.set",
+   "talker": "cannon"
+  },
+  {
+   "key": "voice.event.ill_take_it",
+   "where": "engine talk event \"ill take it\" (no vanilla {talk} block; a mod adds one in talk.set)",
+   "type": "list",
+   "plain": "Lines spoken when: He picks up a thing. Silent in vanilla.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "voice.event.burning",
+   "where": "engine talk event \"burning\" (no vanilla {talk} block; a mod adds one in talk.set)",
+   "type": "list",
+   "plain": "Lines spoken when: He is on fire. Silent in vanilla.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "voice.event.leave",
+   "where": "engine talk event \"leave\" (no vanilla {talk} block; a mod adds one in talk.set)",
+   "type": "list",
+   "plain": "Lines spoken when: He leaves a vehicle or gun. Silent in vanilla.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "voice.event.ally_die",
+   "where": "engine talk event \"ally die\" (no vanilla {talk} block; a mod adds one in talk.set)",
+   "type": "list",
+   "plain": "Lines spoken when: A friend near him dies. Silent in vanilla.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "voice.event.explosion",
+   "where": "engine talk event \"explosion\" (no vanilla {talk} block; a mod adds one in talk.set)",
+   "type": "list",
+   "plain": "Lines spoken when: Something explodes near him. Silent in vanilla.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "voice.event.board_to_vehicle",
+   "where": "engine talk event \"board to vehicle\" (no vanilla {talk} block; a mod adds one in talk.set)",
+   "type": "list",
+   "plain": "Lines spoken when: He gets into a vehicle. Silent in vanilla.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "voice.event.repair_begin",
+   "where": "engine talk event \"repair begin\" (no vanilla {talk} block; a mod adds one in talk.set)",
+   "type": "list",
+   "plain": "Lines spoken when: He starts a repair. Silent in vanilla.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "voice.event.cannot_do_this",
+   "where": "engine talk event \"cannot do this\" (no vanilla {talk} block; a mod adds one in talk.set)",
+   "type": "list",
+   "plain": "Lines spoken when: An order is impossible. Silent in vanilla.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "voice.event.cannot_attack",
+   "where": "engine talk event \"cannot attack\" (no vanilla {talk} block; a mod adds one in talk.set)",
+   "type": "list",
+   "plain": "Lines spoken when: He cannot attack the target. Silent in vanilla.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "voice.event.cannot_move",
+   "where": "engine talk event \"cannot move\" (no vanilla {talk} block; a mod adds one in talk.set)",
+   "type": "list",
+   "plain": "Lines spoken when: He cannot move there. Silent in vanilla.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "voice.event.cover",
+   "where": "engine talk event \"cover\" (no vanilla {talk} block; a mod adds one in talk.set)",
+   "type": "list",
+   "plain": "Lines spoken when: He takes cover. Silent in vanilla.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "voice.event.too_heavy_items",
+   "where": "engine talk event \"too heavy items\" (no vanilla {talk} block; a mod adds one in talk.set)",
+   "type": "list",
+   "plain": "Lines spoken when: A thing is too heavy to carry. Silent in vanilla.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "voice.event.break_enemy",
+   "where": "engine talk event \"break enemy\" (no vanilla {talk} block; a mod adds one in talk.set)",
+   "type": "list",
+   "plain": "Lines spoken when: He breaks an enemy unit. Silent in vanilla.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "voice.event.bullet_missed",
+   "where": "engine talk event \"bullet missed\" (no vanilla {talk} block; a mod adds one in talk.set)",
+   "type": "list",
+   "plain": "Lines spoken when: A bullet misses him closely. Silent in vanilla.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "voice.event.i_am_rambo",
+   "where": "engine talk event \"i am rambo\" (no vanilla {talk} block; a mod adds one in talk.set)",
+   "type": "list",
+   "plain": "Lines spoken when: He fights alone against many. Silent in vanilla.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "voice.event.inventory_full",
+   "where": "engine talk event \"inventory full\" (no vanilla {talk} block; a mod adds one in talk.set)",
+   "type": "list",
+   "plain": "Lines spoken when: His pack is full. Silent in vanilla.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "voice.folder.impossibility_to_execute_an_order",
+   "where": "sound/human/talk/<lang>/impossibility_to_execute_an_order/",
+   "type": "file",
+   "plain": "Recorded lines for an impossible order exist in every language but no talk block plays them.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "eng",
+     "ger",
+     "jap",
+     "rus",
+     "usa"
+    ]
+   },
+   "count": 5,
+   "group": "events",
+   "ref": "sound folder",
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "voice.sound.files",
+   "where": "resource/sound/human/talk/<lang>/<folder>/v<N>/*.wav",
+   "type": "file",
+   "plain": "The recorded lines: one folder per moment and speaker, any number of wav files picked at random.",
+   "unit": "files",
+   "vanilla": {
+    "common": [
+     "eng 413",
+     "ger 311",
+     "jap 312",
+     "rus 541",
+     "usa 400"
+    ]
+   },
+   "count": 1977,
+   "group": "sound",
+   "ref": "sound (.wav)",
+   "tool": "/api/x/art/sound",
+   "limit": "FMT-14",
+   "tag": "V",
+   "count_of": "wav files"
+  },
+  {
+   "key": "voice.sound.wav_format",
+   "where": "wav header of each line",
+   "type": "choice",
+   "plain": "Sound file format: only .wav is read; 44100 or 22050 Hz, mono or stereo, PCM or IMA ADPCM.",
+   "unit": "Hz",
+   "vanilla": {
+    "values": [
+     44100,
+     22050
+    ]
+   },
+   "count": 1977,
+   "group": "sound",
+   "ref": null,
+   "tool": "/api/x/art/wav",
+   "limit": "FMT-14",
+   "tag": "V",
+   "count_of": "wav files"
+  },
+  {
+   "key": "voice.folder.tag",
+   "where": "sound/human/talk/.../folder.set > {sound {tag \"emotions|effects\"}}",
+   "type": "choice",
+   "plain": "Sound class of the folder: speech lines or effects (death cries); picks the volume limit row.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "emotions",
+     "effects"
+    ]
+   },
+   "count": 8,
+   "group": "sound",
+   "ref": null,
+   "tool": null,
+   "limit": "VIS-09",
+   "tag": "V"
+  },
+  {
+   "key": "voice.folder.loudness",
+   "where": "folder.set > {sound {loudness \"talk|talk2\"}}",
+   "type": "choice",
+   "plain": "Which loudness row of sound.set sets how far the line is heard.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "talk",
+     "talk2"
+    ]
+   },
+   "count": 8,
+   "group": "sound",
+   "ref": "sound.set loudness",
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "voice.folder.volume",
+   "where": "folder.set > {sound {volume f}}",
+   "type": "number",
+   "plain": "Volume of the lines in the folder.",
+   "unit": "x",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "sound",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "voice.folder.distance",
+   "where": "folder.set > {sound {distance|minDistance|maxDistance f}}",
+   "type": "number",
+   "plain": "How far the lines are heard (overrides the loudness row).",
+   "unit": "m",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "sound",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "voice.folder.signal",
+   "where": "folder.set > {sound {signal}{signalPeriod f}}",
+   "type": "number",
+   "plain": "Marks the sound as a signal heard by the AI, and how often.",
+   "unit": "s",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "sound",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "voice.folder.reset",
+   "where": "folder.set > {sound {reset}}",
+   "type": "bool",
+   "plain": "Drops settings inherited from parent folders.",
+   "unit": "",
+   "vanilla": {
+    "values": []
+   },
+   "count": 0,
+   "group": "sound",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "voice.loudness_row",
+   "where": "set/sound.set > {loudness \"talk\" 30 500} {loudness \"talk2\" 30 600}",
+   "type": "list",
+   "plain": "Near and far hearing distance of talk; shared by every voice.",
+   "unit": "m",
+   "vanilla": {
+    "values": [
+     "talk 30 500",
+     "talk2 30 600"
+    ]
+   },
+   "count": 1,
+   "group": "shared",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "voice.limit_percent",
+   "where": "set/sound.set > {percent \"emotions\" 15 2} {percent \"speech\" 10 1}",
+   "type": "list",
+   "plain": "How many talk sounds may play at once; extra lines are dropped.",
+   "unit": "sounds",
+   "vanilla": {
+    "values": [
+     "emotions 15 2",
+     "speech 10 1"
+    ]
+   },
+   "count": 1,
+   "group": "shared",
+   "ref": null,
+   "tool": null,
+   "limit": "VIS-10",
+   "tag": "V"
+  },
+  {
+   "key": "voice.schedule.priority",
+   "where": "set/talk/<talker>/<talk>.set > {Priority n}",
+   "type": "number",
+   "plain": "When two situation lines are due, the higher priority one is spoken.",
+   "unit": "rank",
+   "vanilla": {
+    "values": [
+     1,
+     3,
+     5
+    ]
+   },
+   "count": 5,
+   "group": "schedule",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "voice.schedule.timeout",
+   "where": "set/talk/<talker>/<talk>.set > {Timeout a b}",
+   "type": "list",
+   "plain": "Seconds to wait before the situation line may come again (base and random part).",
+   "unit": "s",
+   "vanilla": {
+    "values": [
+     "500 250",
+     "50 20",
+     "30 5",
+     "35 5"
+    ]
+   },
+   "count": 5,
+   "group": "schedule",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "voice.schedule.immediate",
+   "where": "set/talk/<talker>/<talk>.set > {Immediate}",
+   "type": "bool",
+   "plain": "The situation line is spoken at once when it starts, not after the timeout.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     true,
+     false
+    ]
+   },
+   "count": 5,
+   "group": "schedule",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "voice.schedule.condition",
+   "where": "set/talk/<talker>/<talk>.set > {Condition {health_level f}{seen}{enemy_ratio f}{broken}{in_action}{idle}}",
+   "type": "list",
+   "plain": "When the situation line is due: low health, enemy seen, outnumbered, broken, fighting or idle.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "idle",
+     "in_action",
+     "health_level 0.45 enemy_ratio 2"
+    ]
+   },
+   "count": 5,
+   "group": "schedule",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "voice.text_display",
+   "where": "engine: green text above the unit, 2 + 0.02 per letter seconds; sound only when the unit is visible",
+   "type": "number",
+   "plain": "How long the spoken text stays on screen (engine rule).",
+   "unit": "s",
+   "vanilla": {
+    "values": [
+     "2 + 0.02 x letters"
+    ]
+   },
+   "count": 0,
+   "group": "shared",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  }
+ ],
+ "gaps": [
+  "voice set: no tool writes a new voice (talk.set phrase lines + sound/human/talk/<id>/ tree): gen op `voice` {id, like, speakers, sounds:{<event>: folder}} that copies the like language tree into the mod, adds (\"phrase_voice\" <talk> <id> N <folder>) lines to a mod talk.set \"phrases\" define, optional breed link",
+  "events: per-event line choice (which folder or files per moment) has no writer: part of gen `voice` sounds map, sound files through /api/x/art/sound",
+  "events: 16 engine events are silent in vanilla (ally die, explosion, cannot move ...): gen `voice` events:{name: folder} adds a new {talk} block [T]",
+  "phrase: freq per talk block has no writer: gen `voice` freq:{event: f} (it changes every voice, so mod talk.set copy)",
+  "phrase: shown text (text key talk/<key>) has no writer apart from gen text; gen `voice` text:{event: words} writes key and lang rows",
+  "sound: folder.set tag, loudness, volume, distance have no writer: gen `voice` folder:{loudness, volume} writes folder.set in the new tree",
+  "schedule: set/talk/<talker>/*.set situation rules have no writer: gen op `talk-rule` {talker, talk, priority, timeout, immediate, condition}",
+  "shared: sound.set loudness/percent rows have no writer (change all talk): keep, list in kept",
+  "link: breed voice is settable (gen breed set:+voice) but nothing checks the id exists in talk.set: a gen check that the voice id has phrase lines"
+ ]
+}

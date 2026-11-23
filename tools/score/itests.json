@@ -1,0 +1,16 @@
+{
+ "_about": "B4: coverage rows settled [I] by proof shortcut 3 (shape) or 4 (copy-only), 2026-11-08. row -> regression test file (rel src/) + case name(s) printed by it. score counts a row only if file exists. Run: node tools/shapecheck/test/rows.js [--only C07] [--json]",
+ "C05": { "file": "tools/shapecheck/test/rows.js", "case": "C05 gen squad card shape", "cases": ["C05 gen squad card shape"], "kind": "shape" },
+ "C07": { "file": "tools/shapecheck/test/rows.js", "case": "C07 fauna def patch-entity shape", "cases": ["C07 fauna def patch-entity shape", "C07 service def patch-entity shape"], "kind": "shape" },
+ "C08": { "file": "tools/shapecheck/test/rows.js", "case": "C08 construction clone-entity shape", "cases": ["C08 construction clone-entity shape"], "kind": "shape" },
+ "C16": { "file": "tools/shapecheck/test/rows.js", "case": "C16 set/blow patch-entity shape", "cases": ["C16 set/blow patch-entity shape", "C16 set/target patch-entity shape"], "kind": "shape" },
+ "C20": { "file": "tools/shapecheck/test/rows.js", "case": "C20 difficulty .dl patch-entity shape", "cases": ["C20 difficulty .dl patch-entity shape"], "kind": "shape" },
+ "C26": { "file": "tools/shapecheck/test/rows.js", "case": "C26 shader copy wins in vfs", "cases": ["C26 shader copy wins in vfs"], "kind": "copy" },
+ "C27": { "file": "tools/shapecheck/test/rows.js", "case": "C27 video copy wins in vfs", "cases": ["C27 video copy wins in vfs"], "kind": "copy" },
+ "C28": { "file": "tools/shapecheck/test/rows.js", "case": "C28 fireSound patch-entity shape", "cases": ["C28 fireSound patch-entity shape", "C28 sound wav copy wins in vfs"], "kind": "shape+copy" },
+ "C29": { "file": "tools/shapecheck/test/rows.js", "case": "C29 voice copy wins in vfs", "cases": ["C29 voice copy wins in vfs"], "kind": "copy" },
+ "C30": { "file": "tools/shapecheck/test/rows.js", "case": "C30 music copy wins in vfs", "cases": ["C30 music copy wins in vfs"], "kind": "copy" },
+ "C32": { "file": "tools/shapecheck/test/rows.js", "case": "C32 action cursor patch-entity shape", "cases": ["C32 action cursor patch-entity shape", "C32 menu page patch-entity shape", "C32 font+cursor copy wins in vfs"], "kind": "shape+copy" },
+ "C13": { "file": "tools/botrecipe/test/check.js", "case": "check PASS", "cases": ["check PASS"], "kind": "shape" },
+ "C40": { "file": "tools/goh2as2/test/c40.js", "case": "c40 ok", "cases": ["c40 ok"], "kind": "shape" }
+}

@@ -1,0 +1,214 @@
+{
+ "form": "limclass/1",
+ "area": "PORT5",
+ "rows": {
+  "PORT-87": {
+   "chk": "never",
+   "class": "info",
+   "why": "fact: absence is not no-reader",
+   "never": "guidance for planning patches"
+  },
+  "PORT-88": {
+   "chk": "built",
+   "class": "silent",
+   "why": "keys ignored, data lost",
+   "tool": "keylint",
+   "how": "hp_broken, armor_damage_modifier, blastwave_modifier, flag_vaultable keys in defs"
+  },
+  "PORT-89": {
+   "chk": "built",
+   "class": "silent",
+   "why": "dropping perks from breeds loses abilities",
+   "tool": "goh2as2",
+   "how": "perks key in breed .set must be kept, entity form dropped"
+  },
+  "PORT-90": {
+   "chk": "never",
+   "class": "info",
+   "why": "engine classes absent, nothing to hit",
+   "never": "engine internals"
+  },
+  "PORT-91": {
+   "chk": "never",
+   "class": "info",
+   "why": "no mapping rule for sensor values",
+   "never": "needs game numbers"
+  },
+  "PORT-92": {
+   "chk": "built",
+   "class": "silent",
+   "why": "keys ignored by as64",
+   "tool": "keylint",
+   "how": "cost_ap, cost_sp, research_stage, mapSelection keys in unit and card settings"
+  },
+  "PORT-93": {
+   "chk": "never",
+   "class": "info",
+   "why": "pairing advice",
+   "never": "tool workflow fact"
+  },
+  "PORT-94": {
+   "chk": "never",
+   "class": "silent",
+   "why": "tool reading only resource/ misses old files",
+   "never": "tool-side handling, not a mod file defect"
+  },
+  "PORT-95": {
+   "chk": "never",
+   "class": "info",
+   "why": "value ratios not conversion factors",
+   "never": "calibration needs game"
+  },
+  "PORT-96": {
+   "chk": "never",
+   "class": "review",
+   "why": "choice of source map depends on intent",
+   "never": "intent decides the map source"
+  },
+  "PORT-97": {
+   "chk": "never",
+   "class": "info",
+   "why": "grs cell field is not a cell test",
+   "never": "fact about file format"
+  },
+  "PORT-98": {
+   "chk": "never",
+   "class": "silent",
+   "why": "damage model mismatch, wrong balance",
+   "never": "calibration needs game"
+  },
+  "PORT-99": {
+   "chk": "built",
+   "class": "review",
+   "why": "as64 parse of events unknown",
+   "tool": "goh2as2",
+   "how": "{events block inside mdl animation sequence"
+  },
+  "PORT-100": {
+   "chk": "never",
+   "class": "review",
+   "why": "donor skeleton fit unknown",
+   "never": "behaviour needs game"
+  },
+  "PORT-101": {
+   "chk": "never",
+   "class": "review",
+   "why": "no good donor def",
+   "never": "donor choice needs game test"
+  },
+  "PORT-102": {
+   "chk": "never",
+   "class": "info",
+   "why": "stem pairing finds candidates only",
+   "never": "pairing workflow fact"
+  },
+  "PORT-103": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unregistered mtl crashes on load",
+   "tool": "donorfit",
+   "how": "ply naming a mtl that exists only in another folder"
+  },
+  "PORT-104": {
+   "chk": "never",
+   "class": "info",
+   "why": "source folder choice",
+   "never": "tool input choice"
+  },
+  "PORT-105": {
+   "chk": "built",
+   "class": "silent",
+   "why": "bones drop silently, 0 errors",
+   "tool": "donorfit",
+   "how": "donor def bone names against GoH mdl bones"
+  },
+  "PORT-106": {
+   "chk": "never",
+   "class": "info",
+   "why": "mapport carries only changed files",
+   "never": "workflow fact"
+  },
+  "PORT-107": {
+   "chk": "never",
+   "class": "info",
+   "why": "infantry class grouping fact",
+   "never": "workflow fact"
+  },
+  "PORT-108": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal unexpected token"
+  },
+  "PORT-109": {
+   "chk": "built",
+   "class": "crash",
+   "why": "missing ply/vol/anm stops load"
+  },
+  "PORT-110": {
+   "chk": "built",
+   "class": "info",
+   "why": "root and chassis key names differ"
+  },
+  "PORT-111": {
+   "chk": "never",
+   "class": "review",
+   "why": "donor type match needs judgement",
+   "never": "reading weapon type is intent"
+  },
+  "PORT-112": {
+   "chk": "never",
+   "class": "info",
+   "why": "mortar calibre not in data",
+   "never": "fact about vanilla data"
+  },
+  "PORT-113": {
+   "chk": "built",
+   "class": "silent",
+   "why": "merged skinned ply, bone map over 25",
+   "tool": "binhdr",
+   "how": "bone map entries above 25 in ply header"
+  },
+  "PORT-114": {
+   "chk": "built",
+   "class": "crash",
+   "why": "ply texture missing at load",
+   "tool": "goh2as2",
+   "how": "dds named by mtl absent from output folder"
+  },
+  "PORT-115": {
+   "chk": "built",
+   "class": "crash",
+   "why": "flattened mtl path breaks reference",
+   "tool": "goh2as2",
+   "how": "mtl reference path matches copied nested path"
+  },
+  "PORT-116": {
+   "chk": "never",
+   "class": "silent",
+   "why": "real damage value left unconverted",
+   "tool": "goh2as2",
+   "how": "old-path ap defs with a value not converted",
+   "never": "row names no file, key or value form to match"
+  },
+  "PORT-117": {
+   "chk": "never",
+   "class": "info",
+   "why": "parser rule for disabled blocks",
+   "never": "rule for tool parsers"
+  },
+  "PORT-118": {
+   "chk": "never",
+   "class": "info",
+   "why": "merged or split models both can work",
+   "never": "needs skin test in game"
+  },
+  "PORT-119": {
+   "chk": "built",
+   "class": "crash",
+   "why": "game aborts on resource not found",
+   "tool": "goh2as2",
+   "how": "closure names start.anm, ply, mtl absent from output"
+  }
+ },
+ "dead": []
+}

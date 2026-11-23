@@ -1,0 +1,221 @@
+{
+ "form": "limclass/1",
+ "area": "DMG",
+ "rows": {
+  "DMG-01": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unmatched shell uses top-level params, no message"
+  },
+  "DMG-02": {
+   "chk": "built",
+   "class": "silent",
+   "why": "table clamps, no extrapolation, no message"
+  },
+  "DMG-03": {
+   "chk": "never",
+   "class": "silent",
+   "why": "slope cap applied at runtime, no message",
+   "never": "engine constant, runtime only"
+  },
+  "DMG-04": {
+   "chk": "built",
+   "class": "silent",
+   "why": "lookup past last angle gives scale 1.0 quietly"
+  },
+  "DMG-05": {
+   "chk": "never",
+   "class": "info",
+   "why": "hit side baked in .vol faces, fact",
+   "never": "needs .vol binary geometry, not a rule"
+  },
+  "DMG-06": {
+   "chk": "built",
+   "class": "silent",
+   "why": "per-volume thickness overridden, edits do nothing"
+  },
+  "DMG-07": {
+   "chk": "never",
+   "class": "info",
+   "why": "vanilla design: AP never breaks area",
+   "never": "vanilla data design, nothing to hit"
+  },
+  "DMG-08": {
+   "chk": "never",
+   "class": "silent",
+   "why": "flag takes effect at later event, no message",
+   "never": "runtime event order"
+  },
+  "DMG-09": {
+   "chk": "never",
+   "class": "info",
+   "why": "ricochet rules are engine fact",
+   "never": "engine behaviour"
+  },
+  "DMG-10": {
+   "chk": "never",
+   "class": "info",
+   "why": "pen margin not exposed to scripts, fact",
+   "never": "engine capability fact"
+  },
+  "DMG-11": {
+   "chk": "never",
+   "class": "silent",
+   "why": "pierce never fires for HE, no message",
+   "never": "runtime event behaviour"
+  },
+  "DMG-12": {
+   "chk": "never",
+   "class": "info",
+   "why": "hit event once per step, fact",
+   "never": "engine behaviour"
+  },
+  "DMG-13": {
+   "chk": "built",
+   "class": "silent",
+   "why": "double plain blastwave keeps only last"
+  },
+  "DMG-14": {
+   "chk": "never",
+   "class": "review",
+   "why": "dedupe and unit mismatch need a person",
+   "never": "intent-dependent script design"
+  },
+  "DMG-15": {
+   "chk": "never",
+   "class": "silent",
+   "why": "blast shielding changes quietly when able cleared",
+   "never": "vanilla has 2227 intentional clears, check is noise"
+  },
+  "DMG-16": {
+   "chk": "built",
+   "class": "silent",
+   "why": "script block silently disabled by # tag"
+  },
+  "DMG-17": {
+   "chk": "built",
+   "class": "silent",
+   "why": "no inflammation_time means never ignites"
+  },
+  "DMG-18": {
+   "chk": "never",
+   "class": "review",
+   "why": "cook-off odds shift with loadout, intent-dependent",
+   "never": "balance judgement"
+  },
+  "DMG-19": {
+   "chk": "built",
+   "class": "silent",
+   "why": "threshold below 1 clamped on read"
+  },
+  "DMG-20": {
+   "chk": "built",
+   "class": "silent",
+   "why": "GoH keys have the game has no such key"
+  },
+  "DMG-21": {
+   "chk": "never",
+   "class": "info",
+   "why": "blast timing 15 m/s, fact",
+   "never": "engine constant"
+  },
+  "DMG-22": {
+   "chk": "never",
+   "class": "info",
+   "why": "player vs AI blast factors differ, fact",
+   "never": "engine tables"
+  },
+  "DMG-23": {
+   "chk": "built",
+   "class": "silent",
+   "why": "duplicate setting name edits earlier area quietly",
+   "tool": "statsheet",
+   "how": "armor {setting} blocks with the same name and repeated thickness"
+  },
+  "DMG-24": {
+   "chk": "built",
+   "class": "crash",
+   "why": "3 thickness values give ERROR_MSG, non-continuable (ENG-01)"
+  },
+  "DMG-25": {
+   "chk": "built",
+   "class": "silent",
+   "why": "nonzero armor macro overwrites split plates quietly",
+   "tool": "statsheet",
+   "how": "nonzero armor_<cls> macro side on a hull whose component has several volumes"
+  },
+  "DMG-26": {
+   "chk": "never",
+   "class": "info",
+   "why": "vehicle kill reading advice, workflow fact",
+   "never": "test-reading workflow"
+  },
+  "DMG-27": {
+   "chk": "never",
+   "class": "info",
+   "why": "armour reading advice, workflow fact",
+   "never": "test-reading workflow"
+  },
+  "DMG-28": {
+   "chk": "never",
+   "class": "info",
+   "why": "close stand reads top knot, test fact",
+   "never": "test-reading workflow"
+  },
+  "DMG-29": {
+   "chk": "built",
+   "class": "crash",
+   "why": "GoH curve absent in as64 ballistics is fatal"
+  }
+ },
+ "dead": [
+  {
+   "row": "DMG-01",
+   "tool": "statsheet",
+   "code": "PARAM_BLOCK_SHADOWED",
+   "fix": {
+    "code": "PARAM_BLOCK_SHADOWED"
+   }
+  },
+  {
+   "row": "DMG-02",
+   "tool": "statsheet",
+   "code": "DMG_TABLE_UNTERMINATED",
+   "fix": {
+    "code": "DMG_TABLE_UNTERMINATED"
+   }
+  },
+  {
+   "row": "DMG-04",
+   "tool": "refcheck",
+   "code": "OVERMATCH_SHORT",
+   "fix": {
+    "code": "OVERMATCH_SHORT"
+   }
+  },
+  {
+   "row": "DMG-06",
+   "tool": "statsheet",
+   "code": "ARMOR_VOLUME_SHADOWED",
+   "fix": {
+    "code": "ARMOR_VOLUME_SHADOWED"
+   }
+  },
+  {
+   "row": "DMG-13",
+   "tool": "statsheet",
+   "code": "BLASTWAVE_REPLACED",
+   "fix": {
+    "code": "BLASTWAVE_REPLACED"
+   }
+  },
+  {
+   "row": "DMG-24",
+   "tool": "statsheet",
+   "code": "ARMOR_THICKNESS_ARGS",
+   "fix": {
+    "code": "ARMOR_THICKNESS_ARGS"
+   }
+  }
+ ]
+}

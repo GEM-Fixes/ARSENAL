@@ -1,0 +1,230 @@
+{
+ "form": "limmap/1",
+ "part": "fix-1",
+ "codes": {
+  "FIX_BASE_UNREAD": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/fix.js:112",
+   "class": "tool",
+   "why": "base game read 0 files; nothing to compare"
+  },
+  "FIX_EDIT_CONFLICT": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/fix.js:166",
+   "class": "tool",
+   "why": "two fixers target one output file"
+  },
+  "FIX_GATE_REVERTED": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/fix.js:183",
+   "class": "tool",
+   "why": "own refcheck gate undid an edit"
+  },
+  "FIX_INCLUDE_AMBIGUOUS": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/crashfix.js:56",
+   "class": "tool",
+   "why": "several same-name candidates; fixer refuses to guess"
+  },
+  "FIX_INCLUDE_NOT_MINE": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/crashfix.js:47",
+   "class": "tool",
+   "why": "including file comes from another layer"
+  },
+  "FIX_INCLUDE_NOT_ON_LINE": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/crashfix.js:61",
+   "class": "tool",
+   "why": "finding text not found once on its line"
+  },
+  "FIX_INCLUDE_NO_CANDIDATE": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/crashfix.js:56",
+   "class": "tool",
+   "why": "no file of that name in the vfs"
+  },
+  "FIX_INCLUDE_ODD_PATH": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/crashfix.js:58",
+   "class": "tool",
+   "why": "candidate path has characters unsafe to write"
+  },
+  "FIX_INCLUDE_PARSE": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/crashfix.js:45",
+   "class": "tool",
+   "why": "cannot read include path from finding"
+  },
+  "FIX_INCLUDE_REPOINTED": {
+   "tool": "fix",
+   "sev": "review",
+   "lim": [
+    "TST-108"
+   ],
+   "at": "tools/fix/fix.js:218",
+   "class": "crash",
+   "why": "missing include is fatal File not found; fixed by repoint"
+  },
+  "FIX_LNG_BASE_UNREADABLE": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/lng.js:70",
+   "class": "tool",
+   "why": "vanilla file being replaced is not valid UTF-8"
+  },
+  "FIX_LNG_MERGED": {
+   "tool": "fix",
+   "sev": "review",
+   "lim": [
+    "LOC-01"
+   ],
+   "at": "tools/fix/fix.js:218",
+   "class": "silent",
+   "why": "mod lng replaces vanilla whole; keys merged back"
+  },
+  "FIX_LNG_NOT_UTF8": {
+   "tool": "fix",
+   "sev": "review",
+   "lim": [
+    "LOC-05"
+   ],
+   "at": "tools/fix/lib/lng.js:69",
+   "class": "silent",
+   "why": "non-UTF-8 lng shows U+FFFD; tool will not transcode"
+  },
+  "FIX_LNG_NO_TAGS": {
+   "tool": "fix",
+   "sev": "review",
+   "lim": [
+    "LOC-05"
+   ],
+   "at": "tools/fix/lib/lng.js:72",
+   "class": "crash",
+   "why": "lng root must be {tags or fatal Identifier expected"
+  },
+  "FIX_MACRO_AMBIGUOUS": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/crashfix.js:94",
+   "class": "tool",
+   "why": "macro defined in several places; refuses to guess"
+  },
+  "FIX_MACRO_INCLUDED": {
+   "tool": "fix",
+   "sev": "review",
+   "lim": [
+    "GPL-11"
+   ],
+   "at": "tools/fix/fix.js:218",
+   "class": "crash",
+   "why": "define scoped to reading file; not found is fatal"
+  },
+  "FIX_MACRO_NOT_MINE": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/crashfix.js:92",
+   "class": "tool",
+   "why": "using file comes from another layer"
+  },
+  "FIX_MACRO_NO_DEFINITION": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/crashfix.js:94",
+   "class": "tool",
+   "why": "no inc/set/ext defines the macro"
+  },
+  "FIX_MACRO_PARSE": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/crashfix.js:88",
+   "class": "tool",
+   "why": "cannot read macro name from finding"
+  },
+  "FIX_MODINFO": {
+   "tool": "fix",
+   "sev": "review",
+   "lim": [
+    "PORT-48"
+   ],
+   "at": "tools/fix/fix.js:250",
+   "class": "silent",
+   "why": "mod.info version range wrong: mod disabled at load"
+  },
+  "FIX_MODINFO_UNREADABLE": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/modinfo.js:43",
+   "class": "tool",
+   "why": "mod.info has no Mod block to edit"
+  },
+  "FIX_MTL_STUBBED": {
+   "tool": "fix",
+   "sev": "review",
+   "lim": [
+    "FMT-03"
+   ],
+   "at": "tools/fix/fix.js:218",
+   "class": "crash",
+   "why": "ply without mtl is null deref at mesh load; stub copied"
+  },
+  "FIX_NOT_MOUNTED": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/fix.js:103",
+   "class": "tool",
+   "why": "mod folder not mounted by the tool"
+  },
+  "FIX_OUT_REFUSED": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/fix.js:99",
+   "class": "tool",
+   "why": "output folder refused by tool safety rule"
+  },
+  "FIX_QUARANTINED": {
+   "tool": "fix",
+   "sev": "review",
+   "lim": [
+    "MAP-35"
+   ],
+   "at": "tools/fix/fix.js:194",
+   "class": "silent",
+   "why": "map refs to a deleted def are skipped with a warning"
+  },
+  "FIX_QUARANTINE_NEW_REFCHECK": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/fix.js:210",
+   "class": "tool",
+   "why": "refcheck count rose after tool removal"
+  }
+ }
+}

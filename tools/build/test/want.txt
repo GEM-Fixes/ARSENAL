@@ -1,0 +1,9 @@
+binhdr PLY_MTL_MISSING
+keylint WARN_UNKNOWN_KEY
+lnglint DUP_KEY
+loccover LOC_DAMAGE_KEY
+milint MAP_PLAYERS
+modinfo UNKNOWN_KEY
+packer WARN_TEXT_NOT_CRLF
+refcheck REF_MODEL_MISSING
+sdllint BLOCK_UNCLOSED

@@ -1,0 +1,5 @@
+{game_entity
+(include "/properties/cannon.ext")
+{props "vehicle" "cannon"}
+{weapon "75mm_x" filled}
+}

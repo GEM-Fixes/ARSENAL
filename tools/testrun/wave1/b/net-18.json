@@ -1,0 +1,42 @@
+{
+  "name": "net-18",
+  "rows": [
+    "NET-18"
+  ],
+  "fixture": [
+    "net-18"
+  ],
+  "mode": "mp",
+  "params": {
+    "map": "multi/1v1_road:combat"
+  },
+  "src": [
+    ",81-97"
+  ],
+  "note": "Plain CRC with no re-read: long.inc 1353 bytes, several 512-byte reads, 644F7FB6; short.inc 3 bytes, 0A6337A8. Pass: engine matches, so the stream buffer is aligned and the unaligned re-read never fires on files. Raw-buffer callers with unaligned pointers stay untested. A fail is not by itself proof of misalignment: compare with net-17 first.",
+  "steps": [
+    {
+      "wait": 1
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "mp_resource properties/trs_net18/long.inc",
+      "match": "644F7FB6",
+      "want": true
+    },
+    {
+      "reply": "mp_resource properties/trs_net18/short.inc",
+      "match": "0A6337A8",
+      "want": true
+    }
+  ],
+  "mods": [
+    "as64+",
+    "net-18"
+  ]
+}

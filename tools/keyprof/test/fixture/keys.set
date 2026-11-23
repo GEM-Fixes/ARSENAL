@@ -1,0 +1,61 @@
+{keys
+	{"common/dismiss_squad"
+		{value KEY_K}
+	}
+	{"common/center_active"
+		{value "SHIFT + KEY_F"}
+	}
+	{"common/prev_unit"
+		{value KEY_COMMA}
+	}
+	{"common/next_unit"
+		{value KEY_PERIOD}
+	}
+	{"common/toggle_attack"
+		{value KEY_LBRACKET}
+	}
+	{"common/toggle_position"
+		{value KEY_RBRACKET}
+	}
+	{"common/slowdown"
+		{value KEY_BACKSPACE}
+	}
+	{"common/toggle_objectives"
+		{value KEY_O}
+	}
+	{"common/toggle_message_history"
+		{value KEY_H}
+	}
+	{"common/toggle_equipment"
+		{value KEY_I}
+	}
+	{"common/toggle_map"
+		{value KEY_M}
+	}
+	{"common/toggle_map_control"
+		{value "CTRL + KEY_M"}
+	}
+	{"common/stuff_highlight"
+		{value KEY_C}
+		{single}
+	}
+	{"common/corpses_highlight"
+		{value KEY_V}
+		{single}
+	}
+	{"common/pause"
+		{value KEY_PAUSE}
+		{noedit}
+	}
+	{"common/screenshot"
+		{value KEY_SYSRQ}
+		{noedit}
+	}
+	{"common/videocapture"
+		{value KEY_F11}
+	}
+	{"common/game_menu"
+		{value KEY_ESC}
+		{noedit}
+	}
+}

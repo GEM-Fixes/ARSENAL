@@ -1,0 +1,6 @@
+{Skeleton
+ {bone "basis"
+  {bone hinge "r"
+  }
+ }
+}

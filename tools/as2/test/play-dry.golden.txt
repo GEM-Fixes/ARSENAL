@@ -1,0 +1,12 @@
+play: mymod  map multi/1v1_reloading_point:combat  instance 1  (dry: nothing is written or started)
+1. check mod.info   2. install   3. list the mod for instance 1   4. start the game on the map   5. restore the list   6. BOOT verdict from game.log
+$ node tools/modinfo/modinfo.js mymod
+$ ARSENAL install mymod --name mymod --game game
+install: mymod -> game/mods/mymod (copy)
+$ node tools/modswitch/modswitch.js --game game --inst 1 --set mymod --write --bak options.set.as2-play
+$ node tools/testrun/testrun.js --map multi/1v1_reloading_point:combat --logdir L --inst 1
+$ node tools/modswitch/modswitch.js --game game --inst 1 --restore --write --bak options.set.as2-play
+(if tools/bootcheck/base/1v1_reloading_point.json is missing, the real run runs logtriage instead and says BOOT is not decided)
+$ node tools/bootcheck/bootcheck.js mod L/game.log --base tools/bootcheck/base/1v1_reloading_point.json --to-clock --mod mymod
+BOOT verdict printed here after a real run: PASS (exit 0) = no new error line vs the baseline, the clock reached, the mod active; FAIL (exit 1)
+rc=0

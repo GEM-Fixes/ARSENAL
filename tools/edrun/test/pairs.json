@@ -1,0 +1,5 @@
+[
+  {"name": "tank", "class": "vehicle", "shooter": "t34_0", "crew": ["mp/rus/tankman", "mp/rus/tankman", "mp/rus/tankman", "mp/rus/tankman"], "foe": "gaz67b", "foeCrew": ["mp/ger/rifle"]},
+  {"name": "gun", "class": "gun", "shooter": "zis2", "crew": ["mp/rus/rifle", "mp/rus/rifle", "mp/rus/rifle"], "foe": "gaz67b", "foeCrew": ["mp/ger/rifle"]},
+  {"name": "inf", "class": "infantry", "shooter": "mp/rus/rifle", "foe": "mp/ger/rifle"}
+]

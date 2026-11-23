@@ -1,0 +1,16 @@
+{
+  "name": "goh-port",
+  "desc": "QUICKSTART 3: portdiff, goh2as2 to scratch (tool refuses --out inside a game install), copy into $MOD, gates, mp-load scenario",
+  "needs": ["GOH"],
+  "steps": [
+    { "tool": "newmod", "argv": ["$MOD", "--name", "E2E Port", "--game", "$GAME", "$TARGETOPT"] },
+    { "tool": "portdiff", "argv": ["--as2", "$GAME", "--goh", "$GOH", "--sample", "20", "--top", "3", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "goh2as2", "argv": ["--goh", "$GOH", "--entity", "g43", "--out", "$SCRATCH/port", "--game", "$GAME", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "@copy", "argv": ["$SCRATCH/port", "$MOD"] },
+    { "tool": "keylint", "argv": ["$MOD", "--game", "$GAME", "--summary", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "refcheck", "argv": ["$GAME", "--mods", "$MODNAME", "--scope", "mod", "--summary", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "binhdr", "argv": ["$GAME", "--mods", "$MODNAME", "--summary", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "build", "argv": ["$MOD", "--game", "$GAME", "$EXEOPT"], "exit": [0, 1], "match": "\\S" },
+    { "tool": "testrun", "argv": ["--scenario", "tools/testrun/scenarios/mp-load.json", "--exe", "$GAME/$EXEFILE", "--mods", "$MODNAME"], "match": "VERDICT PASS", "reject": "VERDICT FAIL" }
+  ]
+}

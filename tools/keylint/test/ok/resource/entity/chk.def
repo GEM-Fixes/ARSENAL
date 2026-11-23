@@ -1,0 +1,6 @@
+{game_entity
+ {tags "a b"}
+ {mass 5}
+ ("armor_medium" turret(1 2) body(10 10 10 10))
+ ("armor_medium" turret(5) body(10) args 1)
+}

@@ -1,0 +1,31 @@
+{
+  "game": "mowas_2",
+  "title": "Men of War: Assault Squad 2, original mowas_2 build (frozen)",
+  "facts": {
+    "exe.main": { "v": "mowas_2.exe", "src": ["(not part of this release)"], "tag": "V" },
+    "exe.editor": { "v": "mowas_2_ed.exe", "src": ["(not part of this release)"], "tag": "V" },
+    "exe.pe_version": { "v": "3.2.6.2", "src": ["(not part of this release)"], "tag": "V" },
+    "version.data": { "v": "3.262", "src": ["(not part of this release)", "PORT-48"], "tag": "V" },
+    "modinfo.range_rule": { "v": "Min/MaxGameVersion must hold the exe data version; no keys = legacy, refused silently", "src": ["PORT-48"], "tag": "V" },
+    "modinfo.range_value": { "v": "3.262..3.262", "src": ["PORT-48"], "tag": "V" },
+    "pak.form": { "v": "zip", "src": ["(not part of this release)"], "tag": "I" },
+    "loc.format": { "v": "lng", "src": ["PORT-42", "PORT-41"], "tag": "I" },
+    "loc.mod_folder": { "v": "localization", "src": ["PORT-42"], "tag": "I" },
+    "ui.layout": { "v": "/interface/pages", "src": ["PORT-41"], "tag": "I" },
+    "entity.root": { "v": "entity/", "src": ["(not part of this release)"], "tag": "I" },
+    "entity.vehicle_path": { "v": "entity/-vehicle/<class>/", "src": ["PORT-93", "(not part of this release)"], "tag": "V" },
+    "map.terrain_layers": { "v": ".mtl", "src": ["PORT-44"], "tag": "V" },
+    "user.dir": { "v": "<Documents>/My Games/Men of War - Assault Squad 2/", "src": ["(not part of this release)"], "tag": "V" },
+    "user.shared_with_mowas_2": { "v": true, "src": ["LOG-20"], "tag": "V" },
+    "log.file": { "v": "log/game.log", "src": ["(not part of this release)"], "tag": "V" },
+    "log.prev_file": { "v": "none, game.log truncated at start", "src": ["LOG-19"], "tag": "V" },
+    "log.minidumps": { "v": "log/minidumps", "src": ["(not part of this release)"], "tag": "V" },
+    "feature.core_mount": { "v": false, "src": ["VFS-46"], "tag": "V" },
+    "feature.cmdline_test_flags": { "v": false, "src": ["TST-19"], "tag": "I" },
+    "feature.silent_crash": { "v": false, "src": ["PORT-49"], "tag": "V" },
+    "feature.editor_game_runs_mission": { "v": true, "src": ["(not part of this release)"], "tag": "V" },
+    "feature.call_synced": { "v": false, "src": ["PORT-29"], "tag": "I" },
+    "feature.dynamic_campaign": { "v": false, "src": ["PORT-33"], "tag": "I" },
+    "feature.bad_mod_warnings": { "v": false, "src": ["LOG-21"], "tag": "V" }
+  }
+}

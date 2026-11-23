@@ -1,0 +1,124 @@
+{
+  "form": "limclass/1",
+  "area": "MAP2",
+  "rows": {
+    "MAP-20": {
+      "chk": "built",
+      "class": "silent",
+      "why": "missing flags: mode plays wrong, no message"
+    },
+    "MAP-21": {
+      "chk": "built",
+      "class": "silent",
+      "why": "hand-built frontline file left out: mode missing parts"
+    },
+    "MAP-22": {
+      "chk": "never",
+      "class": "info",
+      "why": "lobby accepts cloned mode; fact, nothing to hit",
+      "never": "needs lobby run; workflow fact"
+    },
+    "MAP-23": {
+      "chk": "built",
+      "class": "silent",
+      "why": "short team, fewer playable slots, no message"
+    },
+    "MAP-24": {
+      "chk": "built",
+      "class": "silent",
+      "why": "duplicate uid: entity collision, unchecked by engine"
+    },
+    "MAP-25": {
+      "chk": "built",
+      "class": "silent",
+      "why": "wrong arity changes height snapping, no message"
+    },
+    "MAP-26": {
+      "chk": "built",
+      "class": "desync",
+      "why": "clients without the mod cannot load the entity"
+    },
+    "MAP-27": {
+      "chk": "built",
+      "class": "silent",
+      "why": "loose map shadows pak copy by VFS order"
+    },
+    "MAP-28": {
+      "chk": "built",
+      "class": "silent",
+      "why": "wrong grid origin shifts passability, no message"
+    },
+    "MAP-29": {
+      "chk": "built",
+      "class": "crash",
+      "why": "one layer: crash at first crater",
+      "tool": "sdllint",
+      "how": "terrain material file: count {layer} blocks, flag any count other than 2"
+    },
+    "MAP-30": {
+      "chk": "never",
+      "class": "silent",
+      "why": "mirrored mesh floats or sinks, no message",
+      "never": "generator write-time concern; no reference to compare"
+    },
+    "MAP-31": {
+      "chk": "never",
+      "class": "info",
+      "why": "optional files; map loads without them",
+      "never": "fact about optional files, nothing to hit"
+    },
+    "MAP-32": {
+      "chk": "never",
+      "class": "info",
+      "why": "InfG chunk optional; safe to omit",
+      "never": "fact about optional chunk, nothing to hit"
+    },
+    "MAP-33": {
+      "chk": "never",
+      "class": "silent",
+      "why": "tank never moves, only a log line",
+      "never": "pathing is runtime; cause open"
+    },
+    "MAP-34": {
+      "chk": "built",
+      "class": "silent",
+      "why": "wrong flag count plays oddly, no message"
+    },
+    "MAP-35": {
+      "chk": "built",
+      "class": "silent",
+      "why": "map refs to a deleted def are skipped with a warning"
+    },
+    "MAP-36": {
+      "chk": "built",
+      "class": "crash",
+      "why": "mode .mi include not found stops map load"
+    }
+  },
+  "dead": [
+    {
+      "row": "MAP-21",
+      "tool": "mission-clone",
+      "code": "MC_NEEDS_MANUAL",
+      "fix": {
+        "code": "MC_NEEDS_MANUAL"
+      }
+    },
+    {
+      "row": "MAP-24",
+      "tool": "place-entity",
+      "code": "PLACE_UID",
+      "fix": {
+        "code": "PLACE_UID"
+      }
+    },
+    {
+      "row": "MAP-26",
+      "tool": "place-entity",
+      "code": "WARN_PLACE_MOD_ENTITY",
+      "fix": {
+        "code": "WARN_PLACE_MOD_ENTITY"
+      }
+    }
+  ]
+}

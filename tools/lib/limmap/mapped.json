@@ -1,0 +1,2389 @@
+{
+ "form": "limmap/1",
+ "part": "mapped",
+ "codes": {
+  "ACTION_INSTRUCTION_UNKNOWN": {
+   "tool": "uilint",
+   "sev": "silent",
+   "lim": [
+    "UI-06"
+   ]
+  },
+  "ANM_BAD_CHUNK": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-01"
+   ]
+  },
+  "ANM_BONE_INDEX": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-01"
+   ]
+  },
+  "ANM_BONE_LIMIT": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-08"
+   ]
+  },
+  "ANM_NO_FRAMES": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-08"
+   ]
+  },
+  "ANM_TRUNCATED": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-01"
+   ]
+  },
+  "ANM_VERSION": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-08"
+   ]
+  },
+  "ARGS_CASE": {
+   "tool": "lib",
+   "sev": "crash",
+   "lim": [
+    "SDL-22"
+   ]
+  },
+  "BAD_BYTE": {
+   "tool": "lib",
+   "sev": "crash",
+   "lim": [
+    "SDL-13"
+   ]
+  },
+  "BLOCK_END_STRAY": {
+   "tool": "wouldload",
+   "sev": "crash",
+   "lim": [
+    "SDL-01"
+   ]
+  },
+  "BLOCK_UNCLOSED": {
+   "tool": "covlint",
+   "sev": "crash",
+   "lim": [
+    "SDL-01"
+   ]
+  },
+  "BOM_UTF16": {
+   "tool": "roundtrip",
+   "sev": "crash",
+   "lim": [
+    "SDL-12"
+   ]
+  },
+  "COLLIDER_IDS_MAX": {
+   "tool": "keylint",
+   "sev": "crash",
+   "lim": [
+    "MOV-26"
+   ]
+  },
+  "COLOR_HEX_LEN": {
+   "tool": "keylint",
+   "sev": "cosmetic",
+   "lim": [
+    "SDL-39"
+   ]
+  },
+  "CONTROL_BAD": {
+   "tool": "wouldload",
+   "sev": "crash",
+   "lim": [
+    "SDL-01"
+   ]
+  },
+  "DDS_CUBE": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-02"
+   ]
+  },
+  "DDS_DX10": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-02"
+   ]
+  },
+  "DDS_FORMAT": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-02"
+   ]
+  },
+  "DDS_HEADER": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-02"
+   ]
+  },
+  "DDS_MIPS": {
+   "tool": "binhdr",
+   "sev": "cosmetic",
+   "lim": [
+    "FMT-02"
+   ]
+  },
+  "DDS_SIZE": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-02"
+   ]
+  },
+  "DDS_VOLUME": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-02"
+   ]
+  },
+  "DEFINE_UNCLOSED": {
+   "tool": "wouldload",
+   "sev": "crash",
+   "lim": [
+    "SDL-01"
+   ]
+  },
+  "DEF_VOLUME_NO_SHAPE": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-07"
+   ]
+  },
+  "DELETE_PREFIX": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "VFS-21"
+   ]
+  },
+  "DEP_CYCLE": {
+   "tool": "entityindex",
+   "sev": "review",
+   "lim": [
+    "VFS-16"
+   ]
+  },
+  "DISABLED_ON": {
+   "tool": "check",
+   "sev": "review",
+   "lim": [
+    "DMG-16"
+   ]
+  },
+  "DOC_MAPMOD_OVERLAY": {
+   "tool": "doctor",
+   "sev": "review",
+   "lim": [
+    "VFS-33"
+   ]
+  },
+  "DOC_MAPMOD_SHADOWS": {
+   "tool": "doctor",
+   "sev": "review",
+   "lim": [
+    "VFS-33"
+   ]
+  },
+  "DOC_MAP_LOOSE_SHADOWS_PAK": {
+   "tool": "doctor",
+   "sev": "review",
+   "lim": [
+    "MAP-27"
+   ]
+  },
+  "DOC_MOD_NOT_INSTALLED": {
+   "tool": "doctor",
+   "sev": "review",
+   "lim": [
+    "VFS-13"
+   ]
+  },
+  "DUP_KEY": {
+   "tool": "botrecipe",
+   "sev": "silent",
+   "lim": [
+    "LOC-03",
+    "LOC-04"
+   ]
+  },
+  "DUP_KEY_SAME": {
+   "tool": "lnglint",
+   "sev": "cosmetic",
+   "lim": [
+    "LOC-22"
+   ]
+  },
+  "EBM_SDL": {
+   "tool": "binhdr",
+   "sev": "review",
+   "lim": [
+    "FMT-17"
+   ]
+  },
+  "EBM_SIGNATURE": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-17"
+   ]
+  },
+  "ENC_BOM": {
+   "tool": "gui",
+   "sev": "silent",
+   "lim": [
+    "LOC-05"
+   ]
+  },
+  "ENTITY_REDEFINITION": {
+   "tool": "check",
+   "sev": "review",
+   "lim": [
+    "ENG-04"
+   ]
+  },
+  "ENTITY_TYPE_UNKNOWN": {
+   "tool": "refcheck",
+   "sev": "crash",
+   "lim": [
+    "ENG-02"
+   ]
+  },
+  "EXTENDER_UNKNOWN": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "ENG-06"
+   ]
+  },
+  "FONT_MAIN10_MISSING": {
+   "tool": "uilint",
+   "sev": "crash",
+   "lim": [
+    "UI-16"
+   ]
+  },
+  "FONT_SIZE_RANGE": {
+   "tool": "covlint",
+   "sev": "cosmetic",
+   "lim": [
+    "UI-16"
+   ]
+  },
+  "FOOT_ROW_MISSING": {
+   "tool": "refcheck",
+   "sev": "silent",
+   "lim": [
+    "HUM-36"
+   ]
+  },
+  "FX_TRACER_UNLISTED": {
+   "tool": "fxlint",
+   "sev": "silent",
+   "lim": [
+    "VIS-19",
+    "VIS-28"
+   ]
+  },
+  "GEARS_BAD": {
+   "tool": "keylint",
+   "sev": "crash",
+   "lim": [
+    "MOV-02"
+   ]
+  },
+  "GOH_KEY": {
+   "tool": "refcheck",
+   "sev": "review",
+   "lim": [
+    "DMG-20"
+   ]
+  },
+  "HASH_COMMENT": {
+   "tool": "check",
+   "sev": "crash",
+   "lim": [
+    "SDL-02"
+   ]
+  },
+  "HUM_ABILITY_BASE": {
+   "tool": "humlint",
+   "sev": "silent",
+   "lim": [
+    "HUM-14"
+   ]
+  },
+  "HUM_ABILITY_NO_LEVELS": {
+   "tool": "humlint",
+   "sev": "silent",
+   "lim": [
+    "HUM-14",
+    "HUM-37"
+   ]
+  },
+  "HUM_BOX_SIZE_INT8": {
+   "tool": "humlint",
+   "sev": "silent",
+   "lim": [
+    "HUM-23"
+   ]
+  },
+  "HUM_DAMAGE_KEY": {
+   "tool": "humlint",
+   "sev": "silent",
+   "lim": [
+    "HUM-07"
+   ]
+  },
+  "HUM_DURATION_ZERO": {
+   "tool": "humlint",
+   "sev": "silent",
+   "lim": [
+    "HUM-31"
+   ]
+  },
+  "HUM_FSM_DYING_EDGES": {
+   "tool": "humlint",
+   "sev": "crash",
+   "lim": [
+    "HUM-29"
+   ]
+  },
+  "HUM_FSM_SPLIT_ORDER": {
+   "tool": "humlint",
+   "sev": "crash",
+   "lim": [
+    "HUM-29"
+   ]
+  },
+  "HUM_POSTURE_RELOAD": {
+   "tool": "humlint",
+   "sev": "silent",
+   "lim": [
+    "HUM-16"
+   ]
+  },
+  "HUM_STAMINA_ROW": {
+   "tool": "humlint",
+   "sev": "silent",
+   "lim": [
+    "HUM-03"
+   ]
+  },
+  "HUM_THROW_EFFECTS": {
+   "tool": "humlint",
+   "sev": "silent",
+   "lim": [
+    "HUM-07"
+   ]
+  },
+  "HUM_VITALITY_KEY": {
+   "tool": "covlint",
+   "sev": "silent",
+   "lim": [
+    "HUM-01"
+   ]
+  },
+  "IA_ACTION_UNKNOWN": {
+   "tool": "covlint",
+   "sev": "silent",
+   "lim": [
+    "VIS-18"
+   ]
+  },
+  "IDENT_SPLIT": {
+   "tool": "check",
+   "sev": "crash",
+   "lim": [
+    "SDL-04"
+   ]
+  },
+  "INCLUDE_CYCLE": {
+   "tool": "portdiff",
+   "sev": "crash",
+   "lim": [
+    "SDL-23"
+   ]
+  },
+  "INCLUDE_MISSING": {
+   "tool": "check",
+   "sev": "crash",
+   "lim": [
+    "SDL-23", "PORT-125", "TST-99", "TST-108", "TST-116"
+   ]
+  },
+  "INT_ABLE_OVERFLOW": {
+   "tool": "ialint",
+   "sev": "silent",
+   "lim": [
+    "INT-11"
+   ]
+  },
+  "INT_CALL_UNDEFINED": {
+   "tool": "ialint",
+   "sev": "silent",
+   "lim": [
+    "INT-04"
+   ]
+  },
+  "INT_EVENT_DUP": {
+   "tool": "covlint",
+   "sev": "silent",
+   "lim": [
+    "INT-02"
+   ]
+  },
+  "INT_EXPLODE_TINY": {
+   "tool": "ialint",
+   "sev": "silent",
+   "lim": [
+    "INT-20"
+   ]
+  },
+  "INT_FIELD_FLOAT": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "SDL-26",
+    "SDL-29",
+    "SDL-30"
+   ]
+  },
+  "INT_FLAG_OVERFLOW": {
+   "tool": "ialint",
+   "sev": "silent",
+   "lim": [
+    "ENG-07",
+    "GPL-06",
+    "INT-10"
+   ]
+  },
+  "INT_GOT_EXPR": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "SDL-26"
+   ]
+  },
+  "INT_GOT_FLOAT": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "SDL-29"
+   ]
+  },
+  "INT_KICK_NOOP": {
+   "tool": "ialint",
+   "sev": "silent",
+   "lim": [
+    "INT-15"
+   ]
+  },
+  "INT_KILL_DELAY_EMPTY": {
+   "tool": "ialint",
+   "sev": "silent",
+   "lim": [
+    "INT-17"
+   ]
+  },
+  "INT_LOG_NOOP": {
+   "tool": "ialint",
+   "sev": "silent",
+   "lim": [
+    "INT-15"
+   ]
+  },
+  "INT_RTFUNC": {
+   "tool": "ialint",
+   "sev": "silent",
+   "lim": [
+    "INT-15"
+   ]
+  },
+  "INT_TERRAIN_BULLET": {
+   "tool": "ialint",
+   "sev": "silent",
+   "lim": [
+    "INT-05"
+   ]
+  },
+  "INT_USE_BLEND_TEX": {
+   "tool": "covlint",
+   "sev": "silent",
+   "lim": [
+    "INT-08"
+   ]
+  },
+  "INVALID_CHAR": {
+   "tool": "portdiff",
+   "sev": "crash",
+   "lim": [
+    "SDL-13"
+   ]
+  },
+  "ITM_FILE": {
+   "tool": "conflicts",
+   "sev": "review",
+   "lim": [
+    "VFS-44"
+   ]
+  },
+  "ITM_KEY": {
+   "tool": "conflicts",
+   "sev": "review",
+   "lim": [
+    "VFS-44"
+   ]
+  },
+  "KEYS_ACTION_NO_HOTKEY": {
+   "tool": "uilint",
+   "sev": "silent",
+   "lim": [
+    "UI-14"
+   ]
+  },
+  "KEYS_MOUSE_MIDDLE": {
+   "tool": "uilint",
+   "sev": "silent",
+   "lim": [
+    "UI-12"
+   ]
+  },
+  "KEYS_PATH_UNREACHED": {
+   "tool": "uilint",
+   "sev": "silent",
+   "lim": [
+    "UI-13"
+   ]
+  },
+  "KEYS_TOKEN_UNKNOWN": {
+   "tool": "uilint",
+   "sev": "silent",
+   "lim": [
+    "UI-11"
+   ]
+  },
+  "KEY_CASE": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "SDL-33"
+   ]
+  },
+  "LEADING_DOT": {
+   "tool": "wouldload",
+   "sev": "crash",
+   "lim": [
+    "SDL-05"
+   ]
+  },
+  "LNG_KEY_NEW": {
+   "tool": "lnglint",
+   "sev": "review",
+   "lim": [
+    "LOC-20"
+   ]
+  },
+  "LOC_DAMAGE_KEY": {
+   "tool": "loccover",
+   "sev": "review",
+   "lim": [
+    "LOC-12"
+   ]
+  },
+  "LOC_FILE_REPLACED": {
+   "tool": "covlint",
+   "sev": "review",
+   "lim": [
+    "LOC-01",
+    "VFS-27"
+   ]
+  },
+  "LOC_HOW_SIDEKEY": {
+   "tool": "loccover",
+   "sev": "review",
+   "lim": [
+    "LOC-13"
+   ]
+  },
+  "LOC_INFO_MISSING": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "LOC-11"
+   ]
+  },
+  "LOC_NAME_MISSING": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "LOC-02",
+    "LOC-23"
+   ]
+  },
+  "LOC_STUFF_KEY_ORDER": {
+   "tool": "loccover",
+   "sev": "review",
+   "lim": [
+    "LOC-15"
+   ]
+  },
+  "LOD_EMPTY": {
+   "tool": "refcheck",
+   "sev": "silent",
+   "lim": [
+    "VIS-20"
+   ]
+  },
+  "LOD_ORDER": {
+   "tool": "refcheck",
+   "sev": "silent",
+   "lim": [
+    "VIS-20"
+   ]
+  },
+  "LOG_CRASH": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "LOG-04"
+   ]
+  },
+  "LOG_ERROR_MSG": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "LOG-06"
+   ]
+  },
+  "LOG_EXE_SWITCH": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "LOG-20"
+   ]
+  },
+  "LOG_FALLBACK_FONT": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "ENG-26",
+    "ENG-35"
+   ]
+  },
+  "LOG_LEVEL_PARAM": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "LOG-08"
+   ]
+  },
+  "LOG_LOBBY_DUP": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "LOG-16"
+   ]
+  },
+  "LOG_MISSING_FILE": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "LOG-05"
+   ]
+  },
+  "LOG_MOD_INFO_ERROR": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "ENG-25"
+   ]
+  },
+  "LOG_MOD_MODE": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "ENG-26"
+   ]
+  },
+  "LOG_MOD_SHADOWED": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "LOG-17"
+   ]
+  },
+  "LOG_NOTE": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "LOG-01",
+    "LOG-02",
+    "LOG-03"
+   ]
+  },
+  "LOG_NO_STUFF": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "LOG-07"
+   ]
+  },
+  "LOG_PANEL_ITEM": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "LOG-09"
+   ]
+  },
+  "LOG_PREV_LOST": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "LOG-19"
+   ]
+  },
+  "LOG_SCRIPT_ERROR": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "LOG-06"
+   ]
+  },
+  "LOG_WARN": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "LOG-05"
+   ]
+  },
+  "MACRO_CYCLE": {
+   "tool": "wouldload",
+   "sev": "crash",
+   "lim": [
+    "SDL-23"
+   ]
+  },
+  "MACRO_UNDEFINED": {
+   "tool": "check",
+   "sev": "crash",
+   "lim": [
+    "GPL-11",
+    "SDL-17"
+   ]
+  },
+  "MAP_CLIP_OBSOLETE": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-12"
+   ]
+  },
+  "MAP_MATERIAL_SHADOWED": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-03"
+   ]
+  },
+  "MAP_MODE_UNDEFINED": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-01",
+    "MIS-24"
+   ]
+  },
+  "MAP_MOD_FOLDER": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-10"
+   ]
+  },
+  "MAP_NET_FORMAT": {
+   "tool": "milint",
+   "sev": "crash",
+   "lim": [
+    "MAP-08"
+   ]
+  },
+  "MAP_NET_ID_RANGE": {
+   "tool": "milint",
+   "sev": "crash",
+   "lim": [
+    "MAP-04",
+    "MAP-19"
+   ]
+  },
+  "MAP_NO_MODE": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-24"
+   ]
+  },
+  "MAP_PATCH_ID": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-09"
+   ]
+  },
+  "MAP_PATCH_MISSING": {
+   "tool": "milint",
+   "sev": "crash",
+   "lim": [
+    "MAP-09"
+   ]
+  },
+  "MAP_PLAYERS": {
+   "tool": "covlint",
+   "sev": "silent",
+   "lim": [
+    "MAP-02"
+   ]
+  },
+  "MAP_RANKED_FLAT": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-11"
+   ]
+  },
+  "MAP_SLOPE_TABLE": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-18"
+   ]
+  },
+  "MAP_TERRAIN_UNKNOWN": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-04"
+   ]
+  },
+  "MAP_WATER_PASSABLE": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-05"
+   ]
+  },
+  "MAP_XFORM_TOKEN": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-15"
+   ]
+  },
+  "MDL_BONE_PARAM": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-05"
+   ]
+  },
+  "MDL_BONE_TYPE": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-05"
+   ]
+  },
+  "MDL_VOLUME_BONE": {
+   "tool": "binhdr",
+   "sev": "silent",
+   "lim": [
+    "FMT-07"
+   ]
+  },
+  "MDL_ZERO_SPEED": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-05"
+   ]
+  },
+  "MIS_BALANCE_NO_CHARGE": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-02"
+   ]
+  },
+  "MIS_BOT_ARMY_MISSING": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-09"
+   ]
+  },
+  "MIS_BOT_DEAD_KEY": {
+   "tool": "check",
+   "sev": "silent",
+   "lim": [
+    "MIS-10"
+   ]
+  },
+  "MIS_BOT_UNIT_UNKNOWN": {
+   "tool": "check",
+   "sev": "silent",
+   "lim": [
+    "MIS-13",
+    "MIS-32"
+   ]
+  },
+  "MIS_BUDGET_NO_VEHICLE": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-05"
+   ]
+  },
+  "MIS_BUDGET_PARAM": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-14",
+    "MIS-17"
+   ]
+  },
+  "MIS_CLASS_NO_MI": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-19"
+   ]
+  },
+  "MIS_DURATION": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-21"
+   ]
+  },
+  "MIS_LIMITS_FORMAT": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "GPL-09",
+    "MIS-04"
+   ]
+  },
+  "MIS_PAYBACK_FORMAT": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-06"
+   ]
+  },
+  "MIS_RESTORE_DEAD": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-14"
+   ]
+  },
+  "MIS_TEAMKEY_UNREAD": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-18"
+   ]
+  },
+  "MIS_UNITSET_EXCLUDE_ONLY": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-03"
+   ]
+  },
+  "MI_CMD_UNKNOWN": {
+   "tool": "milint",
+   "sev": "crash",
+   "lim": [
+    "MIS-01",
+    "MIS-26"
+   ]
+  },
+  "MI_COND_EXPR": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-29"
+   ]
+  },
+  "MI_HELPER_UNKNOWN": {
+   "tool": "milint",
+   "sev": "crash",
+   "lim": [
+    "MAP-13"
+   ]
+  },
+  "MI_KEY_CASE": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-11"
+   ]
+  },
+  "MI_PLAYERS": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-14"
+   ]
+  },
+  "MI_TERM_UNKNOWN": {
+   "tool": "milint",
+   "sev": "crash",
+   "lim": [
+    "MIS-01",
+    "MIS-27"
+   ]
+  },
+  "MI_TRIGGER_KEY": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-01",
+    "MIS-28"
+   ]
+  },
+  "MODINFO_PARSE": {
+   "tool": "gui",
+   "sev": "crash",
+   "lim": [
+    "ENG-24",
+    "VFS-49"
+   ]
+  },
+  "MOD_MODE": {
+   "tool": "check",
+   "sev": "review",
+   "lim": [
+    "VFS-46",
+    "VFS-48"
+   ]
+  },
+  "MOD_NAME": {
+   "tool": "gohsample",
+   "sev": "silent",
+   "lim": [
+    "SDL-25"
+   ]
+  },
+  "MOD_NESTED": {
+   "tool": "wouldload",
+   "sev": "crash",
+   "lim": [
+    "SDL-24"
+   ]
+  },
+  "MOD_REQUIRE_MISSING": {
+   "tool": "lib",
+   "sev": "review",
+   "lim": [
+    "VFS-17"
+   ]
+  },
+  "MOD_ROOT_PATCH": {
+   "tool": "wouldload",
+   "sev": "review",
+   "lim": [
+    "VFS-25"
+   ]
+  },
+  "MOD_UNKNOWN": {
+   "tool": "conflicts",
+   "sev": "review",
+   "lim": [
+    "VFS-12"
+   ]
+  },
+  "MOD_VER_GATE": {
+   "tool": "lib",
+   "sev": "review",
+   "lim": [
+    "VFS-14"
+   ]
+  },
+  "MOD_WORKSHOP_COPY": {
+   "tool": "lib",
+   "sev": "review",
+   "lim": [
+    "VFS-51"
+   ]
+  },
+  "MOV_BONE_RADIUS_ZERO": {
+   "tool": "movlint",
+   "sev": "crash",
+   "lim": [
+    "MOV-20"
+   ]
+  },
+  "MOV_LOCO_KEY": {
+   "tool": "movlint",
+   "sev": "silent",
+   "lim": [
+    "MOV-01"
+   ]
+  },
+  "MOV_PIVOT_MISSING": {
+   "tool": "movlint",
+   "sev": "silent",
+   "lim": [
+    "MOV-20",
+    "MOV-34"
+   ]
+  },
+  "MOV_WHEEL_RADIUS_ZERO": {
+   "tool": "covlint",
+   "sev": "crash",
+   "lim": [
+    "MOV-20"
+   ]
+  },
+  "MPSYNC_DETECTED": {
+   "tool": "mpsync",
+   "sev": "silent",
+   "lim": [
+    "NET-17"
+   ]
+  },
+  "MPSYNC_EXCLUDED_DIFF": {
+   "tool": "mpsync",
+   "sev": "silent",
+   "lim": [
+    "NET-19"
+   ]
+  },
+  "MPSYNC_UNCHECKED": {
+   "tool": "mpsync",
+   "sev": "silent",
+   "lim": [
+    "NET-19"
+   ]
+  },
+  "NAME_BAD_CHAR": {
+   "tool": "lib",
+   "sev": "review",
+   "lim": [
+    "VFS-05"
+   ]
+  },
+  "NAME_SPACE_EDGE": {
+   "tool": "lib",
+   "sev": "review",
+   "lim": [
+    "VFS-05"
+   ]
+  },
+  "NAME_TOO_LONG": {
+   "tool": "packer",
+   "sev": "review",
+   "lim": [
+    "VFS-03"
+   ]
+  },
+  "NEG_HEX": {
+   "tool": "wouldload",
+   "sev": "crash",
+   "lim": [
+    "SDL-06"
+   ]
+  },
+  "NET_CELL": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "PORT-70"
+   ]
+  },
+  "NET_SIZE": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-15"
+   ]
+  },
+  "NET_TABLE": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-15"
+   ]
+  },
+  "NET_VERSION": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-15"
+   ]
+  },
+  "NUMBER_EXP0": {
+   "tool": "wouldload",
+   "sev": "crash",
+   "lim": [
+    "SDL-06"
+   ]
+  },
+  "NUMBER_GLUED": {
+   "tool": "check",
+   "sev": "crash",
+   "lim": [
+    "SDL-05"
+   ]
+  },
+  "NUMBER_SUFFIX": {
+   "tool": "wouldload",
+   "sev": "crash",
+   "lim": [
+    "SDL-05"
+   ]
+  },
+  "OVR_FULL_SHADOW": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "VFS-41"
+   ]
+  },
+  "PACK_ENTRY_TOO_BIG": {
+   "tool": "packer",
+   "sev": "review",
+   "lim": [
+    "VFS-39"
+   ]
+  },
+  "PACK_ROUNDTRIP": {
+   "tool": "packer",
+   "sev": "review",
+   "lim": [
+    "VFS-40"
+   ]
+  },
+  "PANEL_CELLS_FULL": {
+   "tool": "uilint",
+   "sev": "silent",
+   "lim": [
+    "UI-09"
+   ]
+  },
+  "PANEL_CELL_CLASH": {
+   "tool": "uilint",
+   "sev": "silent",
+   "lim": [
+    "UI-09"
+   ]
+  },
+  "PANEL_CONDITION_UNKNOWN": {
+   "tool": "uilint",
+   "sev": "silent",
+   "lim": [
+    "UI-08"
+   ]
+  },
+  "PANEL_ITEM_UNKNOWN": {
+   "tool": "uilint",
+   "sev": "silent",
+   "lim": [
+    "UI-10",
+    "UI-17"
+   ]
+  },
+  "PANEL_SPECIAL_UNLOADED": {
+   "tool": "uilint",
+   "sev": "silent",
+   "lim": [
+    "UI-07"
+   ]
+  },
+  "PARAM_PAREN": {
+   "tool": "wouldload",
+   "sev": "crash",
+   "lim": [
+    "SDL-19"
+   ]
+  },
+  "PARAM_SPACE": {
+   "tool": "wouldload",
+   "sev": "crash",
+   "lim": [
+    "SDL-19"
+   ]
+  },
+  "PATCH_ID": {
+   "tool": "milint",
+   "sev": "review",
+   "lim": [
+    "VFS-24"
+   ]
+  },
+  "PATCH_NO_DOC": {
+   "tool": "lib",
+   "sev": "review",
+   "lim": [
+    "VFS-24"
+   ]
+  },
+  "PATCH_REMAP_MISSING": {
+   "tool": "lib",
+   "sev": "review",
+   "lim": [
+    "VFS-23"
+   ]
+  },
+  "PATHER_TERRAIN_UNKNOWN": {
+   "tool": "refcheck",
+   "sev": "silent",
+   "lim": [
+    "MOV-10"
+   ]
+  },
+  "PATHER_TYPE_OMITTED": {
+   "tool": "refcheck",
+   "sev": "silent",
+   "lim": [
+    "MOV-12"
+   ]
+  },
+  "PAT_GAP": {
+   "tool": "rows2scn",
+   "sev": "review",
+   "lim": [
+    "VFS-14",
+    "VFS-38"
+   ]
+  },
+  "PICTURE_MISSING": {
+   "tool": "uilint",
+   "sev": "cosmetic",
+   "lim": [
+    "UI-03"
+   ]
+  },
+  "PLY_BAD_CHUNK": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-01"
+   ]
+  },
+  "PLY_BAD_MAGIC": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-13"
+   ]
+  },
+  "PLY_BIG_OBSOLETE": {
+   "tool": "binhdr",
+   "sev": "cosmetic",
+   "lim": [
+    "FMT-12"
+   ]
+  },
+  "PLY_BONEMAP_LIMIT": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-10"
+   ]
+  },
+  "PLY_INDEX_RANGE": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-01"
+   ]
+  },
+  "PLY_MTL_MISSING": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-03"
+   ]
+  },
+  "PLY_PART_RANGE": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-01"
+   ]
+  },
+  "PLY_TRUNCATED": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-01"
+   ]
+  },
+  "PLY_VERT_LIMIT": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-10"
+   ]
+  },
+  "PREFLIGHT_SPAWN_NO_ENTITY": {
+   "tool": "check",
+   "sev": "review",
+   "lim": [
+    "MIS-51"
+   ]
+  },
+  "REF_AMMO_UNKNOWN": {
+   "tool": "refcheck",
+   "sev": "crash",
+   "lim": [
+    "ENG-17"
+   ]
+  },
+  "REF_ANIM_MISSING": {
+   "tool": "gen",
+   "sev": "silent",
+   "lim": [
+    "ENG-17"
+   ]
+  },
+  "REF_FILLING_CYCLE": {
+   "tool": "portfix",
+   "sev": "silent",
+   "lim": [
+    "PORT-83"
+   ]
+  },
+  "REF_FSM_MISSING": {
+   "tool": "refcheck",
+   "sev": "crash",
+   "lim": [
+    "ENG-17",
+    "HUM-26"
+   ]
+  },
+  "REF_ITEM_UNKNOWN": {
+   "tool": "refcheck",
+   "sev": "crash",
+   "lim": [
+    "ENG-17"
+   ]
+  },
+  "REF_MESH_MISSING": {
+   "tool": "fix",
+   "sev": "crash",
+   "lim": [
+    "ENG-17"
+   ]
+  },
+  "REF_MODEL_MISSING": {
+   "tool": "fix",
+   "sev": "crash",
+   "lim": [
+    "ENG-17",
+    "ENG-32"
+   ]
+  },
+  "REF_SOUND_MISSING": {
+   "tool": "fix",
+   "sev": "cosmetic",
+   "lim": [
+    "ENG-17",
+    "GPL-15",
+    "VIS-08"
+   ]
+  },
+  "REF_STUFF_ENTITY_MISSING": {
+   "tool": "refcheck",
+   "sev": "silent",
+   "lim": [
+    "ENG-17"
+   ]
+  },
+  "REF_TEXTURE_MISSING": {
+   "tool": "fix",
+   "sev": "cosmetic",
+   "lim": [
+    "ENG-17"
+   ]
+  },
+  "REF_VISION_UNKNOWN": {
+   "tool": "refcheck",
+   "sev": "crash",
+   "lim": [
+    "ENG-17",
+    "VIS-25"
+   ]
+  },
+  "REF_WEAPON_UNKNOWN": {
+   "tool": "refcheck",
+   "sev": "crash",
+   "lim": [
+    "ENG-17"
+   ]
+  },
+  "REF_WRONG_FOLDER": {
+   "tool": "fix",
+   "sev": "silent",
+   "lim": [
+    "FMT-22"
+   ]
+  },
+  "REL_NET_NOTE": {
+   "tool": "doctor",
+   "sev": "review",
+   "lim": [
+    "NET-13",
+    "NET-16"
+   ]
+  },
+  "REL_NET_SIZE_ONLY": {
+   "tool": "doctor",
+   "sev": "review",
+   "lim": [
+    "NET-01"
+   ]
+  },
+  "REL_STRAY_FILE": {
+   "tool": "doctor",
+   "sev": "review",
+   "lim": [
+    "VFS-32"
+   ]
+  },
+  "REQ_MISSING": {
+   "tool": "gui",
+   "sev": "crash",
+   "lim": [
+    "VFS-50"
+   ]
+  },
+  "SKIPPED_EXT": {
+   "tool": "lib",
+   "sev": "review",
+   "lim": [
+    "VFS-06"
+   ]
+  },
+  "SND_TAG_UNKNOWN": {
+   "tool": "fxlint",
+   "sev": "silent",
+   "lim": [
+    "VIS-09"
+   ]
+  },
+  "SPEED_BEFORE_LOCO": {
+   "tool": "refcheck",
+   "sev": "silent",
+   "lim": [
+    "MOV-04"
+   ]
+  },
+  "SPEED_ORDER": {
+   "tool": "refcheck",
+   "sev": "silent",
+   "lim": [
+    "MOV-07"
+   ]
+  },
+  "SP_STATES_DROP": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-189"
+   ]
+  },
+  "STRAFE_MAX": {
+   "tool": "refcheck",
+   "sev": "silent",
+   "lim": [
+    "MOV-24"
+   ]
+  },
+  "STRAY_OPERATOR": {
+   "tool": "wouldload",
+   "sev": "crash",
+   "lim": [
+    "SDL-04"
+   ]
+  },
+  "STRING_EXPECTED": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "SDL-52"
+   ]
+  },
+  "STR_CALL_UNDEFINED": {
+   "tool": "strlint",
+   "sev": "crash",
+   "lim": [
+    "STR-11",
+    "STR-26"
+   ]
+  },
+  "STR_COLLIDER_GROUPS": {
+   "tool": "strlint",
+   "sev": "silent",
+   "lim": [
+    "STR-09",
+    "STR-22"
+   ]
+  },
+  "STR_EOF": {
+   "tool": "lib",
+   "sev": "crash",
+   "lim": [
+    "SDL-08"
+   ]
+  },
+  "STR_FORT_ENTITY": {
+   "tool": "strlint",
+   "sev": "crash",
+   "lim": [
+    "STR-08",
+    "STR-21"
+   ]
+  },
+  "STR_FORT_KEY": {
+   "tool": "strlint",
+   "sev": "silent",
+   "lim": [
+    "STR-06",
+    "STR-19"
+   ]
+  },
+  "STR_FORT_SKIP": {
+   "tool": "strlint",
+   "sev": "silent",
+   "lim": [
+    "STR-07",
+    "STR-20"
+   ]
+  },
+  "STR_FORT_VALUE": {
+   "tool": "strlint",
+   "sev": "silent",
+   "lim": [
+    "STR-08",
+    "STR-21"
+   ]
+  },
+  "STR_MACRO_UNDEFINED": {
+   "tool": "check",
+   "sev": "silent",
+   "lim": [
+    "STR-27"
+   ]
+  },
+  "STR_NEWLINE": {
+   "tool": "roundtrip",
+   "sev": "crash",
+   "lim": [
+    "LOC-06",
+    "SDL-08"
+   ]
+  },
+  "STR_PLACE_BONE": {
+   "tool": "strlint",
+   "sev": "silent",
+   "lim": [
+    "STR-05",
+    "STR-18",
+    "STR-30"
+   ]
+  },
+  "STR_PLACE_ENTITY": {
+   "tool": "strlint",
+   "sev": "crash",
+   "lim": [
+    "STR-05",
+    "STR-18",
+    "STR-30"
+   ]
+  },
+  "STR_TEAR_ENTITY": {
+   "tool": "strlint",
+   "sev": "crash",
+   "lim": [
+    "STR-11",
+    "STR-24"
+   ]
+  },
+  "STR_VIEW_MISSING": {
+   "tool": "covlint",
+   "sev": "silent",
+   "lim": [
+    "STR-10",
+    "STR-23"
+   ]
+  },
+  "STR_WINDOW_THICKNESS": {
+   "tool": "strlint",
+   "sev": "silent",
+   "lim": [
+    "STR-04"
+   ]
+  },
+  "STUFF_STRAY_FILE": {
+   "tool": "refcheck",
+   "sev": "review",
+   "lim": [
+    "SDL-54",
+    "SDL-63"
+   ]
+  },
+  "TAG_STRAY": {
+   "tool": "lnglint",
+   "sev": "cosmetic",
+   "lim": [
+    "LOC-08"
+   ]
+  },
+  "TAG_SWALLOWS": {
+   "tool": "check",
+   "sev": "crash",
+   "lim": [
+    "SDL-10"
+   ]
+  },
+  "TAG_UNCLOSED": {
+   "tool": "covlint",
+   "sev": "cosmetic",
+   "lim": [
+    "LOC-07"
+   ]
+  },
+  "TERM_DUP": {
+   "tool": "refcheck",
+   "sev": "silent",
+   "lim": [
+    "VIS-03"
+   ]
+  },
+  "TERM_PROP": {
+   "tool": "refcheck",
+   "sev": "silent",
+   "lim": [
+    "VIS-03"
+   ]
+  },
+  "TEX_EXT_SHADOW": {
+   "tool": "binhdr",
+   "sev": "review",
+   "lim": [
+    "FMT-04"
+   ]
+  },
+  "THRESHOLD_LT1": {
+   "tool": "refcheck",
+   "sev": "silent",
+   "lim": [
+    "DMG-19"
+   ]
+  },
+  "THUNDER_NO_SOUND": {
+   "tool": "fxlint",
+   "sev": "cosmetic",
+   "lim": [
+    "VIS-14"
+   ]
+  },
+  "TURNTIME_OMITTED": {
+   "tool": "refcheck",
+   "sev": "silent",
+   "lim": [
+    "MOV-03"
+   ]
+  },
+  "UNKNOWN_KEY": {
+   "tool": "gui",
+   "sev": "silent",
+   "lim": [
+    "AI-19",
+    "GPL-08",
+    "VFS-20"
+   ]
+  },
+  "UNREPLACED_PARAM": {
+   "tool": "donorfit",
+   "sev": "crash",
+   "lim": [
+    "SDL-21"
+   ]
+  },
+  "VER_MISSING": {
+   "tool": "gui",
+   "sev": "crash",
+   "lim": [
+    "VFS-19"
+   ]
+  },
+  "VER_ORDER": {
+   "tool": "gui",
+   "sev": "crash",
+   "lim": [
+    "VFS-19"
+   ]
+  },
+  "VER_RANGE": {
+   "tool": "gen",
+   "sev": "crash",
+   "lim": [
+    "VFS-19"
+   ]
+  },
+  "VISION_DUP": {
+   "tool": "refcheck",
+   "sev": "silent",
+   "lim": [
+    "VIS-01"
+   ]
+  },
+  "VISION_MODE_MULTI": {
+   "tool": "refcheck",
+   "sev": "silent",
+   "lim": [
+    "VIS-24"
+   ]
+  },
+  "VOL_BAD_CHUNK": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-06"
+   ]
+  },
+  "VOL_NO_SIDE": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-06"
+   ]
+  },
+  "VOL_ORDER": {
+   "tool": "binhdr",
+   "sev": "review",
+   "lim": [
+    "FMT-06"
+   ]
+  },
+  "VOL_SIDE_COUNT": {
+   "tool": "binhdr",
+   "sev": "review",
+   "lim": [
+    "FMT-06"
+   ]
+  },
+  "WARN_ANM_BONE_MISSING": {
+   "tool": "binhdr",
+   "sev": "review",
+   "lim": [
+    "FMT-09"
+   ]
+  },
+  "WARN_BARE": {
+   "tool": "lnglint",
+   "sev": "cosmetic",
+   "lim": [
+    "LOC-21"
+   ]
+  },
+  "WARN_BURN_NO_INFLAMMATION_TIME": {
+   "tool": "refcheck",
+   "sev": "silent",
+   "lim": [
+    "DMG-17"
+   ]
+  },
+  "WARN_CONFLICT_OPAQUE_MOD_MOD": {
+   "tool": "conflicts",
+   "sev": "silent",
+   "lim": [
+    "VFS-43",
+    "VFS-45"
+   ]
+  },
+  "WARN_EBM_MIPMAP": {
+   "tool": "binhdr",
+   "sev": "cosmetic",
+   "lim": [
+    "FMT-17"
+   ]
+  },
+  "WARN_ENV_NO_ENABLE": {
+   "tool": "fxlint",
+   "sev": "cosmetic",
+   "lim": [
+    "VIS-14"
+   ]
+  },
+  "WARN_EXP_ANM_BONES": {
+   "tool": "expcheck",
+   "sev": "cosmetic",
+   "lim": [
+    "FMT-18"
+   ]
+  },
+  "WARN_EXP_DUP_BONE": {
+   "tool": "covlint",
+   "sev": "cosmetic",
+   "lim": [
+    "FMT-19"
+   ]
+  },
+  "WARN_EXP_DUP_VOLUME": {
+   "tool": "expcheck",
+   "sev": "cosmetic",
+   "lim": [
+    "FMT-19"
+   ]
+  },
+  "WARN_EXP_SKIN_BONES": {
+   "tool": "expcheck",
+   "sev": "cosmetic",
+   "lim": [
+    "FMT-18",
+    "FMT-23"
+   ]
+  },
+  "WARN_EXP_VOL_MATRIX": {
+   "tool": "expcheck",
+   "sev": "cosmetic",
+   "lim": [
+    "FMT-20"
+   ]
+  },
+  "WARN_FONT_BINARY_MISSING": {
+   "tool": "uilint",
+   "sev": "crash",
+   "lim": [
+    "UI-16"
+   ]
+  },
+  "WARN_HUM_BREED_UNKNOWN": {
+   "tool": "humlint",
+   "sev": "silent",
+   "lim": [
+    "HUM-18"
+   ]
+  },
+  "WARN_HUM_USER_AMOUNT": {
+   "tool": "humlint",
+   "sev": "silent",
+   "lim": [
+    "HUM-23"
+   ]
+  },
+  "WARN_INT_RANGE": {
+   "tool": "sdllint",
+   "sev": "silent",
+   "lim": [
+    "SDL-07"
+   ]
+  },
+  "WARN_KEYS_ID_UNREAD": {
+   "tool": "uilint",
+   "sev": "silent",
+   "lim": [
+    "UI-15"
+   ]
+  },
+  "WARN_MAP_MODE_FLAGS": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-20",
+    "MAP-34"
+   ]
+  },
+  "WARN_MAP_NET_ID_UNLISTED": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-04",
+    "MAP-19"
+   ]
+  },
+  "WARN_MAP_NET_NO_GROUND": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-08"
+   ]
+  },
+  "WARN_MAP_NET_ORIGIN": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-28"
+   ]
+  },
+  "WARN_MAP_POSITION": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-25"
+   ]
+  },
+  "WARN_MI_KEY_UNKNOWN": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-01",
+    "MIS-31"
+   ]
+  },
+  "WARN_MI_LINK_REF": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-30"
+   ]
+  },
+  "WARN_MI_SPAWN_COUNT": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MAP-02",
+    "MAP-23"
+   ]
+  },
+  "WARN_MI_TASK_REF": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-30"
+   ]
+  },
+  "WARN_MI_ZONE_REF": {
+   "tool": "milint",
+   "sev": "silent",
+   "lim": [
+    "MIS-30"
+   ]
+  },
+  "WARN_MOD_MODERN": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "VFS-19"
+   ]
+  },
+  "WARN_MPSYNC_SILENT": {
+   "tool": "mpsync",
+   "sev": "silent",
+   "lim": [
+    "NET-17"
+   ]
+  },
+  "WARN_PANEL_CELL_RANGE": {
+   "tool": "uilint",
+   "sev": "silent",
+   "lim": [
+    "UI-09"
+   ]
+  },
+  "WARN_PARAM_PREFIX": {
+   "tool": "keylint",
+   "sev": "review",
+   "lim": [
+    "SDL-56"
+   ]
+  },
+  "WARN_PARAM_UNBALANCED": {
+   "tool": "sdllint",
+   "sev": "review",
+   "lim": [
+    "SDL-19"
+   ]
+  },
+  "WARN_PAREN_STRAY": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "SDL-16"
+   ]
+  },
+  "WARN_PLY_BIG_BASIS": {
+   "tool": "binhdr",
+   "sev": "cosmetic",
+   "lim": [
+    "FMT-12"
+   ]
+  },
+  "WARN_PLY_STRIDE": {
+   "tool": "binhdr",
+   "sev": "cosmetic",
+   "lim": [
+    "FMT-10"
+   ]
+  },
+  "WARN_PORT_ARITH_EVAL": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-22"
+   ]
+  },
+  "WARN_PORT_ARITH_FAIL": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-22"
+   ]
+  },
+  "WARN_PORT_ARMOR_HEALTH_CUSTOM": {
+   "tool": "portdiff",
+   "sev": "review",
+   "lim": [
+    "PORT-03"
+   ]
+  },
+  "WARN_PORT_ARMOR_MACRO_OVERRIDES_THICKNESS": {
+   "tool": "portdiff",
+   "sev": "review",
+   "lim": [
+    "PORT-05"
+   ]
+  },
+  "WARN_PORT_BONE_SPEED_UNITS": {
+   "tool": "portdiff",
+   "sev": "review",
+   "lim": [
+    "PORT-10"
+   ]
+  },
+  "WARN_PORT_DROP_AMMO_KEY": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-25"
+   ]
+  },
+  "WARN_PORT_DROP_EVENTS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-23",
+    "PORT-74",
+    "PORT-193"
+   ]
+  },
+  "WARN_PORT_DROP_HEALTH": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-18"
+   ]
+  },
+  "WARN_PORT_DROP_SET_CALL": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-29"
+   ]
+  },
+  "WARN_PORT_FX_CURVES": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-58"
+   ]
+  },
+  "WARN_PORT_FX_PLUS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-54"
+   ]
+  },
+  "WARN_PORT_HARDNESS_NO_ENGINE": {
+   "tool": "portdiff",
+   "sev": "review",
+   "lim": [
+    "PORT-01"
+   ]
+  },
+  "WARN_PORT_KEY_GOH_ONLY": {
+   "tool": "portdiff",
+   "sev": "review",
+   "lim": [
+    "PORT-34"
+   ]
+  },
+  "WARN_PORT_MINE_RESHAPE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-27"
+   ]
+  },
+  "WARN_PORT_MTL_KEYS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-24"
+   ]
+  },
+  "WARN_PORT_OVERMATCH_CALIBRE": {
+   "tool": "portdiff",
+   "sev": "review",
+   "lim": [
+    "PORT-02"
+   ]
+  },
+  "WARN_PORT_PEN_TAG_NO_EXACT": {
+   "tool": "portdiff",
+   "sev": "review",
+   "lim": [
+    "PORT-07"
+   ]
+  },
+  "WARN_PORT_SKIP_KIND": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-31"
+   ]
+  },
+  "WARN_PORT_SKIP_SET_KIND": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-33",
+    "PORT-194"
+   ]
+  },
+  "WARN_PORT_VISION_KEY": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-30"
+   ]
+  },
+  "WARN_PORT_VISION_NAME": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-192"
+   ]
+  },
+  "WARN_PORT_VOLUME_FLAG": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-21"
+   ]
+  },
+  "WARN_PORT_VOLUME_KEY": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-20"
+   ]
+  },
+  "WARN_PORT_WEAPON_KEY": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-26",
+    "PORT-190"
+   ]
+  },
+  "WARN_REL_PAK_LOOSE_DUP": {
+   "tool": "doctor",
+   "sev": "review",
+   "lim": [
+    "VFS-08"
+   ]
+  },
+  "WARN_REL_STRAY_FILE": {
+   "tool": "doctor",
+   "sev": "review",
+   "lim": [
+    "VFS-32"
+   ]
+  },
+  "WARN_SOUND_MP3": {
+   "tool": "binhdr",
+   "sev": "cosmetic",
+   "lim": [
+    "FMT-14"
+   ]
+  },
+  "WARN_STR_DEF_SCALE": {
+   "tool": "strlint",
+   "sev": "silent",
+   "lim": [
+    "STR-12"
+   ]
+  },
+  "WARN_STR_TEAR_BONE_NONE": {
+   "tool": "strlint",
+   "sev": "silent",
+   "lim": [
+    "STR-11",
+    "STR-28"
+   ]
+  },
+  "WARN_STUFF_KEY_MISMATCH": {
+   "tool": "loccover",
+   "sev": "review",
+   "lim": [
+    "LOC-15"
+   ]
+  },
+  "WARN_TAG_CSLASH": {
+   "tool": "lnglint",
+   "sev": "cosmetic",
+   "lim": [
+    "LOC-09"
+   ]
+  },
+  "WARN_TEXT_NOT_CRLF": {
+   "tool": "packer",
+   "sev": "review",
+   "lim": [
+    "SDL-53"
+   ]
+  },
+  "WAV_NOT_RIFF": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-14"
+   ]
+  },
+  "ZIP_NAME_TOO_LONG": {
+   "tool": "packer",
+   "sev": "review",
+   "lim": [
+    "VFS-04"
+   ]
+  }
+ }
+}

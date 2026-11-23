@@ -1,0 +1,4 @@
+;SDL
+{entity
+	{damage_report "gun" "component/gun_brokn"}
+}

@@ -1,0 +1,20 @@
+{
+  "total": 4,
+  "equal": 3,
+  "differs": 0,
+  "fail": 1,
+  "types": {
+    ".def": {
+      "files": 4,
+      "equal": 3,
+      "differs": 0,
+      "fail": 1
+    }
+  },
+  "kinds": {
+    "fail BRACES": {
+      "count": 1,
+      "sample": "bad/unclosed.def"
+    }
+  }
+}

@@ -1,0 +1,143 @@
+{
+ "form": "limclass/1",
+ "area": "PORT",
+ "rows": {
+  "PORT-01": {
+   "chk": "built",
+   "class": "silent",
+   "why": "strength bonus lost, no message"
+  },
+  "PORT-02": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unknown slope keys unused"
+  },
+  "PORT-03": {
+   "chk": "built",
+   "class": "silent",
+   "why": "armor formula the game has no such key"
+  },
+  "PORT-04": {
+   "chk": "never",
+   "class": "info",
+   "never": "engine macro design",
+   "why": "shape fixed by AS2 macros"
+  },
+  "PORT-05": {
+   "chk": "built",
+   "class": "silent",
+   "why": "macro wins over thickness quietly"
+  },
+  "PORT-06": {
+   "chk": "never",
+   "class": "silent",
+   "never": "engine armor layout",
+   "why": "left and right share one area"
+  },
+  "PORT-07": {
+   "chk": "built",
+   "class": "silent",
+   "why": "pen table skipped without exact tag"
+  },
+  "PORT-08": {
+   "chk": "never",
+   "class": "review",
+   "never": "needs reading each macro body",
+   "why": "macro may ignore args; judgement per macro"
+  },
+  "PORT-09": {
+   "chk": "never",
+   "class": "review",
+   "never": "conversion judgement, needs game test",
+   "why": "hidden GoH speed factor, judge per shell"
+  },
+  "PORT-10": {
+   "chk": "built",
+   "class": "silent",
+   "why": "wrong speed key ignored"
+  },
+  "PORT-11": {
+   "chk": "never",
+   "class": "review",
+   "never": "tuning judgement",
+   "why": "factors empirical, unsettled"
+  },
+  "PORT-12": {
+   "chk": "never",
+   "class": "info",
+   "never": "duplicate row",
+   "why": "duplicate of MOV-05"
+  },
+  "PORT-13": {
+   "chk": "never",
+   "class": "review",
+   "never": "needs .mdl bones and anims",
+   "why": "seat count bound to model and anim"
+  },
+  "PORT-14": {
+   "chk": "never",
+   "class": "review",
+   "never": "balance judgement",
+   "why": "ammo totals change cook-off odds"
+  },
+  "PORT-15": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "cp1251 string shows U+FFFD only"
+  },
+  "PORT-16": {
+   "chk": "never",
+   "class": "info",
+   "never": "duplicate row",
+   "why": "duplicate of DMG-05"
+  },
+  "PORT-17": {
+   "chk": "never",
+   "class": "review",
+   "never": "needs human comparison",
+   "why": "name match unreliable, check variant"
+  },
+  "PORT-18": {
+   "chk": "built",
+   "class": "crash",
+   "why": "perks shell with no hp is fatal"
+  },
+  "PORT-19": {
+   "chk": "never",
+   "class": "review",
+   "never": "effect needs in-game test",
+   "why": "koef effect unsettled, keep as written"
+  },
+  "PORT-20": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unread keys ignored, unknown material logs error"
+  },
+  "PORT-21": {
+   "chk": "built",
+   "class": "silent",
+   "why": "valid keys, unverified flags only"
+  },
+  "PORT-22": {
+   "chk": "built",
+   "class": "silent",
+   "why": "GoH arithmetic not read by AS2 keys [I]"
+  },
+  "PORT-23": {
+   "chk": "built",
+   "class": "crash",
+   "why": "events block unreadable in AS2 mdl [I]"
+  },
+  "PORT-24": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unexpected token in .mtl, fatal"
+  },
+  "PORT-25": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unknown ammo key likely fatal [I]"
+  }
+ },
+ "dead": []
+}

@@ -1,0 +1,22 @@
+{
+ "as2": {
+  "obstInf": "b4f8c332ef29a89ba0c5a103acf4ace86a88da2d",
+  "moveInf": "e62b998c88f883317cbefb81c5fcef8545289e48",
+  "obstTank": "9a78998e3310be8227801f70ef2d11da99eb80c8",
+  "moveTank": "3d088dbf18fdd0e1945cf374212be45cc24d1560",
+  "travelInf": {
+   "cnt": 9027,
+   "sum": 67104
+  }
+ },
+ "goh": {
+  "obstInf": "6454f90ea941d26ee82d5d297594480cafaa8a51",
+  "moveInf": "ecf9f7ba44a2933ebd99eae38a2fbeb276c396c2",
+  "obstTank": "1398fcd03d636d82bb5be3a2110c5d79a00b291d",
+  "moveTank": "8b95dc8f4b8e816d355573f32cae113f8e1dad8f",
+  "travelInf": {
+   "cnt": 9225,
+   "sum": 69622
+  }
+ }
+}

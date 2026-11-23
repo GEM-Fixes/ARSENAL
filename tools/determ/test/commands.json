@@ -1,0 +1,10 @@
+{"form":"determ-commands/1","note":"determ self-test fixtures: 4 seeded failures with known cause, 3 clean twins",
+"commands":[
+ {"id":"date","tool":"fx","args":["{R}/tools/determ/test/date.js"]},
+ {"id":"list","tool":"fx","args":["{R}/tools/determ/test/list.js","{R}/tools/determ/test/fx"]},
+ {"id":"list-sorted","tool":"fx","args":["{R}/tools/determ/test/list.js","{R}/tools/determ/test/fx","--sorted"]},
+ {"id":"tz","tool":"fx","args":["{R}/tools/determ/test/tz.js"]},
+ {"id":"tz-utc","tool":"fx","args":["{R}/tools/determ/test/tz.js","--utc"]},
+ {"id":"where","tool":"fx","args":["{R}/tools/determ/test/where.js","{T}/x"]},
+ {"id":"where-abs","tool":"fx","args":["{R}/tools/determ/test/where.js","{T}/x","--abs"]}
+]}

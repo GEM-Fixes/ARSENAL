@@ -1,0 +1,6 @@
+{game_entity
+ {flagx no}
+ {flagx "false"}
+ {flagx true}
+ {quanttick 2.5}
+}

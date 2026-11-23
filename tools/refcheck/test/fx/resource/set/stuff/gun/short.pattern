@@ -1,0 +1,5 @@
+{weapon_bullet
+	{OvermatchDamping {0 1} {45 1.2}} ;@OVERMATCH_SHORT
+	{projectileDamageThreshold 0.5} ;@THRESHOLD_LT1
+	{overmatchCalibre 20} ;@GOH_KEY
+}

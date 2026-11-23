@@ -1,0 +1,5 @@
+{
+  "OBST-01": { "state": "done", "where": "tools/lib/model/edit/vol.js state obst.list; sub/vol.client.js drawObst; sub/viewer.client.js obstacles (doc scene obstacles)", "test": "vol.test.js; viewer.test.js ok 8, joins", "note": "Listed with kind (Obb2, Circle2, Polygon2), sizes and points in the Volumes tab, and drawn as outlines in the 3D view (show obstacles). Editing is not owed (OBST-03)." },
+  "OBST-02": { "state": "done", "where": "tools/lib/model/edit/vol.js state obst.list (areas); sub/viewer.client.js areas", "test": "vol.test.js; viewer.test.js ok 8", "note": "Same as OBST-01 for areas (show areas in the 3D view)." },
+  "OBST-03": { "state": "done", "where": "tools/lib/model/edit/vol.js:666 obst.add, 684 obst.set, 716 obst.delete; tools/gui/ext/models/sub/vol.client.js:201-240", "test": "edit-vol: obstacles and areas; vol.test.js obstacle edit and add area", "note": "Dead in SOEdit (not owed), built anyway: add an obstacle or area, change kind, centre, half sizes, radius, rotation, points and tags, delete. Ids are obstacle:N and area:N." }
+}

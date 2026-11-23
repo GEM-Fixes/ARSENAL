@@ -1,0 +1,4 @@
+(define "armor" {TurnTime 5})
+{game_entity
+	("Armor")
+}

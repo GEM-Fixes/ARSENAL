@@ -1,0 +1,37 @@
+{
+  "name": "vfs-50",
+  "rows": [
+    "VFS-50"
+  ],
+  "fixture": [
+    "vfs-50"
+  ],
+  "src": [
+    ",480-498",
+    "(not part of this release)"
+  ],
+  "note": "Half 1: Require \"as64+\" is met (FindMod knows it): the mod mounts. Pass: its cfg answers.",
+  "steps": [
+    {
+      "cmd": "exec \"vfs50.cfg\"",
+      "expect": "trs_vfs50_marker"
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "exec \"vfs50.cfg\"",
+      "match": "trs_vfs50_marker",
+      "want": true
+    }
+  ],
+  "mode": "menu",
+  "mods": [
+    "as64+",
+    "vfs-50"
+  ],
+  "params": {}
+}

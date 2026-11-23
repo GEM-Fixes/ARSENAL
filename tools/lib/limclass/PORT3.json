@@ -1,0 +1,192 @@
+{
+ "form": "limclass/1",
+ "area": "PORT3",
+ "rows": {
+  "PORT-47": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal token at load",
+   "tool": "goh2as2",
+   "how": "def includes /properties/stuff*.ext copied over the AS2 path"
+  },
+  "PORT-48": {
+   "chk": "built",
+   "class": "silent",
+   "why": "mod absent, no dialog"
+  },
+  "PORT-49": {
+   "chk": "built",
+   "class": "crash",
+   "why": "self-inheriting set, exit 0xC0000005"
+  },
+  "PORT-50": {
+   "chk": "never",
+   "class": "info",
+   "why": "mode check absent on GoH, nothing to hit",
+   "never": "workflow fact about modswitch"
+  },
+  "PORT-51": {
+   "chk": "never",
+   "class": "info",
+   "why": "boot-only result proves nothing",
+   "never": "needs a spawn in game"
+  },
+  "PORT-52": {
+   "chk": "built",
+   "class": "crash",
+   "why": "define not found at boot without parent",
+   "tool": "modmove",
+   "how": "preset macro calls not defined in mod or listed parent mod"
+  },
+  "PORT-53": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal unexpected token on unreadable entity keys",
+   "tool": "goh2as2",
+   "how": "GoH entity keys with no AS2 reader, WARN_PORT_ENTITY_KEY"
+  },
+  "PORT-54": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal token on bare {+"
+  },
+  "PORT-55": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal define not found"
+  },
+  "PORT-56": {
+   "chk": "never",
+   "class": "cosmetic",
+   "why": "load time only",
+   "never": "timing needs a game run"
+  },
+  "PORT-57": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal Vision not found"
+  },
+  "PORT-58": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal Block terminator"
+  },
+  "PORT-59": {
+   "chk": "built",
+   "class": "crash",
+   "why": "null deref on first unit"
+  },
+  "PORT-60": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal resource not found"
+  },
+  "PORT-61": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal String expected"
+  },
+  "PORT-62": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal define not found"
+  },
+  "PORT-63": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal unexpected token"
+  },
+  "PORT-64": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal Extender not found"
+  },
+  "PORT-65": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal file not found on first draw"
+  }
+ },
+ "dead": [
+  {
+   "row": "PORT-48",
+   "tool": "modmove",
+   "code": "MOVE_VERSION_RANGE",
+   "fix": {
+    "code": "MOVE_VERSION_RANGE"
+   }
+  },
+  {
+   "row": "PORT-49",
+   "tool": "modmove",
+   "code": "MOVE_LIVE_SILENT_CRASH",
+   "fix": {
+    "code": "MOVE_LIVE_SILENT_CRASH"
+   }
+  },
+  {
+   "row": "PORT-55",
+   "tool": "portfix",
+   "code": "MERGED_DEFINES",
+   "fix": {
+    "code": "MERGED_DEFINES"
+   }
+  },
+  {
+   "row": "PORT-57",
+   "tool": "portfix",
+   "code": "MERGED_TABLE",
+   "fix": {
+    "code": "MERGED_TABLE"
+   }
+  },
+  {
+   "row": "PORT-59",
+   "tool": "portfix",
+   "code": "WARN_CARRY_DROP_KEY",
+   "fix": {
+    "code": "WARN_CARRY_DROP_KEY"
+   }
+  },
+  {
+   "row": "PORT-60",
+   "tool": "portfix",
+   "code": "WARN_PORT_ANM_DIR",
+   "fix": {
+    "code": "WARN_PORT_ANM_DIR"
+   }
+  },
+  {
+   "row": "PORT-61",
+   "tool": "portfix",
+   "code": "WARN_MACRO_CLASH",
+   "fix": {
+    "code": "WARN_MACRO_CLASH"
+   }
+  },
+  {
+   "row": "PORT-62",
+   "tool": "portfix",
+   "code": "WARN_MACRO_UNDEFINED",
+   "fix": {
+    "code": "WARN_MACRO_UNDEFINED"
+   }
+  },
+  {
+   "row": "PORT-64",
+   "tool": "portfix",
+   "code": "WARN_EXTENDER_UNKNOWN",
+   "fix": {
+    "code": "WARN_EXTENDER_UNKNOWN"
+   }
+  },
+  {
+   "row": "PORT-65",
+   "tool": "portfix",
+   "code": "WARN_EBM_FRAME_MISSING",
+   "fix": {
+    "code": "WARN_EBM_FRAME_MISSING"
+   }
+  }
+ ]
+}

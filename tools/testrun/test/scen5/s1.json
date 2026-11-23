@@ -1,0 +1,1 @@
+{"name":"s1","mode":"menu","fixture":["vfs-21a"],"mods":["as64+","vfs-21a"],"steps":[{"cmd":"echo s1"},{"wait":0.6}],"verdict":[{"reply":"echo s1","match":"^s1$"}]}

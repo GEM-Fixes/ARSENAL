@@ -1,0 +1,61 @@
+{
+  "name": "sdl-15",
+  "rows": [
+    "SDL-15"
+  ],
+  "fixture": [
+    "sdl-15"
+  ],
+  "params": {
+    "map": "multi/1v1_road:combat"
+  },
+  "src": [
+    " (s_sdlTokenBefore)",
+    ",131"
+  ],
+  "note": "Was manual: mp_settings gives a reply signal. Nested arithmetic on a number (scoreFinal = 777) and a bool (enableSpectators = 1; off when absent). Pass: both read right, so the overwritten token does no harm here. A FAIL or a parse exception on the bool line IS the row effect. Only bool and number covered, not range or tag-list [T]. [T] bool value text; depends on sdl-33c for FLAG_SAVED.",
+  "steps": [
+    {
+      "cmd": "mp_lan"
+    },
+    {
+      "wait_stage": true
+    },
+    {
+      "cmd": "mp_host {map} 2"
+    },
+    {
+      "wait_stage": true
+    },
+    {
+      "cmd": "mp_settings",
+      "expect": "scoreFinal"
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "log": "Block terminator expected",
+      "want": false
+    },
+    {
+      "reply": "mp_settings",
+      "match": "scoreFinal[^\\n]*value=777\\b",
+      "want": true
+    },
+    {
+      "reply": "mp_settings",
+      "match": "enableSpectators[^\\n]*value=(1|true)\\b",
+      "want": true
+    }
+  ],
+  "mode": "menu",
+  "mods": [
+    "as64+",
+    "sdl-15"
+  ],
+  "quarantine": "engine outcome: SDL arithmetic result token is always SDL_FLOAT, so an int field (scoreFinal) throws Integer expected! in mp.core.start at mp_lan; the exception stalls the pipe (no reply). Needs a float field or a different probe."
+}

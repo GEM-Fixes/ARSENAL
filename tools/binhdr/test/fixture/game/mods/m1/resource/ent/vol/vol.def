@@ -1,0 +1,9 @@
+{game_entity
+ {Extension "vol.mdl"}
+ {Volume "ok"
+  {Thickness 5}
+ }
+ {Volume "noshape"
+  {Thickness 5}
+ }
+}

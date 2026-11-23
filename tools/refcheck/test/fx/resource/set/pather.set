@@ -1,0 +1,4 @@
+{Pathers
+	{Profile "human" {Terrain "ground" 1 "no_pass" 0 "deep_water" 0.1 "no_pass_human" 0}}
+	{Profile "odd" {Terrain "ground" 1 "mud2" 0.5}} ;@PATHER_TERRAIN_UNKNOWN
+}

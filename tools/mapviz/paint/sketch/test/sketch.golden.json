@@ -1,0 +1,12 @@
+{
+ "libs": "canvas:shared,paper:shared,input:shared",
+ "note": "sha1 of the data block of pic.sketch on the fixture map, mode battle_zones, seed 1",
+ "as2": {
+  "512": "84eeacc9a18be2da18a7e026704e051f3ee08ef3",
+  "1500": "5a0d2b89b6345d6b3243ddbccf5fba0a95a953fb"
+ },
+ "goh": {
+  "512": "ce3b6efd24c8fdaa2eef06407c6a3d9255110357",
+  "1500": "94857622e5b4931e5129297ce9cdbbfa220a4735"
+ }
+}

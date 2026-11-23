@@ -1,0 +1,5 @@
+[lint/keylint]
+resource/entity/k/k.def:2: WARN_UNKNOWN_KEY unknown key "masss" in def block "game_entity"; did you mean "mass"? (engine skips unknown keys silently) (SDL-34)
+[pack/packer]
+resource/set/lf.set:1: WARN_TEXT_NOT_CRLF bare LF line ending; parses fine but vanilla text is CRLF (SDL-53)
+2 findings (0 errors, 2 warnings); pack dry-run ok

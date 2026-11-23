@@ -1,0 +1,9 @@
+; ide check fixture: one defect per line, truth in ../../../truth.json
+{ok 1}
+	{esc "a\qb"}
+{stray 1}}
+{tag {#x 1}}
+{str "open
+}
+{after "ok"}
+{unclosed {inner 1}

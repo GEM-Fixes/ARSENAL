@@ -1,0 +1,12 @@
+Steam Application ID: 244450
+
+CWD: x:/fixture
+CMD: "X:\Fixture\mowas_2.exe"
+[00:00:09] Localization key redefinition: interface/ok in /interface/text/#editor.lng (/interface/text/#editor.lng, 123)
+Build: 2026.11.03 13:15 - 0x0
+Product: Men of War: Assault Squad 2 - v3.262.1 - standard
+Repository: 138266 resources
+[00:00:18] Entity redefinition: radio_station (eentityraw.cpp, 157) @ [main_loop]
+Phase Loading... took 11904.7ms.
+Phase Loading multiplayer resources... took 3633.98ms.
+GameThreadStart

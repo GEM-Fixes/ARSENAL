@@ -1,0 +1,52 @@
+;SDL  invented crew macros for the donorfit test (not game data)
+(define "f_door"
+	{boarder
+		{door "%d"}
+	}
+)
+(define "f_crew"
+	{placer {place "gunner" {group "crew"}}}
+	("f_door" d(emit1))
+	("f_door" d(emit0))
+)
+(define "crew_3_human"
+	("f_crew")
+)
+(define "f_vis"
+	{sensor
+		{visor "top"
+			{bone "%vb"}
+		}
+	}
+)
+(define "crew_driver"
+	{placer {place "driver" {group "crew"}}}
+	{boarder
+		{door "%door"}
+		{door "%door2"}
+	}
+)
+(define "crew_4_human_extended"
+	("crew_driver" door(emit0) door2(emit1))
+)
+(define "crew_4_human"
+	{boarder
+		{door "emit1"}
+		{door "emit2"}
+	}
+)
+(define "crew_9_human"
+	{boarder
+		{door "emit7"}
+	}
+)
+(define "f_shield"
+	{volume "%v"
+		{tags "shield"}
+	}
+)
+(define "f_seat"
+	{placer
+		{place "%p" {LinkBone "%b"}}
+	}
+)

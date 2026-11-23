@@ -1,0 +1,6 @@
+{Mod
+ {Name "trs vfs-21b"}
+ {MinGameVersion "3.301"}
+ {Delete "resource/at/vfs21_a.cfg"}
+ {Delete "at/vfs21_b.cfg"}
+}

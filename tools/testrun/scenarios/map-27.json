@@ -1,0 +1,40 @@
+{
+  "name": "map-27",
+  "rows": [
+    "MAP-27"
+  ],
+  "mode": "mp",
+  "fixture": [
+    "map-27"
+  ],
+  "mods": [
+    "as64+",
+    "map-27"
+  ],
+  "params": {
+    "map": "multi/1v1_road:combat"
+  },
+  "src": [
+    " (LoadFolder .mi iteration)",
+    " (mp_checkCompetitive)",
+    " (MountMod order)"
+  ],
+  "note": "mod ships a loose combat.mi (team a 2 spawn points, b 1) over the map.pak copy (a1,b1). mp_checkCompetitive reports \"Teams are unmatched! a(2) b(1)\" only if the mod copy loaded; vanilla copy reports \"dm(0) != a(1) + b(1)\". Proxy: the .mi, not the `map` file the row names (same VFS order).",
+  "steps": [
+    {
+      "cmd": "mp_checkCompetitive",
+      "expect": "Teams are unmatched! a\\(2\\) b\\(1\\)"
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "mp_checkCompetitive",
+      "match": "Teams are unmatched! a\\(2\\) b\\(1\\)",
+      "want": true
+    }
+  ]
+}

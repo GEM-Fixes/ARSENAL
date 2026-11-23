@@ -1,0 +1,34 @@
+{
+  "v": 1,
+  "note": "Pack groups for tools/mcp/pack/pack.js and the GUI page Claude. Patterns: * = any text. A skill folder or an MCP group that matches no group lands in `other`, never dropped. Hand-kept; titles here are the English fallback (the GUI has its own strings for the ids below).",
+  "groups": [
+    { "id": "modding", "title": "Modding", "what": "Make and change mods: units, weapons, maps, text, bots, checks, two mods together, porting, testing, release.",
+      "skills": ["mow-mod-*"], "mcp": ["mod", "together", "units", "weapons", "text", "maps", "bots", "assets", "scripts"], "servers": [] },
+    { "id": "playing", "title": "Playing", "what": "Help for players: match-ups, what to buy, setting up a match, why the game fails.",
+      "skills": ["mow-play-*"], "mcp": ["play", "coach", "run"], "servers": [] },
+    { "id": "games", "title": "The three games and lookups", "what": "What differs between MoW:AS2, AS64 and Gates of Hell, and lookups in the knowledge webs.",
+      "skills": ["mow-games"], "mcp": ["knowledge"], "servers": [] },
+    { "id": "gui", "title": "ARSENAL window", "what": "Let Claude use the ARSENAL window for you, and the rules for changing the window itself.",
+      "skills": ["arsenal-gui-*"], "mcp": [], "servers": ["arsenal-gui"] },
+    { "id": "robz", "title": "RobZ Realism", "what": "RobZ Realism: play it, write a sub-mod on top of it, run it on AS64, known issues.",
+      "skills": ["mow-robz*"], "mcp": ["robz"], "servers": [] }
+  ],
+  "other": { "id": "other", "title": "Other", "what": "Pieces that are in no group yet." },
+  "all": { "id": "all", "title": "Everything", "what": "Every skill, every MCP tool group and the ARSENAL window server." },
+  "mcpWhat": {
+    "knowledge": "Look up how the games behave: modding facts, known limits, differences between the games, the guide.",
+    "mod": "A whole mod: facts, new mod, check, fix, what it changes, generate, which file wins, upgrade, port plan, pack.",
+    "together": "Several mods at once: clashes, a patch mod that keeps both sides, multiplayer sync.",
+    "units": "Units: find, stats, change, equipment, look, entity facts.",
+    "weapons": "Weapons and balance: find and change a weapon, balance check, price.",
+    "text": "Game text: find and set names and translations.",
+    "maps": "Maps and missions: facts, clone a map, add a mode, place an object.",
+    "bots": "Bots: allow bots in a mode, bot buying recipes.",
+    "play": "The installed game: status, last log, crash, modes, bots, settings. Read only.",
+    "coach": "Advice for a match: gun against armour, armour of a unit, what an army can buy, counters.",
+    "run": "Start and drive the game for a test. Refused unless starting the game is allowed.",
+    "assets": "Models, textures, effects and sound.",
+    "scripts": "Interaction and mission scripts.",
+    "robz": "The RobZ Realism mod."
+  }
+}

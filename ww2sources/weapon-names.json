@@ -1,0 +1,4043 @@
+{
+ "note": "Made by tools/weapon-names.mjs from Wikidata (CC0). Each group is one weapon model.",
+ "groups": [
+  {
+   "qid": "Q1050536",
+   "label": "Madsen machine gun",
+   "origin": "Denmark",
+   "year": 1902,
+   "class": "weapon model",
+   "names": [
+    "Madsen machine gun",
+    "Madsen"
+   ]
+  },
+  {
+   "qid": "Q106241435",
+   "label": "Sonderkraftfahrzeug 260",
+   "origin": "Germany",
+   "year": 1941,
+   "class": "combat vehicle model",
+   "names": [
+    "Sd.Kfz. 260",
+    "Sd.Kfz. 261"
+   ]
+  },
+  {
+   "qid": "Q1066792",
+   "label": "IS-2",
+   "origin": "Soviet Union",
+   "year": 1944,
+   "class": "combat vehicle model",
+   "names": [
+    "IS-2M"
+   ]
+  },
+  {
+   "qid": "Q1082335",
+   "label": "Semovente 75/18",
+   "origin": "Kingdom of Italy",
+   "year": 1942,
+   "class": "combat vehicle model",
+   "names": [
+    "Semovente 75/18"
+   ]
+  },
+  {
+   "qid": "Q1085180",
+   "label": "Winchester Model 1897",
+   "origin": "United States",
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "Trench Gun",
+    "Winchester M1897",
+    "Winchester M97"
+   ]
+  },
+  {
+   "qid": "Q1092789",
+   "label": "schwerer Panzerspähwagen",
+   "origin": "Nazi Germany",
+   "year": 1943,
+   "class": "combat vehicle family",
+   "names": [
+    "Sd.Kfz. 232",
+    "Panzerspähwagen Sd.Kfz. 231"
+   ]
+  },
+  {
+   "qid": "Q1108403",
+   "label": "Mark 13 torpedo",
+   "origin": "United States",
+   "year": 1936,
+   "class": "torpedo model",
+   "names": [
+    "Mark 13 torpedo",
+    "Mk13"
+   ]
+  },
+  {
+   "qid": "Q1110438",
+   "label": "Ordnance QF 2-pounder",
+   "origin": "United Kingdom",
+   "year": 1936,
+   "class": "artillery model",
+   "names": [
+    "2 pounder gun"
+   ]
+  },
+  {
+   "qid": "Q11233513",
+   "label": "Mark 11 torpedo",
+   "origin": "United States",
+   "year": 1926,
+   "class": "torpedo model",
+   "names": [
+    "Mk11"
+   ]
+  },
+  {
+   "qid": "Q113320",
+   "label": "10.5 cm Leichtgeschütz 40",
+   "origin": "Nazi Germany",
+   "year": 1942,
+   "class": "artillery model",
+   "names": [
+    "LG 40"
+   ]
+  },
+  {
+   "qid": "Q1138042",
+   "label": "Covenanter tank",
+   "origin": "United Kingdom",
+   "year": 1940,
+   "class": "combat vehicle model",
+   "names": [
+    "Covenanter",
+    "Cruiser Mk V"
+   ]
+  },
+  {
+   "qid": "Q1141411",
+   "label": "Type 100 submachine gun",
+   "origin": "Japan",
+   "year": 1942,
+   "class": "weapon model",
+   "names": [
+    "Type 100 submachine gun"
+   ]
+  },
+  {
+   "qid": "Q1141886",
+   "label": "R-35",
+   "origin": "France",
+   "year": 1936,
+   "class": "combat vehicle model",
+   "names": [
+    "Renault R35",
+    "Renault R-35"
+   ]
+  },
+  {
+   "qid": "Q1151334",
+   "label": "Type 11 light machine gun",
+   "origin": "Japan",
+   "year": 1922,
+   "class": "weapon model",
+   "names": [
+    "LMG 11"
+   ]
+  },
+  {
+   "qid": "Q1163842",
+   "label": "240 mm Howitzer M1",
+   "origin": "United States",
+   "year": 1943,
+   "class": "artillery model",
+   "names": [
+    "Black Dragon"
+   ]
+  },
+  {
+   "qid": "Q117936",
+   "label": "Sturmgeschütz III",
+   "origin": "Nazi Germany",
+   "year": 1940,
+   "class": "combat vehicle family",
+   "names": [
+    "Sturmgeschütz III"
+   ]
+  },
+  {
+   "qid": "Q1207758",
+   "label": "RGD-33 grenade",
+   "origin": "Soviet Union",
+   "year": 1933,
+   "class": "ammunition model",
+   "names": [
+    "RGD-33"
+   ]
+  },
+  {
+   "qid": "Q12186",
+   "label": "Panzer IV",
+   "origin": "Nazi Germany",
+   "year": 1939,
+   "class": "combat vehicle family",
+   "names": [
+    "Panzer IV",
+    "Pz Kpfw IV",
+    "Sd.Kfz. 161"
+   ]
+  },
+  {
+   "qid": "Q1283398",
+   "label": "M114",
+   "origin": "United States",
+   "year": 1942,
+   "class": "artillery model",
+   "names": [
+    "M114A1"
+   ]
+  },
+  {
+   "qid": "Q1316016",
+   "label": "M8",
+   "origin": "United States",
+   "year": 1943,
+   "class": "combat vehicle model",
+   "names": [
+    "75 mm Howitzer Motor Carriage M8"
+   ]
+  },
+  {
+   "qid": "Q1317755",
+   "label": "Colt Detective Special",
+   "origin": "United States",
+   "year": 1927,
+   "class": "firearm model",
+   "names": [
+    "Colt Detective Special"
+   ]
+  },
+  {
+   "qid": "Q1326273",
+   "label": "Little David",
+   "origin": "United States",
+   "year": 1944,
+   "class": "artillery model",
+   "names": [
+    "Little David"
+   ]
+  },
+  {
+   "qid": "Q1332420",
+   "label": "Glisenti Model 1910",
+   "origin": "Italy",
+   "year": 1910,
+   "class": "weapon model",
+   "names": [
+    "Glisenti Model 1910"
+   ]
+  },
+  {
+   "qid": "Q1355825",
+   "label": "EMP 44",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "firearm model",
+   "names": [
+    "EMP 44"
+   ]
+  },
+  {
+   "qid": "Q1366827",
+   "label": "Tallboy",
+   "origin": "United Kingdom",
+   "year": 1944,
+   "class": "ammunition model",
+   "names": [
+    "Tallboy",
+    "Tall Boy"
+   ]
+  },
+  {
+   "qid": "Q1366888",
+   "label": "Grand Slam",
+   "origin": "United Kingdom",
+   "year": 1945,
+   "class": "ammunition model",
+   "names": [
+    "Grand Slam",
+    "Grand Slam bomb"
+   ]
+  },
+  {
+   "qid": "Q1425385",
+   "label": "Fritz X",
+   "origin": "Nazi Germany",
+   "year": 1943,
+   "class": "weapon model",
+   "names": [
+    "Fritz X",
+    "FX 1400"
+   ]
+  },
+  {
+   "qid": "Q1435707",
+   "label": "SU-152",
+   "origin": "Soviet Union",
+   "year": 1943,
+   "class": "combat vehicle model",
+   "names": [
+    "SU-152"
+   ]
+  },
+  {
+   "qid": "Q143928",
+   "label": "12.8 cm FlaK 40",
+   "origin": "Nazi Germany",
+   "year": 1942,
+   "class": "artillery model",
+   "names": [
+    "12.8 cm FlaK 40"
+   ]
+  },
+  {
+   "qid": "Q1473976",
+   "label": "Sterling submachine gun",
+   "origin": "United Kingdom",
+   "year": 1953,
+   "class": "firearm model",
+   "names": [
+    "L2A1"
+   ]
+  },
+  {
+   "qid": "Q14753340",
+   "label": "schwerer Panzerspähwagen (8-Rad)",
+   "origin": null,
+   "year": 1937,
+   "class": "combat vehicle family",
+   "names": [
+    "Panzerspähwagen Sd.Kfz. 231 (8-Rad)",
+    "Sd.Kfz. 231 (8-rad)"
+   ]
+  },
+  {
+   "qid": "Q1484390",
+   "label": "vz. 33",
+   "origin": "Czechoslovakia",
+   "year": 1934,
+   "class": "weapon model",
+   "names": [
+    "vz. 33"
+   ]
+  },
+  {
+   "qid": "Q151044",
+   "label": "MP40",
+   "origin": "Nazi Germany",
+   "year": 1938,
+   "class": "firearm model",
+   "names": [
+    "MP 40",
+    "Schmeisser",
+    "MP38",
+    "MP 38"
+   ]
+  },
+  {
+   "qid": "Q151068",
+   "label": "Panzer II",
+   "origin": "Nazi Germany",
+   "year": 1936,
+   "class": "combat vehicle family",
+   "names": [
+    "Sd.Kfz. 121",
+    "Pz.Kpfw.II",
+    "Panzer 2",
+    "PzKw II"
+   ]
+  },
+  {
+   "qid": "Q151221",
+   "label": "Tiger I",
+   "origin": "Nazi Germany",
+   "year": 1942,
+   "class": "combat vehicle model",
+   "names": [
+    "Tiger I",
+    "Sd.Kfz. 181",
+    "Tiger 1",
+    "Pz Kpfw VI"
+   ]
+  },
+  {
+   "qid": "Q151465",
+   "label": "Panzer I",
+   "origin": "Nazi Germany",
+   "year": 1934,
+   "class": "combat vehicle family",
+   "names": [
+    "Panzer I",
+    "Pz.Kpfw.I"
+   ]
+  },
+  {
+   "qid": "Q151475",
+   "label": "Panzer III",
+   "origin": "Nazi Germany",
+   "year": 1939,
+   "class": "combat vehicle family",
+   "names": [
+    "Panzer III",
+    "Sd.Kfz. 141",
+    "Pz Kpfw III",
+    "PzKw III"
+   ]
+  },
+  {
+   "qid": "Q1515849",
+   "label": "Lanchester submachine gun",
+   "origin": "United Kingdom",
+   "year": 1941,
+   "class": "weapon model",
+   "names": [
+    "Lanchester submachine gun"
+   ]
+  },
+  {
+   "qid": "Q151877",
+   "label": "StG 44",
+   "origin": "Nazi Germany",
+   "year": 1942,
+   "class": "firearm model",
+   "names": [
+    "StG 44",
+    "Sturmgewehr 44",
+    "MP 43",
+    "MP 44",
+    "MP44"
+   ]
+  },
+  {
+   "qid": "Q151950",
+   "label": "Tiger II",
+   "origin": "Nazi Germany",
+   "year": 1944,
+   "class": "combat vehicle model",
+   "names": [
+    "Tiger II",
+    "King Tiger",
+    "Tiger B",
+    "Königstiger"
+   ]
+  },
+  {
+   "qid": "Q151960",
+   "label": "Panther",
+   "origin": "Nazi Germany",
+   "year": 1943,
+   "class": "combat vehicle family",
+   "names": [
+    "PzKpfw V",
+    "Panzerkampfwagen V",
+    "Sd.Kfz. 171",
+    "Panther Tank",
+    "Pz Kpfw V",
+    "PzKpfw V Panther"
+   ]
+  },
+  {
+   "qid": "Q152915",
+   "label": "Panzer 38(t)",
+   "origin": "Czechoslovakia",
+   "year": 1939,
+   "class": "combat vehicle model",
+   "names": [
+    "Panzerkampfwagen 38(t)",
+    "LT-38",
+    "Pz.Kpfw.38(t)"
+   ]
+  },
+  {
+   "qid": "Q152921",
+   "label": "LT-35",
+   "origin": "Czechoslovakia",
+   "year": 1936,
+   "class": "combat vehicle family",
+   "names": [
+    "LT-35",
+    "S-IIa"
+   ]
+  },
+  {
+   "qid": "Q153279",
+   "label": "MG 34",
+   "origin": "Nazi Germany",
+   "year": 1939,
+   "class": "firearm model",
+   "names": [
+    "MG 34",
+    "MG34"
+   ]
+  },
+  {
+   "qid": "Q153348",
+   "label": "V-1",
+   "origin": "Nazi Germany",
+   "year": 1944,
+   "class": "missile model",
+   "names": [
+    "V-1 missile",
+    "buzz bomb",
+    "doodlebug",
+    "FZG 76"
+   ]
+  },
+  {
+   "qid": "Q153596",
+   "label": "MG 42",
+   "origin": "Nazi Germany",
+   "year": 1942,
+   "class": "firearm model",
+   "names": [
+    "MG 42",
+    "MG42"
+   ]
+  },
+  {
+   "qid": "Q153932",
+   "label": "PPSh-41",
+   "origin": "Soviet Union",
+   "year": 1941,
+   "class": "firearm model",
+   "names": [
+    "PPSh-41"
+   ]
+  },
+  {
+   "qid": "Q154034",
+   "label": "Wespe",
+   "origin": "Nazi Germany",
+   "year": 1943,
+   "class": "combat vehicle model",
+   "names": [
+    "Sd.Kfz. 124"
+   ]
+  },
+  {
+   "qid": "Q154137",
+   "label": "8.8 cm Flak 18/36/37/41",
+   "origin": "Nazi Germany",
+   "year": 1932,
+   "class": "artillery model",
+   "names": [
+    "8,8-cm-FlaK 18/36/37",
+    "8,8-cm-FlaK",
+    "FlaK 18/36",
+    "88 mm FlaK",
+    "FlaK 88",
+    "8.8 cm FlaK 18",
+    "8.8 cm FlaK 36",
+    "8.8 cm FlaK 37",
+    "Flak 37",
+    "Flak 41",
+    "Flak 18",
+    "Flak 36"
+   ]
+  },
+  {
+   "qid": "Q154199",
+   "label": "Luger pistol",
+   "origin": "German Empire",
+   "year": 1898,
+   "class": "firearm model",
+   "names": [
+    "Luger pistol",
+    "Parabellum",
+    "Pistole 08",
+    "Luger Parabellum"
+   ]
+  },
+  {
+   "qid": "Q154321",
+   "label": "Mosin–Nagant",
+   "origin": "Russian Empire",
+   "year": 1891,
+   "class": "firearm model",
+   "names": [
+    "Mosin–Nagant",
+    "Mossin-Nagant",
+    "MP-143"
+   ]
+  },
+  {
+   "qid": "Q154362",
+   "label": "Hummel",
+   "origin": "Nazi Germany",
+   "year": 1943,
+   "class": "combat vehicle model",
+   "names": [
+    "Sd.Kfz. 165"
+   ]
+  },
+  {
+   "qid": "Q1549742",
+   "label": "Grosstraktor",
+   "origin": "Germany",
+   "year": 1930,
+   "class": "combat vehicle model",
+   "names": [
+    "Heavy Tractor",
+    "Large Tractor"
+   ]
+  },
+  {
+   "qid": "Q155752",
+   "label": "Jagdtiger",
+   "origin": "Nazi Germany",
+   "year": 1947,
+   "class": "combat vehicle model",
+   "names": [
+    "Jagdtiger",
+    "Sd.Kfz. 186",
+    "Pz Jäg Tiger"
+   ]
+  },
+  {
+   "qid": "Q155756",
+   "label": "Jagdpanther",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "combat vehicle model",
+   "names": [
+    "Jagdpanther",
+    "Sd.Kfz. 173"
+   ]
+  },
+  {
+   "qid": "Q155800",
+   "label": "Jagdpanzer IV",
+   "origin": "Nazi Germany",
+   "year": 1944,
+   "class": "combat vehicle model",
+   "names": [
+    "Pz.Jag.IV"
+   ]
+  },
+  {
+   "qid": "Q156662",
+   "label": "Hetzer",
+   "origin": "Nazi Germany",
+   "year": 1944,
+   "class": "combat vehicle model",
+   "names": [
+    "Sd. Kfz. 138/2"
+   ]
+  },
+  {
+   "qid": "Q156927",
+   "label": "Marder I",
+   "origin": "Nazi Germany",
+   "year": 1942,
+   "class": "combat vehicle model",
+   "names": [
+    "Sd. Kfz. 135"
+   ]
+  },
+  {
+   "qid": "Q156929",
+   "label": "Nashorn",
+   "origin": "Nazi Germany",
+   "year": 1943,
+   "class": "combat vehicle model",
+   "names": [
+    "Nashorn",
+    "Hornisse",
+    "Sd.Kfz. 164"
+   ]
+  },
+  {
+   "qid": "Q156931",
+   "label": "Marder II",
+   "origin": "Nazi Germany",
+   "year": 1942,
+   "class": "combat vehicle model",
+   "names": [
+    "Marder II",
+    "Sd.Kfz. 131",
+    "Sd.Kfz. 132"
+   ]
+  },
+  {
+   "qid": "Q157466",
+   "label": "Brummbär",
+   "origin": "Nazi Germany",
+   "year": 1943,
+   "class": "combat vehicle model",
+   "names": [
+    "Brummbär",
+    "Sd.Kfz. 166",
+    "Sturmpanzer"
+   ]
+  },
+  {
+   "qid": "Q157467",
+   "label": "Sd.Kfz. 251",
+   "origin": "Nazi Germany",
+   "year": 1939,
+   "class": "combat vehicle family",
+   "names": [
+    "Sd.Kfz. 251"
+   ]
+  },
+  {
+   "qid": "Q159142",
+   "label": "Panzerfaust",
+   "origin": "Nazi Germany",
+   "year": 1943,
+   "class": "weapon model",
+   "names": [
+    "Panzerfaust",
+    "Faustpatrone"
+   ]
+  },
+  {
+   "qid": "Q159229",
+   "label": "Panzerwerfer",
+   "origin": "Nazi Germany",
+   "year": 1943,
+   "class": "combat vehicle model",
+   "names": [
+    "Panzerwerfer",
+    "Panzerwerfer 42"
+   ]
+  },
+  {
+   "qid": "Q159503",
+   "label": "Panzerschreck",
+   "origin": "Nazi Germany",
+   "year": 1943,
+   "class": "firearm model",
+   "names": [
+    "Panzerschreck"
+   ]
+  },
+  {
+   "qid": "Q159692",
+   "label": "Marder III",
+   "origin": "Nazi Germany",
+   "year": 1942,
+   "class": "combat vehicle model",
+   "names": [
+    "Marder III",
+    "Sd.Kfz. 138",
+    "Sd.Kfz. 139"
+   ]
+  },
+  {
+   "qid": "Q15991077",
+   "label": "Mark 23 torpedo",
+   "origin": "United States",
+   "year": 1943,
+   "class": "torpedo model",
+   "names": [
+    "Mark 23 torpedo"
+   ]
+  },
+  {
+   "qid": "Q160871",
+   "label": "Leichter Panzerspähwagen",
+   "origin": "Nazi Germany",
+   "year": 1937,
+   "class": "combat vehicle family",
+   "names": [
+    "Leichter Panzerspähwagen",
+    "Leichter Panzerspähwagen Sd.Kfz. 222",
+    "Sd.Kfz.222",
+    "Sdkfz 222"
+   ]
+  },
+  {
+   "qid": "Q160876",
+   "label": "Nebelwerfer",
+   "origin": "Nazi Germany",
+   "year": 1940,
+   "class": "artillery model",
+   "names": [
+    "Nebelwerfer"
+   ]
+  },
+  {
+   "qid": "Q160881",
+   "label": "Grille",
+   "origin": "German Reich",
+   "year": 1943,
+   "class": "artillery model",
+   "names": [
+    "Sd.Kfz. 138/1"
+   ]
+  },
+  {
+   "qid": "Q160886",
+   "label": "Panzerjäger I",
+   "origin": "Nazi Germany",
+   "year": 1940,
+   "class": "combat vehicle model",
+   "names": [
+    "Pz.Jäg I"
+   ]
+  },
+  {
+   "qid": "Q161170",
+   "label": "Gewehr 43",
+   "origin": "Germany",
+   "year": 1943,
+   "class": "firearm model",
+   "names": [
+    "Karabiner 43",
+    "Kar 43"
+   ]
+  },
+  {
+   "qid": "Q1620698",
+   "label": "HS.404",
+   "origin": "United States",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "M2 cannon",
+    "AN/M2"
+   ]
+  },
+  {
+   "qid": "Q163506",
+   "label": "Sd.Kfz. 250",
+   "origin": "Nazi Germany",
+   "year": 1941,
+   "class": "combat vehicle family",
+   "names": [
+    "Sd.Kfz. 250"
+   ]
+  },
+  {
+   "qid": "Q1636085",
+   "label": "Mills bomb",
+   "origin": "United Kingdom of Great Britain and Ireland",
+   "year": 1915,
+   "class": "ammunition model",
+   "names": [
+    "Mills bomb",
+    "Граната Миллса"
+   ]
+  },
+  {
+   "qid": "Q163835",
+   "label": "10.5 cm Leichtgeschütz 42",
+   "origin": "Nazi Germany",
+   "year": 1942,
+   "class": "artillery model",
+   "names": [
+    "LG 42"
+   ]
+  },
+  {
+   "qid": "Q163848",
+   "label": "10.5 cm leFH 18",
+   "origin": "Germany",
+   "year": 1939,
+   "class": "artillery model",
+   "names": [
+    "Light Field Howitzer 18"
+   ]
+  },
+  {
+   "qid": "Q163871",
+   "label": "Nebelwerfer 35",
+   "origin": "Nazi Germany",
+   "year": 1939,
+   "class": "artillery model",
+   "names": [
+    "Nebelwerfer 35",
+    "10 cm Nebelwerfer 35"
+   ]
+  },
+  {
+   "qid": "Q166313",
+   "label": "Gewehr 98",
+   "origin": "German Empire",
+   "year": 1898,
+   "class": "firearm model",
+   "names": [
+    "Gewehr 98"
+   ]
+  },
+  {
+   "qid": "Q167096",
+   "label": "Molotov cocktail",
+   "origin": "Finland",
+   "year": null,
+   "class": "ammunition model",
+   "names": [
+    "Molotov cocktail",
+    "petrol bomb",
+    "fire bomb",
+    "Molotov cocktails",
+    "Molotowcocktail",
+    "Brandflasche",
+    "Бутылка с горючей смесью"
+   ]
+  },
+  {
+   "qid": "Q1675292",
+   "label": "Ithaca 37",
+   "origin": "United States",
+   "year": 1913,
+   "class": "weapon model",
+   "names": [
+    "Ithaca M37"
+   ]
+  },
+  {
+   "qid": "Q168706",
+   "label": "Big Bertha",
+   "origin": "German Empire",
+   "year": 1914,
+   "class": "artillery model",
+   "names": [
+    "Big Bertha",
+    "M-Gerät"
+   ]
+  },
+  {
+   "qid": "Q168729",
+   "label": "3.7 cm PaK 36",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "PaK 36",
+    "PAK36"
+   ]
+  },
+  {
+   "qid": "Q171628",
+   "label": ".50 BMG",
+   "origin": null,
+   "year": 1921,
+   "class": "ammunition model",
+   "names": [
+    ".50 BMG",
+    ".50 Browning Machine Gun",
+    "50 Browning"
+   ]
+  },
+  {
+   "qid": "Q171641",
+   "label": "12.8 cm Pak 44",
+   "origin": "Nazi Germany",
+   "year": 1944,
+   "class": "artillery model",
+   "names": [
+    "12.8 cm Pak 44",
+    "PaK 44"
+   ]
+  },
+  {
+   "qid": "Q1718354",
+   "label": "KA-BAR",
+   "origin": "United States",
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "KA-BAR"
+   ]
+  },
+  {
+   "qid": "Q172233",
+   "label": "T-34",
+   "origin": "Soviet Union",
+   "year": 1940,
+   "class": "combat vehicle family",
+   "names": [
+    "T-34 tank"
+   ]
+  },
+  {
+   "qid": "Q174640",
+   "label": "V-2 rocket",
+   "origin": "Germany",
+   "year": 1944,
+   "class": "missile model",
+   "names": [
+    "V-2 rocket"
+   ]
+  },
+  {
+   "qid": "Q174720",
+   "label": "SU-122",
+   "origin": "Soviet Union",
+   "year": 1943,
+   "class": "combat vehicle model",
+   "names": [
+    "SU-122"
+   ]
+  },
+  {
+   "qid": "Q1767309",
+   "label": "Stokes mortar",
+   "origin": "United Kingdom of Great Britain and Ireland",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "Stokes mortar",
+    "3-inch trench mortar",
+    "81 mm mortar Stokes"
+   ]
+  },
+  {
+   "qid": "Q1799495",
+   "label": "Mark 18 torpedo",
+   "origin": "United States",
+   "year": 1943,
+   "class": "torpedo model",
+   "names": [
+    "Mark 18 torpedo"
+   ]
+  },
+  {
+   "qid": "Q1803642",
+   "label": "Mattress",
+   "origin": "United Kingdom",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "Land Mattress"
+   ]
+  },
+  {
+   "qid": "Q1822843",
+   "label": "MK3 grenade",
+   "origin": "United States",
+   "year": null,
+   "class": "ammunition model",
+   "names": [
+    "MK3A2"
+   ]
+  },
+  {
+   "qid": "Q18396241",
+   "label": "AT-44",
+   "origin": "Soviet Union",
+   "year": 1944,
+   "class": "weapon model",
+   "names": [
+    "AT-44",
+    "AT44"
+   ]
+  },
+  {
+   "qid": "Q1866810",
+   "label": "Automatgevär m/42",
+   "origin": "Sweden",
+   "year": 1942,
+   "class": "weapon model",
+   "names": [
+    "Ag m/42"
+   ]
+  },
+  {
+   "qid": "Q18737165",
+   "label": "M15 Half-Track",
+   "origin": "United States",
+   "year": null,
+   "class": "combat vehicle model",
+   "names": [
+    "Multiple Gun Motor Carriage M15"
+   ]
+  },
+  {
+   "qid": "Q1880866",
+   "label": "M1918 240 mm howitzer",
+   "origin": "United States",
+   "year": 1920,
+   "class": "artillery model",
+   "names": [
+    "M1918 240 mm howitzer"
+   ]
+  },
+  {
+   "qid": "Q191032",
+   "label": "15 cm Kanone 39",
+   "origin": "Germany",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "Kanone 39"
+   ]
+  },
+  {
+   "qid": "Q191041",
+   "label": "15 cm sFH 18",
+   "origin": "Germany",
+   "year": 1934,
+   "class": "artillery model",
+   "names": [
+    "15 cm sFH 18",
+    "sFH 18"
+   ]
+  },
+  {
+   "qid": "Q191643",
+   "label": "M4 Sherman",
+   "origin": "United States",
+   "year": 1942,
+   "class": "combat vehicle family",
+   "names": [
+    "M4 Medium Tank",
+    "Sherman tank",
+    "M4 tank",
+    "Sherman",
+    "M4A2",
+    "M4A5",
+    "M4A4",
+    "M4A3",
+    "M4A6"
+   ]
+  },
+  {
+   "qid": "Q1932862",
+   "label": "RPG-43",
+   "origin": "Soviet Union",
+   "year": 1943,
+   "class": "ammunition model",
+   "names": [
+    "RPG-43"
+   ]
+  },
+  {
+   "qid": "Q194129",
+   "label": "Type 89 grenade launcher",
+   "origin": "Japan",
+   "year": 1929,
+   "class": "artillery model",
+   "names": [
+    "knee mortar",
+    "50mm Type 89 Grenade discharger",
+    "Type 89 Grenade Discharger"
+   ]
+  },
+  {
+   "qid": "Q1970825",
+   "label": "Type 93",
+   "origin": "Empire of Japan",
+   "year": 1933,
+   "class": "torpedo model",
+   "names": [
+    "Type 93 torpedo",
+    "oxygen torpedo"
+   ]
+  },
+  {
+   "qid": "Q197264",
+   "label": "17 cm Kanone 18",
+   "origin": "Germany",
+   "year": 1941,
+   "class": "artillery model",
+   "names": [
+    "17 cm K.Mrs.Laf"
+   ]
+  },
+  {
+   "qid": "Q1990116",
+   "label": "MIM-3 Nike-Ajax",
+   "origin": "United States",
+   "year": 1954,
+   "class": "missile model",
+   "names": [
+    "Nike-Ajax",
+    "MIM-3"
+   ]
+  },
+  {
+   "qid": "Q1997104",
+   "label": "TOG1",
+   "origin": "United Kingdom",
+   "year": null,
+   "class": "combat vehicle model",
+   "names": [
+    "TOG 1",
+    "TOG I"
+   ]
+  },
+  {
+   "qid": "Q201419",
+   "label": "Colt M1911",
+   "origin": "United States",
+   "year": 1911,
+   "class": "firearm model",
+   "names": [
+    "Colt M1911",
+    "M1911 pistol",
+    "Automatic Pistol, Caliber .45, M1911",
+    "M1911A1",
+    "Colt 45"
+   ]
+  },
+  {
+   "qid": "Q2028879",
+   "label": "Breda 30",
+   "origin": "Kingdom of Italy",
+   "year": 1930,
+   "class": "weapon model",
+   "names": [
+    "Breda Model 30"
+   ]
+  },
+  {
+   "qid": "Q2036279",
+   "label": "Pistole vz. 24",
+   "origin": "Czechoslovakia",
+   "year": 1924,
+   "class": "weapon model",
+   "names": [
+    "CZ-24"
+   ]
+  },
+  {
+   "qid": "Q204046",
+   "label": "M1 Garand",
+   "origin": "United States",
+   "year": 1936,
+   "class": "firearm model",
+   "names": [
+    "M1 Garand",
+    "M1 rifle",
+    "Garand"
+   ]
+  },
+  {
+   "qid": "Q2042842",
+   "label": "M2 mine",
+   "origin": "United States",
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "M2 mine"
+   ]
+  },
+  {
+   "qid": "Q2071130",
+   "label": "5\"/38 caliber gun",
+   "origin": "United States",
+   "year": 1934,
+   "class": "artillery model",
+   "names": [
+    "5\"/38 caliber gun"
+   ]
+  },
+  {
+   "qid": "Q207734",
+   "label": "Renault FT",
+   "origin": "France",
+   "year": 1917,
+   "class": "combat vehicle model",
+   "names": [
+    "FT.17",
+    "FT-18"
+   ]
+  },
+  {
+   "qid": "Q2079802",
+   "label": "Carden Loyd tankette",
+   "origin": "United Kingdom",
+   "year": 1927,
+   "class": "combat vehicle model",
+   "names": [
+    "Карден-Лойд",
+    "Carden-Lloyd",
+    "Carden Loyd"
+   ]
+  },
+  {
+   "qid": "Q212918",
+   "label": "21 cm Mrs 18",
+   "origin": "Germany",
+   "year": 1939,
+   "class": "artillery model",
+   "names": [
+    "21 cm Mrs 18",
+    "21cm Mrs 18",
+    "21-cm-Mörser 18"
+   ]
+  },
+  {
+   "qid": "Q217153",
+   "label": "M1903 Springfield",
+   "origin": "United States",
+   "year": 1903,
+   "class": "firearm model",
+   "names": [
+    "M1903 Springfield",
+    "Springfield 1903 rifle",
+    "Springfield M1903",
+    "M1903 Springfield rifle",
+    "Springfield 1903"
+   ]
+  },
+  {
+   "qid": "Q21935505",
+   "label": "Škoda MU-4",
+   "origin": "Czechoslovakia",
+   "year": 1934,
+   "class": "combat vehicle model",
+   "names": [
+    "Š-1, T-1"
+   ]
+  },
+  {
+   "qid": "Q219606",
+   "label": "Nudelman-Suranov NS-37",
+   "origin": "Soviet Union",
+   "year": 1943,
+   "class": "artillery model",
+   "names": [
+    "NS-37"
+   ]
+  },
+  {
+   "qid": "Q2209891",
+   "label": "Daimler armoured car",
+   "origin": "United Kingdom",
+   "year": 1941,
+   "class": "combat vehicle family",
+   "names": [
+    "Daimler armoured car"
+   ]
+  },
+  {
+   "qid": "Q223184",
+   "label": "M3 Lee",
+   "origin": "United States",
+   "year": 1941,
+   "class": "combat vehicle model",
+   "names": [
+    "M3 Medium Tank"
+   ]
+  },
+  {
+   "qid": "Q225222",
+   "label": "Sd.Kfz. 234",
+   "origin": "Nazi Germany",
+   "year": 1944,
+   "class": "combat vehicle family",
+   "names": [
+    "Sd.Kfz. 234"
+   ]
+  },
+  {
+   "qid": "Q2252249",
+   "label": "Ho-103",
+   "origin": "Empire of Japan",
+   "year": 1941,
+   "class": "weapon model",
+   "names": [
+    "Ho-103"
+   ]
+  },
+  {
+   "qid": "Q2257216",
+   "label": "3-inch Gun M5",
+   "origin": "United States",
+   "year": 1943,
+   "class": "artillery model",
+   "names": [
+    "3-inch Gun M5",
+    "anti-tank gun M5",
+    "M5 gun",
+    "M5 Antitank Gun"
+   ]
+  },
+  {
+   "qid": "Q2261039",
+   "label": "Loyd Carrier",
+   "origin": "United Kingdom",
+   "year": 1939,
+   "class": "combat vehicle model",
+   "names": [
+    "Loyd Carrier"
+   ]
+  },
+  {
+   "qid": "Q227558",
+   "label": "37 mm Gun M3",
+   "origin": "United States",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "M3 antitank gun"
+   ]
+  },
+  {
+   "qid": "Q228023",
+   "label": "38 cm Siegfried K (E)",
+   "origin": "Nazi Germany",
+   "year": 1941,
+   "class": "artillery model",
+   "names": [
+    "38 cm Siegfried K (E)"
+   ]
+  },
+  {
+   "qid": "Q2294452",
+   "label": "Colt New Service",
+   "origin": "United States",
+   "year": 1898,
+   "class": "firearm model",
+   "names": [
+    "Colt New Service"
+   ]
+  },
+  {
+   "qid": "Q229833",
+   "label": "4.2 cm Pak 41",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "4.2 cm Pak 41",
+    "le.Pak 41"
+   ]
+  },
+  {
+   "qid": "Q229874",
+   "label": "4.7 cm KPÚV vz. 38",
+   "origin": "Czechoslovakia",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "Skoda 47 mm",
+    "4.7 cm PaK (t)",
+    "Pak (t)"
+   ]
+  },
+  {
+   "qid": "Q2300513",
+   "label": "MP.28,II",
+   "origin": "Weimar Republic",
+   "year": 1928,
+   "class": "weapon model",
+   "names": [
+    "MP-28"
+   ]
+  },
+  {
+   "qid": "Q2341547",
+   "label": "7.5 cm FK 38",
+   "origin": "Nazi Germany",
+   "year": 1939,
+   "class": "artillery model",
+   "names": [
+    "F.K.38"
+   ]
+  },
+  {
+   "qid": "Q2360866",
+   "label": "M6 Gun Motor Carriage",
+   "origin": "United States",
+   "year": 1942,
+   "class": "combat vehicle family",
+   "names": [
+    "37 mm Gun Motor Carriage M6"
+   ]
+  },
+  {
+   "qid": "Q238579",
+   "label": "5 cm FlaK 41",
+   "origin": "Nazi Germany",
+   "year": 1941,
+   "class": "artillery model",
+   "names": [
+    "5 cm FlaK 41",
+    "5cm Flak 41"
+   ]
+  },
+  {
+   "qid": "Q238610",
+   "label": "5 cm Pak 38",
+   "origin": "German Reich",
+   "year": 1940,
+   "class": "artillery model",
+   "names": [
+    "5 cm Pak 38",
+    "Pak 38"
+   ]
+  },
+  {
+   "qid": "Q23936240",
+   "label": "3.7 cm FlaK 43",
+   "origin": "Nazi Germany",
+   "year": 1943,
+   "class": "artillery model",
+   "names": [
+    "3.7 cm FlaK 43",
+    "3.7 cm Flakzwilling 43"
+   ]
+  },
+  {
+   "qid": "Q2400286",
+   "label": "Gammon bomb",
+   "origin": "United Kingdom",
+   "year": 1941,
+   "class": "ammunition model",
+   "names": [
+    "Gammon bomb",
+    "Gammon"
+   ]
+  },
+  {
+   "qid": "Q2409474",
+   "label": "Disney bomb",
+   "origin": "United Kingdom",
+   "year": 1945,
+   "class": "ammunition model",
+   "names": [
+    "Disney bomb"
+   ]
+  },
+  {
+   "qid": "Q241738",
+   "label": "Lebel Model 1886 rifle",
+   "origin": "France",
+   "year": 1887,
+   "class": "weapon model",
+   "names": [
+    "Lebel M1886"
+   ]
+  },
+  {
+   "qid": "Q2432081",
+   "label": "Black Prince",
+   "origin": "United Kingdom",
+   "year": null,
+   "class": "combat vehicle model",
+   "names": [
+    "Black Prince"
+   ]
+  },
+  {
+   "qid": "Q2447937",
+   "label": "Type 97 grenade",
+   "origin": "Empire of Japan",
+   "year": 1937,
+   "class": "ammunition model",
+   "names": [
+    "Type 97 grenade",
+    "Grenade type 97"
+   ]
+  },
+  {
+   "qid": "Q2461223",
+   "label": "BA-3",
+   "origin": "Soviet Union",
+   "year": 1934,
+   "class": "combat vehicle model",
+   "names": [
+    "BAF-A"
+   ]
+  },
+  {
+   "qid": "Q2479418",
+   "label": "Panzerwurfmine",
+   "origin": null,
+   "year": null,
+   "class": "ammunition model",
+   "names": [
+    "Panzerwurfmine"
+   ]
+  },
+  {
+   "qid": "Q2479591",
+   "label": "Ordnance QF 25 pounder",
+   "origin": "United Kingdom",
+   "year": 1940,
+   "class": "artillery model",
+   "names": [
+    "25 pounder",
+    "25-pdr"
+   ]
+  },
+  {
+   "qid": "Q2479597",
+   "label": "QF 17-pounder gun",
+   "origin": "United Kingdom",
+   "year": 1943,
+   "class": "artillery model",
+   "names": [
+    "17-pdr",
+    "17-pounder"
+   ]
+  },
+  {
+   "qid": "Q2482321",
+   "label": "Type 91 torpedo",
+   "origin": "Japan",
+   "year": 1931,
+   "class": "torpedo model",
+   "names": [
+    "Type 91 torpedo"
+   ]
+  },
+  {
+   "qid": "Q248874",
+   "label": "Browning Hi-Power",
+   "origin": "Belgium",
+   "year": 1935,
+   "class": "weapon model",
+   "names": [
+    "Hi-Power",
+    "HP 35"
+   ]
+  },
+  {
+   "qid": "Q2493320",
+   "label": "3.7 cm KwK 36",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "KwK 36"
+   ]
+  },
+  {
+   "qid": "Q2517589",
+   "label": "BL 60-pounder gun",
+   "origin": "United Kingdom of Great Britain and Ireland",
+   "year": 1905,
+   "class": "artillery model",
+   "names": [
+    "60 pounder"
+   ]
+  },
+  {
+   "qid": "Q2520061",
+   "label": "M116 howitzer",
+   "origin": "United States",
+   "year": 1927,
+   "class": "artillery model",
+   "names": [
+    "75 mm pack howitzer",
+    "75 mm Pack Howitzer M1"
+   ]
+  },
+  {
+   "qid": "Q2551173",
+   "label": "MP35",
+   "origin": "Nazi Germany",
+   "year": 1935,
+   "class": "firearm model",
+   "names": [
+    "MP 35"
+   ]
+  },
+  {
+   "qid": "Q2552048",
+   "label": "BA-20",
+   "origin": "Soviet Union",
+   "year": 1936,
+   "class": "combat vehicle model",
+   "names": [
+    "BA-20"
+   ]
+  },
+  {
+   "qid": "Q2553389",
+   "label": "Breda M37",
+   "origin": "Kingdom of Italy",
+   "year": 1937,
+   "class": "weapon model",
+   "names": [
+    "Breda 37"
+   ]
+  },
+  {
+   "qid": "Q2558035",
+   "label": "RPG-6",
+   "origin": "Soviet Union",
+   "year": 1943,
+   "class": "ammunition model",
+   "names": [
+    "RPG-6"
+   ]
+  },
+  {
+   "qid": "Q2576399",
+   "label": "7.5 cm KwK 42",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "7.5 cm KwK 42",
+    "PaK 42",
+    "KwK 42"
+   ]
+  },
+  {
+   "qid": "Q259119",
+   "label": "7.5 cm Pak 41",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "7.5 cm Pak 41",
+    "PaK 41"
+   ]
+  },
+  {
+   "qid": "Q259122",
+   "label": "7.5 cm PaK 40",
+   "origin": "Nazi Germany",
+   "year": 1942,
+   "class": "artillery model",
+   "names": [
+    "7.5 cm PaK 40",
+    "Pak 40",
+    "Panzerabwehrkanone 40"
+   ]
+  },
+  {
+   "qid": "Q259170",
+   "label": "7.62×25mm Tokarev",
+   "origin": "Soviet Union",
+   "year": 1930,
+   "class": "ammunition model",
+   "names": [
+    "7.62mm Tokarev"
+   ]
+  },
+  {
+   "qid": "Q259255",
+   "label": ".303 British",
+   "origin": "United Kingdom of Great Britain and Ireland",
+   "year": 1887,
+   "class": "ammunition model",
+   "names": [
+    ".303 British",
+    ".303 inch British"
+   ]
+  },
+  {
+   "qid": "Q2596045",
+   "label": "Austen submachine gun",
+   "origin": "Australia",
+   "year": 1942,
+   "class": "firearm model",
+   "names": [
+    "Austen"
+   ]
+  },
+  {
+   "qid": "Q259676",
+   "label": "5 cm KwK 39 L/60",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "KwK 39",
+    "5-cm-KwK 39"
+   ]
+  },
+  {
+   "qid": "Q2633872",
+   "label": "M1",
+   "origin": "United States",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "M1 mortar"
+   ]
+  },
+  {
+   "qid": "Q265220",
+   "label": "ML 3 inch mortar",
+   "origin": "United Kingdom",
+   "year": 1934,
+   "class": "artillery model",
+   "names": [
+    "ML 3 inch mortar",
+    "81 mm mortar ML 3-inch"
+   ]
+  },
+  {
+   "qid": "Q2660990",
+   "label": "Type 91 grenade",
+   "origin": "Empire of Japan",
+   "year": 1931,
+   "class": "ammunition model",
+   "names": [
+    "Type 91 grenade"
+   ]
+  },
+  {
+   "qid": "Q266837",
+   "label": "ZiS-3",
+   "origin": "Soviet Union",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "ZiS-3",
+    "ЗИС-3"
+   ]
+  },
+  {
+   "qid": "Q2668855",
+   "label": "Mondragón rifle",
+   "origin": "Mexico",
+   "year": 1890,
+   "class": "firearm model",
+   "names": [
+    "Mondragón"
+   ]
+  },
+  {
+   "qid": "Q269593",
+   "label": "Thompson submachine gun",
+   "origin": "United States",
+   "year": 1938,
+   "class": "weapon model",
+   "names": [
+    "Thompson submachine gun",
+    "Thompson",
+    "Tommy Gun"
+   ]
+  },
+  {
+   "qid": "Q270140",
+   "label": "8.8 cm Pak 43",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "8.8 cm Pak 43",
+    "Pak 43",
+    "8,8 cm PaK"
+   ]
+  },
+  {
+   "qid": "Q2707565",
+   "label": "OB-25",
+   "origin": "Soviet Union",
+   "year": 1943,
+   "class": "artillery model",
+   "names": [
+    "ОБ-25"
+   ]
+  },
+  {
+   "qid": "Q2712554",
+   "label": "Bodeo Model 1889",
+   "origin": "Kingdom of Italy",
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "Révolver Bodeo"
+   ]
+  },
+  {
+   "qid": "Q274920",
+   "label": "8×22mm Nambu",
+   "origin": null,
+   "year": 1904,
+   "class": "ammunition model",
+   "names": [
+    "8 mm Nambu",
+    "8 mm caliber"
+   ]
+  },
+  {
+   "qid": "Q282267",
+   "label": "M1917 Enfield",
+   "origin": "United States",
+   "year": 1917,
+   "class": "weapon model",
+   "names": [
+    "M1917 Enfield"
+   ]
+  },
+  {
+   "qid": "Q282352",
+   "label": "Maxim gun",
+   "origin": "United Kingdom of Great Britain and Ireland",
+   "year": 1889,
+   "class": "firearm model",
+   "names": [
+    "Maxim gun"
+   ]
+  },
+  {
+   "qid": "Q28570332",
+   "label": "RDG-1",
+   "origin": "Soviet Union",
+   "year": 1941,
+   "class": "ammunition model",
+   "names": [
+    "RDG-1"
+   ]
+  },
+  {
+   "qid": "Q28727",
+   "label": "BA-27",
+   "origin": "Soviet Union",
+   "year": 1928,
+   "class": "combat vehicle model",
+   "names": [
+    "BA-27"
+   ]
+  },
+  {
+   "qid": "Q288357",
+   "label": "21 cm Nebelwerfer 42",
+   "origin": "Nazi Germany",
+   "year": 1942,
+   "class": "artillery model",
+   "names": [
+    "21 cm Nebelwerfer 42",
+    "Wurfgranate 42",
+    "Nebelwerfer 42"
+   ]
+  },
+  {
+   "qid": "Q2950115",
+   "label": "Churchill Crocodile",
+   "origin": "United Kingdom",
+   "year": null,
+   "class": "combat vehicle model",
+   "names": [
+    "Churchill Crocodile"
+   ]
+  },
+  {
+   "qid": "Q295277",
+   "label": "AMR 35",
+   "origin": "France",
+   "year": 1936,
+   "class": "combat vehicle model",
+   "names": [
+    "AMR 35"
+   ]
+  },
+  {
+   "qid": "Q2980709",
+   "label": "2 cm KwK 30",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "KwK 30",
+    "KwK 38"
+   ]
+  },
+  {
+   "qid": "Q2986951",
+   "label": "Winchester Model 1912",
+   "origin": "United States",
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "Winchester M12"
+   ]
+  },
+  {
+   "qid": "Q2987215",
+   "label": "RPG-40",
+   "origin": "Soviet Union",
+   "year": 1940,
+   "class": "ammunition model",
+   "names": [
+    "RPG-40"
+   ]
+  },
+  {
+   "qid": "Q2994537",
+   "label": "BA-11",
+   "origin": null,
+   "year": 1939,
+   "class": "combat vehicle model",
+   "names": [
+    "BA-11"
+   ]
+  },
+  {
+   "qid": "Q2996839",
+   "label": "RG-42",
+   "origin": "Soviet Union",
+   "year": 1942,
+   "class": "ammunition model",
+   "names": [
+    "RG-42",
+    "RG-42 grenade"
+   ]
+  },
+  {
+   "qid": "Q301389",
+   "label": "MG 30",
+   "origin": "Austria",
+   "year": 1930,
+   "class": "firearm model",
+   "names": [
+    "MG 30"
+   ]
+  },
+  {
+   "qid": "Q304303",
+   "label": "Cromwell",
+   "origin": "United Kingdom",
+   "year": 1944,
+   "class": "combat vehicle model",
+   "names": [
+    "Cromwell",
+    "Cromwell Tank"
+   ]
+  },
+  {
+   "qid": "Q3079866",
+   "label": "Flame fougasse",
+   "origin": "United Kingdom",
+   "year": 1940,
+   "class": "weapon model",
+   "names": [
+    "Flame fougasse"
+   ]
+  },
+  {
+   "qid": "Q3084080",
+   "label": "Butterfly Bomb",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "ammunition model",
+   "names": [
+    "Butterfly Bomb"
+   ]
+  },
+  {
+   "qid": "Q3116432",
+   "label": "Type 99 grenade",
+   "origin": "Empire of Japan",
+   "year": 1939,
+   "class": "ammunition model",
+   "names": [
+    "Type 99 grenade",
+    "Kiska grenade"
+   ]
+  },
+  {
+   "qid": "Q320262",
+   "label": "M16 Half-track",
+   "origin": "United States",
+   "year": 1943,
+   "class": "combat vehicle model",
+   "names": [
+    "M16 Half-track",
+    "M16 Multiple Gun Motor Carriage"
+   ]
+  },
+  {
+   "qid": "Q321667",
+   "label": "Sd.Kfz. 221",
+   "origin": null,
+   "year": 1935,
+   "class": "combat vehicle model",
+   "names": [
+    "Sd.Kfz. 221",
+    "Sdkfz 221"
+   ]
+  },
+  {
+   "qid": "Q326166",
+   "label": "PIAT",
+   "origin": "United Kingdom",
+   "year": 1942,
+   "class": "weapon model",
+   "names": [
+    "Projector, Infantry, Anti Tank"
+   ]
+  },
+  {
+   "qid": "Q3269669",
+   "label": "Nebelwerfer 40",
+   "origin": "Nazi Germany",
+   "year": 1941,
+   "class": "artillery model",
+   "names": [
+    "Nebelwerfer 40",
+    "10 cm Nebelwerfer 40"
+   ]
+  },
+  {
+   "qid": "Q3269905",
+   "label": "Type 99 mine",
+   "origin": "Japan",
+   "year": 1939,
+   "class": "weapon model",
+   "names": [
+    "Type 99 mine",
+    "mine type 99"
+   ]
+  },
+  {
+   "qid": "Q328879",
+   "label": "Glasmine 43",
+   "origin": "Germany",
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "Glasmine 43",
+    "Glasmine"
+   ]
+  },
+  {
+   "qid": "Q3324579",
+   "label": "82-PM-41",
+   "origin": "Soviet Union",
+   "year": 1941,
+   "class": "artillery model",
+   "names": [
+    "BM-41"
+   ]
+  },
+  {
+   "qid": "Q3347452",
+   "label": "bolo",
+   "origin": "Philippines",
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "bolo knife"
+   ]
+  },
+  {
+   "qid": "Q3348538",
+   "label": "8 inch Gun M1",
+   "origin": "United States",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "8 inch Gun M1",
+    "8 inch M1"
+   ]
+  },
+  {
+   "qid": "Q3504544",
+   "label": "RG-41 grenade",
+   "origin": "Soviet Union",
+   "year": 1941,
+   "class": "ammunition model",
+   "names": [
+    "RG-41"
+   ]
+  },
+  {
+   "qid": "Q3597229",
+   "label": ".50 British",
+   "origin": "British Empire",
+   "year": 1921,
+   "class": "ammunition model",
+   "names": [
+    ".50 British"
+   ]
+  },
+  {
+   "qid": "Q368729",
+   "label": "M26 Pershing",
+   "origin": "United States",
+   "year": 1945,
+   "class": "combat vehicle model",
+   "names": [
+    "M26 tank"
+   ]
+  },
+  {
+   "qid": "Q368768",
+   "label": "FM 24/29 light machine gun",
+   "origin": "French Third Republic",
+   "year": 1925,
+   "class": "weapon model",
+   "names": [
+    "Fusil-mitrailleur modèle 1924"
+   ]
+  },
+  {
+   "qid": "Q373396",
+   "label": "Lewis gun",
+   "origin": "United States",
+   "year": 1914,
+   "class": "weapon model",
+   "names": [
+    "Lewis gun",
+    "Lewis machine gun"
+   ]
+  },
+  {
+   "qid": "Q378388",
+   "label": "Humber armored car",
+   "origin": "United Kingdom",
+   "year": 1941,
+   "class": "combat vehicle family",
+   "names": [
+    "Humber armored car"
+   ]
+  },
+  {
+   "qid": "Q3849429",
+   "label": "Mark 15 torpedo",
+   "origin": "United States",
+   "year": 1938,
+   "class": "torpedo model",
+   "names": [
+    "Mark 15 torpedo"
+   ]
+  },
+  {
+   "qid": "Q39345730",
+   "label": "PLT-2",
+   "origin": "Soviet Union",
+   "year": 1942,
+   "class": "weapon model",
+   "names": [
+    "PLT-2"
+   ]
+  },
+  {
+   "qid": "Q3943531",
+   "label": "SD 500",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "ammunition model",
+   "names": [
+    "SD 500"
+   ]
+  },
+  {
+   "qid": "Q3943532",
+   "label": "SD 10",
+   "origin": null,
+   "year": null,
+   "class": "ammunition model",
+   "names": [
+    "SD 10"
+   ]
+  },
+  {
+   "qid": "Q39470",
+   "label": "Tiny Tim",
+   "origin": "United States",
+   "year": 1944,
+   "class": "missile model",
+   "names": [
+    "Tiny Tim",
+    "Tiny Tim rocket"
+   ]
+  },
+  {
+   "qid": "Q3960583",
+   "label": "Mark 27 torpedo",
+   "origin": "United States",
+   "year": 1943,
+   "class": "torpedo model",
+   "names": [
+    "Mark 27 torpedo"
+   ]
+  },
+  {
+   "qid": "Q3966617",
+   "label": "Thermos Bomb",
+   "origin": "Italy",
+   "year": null,
+   "class": "ammunition model",
+   "names": [
+    "Thermos Bomb"
+   ]
+  },
+  {
+   "qid": "Q40256",
+   "label": "Type 4 Chi-To",
+   "origin": "Empire of Japan",
+   "year": null,
+   "class": "combat vehicle model",
+   "names": [
+    "Chi-To"
+   ]
+  },
+  {
+   "qid": "Q4025717",
+   "label": "Skoda 76.5 mm vz. 30",
+   "origin": "Czechoslovakia",
+   "year": 1930,
+   "class": "artillery model",
+   "names": [
+    "FK 30(t)"
+   ]
+  },
+  {
+   "qid": "Q4030523",
+   "label": "28/32 cm Nebelwerfer 41",
+   "origin": "Nazi Germany",
+   "year": 1941,
+   "class": "artillery model",
+   "names": [
+    "28/32 cm Nebelwerfer 41",
+    "28/32 cm Nebelwerfer"
+   ]
+  },
+  {
+   "qid": "Q4031064",
+   "label": "Škoda A3",
+   "origin": "Czechoslovakia",
+   "year": 1934,
+   "class": "artillery model",
+   "names": [
+    "vz. 34"
+   ]
+  },
+  {
+   "qid": "Q4032185",
+   "label": "7.5 cm Infanteriegeschütz 42",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "IG.42"
+   ]
+  },
+  {
+   "qid": "Q4032347",
+   "label": "M20",
+   "origin": "United States",
+   "year": 1945,
+   "class": "artillery model",
+   "names": [
+    "75 mm recoilless rifle M20"
+   ]
+  },
+  {
+   "qid": "Q4033121",
+   "label": "Azon",
+   "origin": "United States",
+   "year": 1944,
+   "class": "ammunition model",
+   "names": [
+    "VB-1 Azon"
+   ]
+  },
+  {
+   "qid": "Q4039354",
+   "label": "GPzRt MTW",
+   "origin": null,
+   "year": 1927,
+   "class": "combat vehicle model",
+   "names": [
+    "Gepanzerter Kraftwagen"
+   ]
+  },
+  {
+   "qid": "Q4043349",
+   "label": "M37",
+   "origin": "United States",
+   "year": 1945,
+   "class": "combat vehicle model",
+   "names": [
+    "M37 105 mm Howitzer Motor Carriage",
+    "105 mm Howitzer Motor Carriage M37"
+   ]
+  },
+  {
+   "qid": "Q4043724",
+   "label": "Mark 28 torpedo",
+   "origin": "United States",
+   "year": 1944,
+   "class": "torpedo model",
+   "names": [
+    "Mark 28 torpedo"
+   ]
+  },
+  {
+   "qid": "Q4043729",
+   "label": "Mark 24 Mine",
+   "origin": "United States",
+   "year": 1943,
+   "class": "torpedo model",
+   "names": [
+    "Mark 24 Mine",
+    "Mine Mark 24"
+   ]
+  },
+  {
+   "qid": "Q4047701",
+   "label": "Tiger (P)",
+   "origin": "Nazi Germany",
+   "year": 1942,
+   "class": "combat vehicle model",
+   "names": [
+    "Tiger (P)"
+   ]
+  },
+  {
+   "qid": "Q4049206",
+   "label": "Sd.Kfz. 247",
+   "origin": "Nazi Germany",
+   "year": 1937,
+   "class": "combat vehicle model",
+   "names": [
+    "Sd.Kfz. 247"
+   ]
+  },
+  {
+   "qid": "Q4052532",
+   "label": "VK 30.01 (P)",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "combat vehicle model",
+   "names": [
+    "Typ 100"
+   ]
+  },
+  {
+   "qid": "Q4054071",
+   "label": "AS-44",
+   "origin": "Soviet Union",
+   "year": 1944,
+   "class": "weapon model",
+   "names": [
+    "AS-44"
+   ]
+  },
+  {
+   "qid": "Q4073865",
+   "label": "BAD-1",
+   "origin": null,
+   "year": 1930,
+   "class": "combat vehicle model",
+   "names": [
+    "BAD-1"
+   ]
+  },
+  {
+   "qid": "Q4073872",
+   "label": "BAD-2",
+   "origin": null,
+   "year": 1932,
+   "class": "combat vehicle model",
+   "names": [
+    "BAD-2"
+   ]
+  },
+  {
+   "qid": "Q4147790",
+   "label": "Dyakonov grenade launcher",
+   "origin": "Soviet Union",
+   "year": 1928,
+   "class": "ammunition model",
+   "names": [
+    "Гранатомет Дьяконова"
+   ]
+  },
+  {
+   "qid": "Q4195213",
+   "label": "IT-28",
+   "origin": null,
+   "year": 1940,
+   "class": "combat vehicle model",
+   "names": [
+    "IT-28"
+   ]
+  },
+  {
+   "qid": "Q4206416",
+   "label": "KS-18",
+   "origin": null,
+   "year": 1937,
+   "class": "combat vehicle model",
+   "names": [
+    "KS-18"
+   ]
+  },
+  {
+   "qid": "Q42879557",
+   "label": "Funkkraftwagen",
+   "origin": "Germany",
+   "year": 1932,
+   "class": "combat vehicle model",
+   "names": [
+    "Kfz 14"
+   ]
+  },
+  {
+   "qid": "Q4346348",
+   "label": ".50 Vickers",
+   "origin": "United Kingdom",
+   "year": 1932,
+   "class": "weapon model",
+   "names": [
+    "Vickers .50"
+   ]
+  },
+  {
+   "qid": "Q4380971",
+   "label": "Mark 14 torpedo",
+   "origin": "United States",
+   "year": 1931,
+   "class": "torpedo model",
+   "names": [
+    "Mark 14 torpedo",
+    "Mk14"
+   ]
+  },
+  {
+   "qid": "Q4381324",
+   "label": "High Velocity Aircraft Rocket",
+   "origin": "United States",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "High Velocity Aircraft Rocket",
+    "Holy Moses"
+   ]
+  },
+  {
+   "qid": "Q4480219",
+   "label": "FOG-2",
+   "origin": "Soviet Union",
+   "year": 1941,
+   "class": "weapon model",
+   "names": [
+    "FOG-2"
+   ]
+  },
+  {
+   "qid": "Q4545400",
+   "label": ".55 Boys",
+   "origin": null,
+   "year": 1937,
+   "class": "ammunition model",
+   "names": [
+    ".55 Boys"
+   ]
+  },
+  {
+   "qid": "Q45597",
+   "label": "38 cm SK L/45 gun",
+   "origin": "German Empire",
+   "year": 1918,
+   "class": "artillery model",
+   "names": [
+    "Long Max"
+   ]
+  },
+  {
+   "qid": "Q4630843",
+   "label": "20×138mmB",
+   "origin": "Switzerland",
+   "year": 1930,
+   "class": "ammunition model",
+   "names": [
+    "20 mm Solothurn"
+   ]
+  },
+  {
+   "qid": "Q4632737",
+   "label": "28 cm K L/40 \"Kurfürst\"",
+   "origin": "German Empire",
+   "year": 1918,
+   "class": "artillery model",
+   "names": [
+    "L - Länge"
+   ]
+  },
+  {
+   "qid": "Q4633420",
+   "label": "2 inch Medium Mortar",
+   "origin": "United Kingdom of Great Britain and Ireland",
+   "year": 1915,
+   "class": "artillery model",
+   "names": [
+    "2 inch howitzer"
+   ]
+  },
+  {
+   "qid": "Q4634559",
+   "label": "30 cm Nebelwerfer 42",
+   "origin": "Nazi Germany",
+   "year": 1943,
+   "class": "artillery model",
+   "names": [
+    "30 cm Nebelwerfer 42"
+   ]
+  },
+  {
+   "qid": "Q4637255",
+   "label": "4.5 inch Gun M1",
+   "origin": "United States",
+   "year": 1942,
+   "class": "artillery model",
+   "names": [
+    "4.5 inch Gun M1",
+    "4.5 inch M1"
+   ]
+  },
+  {
+   "qid": "Q4641781",
+   "label": "Type 90 torpedo",
+   "origin": "Empire of Japan",
+   "year": 1933,
+   "class": "torpedo model",
+   "names": [
+    "Type 90 torpedo"
+   ]
+  },
+  {
+   "qid": "Q4644295",
+   "label": "8-inch M1888",
+   "origin": "United States",
+   "year": 1918,
+   "class": "artillery model",
+   "names": [
+    "8-inch M1888"
+   ]
+  },
+  {
+   "qid": "Q475616",
+   "label": "M8 Greyhound",
+   "origin": "United States",
+   "year": null,
+   "class": "combat vehicle model",
+   "names": [
+    "Light Armored Car M8"
+   ]
+  },
+  {
+   "qid": "Q477863",
+   "label": "DShK",
+   "origin": "Soviet Union",
+   "year": 1938,
+   "class": "firearm model",
+   "names": [
+    "DShK 1938"
+   ]
+  },
+  {
+   "qid": "Q4819341",
+   "label": "YaM-5 box mine",
+   "origin": "Soviet Union",
+   "year": 1941,
+   "class": "weapon model",
+   "names": [
+    "YaM-5",
+    "JaM-5"
+   ]
+  },
+  {
+   "qid": "Q4821716",
+   "label": "M7 mine",
+   "origin": "United States",
+   "year": null,
+   "class": "ammunition model",
+   "names": [
+    "M7 mine"
+   ]
+  },
+  {
+   "qid": "Q4821767",
+   "label": "M1",
+   "origin": "United States",
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "antitank mine M1"
+   ]
+  },
+  {
+   "qid": "Q482428",
+   "label": "Bren light machine gun",
+   "origin": "United Kingdom",
+   "year": 1938,
+   "class": "weapon model",
+   "names": [
+    "Bren light machine gun",
+    "Bren Gun"
+   ]
+  },
+  {
+   "qid": "Q482453",
+   "label": "Degtyaryova Pekhotny",
+   "origin": "Soviet Union",
+   "year": 1928,
+   "class": "firearm model",
+   "names": [
+    "DP-28"
+   ]
+  },
+  {
+   "qid": "Q482522",
+   "label": "RPD",
+   "origin": "Soviet Union",
+   "year": 1948,
+   "class": "weapon model",
+   "names": [
+    "Ручной пулемет Дегтярева"
+   ]
+  },
+  {
+   "qid": "Q4826520",
+   "label": "Automatic Gun-Laying Turret",
+   "origin": "United Kingdom",
+   "year": 1944,
+   "class": "firearm model",
+   "names": [
+    "Z Equipment"
+   ]
+  },
+  {
+   "qid": "Q4835116",
+   "label": "BC-41",
+   "origin": null,
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "BC-41"
+   ]
+  },
+  {
+   "qid": "Q495087",
+   "label": "ZB vz. 26",
+   "origin": "First Czechoslovak Republic",
+   "year": 1924,
+   "class": "firearm model",
+   "names": [
+    "Zb.26"
+   ]
+  },
+  {
+   "qid": "Q4969360",
+   "label": "British 18 inch torpedo",
+   "origin": "United Kingdom",
+   "year": 1937,
+   "class": "torpedo model",
+   "names": [
+    "British 18 inch torpedo"
+   ]
+  },
+  {
+   "qid": "Q4993868",
+   "label": "Teller mine",
+   "origin": null,
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "Teller mine",
+    "Tellermine"
+   ]
+  },
+  {
+   "qid": "Q500301",
+   "label": "M24 Chaffee",
+   "origin": "United States",
+   "year": 1944,
+   "class": "combat vehicle model",
+   "names": [
+    "Chaffee",
+    "M24 Light Tank",
+    "M24 tank"
+   ]
+  },
+  {
+   "qid": "Q502412",
+   "label": "Matilda II",
+   "origin": "United Kingdom",
+   "year": 1939,
+   "class": "combat vehicle model",
+   "names": [
+    "Matilda",
+    "Mk II Matilda",
+    "Infantry tank Mk II"
+   ]
+  },
+  {
+   "qid": "Q502910",
+   "label": "M3 Stuart",
+   "origin": "United States",
+   "year": null,
+   "class": "combat vehicle model",
+   "names": [
+    "Stuart tank",
+    "M3 Light Tank"
+   ]
+  },
+  {
+   "qid": "Q504320",
+   "label": "Centurion",
+   "origin": "United Kingdom",
+   "year": 1946,
+   "class": "combat vehicle family",
+   "names": [
+    "Char 68"
+   ]
+  },
+  {
+   "qid": "Q508023",
+   "label": "Tellermine 42",
+   "origin": null,
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "Tellermine 42"
+   ]
+  },
+  {
+   "qid": "Q512711",
+   "label": "Beretta Model 38",
+   "origin": "Italy",
+   "year": 1935,
+   "class": "weapon model",
+   "names": [
+    "Beretta Model 38"
+   ]
+  },
+  {
+   "qid": "Q528538",
+   "label": "No. 73 Grenade",
+   "origin": "United Kingdom",
+   "year": 1940,
+   "class": "ammunition model",
+   "names": [
+    "hand percussion grenade"
+   ]
+  },
+  {
+   "qid": "Q5307442",
+   "label": "M1917 bayonet",
+   "origin": "United States",
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "M1917 bayonet"
+   ]
+  },
+  {
+   "qid": "Q532397",
+   "label": "Sturmhaubitze 42",
+   "origin": "Nazi Germany",
+   "year": 1942,
+   "class": "combat vehicle model",
+   "names": [
+    "Sturmhaubitze 42",
+    "Sd.Kfz.142/2"
+   ]
+  },
+  {
+   "qid": "Q544568",
+   "label": "Vickers-Berthier",
+   "origin": "United Kingdom",
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "Vickers-Berthier"
+   ]
+  },
+  {
+   "qid": "Q550467",
+   "label": "Type 5 Chi-Ri",
+   "origin": "Empire of Japan",
+   "year": null,
+   "class": "prototype",
+   "names": [
+    "Chi-Ri"
+   ]
+  },
+  {
+   "qid": "Q55422488",
+   "label": "Sonderkraftfahrzeug 233",
+   "origin": "Germany",
+   "year": null,
+   "class": "combat vehicle model",
+   "names": [
+    "Sd.Kfz. 233"
+   ]
+  },
+  {
+   "qid": "Q558422",
+   "label": "T-40",
+   "origin": "Soviet Union",
+   "year": 1941,
+   "class": "combat vehicle model",
+   "names": [
+    "T-40S"
+   ]
+  },
+  {
+   "qid": "Q560859",
+   "label": "Tellermine 43",
+   "origin": null,
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "Tellermine 43"
+   ]
+  },
+  {
+   "qid": "Q560911",
+   "label": "Tellermine 35",
+   "origin": null,
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "Tellermine 35"
+   ]
+  },
+  {
+   "qid": "Q560928",
+   "label": "Tellermine 29",
+   "origin": "Germany",
+   "year": 1929,
+   "class": "weapon model",
+   "names": [
+    "Tellermine 29"
+   ]
+  },
+  {
+   "qid": "Q568411",
+   "label": "M.41M da 90/53",
+   "origin": "Kingdom of Italy",
+   "year": 1942,
+   "class": "combat vehicle model",
+   "names": [
+    "Semovente 90/53"
+   ]
+  },
+  {
+   "qid": "Q5685183",
+   "label": "Hawkins grenade",
+   "origin": "United Kingdom",
+   "year": 1942,
+   "class": "ammunition model",
+   "names": [
+    "Hawkins grenade"
+   ]
+  },
+  {
+   "qid": "Q570813",
+   "label": "G7e torpedo",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "torpedo model",
+   "names": [
+    "G7e torpedo"
+   ]
+  },
+  {
+   "qid": "Q573059",
+   "label": "Boys .55in Anti-Tank Rifle",
+   "origin": "United Kingdom",
+   "year": 1937,
+   "class": "firearm model",
+   "names": [
+    "Boys anti-tank rifle"
+   ]
+  },
+  {
+   "qid": "Q573370",
+   "label": "10 cm schwere Kanone 18",
+   "origin": "Germany",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "10 cm Kanone 18",
+    "sK 18"
+   ]
+  },
+  {
+   "qid": "Q573994",
+   "label": "MG 08",
+   "origin": "Germany",
+   "year": 1908,
+   "class": "weapon model",
+   "names": [
+    "MG 08",
+    "MG 08/15"
+   ]
+  },
+  {
+   "qid": "Q583515",
+   "label": "bouncing bomb",
+   "origin": "United Kingdom",
+   "year": 1943,
+   "class": "ammunition model",
+   "names": [
+    "bouncing bomb"
+   ]
+  },
+  {
+   "qid": "Q586159",
+   "label": "Henschel Hs 293",
+   "origin": "Nazi Germany",
+   "year": 1943,
+   "class": "weapon model",
+   "names": [
+    "Hs 293"
+   ]
+  },
+  {
+   "qid": "Q589020",
+   "label": "2 cm FlaK 30",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "2 cm FlaK 30",
+    "20 mm FlaK 30",
+    "2 cm FlaK"
+   ]
+  },
+  {
+   "qid": "Q589148",
+   "label": "Webley Revolver",
+   "origin": "United Kingdom of Great Britain and Ireland",
+   "year": 1887,
+   "class": "weapon model",
+   "names": [
+    "Webley Revolver"
+   ]
+  },
+  {
+   "qid": "Q5932252",
+   "label": "TM-1-14",
+   "origin": "Russia",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "TM-1-14"
+   ]
+  },
+  {
+   "qid": "Q5950398",
+   "label": "Mark 10 torpedo",
+   "origin": "United States",
+   "year": 1915,
+   "class": "torpedo model",
+   "names": [
+    "Mk10"
+   ]
+  },
+  {
+   "qid": "Q5971188",
+   "label": "Type 93",
+   "origin": "Empire of Japan",
+   "year": 1933,
+   "class": "combat vehicle model",
+   "names": [
+    "Typ 93"
+   ]
+  },
+  {
+   "qid": "Q597174",
+   "label": "Northover Projector",
+   "origin": "United Kingdom",
+   "year": 1940,
+   "class": "weapon model",
+   "names": [
+    "Northover Projector"
+   ]
+  },
+  {
+   "qid": "Q60134",
+   "label": "Karabiner 98k",
+   "origin": "Nazi Germany",
+   "year": 1935,
+   "class": "firearm model",
+   "names": [
+    "Karabiner 98k",
+    "K98k",
+    "Karabiner 98 Kurz",
+    "Kar.98k",
+    "Mauser Karabiner 98k"
+   ]
+  },
+  {
+   "qid": "Q601699",
+   "label": "Model 43 grenade",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "ammunition model",
+   "names": [
+    "Stielhandgranate 43"
+   ]
+  },
+  {
+   "qid": "Q60642",
+   "label": "M1918 Browning automatic rifle",
+   "origin": "United States",
+   "year": 1918,
+   "class": "firearm model",
+   "names": [
+    "Browning Automatic Rifle",
+    "Browning M1918A2",
+    "Browning Automatic Rifle M1918",
+    "Browning M1918",
+    "BAR M1918"
+   ]
+  },
+  {
+   "qid": "Q60850153",
+   "label": "Armored train type BP-43",
+   "origin": "Soviet Union",
+   "year": 1942,
+   "class": "combat vehicle model",
+   "names": [
+    "BP-43"
+   ]
+  },
+  {
+   "qid": "Q611632",
+   "label": "8.8 cm Raketenwerfer 43",
+   "origin": "Germany",
+   "year": 1943,
+   "class": "artillery model",
+   "names": [
+    "8.8 cm Raketenwerfer 43"
+   ]
+  },
+  {
+   "qid": "Q6119535",
+   "label": "M1905 bayonet",
+   "origin": "United States",
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "M1905 bayonet"
+   ]
+  },
+  {
+   "qid": "Q6127479",
+   "label": "leichter Ladungswerfer",
+   "origin": "Nazi Germany",
+   "year": 1940,
+   "class": "artillery model",
+   "names": [
+    "leichter Ladungswerfer",
+    "20 cm leichter Ladungswerfer"
+   ]
+  },
+  {
+   "qid": "Q618603",
+   "label": "BA-64",
+   "origin": "Soviet Union",
+   "year": 1942,
+   "class": "combat vehicle family",
+   "names": [
+    "BA-64",
+    "БА-64"
+   ]
+  },
+  {
+   "qid": "Q620543",
+   "label": "ZiS-2",
+   "origin": "Soviet Union",
+   "year": 1941,
+   "class": "artillery model",
+   "names": [
+    "ZiS-2"
+   ]
+  },
+  {
+   "qid": "Q621859",
+   "label": "M2 Light Tank",
+   "origin": "United States",
+   "year": null,
+   "class": "combat vehicle model",
+   "names": [
+    "M2 Light Tank"
+   ]
+  },
+  {
+   "qid": "Q621874",
+   "label": "M18 Hellcat",
+   "origin": "United States",
+   "year": 1944,
+   "class": "combat vehicle model",
+   "names": [
+    "M18 tank destroyer",
+    "T70 Gun Motor Carriage",
+    "76 mm Gun Motor Carriage T70",
+    "76mm Gun Motor Carriage M18"
+   ]
+  },
+  {
+   "qid": "Q630329",
+   "label": "Brandt Model 27/31",
+   "origin": "France",
+   "year": 1932,
+   "class": "artillery model",
+   "names": [
+    "Brandt 81 mm"
+   ]
+  },
+  {
+   "qid": "Q644981",
+   "label": "MP 34",
+   "origin": "Switzerland",
+   "year": 1930,
+   "class": "firearm model",
+   "names": [
+    "MP 34"
+   ]
+  },
+  {
+   "qid": "Q645903",
+   "label": "SU-76",
+   "origin": "Soviet Union",
+   "year": 1942,
+   "class": "combat vehicle family",
+   "names": [
+    "SU-76"
+   ]
+  },
+  {
+   "qid": "Q652388",
+   "label": "SBML Two-Inch Mortar",
+   "origin": "United Kingdom",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "2-inch mortar"
+   ]
+  },
+  {
+   "qid": "Q652468",
+   "label": "MG 17",
+   "origin": "Germany",
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "MG 17",
+    "MG17"
+   ]
+  },
+  {
+   "qid": "Q657002",
+   "label": "leichter Granatwerfer 36",
+   "origin": "Germany",
+   "year": 1936,
+   "class": "artillery model",
+   "names": [
+    "Granatwerfer 36"
+   ]
+  },
+  {
+   "qid": "Q662078",
+   "label": "Universal Carrier",
+   "origin": "United Kingdom",
+   "year": 1936,
+   "class": "combat vehicle model",
+   "names": [
+    "Universal Carrier",
+    "Bren Gun Carrier",
+    "Bren Carrier",
+    "British Universal Carrier"
+   ]
+  },
+  {
+   "qid": "Q663662",
+   "label": "Type 38 rifle",
+   "origin": "Empire of Japan",
+   "year": 1906,
+   "class": "weapon model",
+   "names": [
+    "Typ 38",
+    "Arisaka"
+   ]
+  },
+  {
+   "qid": "Q670469",
+   "label": "Schwarzlose machine gun",
+   "origin": "Austria–Hungary",
+   "year": 1905,
+   "class": "weapon model",
+   "names": [
+    "Schwarzlose machine gun",
+    "Schwarzlose"
+   ]
+  },
+  {
+   "qid": "Q6713575",
+   "label": "M16",
+   "origin": "United States",
+   "year": 1945,
+   "class": "artillery model",
+   "names": [
+    "M16 rocket",
+    "4.5-inch rocket"
+   ]
+  },
+  {
+   "qid": "Q6713583",
+   "label": "M17 rifle grenade",
+   "origin": "United States",
+   "year": 1941,
+   "class": "ammunition model",
+   "names": [
+    "M17 rifle grenade"
+   ]
+  },
+  {
+   "qid": "Q6713618",
+   "label": "M1921 Browning machine gun",
+   "origin": "United States",
+   "year": 1921,
+   "class": "weapon model",
+   "names": [
+    "Browning M1921"
+   ]
+  },
+  {
+   "qid": "Q6713841",
+   "label": "M4",
+   "origin": "United States",
+   "year": 1942,
+   "class": "artillery model",
+   "names": [
+    "37 mm Automatic Gun, M4"
+   ]
+  },
+  {
+   "qid": "Q673931",
+   "label": "Model 39 grenade",
+   "origin": "Nazi Germany",
+   "year": 1939,
+   "class": "ammunition model",
+   "names": [
+    "Eihandgranate 39",
+    "Eihandgranate"
+   ]
+  },
+  {
+   "qid": "Q674498",
+   "label": "Light Tank Mk VII Tetrarch",
+   "origin": "United Kingdom",
+   "year": null,
+   "class": "combat vehicle model",
+   "names": [
+    "Tetrarch"
+   ]
+  },
+  {
+   "qid": "Q6766435",
+   "label": "Mark 8 torpedo",
+   "origin": "United States",
+   "year": 1911,
+   "class": "torpedo model",
+   "names": [
+    "Mark 8 torpedo"
+   ]
+  },
+  {
+   "qid": "Q680704",
+   "label": "MG FF",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "Oerlikon FF"
+   ]
+  },
+  {
+   "qid": "Q689398",
+   "label": "2 cm Flakvierling 38",
+   "origin": "Nazi Germany",
+   "year": 1940,
+   "class": "artillery model",
+   "names": [
+    "2 cm Flakvierling 38",
+    "Flakvierling",
+    "Flakvierling 38"
+   ]
+  },
+  {
+   "qid": "Q690491",
+   "label": "Gewehr 41",
+   "origin": "Germany",
+   "year": 1941,
+   "class": "weapon model",
+   "names": [
+    "Gewehr 41"
+   ]
+  },
+  {
+   "qid": "Q691502",
+   "label": "Furrer M25",
+   "origin": "Switzerland",
+   "year": 1933,
+   "class": "weapon model",
+   "names": [
+    "Fm 25"
+   ]
+  },
+  {
+   "qid": "Q693206",
+   "label": "M50 Reising",
+   "origin": "United States",
+   "year": 1941,
+   "class": "weapon model",
+   "names": [
+    "Reising submachine gun",
+    "Reising gun"
+   ]
+  },
+  {
+   "qid": "Q695988",
+   "label": "M1 carbine",
+   "origin": "United States",
+   "year": 1938,
+   "class": "weapon model",
+   "names": [
+    "M1 carbine",
+    "M1A1 Carbine",
+    "US M1"
+   ]
+  },
+  {
+   "qid": "Q696083",
+   "label": "Crusader",
+   "origin": "United Kingdom",
+   "year": 1941,
+   "class": "combat vehicle family",
+   "names": [
+    "Crusader",
+    "Crusader tank",
+    "Cruiser Tank Mk VI Crusader",
+    "Mk VI Crusader"
+   ]
+  },
+  {
+   "qid": "Q696172",
+   "label": "MP 18",
+   "origin": "German Empire",
+   "year": 1918,
+   "class": "firearm model",
+   "names": [
+    "MP 18"
+   ]
+  },
+  {
+   "qid": "Q696182",
+   "label": "Churchill",
+   "origin": "United Kingdom",
+   "year": 1941,
+   "class": "combat vehicle model",
+   "names": [
+    "Churchill tank",
+    "Churchill Mk VII"
+   ]
+  },
+  {
+   "qid": "Q696537",
+   "label": "M36 Gun Motor Carriage",
+   "origin": "United States",
+   "year": null,
+   "class": "combat vehicle model",
+   "names": [
+    "90 mm Gun Motor Carriage M36",
+    "M36 tank destroyer"
+   ]
+  },
+  {
+   "qid": "Q696717",
+   "label": "MG 13",
+   "origin": "Weimar Republic",
+   "year": 1930,
+   "class": "weapon model",
+   "names": [
+    "MG 13"
+   ]
+  },
+  {
+   "qid": "Q696865",
+   "label": "M3 Scout Car",
+   "origin": "United States",
+   "year": null,
+   "class": "combat vehicle family",
+   "names": [
+    "M3 Scout Car",
+    "scout car M3"
+   ]
+  },
+  {
+   "qid": "Q697631",
+   "label": "M10 Gun Motor Carriage",
+   "origin": "United States",
+   "year": 1943,
+   "class": "combat vehicle model",
+   "names": [
+    "M10 tank destroyer",
+    "3-inch Gun Motor Carriage M10"
+   ]
+  },
+  {
+   "qid": "Q697655",
+   "label": "Stielhandgranate",
+   "origin": "German Empire",
+   "year": 1915,
+   "class": "ammunition model",
+   "names": [
+    "Stielhandgranate",
+    "Stielhandgranate 24"
+   ]
+  },
+  {
+   "qid": "Q697661",
+   "label": "Ram",
+   "origin": "Canada",
+   "year": 1941,
+   "class": "combat vehicle model",
+   "names": [
+    "Ram II",
+    "Ram I"
+   ]
+  },
+  {
+   "qid": "Q697896",
+   "label": "10.5 cm FlaK 38",
+   "origin": "Nazi Germany",
+   "year": 1937,
+   "class": "artillery model",
+   "names": [
+    "10.5 cm FlaK 38",
+    "10,5 cm FlaK 38/39"
+   ]
+  },
+  {
+   "qid": "Q698638",
+   "label": "Mauser MG 151",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "MG 151/15",
+    "MG 151/20",
+    "MG 151",
+    "MG151/20",
+    "MG151"
+   ]
+  },
+  {
+   "qid": "Q699089",
+   "label": "Type 94 tankette",
+   "origin": "Empire of Japan",
+   "year": 1935,
+   "class": "combat vehicle model",
+   "names": [
+    "Type 94 tankette"
+   ]
+  },
+  {
+   "qid": "Q699606",
+   "label": "Karl-Gerät",
+   "origin": "Nazi Germany",
+   "year": 1941,
+   "class": "combat vehicle model",
+   "names": [
+    "Karl-Gerät"
+   ]
+  },
+  {
+   "qid": "Q700700",
+   "label": "Char B1",
+   "origin": "France",
+   "year": 1936,
+   "class": "combat vehicle model",
+   "names": [
+    "Char B"
+   ]
+  },
+  {
+   "qid": "Q700742",
+   "label": "S-35",
+   "origin": "France",
+   "year": 1936,
+   "class": "combat vehicle model",
+   "names": [
+    "SOMUA S35",
+    "S-35 «SOMUA»"
+   ]
+  },
+  {
+   "qid": "Q701796",
+   "label": "Hanyang 88",
+   "origin": "People's Republic of China",
+   "year": 1888,
+   "class": "weapon model",
+   "names": [
+    "Typ 88"
+   ]
+  },
+  {
+   "qid": "Q703405",
+   "label": "DD tank",
+   "origin": null,
+   "year": 1944,
+   "class": "combat vehicle model",
+   "names": [
+    "Duplex Drive"
+   ]
+  },
+  {
+   "qid": "Q7043947",
+   "label": "No 69 grenade",
+   "origin": "United Kingdom",
+   "year": null,
+   "class": "ammunition model",
+   "names": [
+    "No 69 grenade"
+   ]
+  },
+  {
+   "qid": "Q7043952",
+   "label": "No 77 grenade",
+   "origin": "United Kingdom",
+   "year": 1943,
+   "class": "ammunition model",
+   "names": [
+    "No 77 grenade"
+   ]
+  },
+  {
+   "qid": "Q705211",
+   "label": "Panzerbüchse 39",
+   "origin": "Nazi Germany",
+   "year": 1940,
+   "class": "firearm model",
+   "names": [
+    "Panzerbüchse 39",
+    "Panzerbüchse",
+    "Pz.B.39",
+    "Pz.B.38"
+   ]
+  },
+  {
+   "qid": "Q706233",
+   "label": "Type 92 battalion gun",
+   "origin": "Japan",
+   "year": 1932,
+   "class": "artillery model",
+   "names": [
+    "Type 92 battalion gun"
+   ]
+  },
+  {
+   "qid": "Q709342",
+   "label": "7.5 cm Pak 97/38",
+   "origin": "Nazi Germany",
+   "year": 1942,
+   "class": "artillery model",
+   "names": [
+    "7.5 cm Pak 97/38",
+    "Pak 97/38",
+    "cannone anticarro"
+   ]
+  },
+  {
+   "qid": "Q711805",
+   "label": "15 cm Nebelwerfer 41",
+   "origin": "Nazi Germany",
+   "year": 1941,
+   "class": "artillery model",
+   "names": [
+    "15 cm Nebelwerfer 41",
+    "Nebelwerfer 41"
+   ]
+  },
+  {
+   "qid": "Q711827",
+   "label": "7.62 cm Pak 36(r)",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "7.62 cm Pak 36(r)",
+    "7,62-cm-Pak 36",
+    "Pak 36(r)"
+   ]
+  },
+  {
+   "qid": "Q723346",
+   "label": "Lee-Enfield",
+   "origin": "United Kingdom of Great Britain and Ireland",
+   "year": 1895,
+   "class": "firearm model",
+   "names": [
+    "Lee-Enfield"
+   ]
+  },
+  {
+   "qid": "Q7311843",
+   "label": "Remington Model 31",
+   "origin": "United States",
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "Remington Model 31"
+   ]
+  },
+  {
+   "qid": "Q739637",
+   "label": "Polsten",
+   "origin": "United Kingdom",
+   "year": 1944,
+   "class": "artillery model",
+   "names": [
+    "Polsten"
+   ]
+  },
+  {
+   "qid": "Q743496",
+   "label": "M1917 revolver",
+   "origin": "United States",
+   "year": 1917,
+   "class": "weapon model",
+   "names": [
+    "M1917 revolver",
+    "Revolver M1917"
+   ]
+  },
+  {
+   "qid": "Q748803",
+   "label": "Panhard 178",
+   "origin": null,
+   "year": 1937,
+   "class": "combat vehicle family",
+   "names": [
+    "Panhard 178"
+   ]
+  },
+  {
+   "qid": "Q749770",
+   "label": "Vickers K",
+   "origin": "United Kingdom",
+   "year": 1934,
+   "class": "weapon model",
+   "names": [
+    "Vickers K"
+   ]
+  },
+  {
+   "qid": "Q752002",
+   "label": "Type 96 150 mm howitzer",
+   "origin": "Empire of Japan",
+   "year": 1937,
+   "class": "artillery model",
+   "names": [
+    "Typ 96"
+   ]
+  },
+  {
+   "qid": "Q754800",
+   "label": ".303 Vickers",
+   "origin": "United Kingdom of Great Britain and Ireland",
+   "year": 1912,
+   "class": "weapon model",
+   "names": [
+    ".303 Vickers",
+    "Vickers Gun",
+    "Vickers machine gun",
+    "Vickers .303",
+    "Vickers-MG",
+    "Vickers-Maxim"
+   ]
+  },
+  {
+   "qid": "Q768187",
+   "label": "Hotchkiss H35",
+   "origin": "France",
+   "year": 1936,
+   "class": "combat vehicle model",
+   "names": [
+    "Hotchkiss H-35"
+   ]
+  },
+  {
+   "qid": "Q78038607",
+   "label": "White AM",
+   "origin": "France",
+   "year": null,
+   "class": "combat vehicle model",
+   "names": [
+    "White AM"
+   ]
+  },
+  {
+   "qid": "Q7860736",
+   "label": "Type 4 rocket launcher",
+   "origin": "Japan",
+   "year": 1943,
+   "class": "weapon model",
+   "names": [
+    "Type 4 rocket launcher"
+   ]
+  },
+  {
+   "qid": "Q7860845",
+   "label": "Type 98 grenade",
+   "origin": "Empire of Japan",
+   "year": 1938,
+   "class": "ammunition model",
+   "names": [
+    "Type 98 grenade"
+   ]
+  },
+  {
+   "qid": "Q7906578",
+   "label": "VB-6 Felix",
+   "origin": "United States",
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "VB-6 Felix"
+   ]
+  },
+  {
+   "qid": "Q8062948",
+   "label": "ZB-50",
+   "origin": "Czechoslovakia",
+   "year": 1932,
+   "class": "weapon model",
+   "names": [
+    "ZB-50"
+   ]
+  },
+  {
+   "qid": "Q806460",
+   "label": "Bangalore torpedo",
+   "origin": null,
+   "year": 1914,
+   "class": "weapon model",
+   "names": [
+    "Bangalore torpedo",
+    "Bangalores"
+   ]
+  },
+  {
+   "qid": "Q81469",
+   "label": "15 cm sIG 33",
+   "origin": "Weimar Republic",
+   "year": 1927,
+   "class": "artillery model",
+   "names": [
+    "15 cm sIG 33",
+    "sIG 33",
+    "Heavy Infantry Gun 33",
+    "Schweres Infanterie-Geschütz 33",
+    "15 cm schweres Infanterie Geschütz 33"
+   ]
+  },
+  {
+   "qid": "Q81661",
+   "label": "Elefant",
+   "origin": "Nazi Germany",
+   "year": 1943,
+   "class": "combat vehicle model",
+   "names": [
+    "Sd.Kfz. 184"
+   ]
+  },
+  {
+   "qid": "Q819557",
+   "label": "Bergepanther",
+   "origin": null,
+   "year": 1943,
+   "class": "combat vehicle model",
+   "names": [
+    "Bergepanther"
+   ]
+  },
+  {
+   "qid": "Q822960",
+   "label": "schwerer Ladungswerfer",
+   "origin": "Nazi Germany",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "Ladungswerfer"
+   ]
+  },
+  {
+   "qid": "Q829411",
+   "label": "Besa Machine Gun",
+   "origin": "United Kingdom",
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "Besa Machine Gun",
+    "Machine Gun, BESA"
+   ]
+  },
+  {
+   "qid": "Q839209",
+   "label": "Vickers 6-Ton",
+   "origin": "United Kingdom",
+   "year": 1931,
+   "class": "combat vehicle model",
+   "names": [
+    "Vickers 6-Ton"
+   ]
+  },
+  {
+   "qid": "Q858434",
+   "label": "Carcano",
+   "origin": "Kingdom of Italy",
+   "year": 1891,
+   "class": "firearm model",
+   "names": [
+    "Carcano",
+    "Mannlicher-Carcano"
+   ]
+  },
+  {
+   "qid": "Q865005",
+   "label": "M3 submachine gun",
+   "origin": "United States",
+   "year": 1942,
+   "class": "weapon model",
+   "names": [
+    "M3 submachine gun",
+    "Grease Gun",
+    "M3A1"
+   ]
+  },
+  {
+   "qid": "Q872172",
+   "label": "Nagant M1895",
+   "origin": "Russian Empire",
+   "year": 1895,
+   "class": "weapon model",
+   "names": [
+    "Nagant"
+   ]
+  },
+  {
+   "qid": "Q899078",
+   "label": "Valentine",
+   "origin": "United Kingdom",
+   "year": 1940,
+   "class": "combat vehicle family",
+   "names": [
+    "Valentine tank"
+   ]
+  },
+  {
+   "qid": "Q9137268",
+   "label": "AN-Mk 43",
+   "origin": "United States",
+   "year": 1940,
+   "class": "ammunition model",
+   "names": [
+    "AN-Mk 43"
+   ]
+  },
+  {
+   "qid": "Q918486",
+   "label": "M101 howitzer",
+   "origin": "United States",
+   "year": null,
+   "class": "artillery model",
+   "names": [
+    "M2A1 howitzer"
+   ]
+  },
+  {
+   "qid": "Q921362",
+   "label": "Brixia Model 35",
+   "origin": "Kingdom of Italy",
+   "year": 1935,
+   "class": "artillery model",
+   "names": [
+    "Brixia Model 35",
+    "45 mm mortar Brixia"
+   ]
+  },
+  {
+   "qid": "Q924502",
+   "label": "SU-14",
+   "origin": "Soviet Union",
+   "year": 1940,
+   "class": "combat vehicle model",
+   "names": [
+    "SU-14"
+   ]
+  },
+  {
+   "qid": "Q925487",
+   "label": "Hafthohlladung",
+   "origin": null,
+   "year": null,
+   "class": "weapon model",
+   "names": [
+    "Hafthohlladung"
+   ]
+  },
+  {
+   "qid": "Q9332378",
+   "label": "SU-12",
+   "origin": null,
+   "year": 1933,
+   "class": "combat vehicle model",
+   "names": [
+    "SU-12"
+   ]
+  },
+  {
+   "qid": "Q958738",
+   "label": "75 mm Cannon Model 1897",
+   "origin": "French Third Republic",
+   "year": 1898,
+   "class": "artillery model",
+   "names": [
+    "French 75",
+    "Canon de 75 modèle 1897",
+    "Soixante-Quinze"
+   ]
+  },
+  {
+   "qid": "Q977508",
+   "label": "S-mine",
+   "origin": "Germany",
+   "year": 1935,
+   "class": "weapon model",
+   "names": [
+    "S-mine",
+    "Schrapnellmine",
+    "Mine-S"
+   ]
+  },
+  {
+   "qid": "Q983967",
+   "label": "Mannlicher M1895",
+   "origin": "Austria–Hungary",
+   "year": 1895,
+   "class": "firearm model",
+   "names": [
+    "Mannlicher rifles"
+   ]
+  },
+  {
+   "qid": "Q991165",
+   "label": "Browning Auto-5",
+   "origin": "United States",
+   "year": 1905,
+   "class": "weapon model",
+   "names": [
+    "Remington Model 11"
+   ]
+  }
+ ]
+}

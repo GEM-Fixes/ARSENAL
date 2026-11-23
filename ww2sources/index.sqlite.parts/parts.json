@@ -1,0 +1,136 @@
+{
+ "format": 1,
+ "writer": "ARSENAL gemindex ww2-split",
+ "file": "index.sqlite",
+ "bytes": 975241216,
+ "sha256": "46f1965f4fc9c7fb6bc31d5231e1e48cf8ddf9427373974f861b1f3ce66ee697",
+ "pieceBytes": 47185920,
+ "pieces": [
+  {
+   "name": "index.sqlite.001.gz",
+   "raw": 47185920,
+   "stored": 4052865,
+   "sha256": "b9d30f93129bc2900bb6cc3159ed50846c0d77726f592ef45cb8f61befad9618"
+  },
+  {
+   "name": "index.sqlite.002.gz",
+   "raw": 47185920,
+   "stored": 31426870,
+   "sha256": "67c3d8650c3283c16c65ffe8f1d26ff32ef5906b734a1a74015c6d076228591b"
+  },
+  {
+   "name": "index.sqlite.003.gz",
+   "raw": 47185920,
+   "stored": 32785216,
+   "sha256": "b479cfd625a2ed75aa865ea241d78acd9a5f27e84d8d97502ee0a365887fccc2"
+  },
+  {
+   "name": "index.sqlite.004.gz",
+   "raw": 47185920,
+   "stored": 33137229,
+   "sha256": "930de8dd448b3d6abb206907a990eb57d309312eb0345b5e5bc79d8bd6443c92"
+  },
+  {
+   "name": "index.sqlite.005.gz",
+   "raw": 47185920,
+   "stored": 32509302,
+   "sha256": "4dc67b72b4e7eda5b8840f7ac8400e26a49897b5cee7b4ee3a5e97a691374c50"
+  },
+  {
+   "name": "index.sqlite.006.gz",
+   "raw": 47185920,
+   "stored": 21113047,
+   "sha256": "6da53a7f25aa10bc21b71e4ce2ae43a2b7d90d78d210372e79d27ed38232116f"
+  },
+  {
+   "name": "index.sqlite.007.gz",
+   "raw": 47185920,
+   "stored": 12069648,
+   "sha256": "1dc2fba25104b9054bf93338c9705c4184ae54a21939608f609f3f86c8b54d7c"
+  },
+  {
+   "name": "index.sqlite.008.gz",
+   "raw": 47185920,
+   "stored": 11991480,
+   "sha256": "19448f011ce94d1154dfae0c6b2516ea7613daec9a171578bcf86c5cff13ce78"
+  },
+  {
+   "name": "index.sqlite.009.gz",
+   "raw": 47185920,
+   "stored": 12100481,
+   "sha256": "f9448df1348d7f444f6bf197da526328775637622f429327aae937c4a9bccac0"
+  },
+  {
+   "name": "index.sqlite.010.gz",
+   "raw": 47185920,
+   "stored": 11547544,
+   "sha256": "43a23957e2785f4b6509d499d19c0c1820a2219406b47f6d5c048c600394dcd8"
+  },
+  {
+   "name": "index.sqlite.011.gz",
+   "raw": 47185920,
+   "stored": 11684525,
+   "sha256": "d8fd5fc12cc0a69294aa1bc57da98ea9f76cd82f2993d7f391b0ea992d57c75f"
+  },
+  {
+   "name": "index.sqlite.012.gz",
+   "raw": 47185920,
+   "stored": 13761612,
+   "sha256": "2012bc4de598b5930bbb247904c2d3d93ac4e52355585c722f4b3c189bfda01d"
+  },
+  {
+   "name": "index.sqlite.013.gz",
+   "raw": 47185920,
+   "stored": 13351509,
+   "sha256": "7338df2fe3907feeb48c33d8f8970d49ca144058d9df7ecf786277a914e5a523"
+  },
+  {
+   "name": "index.sqlite.014.gz",
+   "raw": 47185920,
+   "stored": 11619826,
+   "sha256": "8d95cde3db39d25afa380056b714e6c8d967a0c68470ca6b01fedb80ff4e8a37"
+  },
+  {
+   "name": "index.sqlite.015.gz",
+   "raw": 47185920,
+   "stored": 13134951,
+   "sha256": "cbfcf89cdaccbf72f12edd34e14353042ec30724c8047591dd94be6dd5d11694"
+  },
+  {
+   "name": "index.sqlite.016.gz",
+   "raw": 47185920,
+   "stored": 12582721,
+   "sha256": "90e76babdc49664782c62fc92af8241f776ef444e163e5865084e90c62fa79b4"
+  },
+  {
+   "name": "index.sqlite.017.gz",
+   "raw": 47185920,
+   "stored": 14090404,
+   "sha256": "5defbdb7e5f12f1b8cfdb06275009875ec3d10df0dcc6b526de4e7ad48010ba2"
+  },
+  {
+   "name": "index.sqlite.018.gz",
+   "raw": 47185920,
+   "stored": 14717699,
+   "sha256": "4ddc92a1712e6ff7b5ad6eaecb230f09ab68e7b58bba195317f8e4d57b012c25"
+  },
+  {
+   "name": "index.sqlite.019.gz",
+   "raw": 47185920,
+   "stored": 13360095,
+   "sha256": "665f5704cc104f22ca0012f5217ffaf4bcad3f0b1e90206471cfa2ed2b78ac30"
+  },
+  {
+   "name": "index.sqlite.020.gz",
+   "raw": 47185920,
+   "stored": 16661101,
+   "sha256": "3d71a130ff7e8899973b202ff266f688ca447b8c7b50a46f0e11c48561ee95cb"
+  },
+  {
+   "name": "index.sqlite.021.gz",
+   "raw": 31522816,
+   "stored": 10835039,
+   "sha256": "a2e746b2f5c7feccaf04e7bb13c43312e84173bcc9165dfaaf81714b175eb554"
+  }
+ ]
+}

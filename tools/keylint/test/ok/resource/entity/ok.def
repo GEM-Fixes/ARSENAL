@@ -1,0 +1,10 @@
+{game_entity
+ {mass 5}
+ {Extension "x.mdl"}
+ {constrain ground}
+ {collider "nothing"}
+ {PatherID "airdrop"}
+ {chassis {Locomotion {GearSwitchDelay 0.5}} {Gears 0.2 0.5 1}}
+ {volume "b" {able clear {blast}} {thickness 40}}
+ {bone "turret" {speed 0.5}}
+}

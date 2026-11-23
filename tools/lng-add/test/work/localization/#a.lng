@@ -1,0 +1,11 @@
+﻿{tags
+	{"unit"
+		{"one" "Uno"}
+		{"two" "Second"}
+		{"esc" "say \"hi\"\nline2\\x"}
+		{"bad" "a < b"}
+	}
+	{"flat" "x"}
+	{"new" {"deep" {"key" "N"}}}
+	{"desc" {"human" {"special" {"hint" "H"}}}}
+}

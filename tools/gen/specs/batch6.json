@@ -1,0 +1,43 @@
+{
+  "name": "batch6_units",
+  "title": "Batch 6 units",
+  "ops": [
+    { "op": "mod", "title": "Batch 6 units" },
+
+    { "op": "text", "items": [{ "key": "desc/entity/gen_pz3", "text": "Gen Pz III" }, { "key": "desc/entity/gen_pz2l", "text": "Gen Pz II L" }, { "key": "desc/entity/gen_jagdpanzer_iv", "text": "Gen Jagdpanzer IV" }, { "key": "desc/entity/gen_elefant", "text": "Gen Elefant" }, { "key": "desc/entity/gen_sdkfz234", "text": "Gen SdKfz 234" }, { "key": "desc/entity/gen_pak40", "text": "Gen PaK 40" }, { "key": "desc/entity/gen_is2", "text": "Gen IS-2" }, { "key": "desc/entity/gen_su76", "text": "Gen SU-76" }, { "key": "desc/entity/gen_willysmb", "text": "Gen Willys MB" }, { "key": "desc/entity/gen_m36", "text": "Gen M36" }] },
+
+    { "op": "clone", "entity": "pz3", "as": "gen_pz3" },
+    { "op": "roster", "unit": "gen_pz3", "like": "pz3", "army": "ger", "fields": { "cost": 150 } },
+    { "op": "clone", "entity": "pz2l", "as": "gen_pz2l" },
+    { "op": "roster", "unit": "gen_pz2l", "like": "pz2l", "army": "ger", "fields": { "cost": 100 } },
+    { "op": "clone", "entity": "jagdpanzer_iv", "as": "gen_jagdpanzer_iv" },
+    { "op": "roster", "unit": "gen_jagdpanzer_iv", "like": "jagdpanzer_iv", "army": "ger", "fields": { "cost": 200 } },
+    { "op": "clone", "entity": "elefant", "as": "gen_elefant" },
+    { "op": "roster", "unit": "gen_elefant", "like": "elefant", "army": "ger", "fields": { "cost": 300 } },
+    { "op": "clone", "entity": "sdkfz234", "as": "gen_sdkfz234" },
+    { "op": "roster", "unit": "gen_sdkfz234", "like": "sdkfz234", "army": "ger", "fields": { "cost": 120 } },
+    { "op": "clone", "entity": "pak40", "as": "gen_pak40" },
+    { "op": "roster", "unit": "gen_pak40", "like": "pak40", "army": "ger", "fields": { "cost": 80 } },
+
+    { "op": "clone", "entity": "is2", "as": "gen_is2" },
+    { "op": "roster", "unit": "gen_is2", "like": "is2", "army": "rus", "fields": { "cost": 280 } },
+    { "op": "clone", "entity": "su76", "as": "gen_su76" },
+    { "op": "roster", "unit": "gen_su76", "like": "su76", "army": "rus", "fields": { "cost": 110 } },
+
+    { "op": "clone", "entity": "m36", "as": "gen_m36" },
+    { "op": "roster", "unit": "gen_m36", "like": "m36", "army": "usa", "fields": { "cost": 190 } },
+    { "op": "clone", "entity": "willysmb", "as": "gen_willysmb" },
+    { "op": "roster", "unit": "gen_willysmb", "like": "willysmb", "army": "usa", "fields": { "cost": 40 } },
+
+    { "op": "clone", "entity": "pz3_x", "as": "gen_pz3_x" },
+    { "op": "clone", "entity": "pz2l_x", "as": "gen_pz2l_x" },
+    { "op": "clone", "entity": "jagdpanzer_iv_x", "as": "gen_jagdpanzer_iv_x" },
+    { "op": "clone", "entity": "elefant_x", "as": "gen_elefant_x" },
+    { "op": "clone", "entity": "sdkfz234_x", "as": "gen_sdkfz234_x" },
+    { "op": "clone", "entity": "pak40_x", "as": "gen_pak40_x" },
+    { "op": "clone", "entity": "is2_x", "as": "gen_is2_x" },
+    { "op": "clone", "entity": "su76_x", "as": "gen_su76_x" },
+    { "op": "clone", "entity": "m36_x", "as": "gen_m36_x" },
+    { "op": "clone", "entity": "willysmb_x", "as": "gen_willysmb_x" }
+  ]
+}

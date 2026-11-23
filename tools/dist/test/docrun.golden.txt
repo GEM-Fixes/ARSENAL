@@ -1,0 +1,51 @@
+# 2026-11-09 first run
+# 2026-11-09 first run: 37 doc lines, empty fixture game folder
+# 2026-11-09 DET-FIX (987c7fba0): check writes PROGRESS lines to stderr, so the first stdout line of the 3 check rows is the verdict in words
+# 2026-11-10 doc update 2026-11-09: gen --sample list / all lines added to START-HERE and guide 19
+# 2026-11-13 AS64 in CLI prose, nine-tab GUI names
+# 2026-11-15 game parity: help line names the three games, new --help shows --target, START-HERE lines moved
+# 2026-11-16 guide changed on main (ARSENAL soedit install lines in START-HERE, lines moved in 19-toolchain.md); expected list was from the game parity branch
+START-HERE.md:34	ARSENAL soedit install	rc=2	The latest SOEdit release of ThatFrostyy/SOEdit-PatchByFrostyy is 1.3: Release.7z.
+START-HERE.md:63	ARSENAL help	rc=0	ARSENAL: make, check and test mods for Men of War: Assault Squad 2 (AS64, MoW:AS2) and Gates of Hell.   (`as2` is the same command)
+START-HERE.md:63	ARSENAL <command> --help	rc=0	usage: ARSENAL new <mod folder> [--name "Title"] [--desc "..."] [--deps a,b] [--game G] [--target as64|mowas2|goh] [--dry-run] [-q]
+START-HERE.md:70	ARSENAL game	rc=0	<tmp>/game  (env)
+START-HERE.md:85	ARSENAL help	rc=0	ARSENAL: make, check and test mods for Men of War: Assault Squad 2 (AS64, MoW:AS2) and Gates of Hell.   (`as2` is the same command)
+START-HERE.md:99	ARSENAL advanced	rc=0	ARSENAL advanced: tools kept off the front door. Run them by name: ARSENAL <tool> --help
+START-HERE.md:99	ARSENAL --all	rc=0	usage: ARSENAL <tool> [args..]   |   ARSENAL dev <tool> [args..]   (tool args: ARSENAL <tool> --help; `as2` is the old name and still works)
+START-HERE.md:104	ARSENAL new mymod --name "My Mod"	rc=0	new: mymod  (AS64 mod: MinGameVersion 3.301, no MaxGameVersion)
+START-HERE.md:105	ARSENAL check mymod	rc=2	Known crash pattern found: 1 crash finding (CRASH below). Fix it before you play. Also, the check did not finish (ERROR lines below); run it again once that is fixed.
+START-HERE.md:106	ARSENAL play mymod --dry	rc=0	play: mymod  map multi/1v1_reloading_point:combat  instance 1  (dry: nothing is written or started)
+START-HERE.md:107	ARSENAL play mymod	rc=0	play: mymod  map multi/1v1_reloading_point:combat  instance 1  (dry: nothing is written or started)
+START-HERE.md:111	ARSENAL gen spec.yaml --target as64 --out mymod	rc=1	gen my_rename -> as64: 0/1 ops, out <tmp>/mymod
+START-HERE.md:111	ARSENAL gen --sample	rc=0	# Gives the vanilla Soviet ZiS-2 gun a new display name in the purchase panel and tooltips (text only, no stats change).
+START-HERE.md:111	ARSENAL gen --sample list	rc=0	rename-unit  Gives the vanilla Soviet ZiS-2 gun a new display name in the purchase panel and tooltips (text only, no stats change).
+START-HERE.md:119	ARSENAL fix mymod plan	rc=2	fix plan: <tmp>/mymod  (game <tmp>/game)
+START-HERE.md:120	ARSENAL upgrade oldmod --to as64 --plan	rc=0	# upgrade plan: oldmod  mowas2 -> as64   (mod.info min 3.200 max -)
+START-HERE.md:140	ARSENAL install mymod	rc=0	install: mymod -> <tmp>/game/mods/mymod (copy)
+START-HERE.md:140	ARSENAL uninstall mymod --yes	rc=0	removed: <tmp>/game/mods/mymod (folder and contents)
+START-HERE.md:149	ARSENAL soedit install	rc=2	The latest SOEdit release of ThatFrostyy/SOEdit-PatchByFrostyy is 1.3: Release.7z.
+19-toolchain.md:64	ARSENAL help	rc=0	ARSENAL: make, check and test mods for Men of War: Assault Squad 2 (AS64, MoW:AS2) and Gates of Hell.   (`as2` is the same command)
+19-toolchain.md:64	ARSENAL <command> --help	rc=0	usage: ARSENAL new <mod folder> [--name "Title"] [--desc "..."] [--deps a,b] [--game G] [--target as64|mowas2|goh] [--dry-run] [-q]
+19-toolchain.md:68	ARSENAL new mymod --name "My Mod"	rc=0	new: mymod  (AS64 mod: MinGameVersion 3.301, no MaxGameVersion)
+19-toolchain.md:69	ARSENAL gen spec.yaml --target as64 --out mymod	rc=1	gen my_rename -> as64: 0/1 ops, out <tmp>/mymod
+19-toolchain.md:70	ARSENAL check mymod	rc=2	Known crash pattern found: 1 crash finding (CRASH below). Fix it before you play. Also, the check did not finish (ERROR lines below); run it again once that is fixed.
+19-toolchain.md:71	ARSENAL fix mymod plan	rc=2	fix plan: <tmp>/mymod  (game <tmp>/game)
+19-toolchain.md:72	ARSENAL upgrade oldmod --to as64 --plan	rc=0	# upgrade plan: oldmod  mowas2 -> as64   (mod.info min 3.200 max -)
+19-toolchain.md:73	ARSENAL install mymod	rc=0	install: mymod -> <tmp>/game/mods/mymod (copy)
+19-toolchain.md:74	ARSENAL uninstall mymod --yes	rc=0	removed: <tmp>/game/mods/mymod (folder and contents)
+19-toolchain.md:75	ARSENAL play mymod --dry	rc=0	play: mymod  map multi/1v1_reloading_point:combat  instance 1  (dry: nothing is written or started)
+19-toolchain.md:76	ARSENAL maps list	rc=0	(no output)
+19-toolchain.md:78	ARSENAL advanced	rc=0	ARSENAL advanced: tools kept off the front door. Run them by name: ARSENAL <tool> --help
+19-toolchain.md:78	ARSENAL --all	rc=0	usage: ARSENAL <tool> [args..]   |   ARSENAL dev <tool> [args..]   (tool args: ARSENAL <tool> --help; `as2` is the old name and still works)
+19-toolchain.md:85	ARSENAL check <mod folder> --fast -q	rc=2	Known crash pattern found: 1 crash finding (CRASH below). Fix it before you play. Also, the check did not finish (ERROR lines below); run it again once that is fixed.
+19-toolchain.md:101	ARSENAL fix <mod folder> plan --out <patch folder>	rc=2	fix plan: <tmp>/mymod  (game <tmp>/game)
+19-toolchain.md:102	ARSENAL fix <mod folder> apply --out <patch folder>	rc=2	fix apply: <tmp>/mymod  (game <tmp>/game)
+19-toolchain.md:103	ARSENAL check <mod folder> --with <patch folder> --fast -q	rc=2	Patch folder not found: patchout. Give --with the folder a fix or upgrade wrote.
+19-toolchain.md:124	ARSENAL gen demo.yaml --target as64 --plan --out <new mod folder>	rc=0	gen demo -> as64 (plan): 2/2 ops, out <tmp>/genout
+19-toolchain.md:125	ARSENAL gen demo.yaml --target as64 --out <new mod folder>	rc=0	gen demo -> as64: 2/2 ops, out <tmp>/genout
+19-toolchain.md:130	ARSENAL gen --sample	rc=0	# Gives the vanilla Soviet ZiS-2 gun a new display name in the purchase panel and tooltips (text only, no stats change).
+19-toolchain.md:130	ARSENAL gen --sample > sample.yaml	rc=0	# Gives the vanilla Soviet ZiS-2 gun a new display name in the purchase panel and tooltips (text only, no stats change).
+19-toolchain.md:130	ARSENAL gen --sample list	rc=0	rename-unit  Gives the vanilla Soviet ZiS-2 gun a new display name in the purchase panel and tooltips (text only, no stats change).
+19-toolchain.md:130	ARSENAL gen --sample all	rc=0	# One example of every op, on real vanilla names (Soviet T-34, BT-7A, ZiS-2, rifle squad; map 1v1_road). Every name below exists in the game.
+19-toolchain.md:173	ARSENAL gen newtank.yaml --target as64 --plan --out <game folder>/mods/newtank	rc=1	gen newtank -> as64 (plan): 4/4 ops, out <tmp>/game/mods/newtank
+19-toolchain.md:174	ARSENAL gen newtank.yaml --target as64 --out <game folder>/mods/newtank	rc=1	gen newtank -> as64: 4/4 ops, out <tmp>/game/mods/newtank

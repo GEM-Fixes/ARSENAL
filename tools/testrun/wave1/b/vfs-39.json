@@ -1,0 +1,46 @@
+{
+  "name": "vfs-39",
+  "rows": [
+    "VFS-39"
+  ],
+  "fixture": [
+    "vfs-39"
+  ],
+  "prepare": [
+    {
+      "argv": [
+        "node",
+        "tools/testrun/wave1/b/mk-vfs39.js",
+        "{mods}/vfs-39"
+      ]
+    }
+  ],
+  "src": [
+    "(not part of this release)",
+    "tools/lib/zipwrite.js"
+  ],
+  "note": "Pak is small but written with forced zip64 records. Pass: shipped exe reads an entry through EOCD64 and the zip64 extra field. A real >4 GB pak and the u32 entry cap are not tested [T].",
+  "steps": [
+    {
+      "cmd": "exec \"vfs39.cfg\"",
+      "expect": "trs_vfs39_marker"
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "exec \"vfs39.cfg\"",
+      "match": "trs_vfs39_marker",
+      "want": true
+    }
+  ],
+  "mode": "menu",
+  "mods": [
+    "as64+",
+    "vfs-39"
+  ],
+  "params": {}
+}

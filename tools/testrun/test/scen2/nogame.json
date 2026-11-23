@@ -1,0 +1,3 @@
+{"name":"reply-nogame","mode":"menu","verdict":[
+{"reply":"mp_state","match":"^ERR no game running$"},
+{"reply":"mp_state","path":"live","op":"==","value":true}]}

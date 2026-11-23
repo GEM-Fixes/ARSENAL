@@ -1,0 +1,19 @@
+{
+ "tool": "native",
+ "form": "native/1",
+ "units": [
+  {"unit": "pv_clean", "key": "entity/-vehicle/fx/tank_medium/pv_clean/pv_clean.def", "class": "tank_medium", "classBy": "path", "peers": 30, "missing": [], "extra": [], "values": [], "gaps": {"present": true, "hand": 0, "unexplained": 0}, "findings": 0},
+  {"unit": "pv_keys", "key": "entity/-vehicle/fx/tank_medium/pv_keys/pv_keys.def", "class": "tank_medium", "classBy": "path", "peers": 30, "missing": ["entity/volume/thickness/front"], "extra": ["entity/extender:smokescreen/cooldown"], "values": [], "gaps": {"present": true, "hand": 0, "unexplained": 0}, "findings": 2},
+  {"unit": "pv_vals", "key": "entity/-vehicle/fx/tank_medium/pv_vals/pv_vals.def", "class": "tank_medium", "classBy": "path", "peers": 30, "missing": [], "extra": [], "values": [{"key": "speed", "value": 80, "min": 18, "max": 72, "n": 67}], "gaps": {"present": true, "hand": 0, "unexplained": 0}, "findings": 1},
+  {"unit": "pv_syn", "key": "entity/-vehicle/fx/tank_medium/pv_syn/pv_syn.def", "class": "tank_medium", "classBy": "path", "peers": 30, "missing": [], "extra": [], "values": [], "gaps": {"present": true, "hand": 0, "unexplained": 0}, "findings": 0},
+  {"unit": "pv_path", "key": "entity/-vehicle/fx/tank_medium/pv_path/pv_path.def", "class": "tank_medium", "classBy": "path", "peers": 30, "missing": [], "extra": [], "values": [], "gaps": {"present": true, "hand": 0, "unexplained": 0}, "findings": 0},
+  {"unit": "pv_weap", "key": "entity/-vehicle/fx/tank_medium/pv_weap/pv_weap.def", "class": "tank_medium", "classBy": "path", "peers": 30, "missing": [], "extra": [], "values": [], "gaps": {"present": true, "hand": 0, "unexplained": 0}, "findings": 0},
+  {"unit": "pv_inc", "key": "entity/-vehicle/fx/tank_medium/pv_inc/pv_inc.def", "class": "tank_medium", "classBy": "path", "peers": 30, "missing": [], "extra": [], "values": [], "gaps": {"present": true, "hand": 0, "unexplained": 0}, "findings": 0},
+  {"unit": "pv_txt", "key": "entity/-vehicle/fx/tank_medium/pv_txt/pv_txt.def", "class": "tank_medium", "classBy": "path", "peers": 30, "missing": [], "extra": [], "values": [], "gaps": {"present": true, "hand": 0, "unexplained": 0}, "findings": 0},
+  {"unit": "pv_box", "key": "entity/-vehicle/fx/tank_medium/pv_box/pv_box.def", "class": "tank_medium", "classBy": "path", "peers": 30, "missing": [], "extra": [], "values": [], "gaps": {"present": true, "hand": 0, "unexplained": 0}, "findings": 0},
+  {"unit": "pv_gaps", "key": "entity/-vehicle/fx/tank_medium/pv_gaps/pv_gaps.def", "class": "tank_medium", "classBy": "path", "peers": 30, "missing": [], "extra": [], "values": [], "gaps": {"present": true, "hand": 1, "unexplained": 2}, "findings": 3},
+  {"unit": "pv_shell", "key": "entity/inventory/-ammo/pv_shell/pv_shell.def", "class": "inventory/-ammo", "classBy": "path", "peers": 30, "missing": ["entity/x"], "extra": [], "values": [], "gaps": null, "findings": 1},
+  {"unit": "pv_ammo", "key": "entity/inventory/pv_ammo/pv_ammo.def", "class": null, "classBy": null, "peers": 0, "missing": [], "extra": [], "values": [], "gaps": null, "findings": 0, "skipped": "no class: pass --class"}
+ ],
+ "totals": {"units": 11, "checked": 10, "native": 0, "skipped": 1}
+}

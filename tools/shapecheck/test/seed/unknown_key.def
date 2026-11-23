@@ -1,0 +1,6 @@
+{game_entity
+	{volume "body1"
+		{thickness 30}
+		{thicknes 30}
+	}
+}

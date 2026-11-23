@@ -1,0 +1,25 @@
+ARSENAL: make, check and test mods for Men of War: Assault Squad 2 (AS64, MoW:AS2) and Gates of Hell.   (`as2` is the same command)
+games: AS64 (as64, the default), MoW:AS2 (mowas2) and Gates of Hell (goh). Name the game with --target <game> on every
+command (check: --exe as64,mowas2,goh; upgrade: --to). AS64 and MoW:AS2 share one install; GoH has its own (ARSENAL game --kind goh).
+usage: ARSENAL <command> [args..]   (options of one command: ARSENAL <command> --help)
+
+  new        make an empty mod folder (AS64 by default, --target mowas2|goh; lowercase folder name)
+             e.g. ARSENAL new mymod --name "My Mod"
+  gen        make mod content (units, text, settings) from a spec file
+             e.g. ARSENAL gen spec.yaml --target as64 --out mymod   (a sample spec: ARSENAL gen --sample)
+  check      read a mod and say whether it would load, crash or be refused (does not start the game)
+             e.g. ARSENAL check mymod   (--exe as64,mowas2,goh: which games)
+  fix        plan or write a patch mod that fixes text and reference errors check found
+             e.g. ARSENAL fix mymod plan
+  upgrade    bring an older mod up to AS64, or port it to MoW:AS2 or GoH; the source is never written
+             e.g. ARSENAL upgrade oldmod --to as64 --plan   (--to mowas2|goh)
+  install    copy (or link) a mod folder into the game's mods folder (AS64 and MoW:AS2)
+             e.g. ARSENAL install mymod
+  uninstall  remove a mod that ARSENAL install put there
+             e.g. ARSENAL uninstall mymod --yes
+  play       install a mod and start a test match, then say if it loaded cleanly (AS64; MoW:AS2 --dry)
+             e.g. ARSENAL play mymod --dry
+  maps       multiplayer maps: list, view, clone, add a game mode
+             e.g. ARSENAL maps list
+
+more tools: ARSENAL advanced   |   every tool: ARSENAL --all

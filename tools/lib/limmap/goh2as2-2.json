@@ -1,0 +1,423 @@
+{
+ "form": "limmap/1",
+ "part": "goh2as2-2",
+ "codes": {
+  "SP_KIT": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/stuffport.js:388",
+   "class": "info",
+   "why": "count of ported kit items"
+  },
+  "SP_KIT_OTHER": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/stuffport.js:385",
+   "class": "info",
+   "why": "kit line copied unchanged, note only"
+  },
+  "SP_MAP": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/stuffport.js:195",
+   "class": "info",
+   "why": "tool rename-table applied to stuff names"
+  },
+  "SP_SCALE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/stuffport.js:485",
+   "class": "info",
+   "why": "tool scale-table applied to weapon values"
+  },
+  "SP_SCALE_EXPAND": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/stuffport.js:439",
+   "class": "info",
+   "why": "macro call expanded so values can be scaled"
+  },
+  "SP_SCALE_OFF": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/stuffport.js:454",
+   "class": "info",
+   "why": "scale table says apply false; values kept"
+  },
+  "SP_SCALE_TWIN": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/dmgtwin.js:86",
+   "class": "info",
+   "why": "vanilla twin used as scale reference"
+  },
+  "SP_SCALE_TWIN_NONE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/dmgtwin.js:78",
+   "class": "info",
+   "why": "no vanilla twin; class scale used"
+  },
+  "SP_SKILL": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/stuffport.js:325",
+   "class": "info",
+   "why": "GoH skill block written as AS2 ability"
+  },
+  "SP_SKILL_KEEP": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/stuffport.js:337",
+   "class": "info",
+   "why": "AS2 blocks the GoH file lacks kept"
+  },
+  "SP_SKILL_KEY_DROP": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "HUM-39"
+   ],
+   "at": "tools/goh2as2/stuffport.js:318",
+   "class": "silent",
+   "why": "recoil/sway keys have no AS2 reader (unverified)"
+  },
+  "SP_TAG": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/stuffport.js:176",
+   "class": "info",
+   "why": "item tag renamed by tool table"
+  },
+  "SP_TIDY": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/stuffport.js:226",
+   "class": "info",
+   "why": "empty or repeated blocks removed"
+  },
+  "SP_TYPE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/stuffport.js:165",
+   "class": "info",
+   "why": "shell type renamed by tool table"
+  },
+  "UNIT_DUP_DEF": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "TST-66"
+   ],
+   "at": "tools/goh2as2/unitname.js:34",
+   "class": "review",
+   "why": "two defs one name: engine logs Entity redefinition"
+  },
+  "UNIT_FILE_NOT_HASH": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "LOC-01"
+   ],
+   "at": "tools/goh2as2/unitname.js:152",
+   "class": "tool",
+   "why": "output .lng must be a # file or vanilla replaced"
+  },
+  "UNIT_KEY_MOD": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "LOC-04"
+   ],
+   "at": "tools/goh2as2/unitname.js:163",
+   "class": "info",
+   "why": "key already in mod lng; duplicate key not written"
+  },
+  "UNIT_KEY_VANILLA": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "LOC-19"
+   ],
+   "at": "tools/goh2as2/unitname.js:162",
+   "class": "cosmetic",
+   "why": "vanilla desc key wins; new name would not show"
+  },
+  "UNIT_NAME_FALLBACK": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/unitname.js:173",
+   "class": "review",
+   "why": "name made from key, no GoH text"
+  },
+  "UNIT_NAME_NEAR": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/unitname.js:174",
+   "class": "review",
+   "why": "name taken from near GoH key, guessed"
+  },
+  "UNIT_NO_INFO": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/unitname.js:179",
+   "class": "info",
+   "why": "count of units without GoH long text"
+  },
+  "UNIT_NO_UNITS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/unitname.js:154",
+   "class": "tool",
+   "why": "no .def found under resource/entity"
+  },
+  "UNIT_SKIP_SIDEFILE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/unitname.js:33",
+   "class": "info",
+   "why": "def title with a dot skipped"
+  },
+  "WARN_DONOR_FILE_MISSING": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-131"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1603",
+   "class": "crash",
+   "why": "donor names file absent from output and vanilla: load stops"
+  },
+  "WARN_DONOR_SEAT": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-159",
+    "PORT-137"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1617",
+   "class": "silent",
+   "why": "seat door/bone missing in mdl: unit not operatable"
+  },
+  "WARN_DONOR_WEAPON_CLASS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-130",
+    "PORT-111"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1434",
+   "class": "silent",
+   "why": "donor weapon class differs from rep; wrong fire role"
+  },
+  "WARN_PORT_AMMO_ITEM_DROPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffnames.js:149",
+   "class": "crash",
+   "why": "ammo item with no Stuff crashes later",
+   "lim": [
+    "LOG-07"
+   ]
+  },
+  "WARN_PORT_AMMO_NOT_MOVED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-136"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1411",
+   "class": "silent",
+   "why": "donor ammo lines stay; vanilla lacks new ammo type"
+  },
+  "WARN_PORT_AMMO_UNMAPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffnames.js:158",
+   "class": "crash",
+   "why": "unmapped GoH filling leaves the gun a null magazine",
+   "lim": [
+    "PORT-156"
+   ]
+  },
+  "WARN_PORT_ANM_MISSING": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "ENG-34",
+    "PORT-109"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1068",
+   "class": "crash",
+   "why": "mdl sequence names .anm GoH lacks: fatal Resource not found"
+  },
+  "WARN_PORT_ARMOUR": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-136"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1484",
+   "class": "silent",
+   "why": "donor armour far from rep: hits and pen wrong"
+  },
+  "WARN_PORT_AVI_CODEC": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "UI-19"
+   ],
+   "at": "tools/goh2as2/avicheck.js:38",
+   "class": "silent",
+   "why": "non-XVID video, decoder is xvid (unverified)"
+  },
+  "WARN_PORT_AVI_HEADER": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/avicheck.js:35",
+   "class": "tool",
+   "why": "avi header unreadable by the tool"
+  },
+  "WARN_PORT_AVI_SIZE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "UI-20"
+   ],
+   "at": "tools/goh2as2/avicheck.js:37",
+   "class": "silent",
+   "why": "oversize video shows still frame"
+  },
+  "WARN_PORT_CALIBRE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-130"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1368",
+   "class": "silent",
+   "why": "donor weapon calibre differs from rep; kills read broken"
+  },
+  "WARN_PORT_CANNON_ON_MG": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-130"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1449",
+   "class": "silent",
+   "why": "donor unit fires the donor weapon unless swapped"
+  },
+  "WARN_PORT_CLOSURE_CAP": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/goh2as2.js:1112",
+   "class": "tool",
+   "why": "--max-files cap stopped the dependency closure"
+  },
+  "WARN_PORT_CLOSURE_MISSING": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-172",
+    "PORT-109"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1137",
+   "class": "crash",
+   "why": "file named by a def or mdl not in GoH tree"
+  },
+  "WARN_PORT_CREW_CAPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-13",
+    "PORT-137"
+   ],
+   "at": "tools/goh2as2/translate.js:316",
+   "class": "crash",
+   "why": "crew above mdl places: Link failed or unmanned"
+  },
+  "WARN_PORT_CURSOR_DROPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffnames.js:58",
+   "class": "cosmetic",
+   "why": "missing cursor texture draws as checker, no log",
+   "lim": [
+    "UI-21"
+   ]
+  },
+  "WARN_PORT_CURVE_DROPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "DMG-29"
+   ],
+   "at": "tools/goh2as2/stuffnames.js:50",
+   "class": "crash",
+   "why": "unknown curve name is fatal at load"
+  },
+  "WARN_PORT_DDS_CONVERT_FAIL": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "FMT-02"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1234",
+   "class": "crash",
+   "why": "texture not convertible, loader refuses format"
+  },
+  "WARN_PORT_DDS_RAW8": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "FMT-02"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1237",
+   "class": "cosmetic",
+   "why": "8-bit DDS written as grey; no AS2 format"
+  },
+  "WARN_PORT_DDS_UNLOADABLE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "FMT-02",
+    "PORT-143"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1239",
+   "class": "crash",
+   "why": "DDS format not read: Unknown DDS picture format"
+  },
+  "WARN_PORT_DEFINE_RENAMED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "GPL-11",
+    "PORT-62"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1205",
+   "class": "crash",
+   "why": "macro not defined in AS2 props: define not found at load"
+  }
+ }
+}

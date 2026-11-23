@@ -1,0 +1,28 @@
+{
+ "name": "mock-bad",
+ "rows": [
+  "TST-13"
+ ],
+ "mode": "menu",
+ "steps": [
+  {
+   "cmd": "mod_list",
+   "expect": "\"name\":\"nomod\""
+  },
+  {
+   "cmd": "badcmd"
+  }
+ ],
+ "verdict": [
+  {
+   "log": "GameThreadStop",
+   "want": false,
+   "row": "TST-13"
+  },
+  {
+   "exit": true,
+   "within": 1,
+   "row": "TST-16"
+  }
+ ]
+}

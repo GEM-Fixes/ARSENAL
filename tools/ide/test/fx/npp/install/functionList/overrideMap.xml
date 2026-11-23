@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NotepadPlus>
+	<functionList>
+		<associationMap>
+		<!--
+			<association id="my_parser.xml" userDefinedLangName="My UDL Name" />
+		-->
+			<association id= "krl.xml"				userDefinedLangName="KRL"/>
+		</associationMap>
+	</functionList>
+</NotepadPlus>

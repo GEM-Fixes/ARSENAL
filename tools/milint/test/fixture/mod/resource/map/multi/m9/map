@@ -1,0 +1,30 @@
+;SDL
+{map
+	{Land {Position 0 0}}
+	{Entity "bush" 0x1 {Position 1}}
+	{Entity "bush" 0x10 {Position 5000 5000}}
+	{Entity "bush" 0x11 {Position 5000 5000}}
+	{Entity "bush" 0x12 {Position 5000 5000}}
+	{Entity "bush" 0x13 {Position 5000 5000}}
+	{Entity "bush" 0x14 {Position 5000 5000}}
+	{Entity "bush" 0x15 {Position 5000 5000}}
+	{Entity "bush" 0x16 {Position 5000 5000}}
+	{Entity "bush" 0x17 {Position 5000 5000}}
+	{Entity "bush" 0x18 {Position 5000 5000}}
+	{Entity "bush" 0x19 {Position 5000 5000}}
+	{Entity "bush" 0x1a {Position 5000 5000}}
+	{Entity "bush" 0x1b {Position 5000 5000}}
+	{Entity "bush" 0x1c {Position 5000 5000}}
+	{Entity "bush" 0x1d {Position 5000 5000}}
+	{Entity "bush" 0x1e {Position 5000 5000}}
+	{Entity "bush" 0x1f {Position 5000 5000}}
+	{Entity "bush" 0x20 {Position 5000 5000}}
+	{Entity "bush" 0x21 {Position 5000 5000}}
+	{Entity "bush" 0x22 {Position 5000 5000}}
+	{Entity "bush" 0x23 {Position 5000 5000}}
+	{Entity "bush" 0x24 {Position 5000 5000}}
+	{Entity "bush" 0x25 {Position 5000 5000}}
+	{Entity "bush" 0x26 {Position 5000 5000}}
+	{Entity "bush" 0x27 {Position 5000 5000}}
+	{Entity "bush" 0x28 {Position 5000 5000}}
+}

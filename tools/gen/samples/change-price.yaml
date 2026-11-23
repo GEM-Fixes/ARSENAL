@@ -1,0 +1,10 @@
+# Changes the purchase cost of the vanilla Soviet T-34 card (t34_0) in the multiplayer army list.
+# Edit two values: unit (the card name) and cost under fields.
+# as2 gen change-price.yaml --target mowas2 --game <AS2 dir> --out <mods dir>/my_price --no-stat   (add --plan first: writes nothing)
+name: my_price
+title: My Price
+ops:
+  - op: card
+    unit: t34_0
+    army: rus
+    fields: {cost: 100}

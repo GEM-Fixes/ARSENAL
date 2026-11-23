@@ -1,0 +1,2 @@
+# the document database pieces (gemindex ww2-split): binary, never line-ending converted or diffed
+*.gz -text -diff

@@ -1,0 +1,13 @@
+{tags
+	{"squad"
+		{"Riflemans(usa)" "Rifle Squad"}
+		{"riflemans(usa)" "Rifle Squad 2"}
+		{"mg(usa)" "<c(ff0000)MG Team"}
+		{"at(usa)" "AT team: range < 300m"}
+		{"tank(usa)" "Light Tаnk"}
+		{"sniper(usa)" "Sniper
+ Team"}
+	}
+	{"weapon"
+		{"m1" "M1 Garand"}
+}

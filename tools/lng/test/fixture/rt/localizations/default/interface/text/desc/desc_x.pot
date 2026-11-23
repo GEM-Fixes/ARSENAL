@@ -1,0 +1,15 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Language: en\n"
+
+#. note for translator
+msgctxt "desc/squad/sq(ger)"
+msgid "Squad %d"
+msgstr ""
+
+msgctxt "desc/squad/long"
+msgid ""
+"A "
+"B"
+msgstr "Old"

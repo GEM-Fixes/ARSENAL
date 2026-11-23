@@ -1,0 +1,37 @@
+// output assertions for the goh2as2 fixture run: node check.js <outdir> ; prints FAIL lines, exit 1 on any
+// Author: Imperator_Aug (ARSENAL, ia-53fa0373)
+const fs = require('fs'), path = require('path');
+const out = path.join(process.argv[2], 'resource');
+const rd = r => fs.readFileSync(path.join(out, r));
+let bad = 0;
+const ck = (c, m) => { if (!c) { console.log('FAIL ' + m); bad++; } };
+const def = rd('entity/veh/tank.def');
+ck(!/(^|[^\r])\n/.test(def.toString('latin1')), 'def CRLF only');
+ck(def.includes(Buffer.from('{comment "Привет €"}', 'utf8')), 'def UTF-8 string bytes passed through (ENCFIX)');
+ck(!def.includes(Buffer.from([0xCF, 0xF0, 0xE8])), 'def not transcoded to cp1251');
+const eb = rd('set/enc_bad.set');
+ck(eb.includes(Buffer.from([0x22, 0xCF, 0xF0, 0xE8, 0x22])) && eb.includes(Buffer.from('«ёлка» №5', 'utf8')) && eb.includes(Buffer.from('коммент', 'utf8')), 'enc_bad.set bytes unchanged (no ? for « » №)');
+const s = def.toString('latin1');
+ck(s.includes('{turnradius 6}') && s.includes('{braketime 2}') && s.includes('(/ 1 0)'), 'arith eval');
+ck(s.includes('{##place "a"'), 'double-hash block left alone');
+ck(!s.includes('perks') && !s.includes('armor_damage_modifier'), 'health dropped');
+ck(s.includes('{threshold {pierce {koef 1.2}} {blast {koef 1}}}') && !s.includes('durability'), 'PORT-19 threshold koef kept, no durability invented');
+ck(rd('entity/veh/tank.ply').toString('latin1').startsWith('EPLY'), 'ply copied');
+ck(fs.existsSync(path.join(out, 'entity/veh/hullx.mtl')) && fs.existsSync(path.join(out, 'entity/veh/hullx_d.dds')), 'MESH chunk material and its texture pulled');
+ck(fs.existsSync(path.join(out, 'set/hash_#1.inc')), '--keys: # inside a name is not a comment');
+ck(!fs.existsSync(path.join(out, 'entity/z.html')) && !fs.existsSync(path.join(out, 'set/dynamic_campaign')), 'skipped kinds absent');
+const mine = rd('set/stuff/m.mine').toString('latin1');
+ck(mine.startsWith('{from ') && mine.includes('mass') && !mine.includes('ground_interaction'), 'mine keeps from root, loses GoH key');
+const ve = rd('entity/veh/tank.ext').toString('latin1');
+ck(ve.includes('{able {nolook} {hole} {keep}}') && !/contact|caststeel|blockcamera/.test(ve), 'ext volume: AS2 flags kept, dead keys dropped');
+ck(ve.includes('{thickness {top 5} {front 3}}') && ve.includes('{material "steel"}') && !ve.includes('fabric'), 'PORT-20 per-face thickness and known material kept, unknown material dropped');
+ck(rd('set/vision.set').toString('latin1').includes('{rifle 1}'), 'vision rename');
+ck(fs.existsSync(path.join(out, 'entity/veh/fire.anm')), 'implicit sequence anm pulled');
+ck(fs.existsSync(path.join(out, 'texture/common/_w/tank_bp.dds')), '$/ texture pulled from texture/common');
+ck(!fs.existsSync(path.join(out, 'properties/stuff_weapon.ext')), 'shared /properties file not copied (PORT-47)');
+const flora = rd('properties/flora.inc').toString('latin1'), spark = rd('entity/fx/spark.def').toString('latin1');
+ck(!/tpc_zclip/i.test(flora) && flora.includes('lodclass'), 'PORT-53 dead entity key dropped, others kept');
+ck(/ManualAccuracy 1/.test(flora) && !/ManualAccuracyZoom/i.test(flora), 'ManualAccuracyZoom dropped (Weaponry reader has only ManualAccuracy), ManualAccuracy kept');
+ck(!/perks/i.test(flora) && flora.includes('define'), 'PORT-53 perks dropped inside a define');
+ck(/\{spriteview point/.test(spark) && !/\{\+ /.test(spark) && !spark.includes('spinx') && spark.includes('{#+ spriteview off}'), 'PORT-54 {+ view rewritten, comment block untouched');
+process.exit(bad ? 1 : 0);

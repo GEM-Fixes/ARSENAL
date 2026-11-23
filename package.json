@@ -1,0 +1,9 @@
+{
+  "name": "as2-modtools",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A.R.S.E.N.A.L (All-in-one Resource SDK for Engine Assets & Levels), MoW:AS2 modding tools: linters, mod creation, test loop",
+  "bin": { "ARSENAL": "tools/as2/as2.js", "as2": "tools/as2/as2.js" },
+  "scripts": { "test": "sh tools/test-all.sh" },
+  "engines": { "node": ">=18" }
+}

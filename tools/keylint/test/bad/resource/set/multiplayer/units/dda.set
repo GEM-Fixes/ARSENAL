@@ -1,0 +1,8 @@
+{units
+ {"u1" {tags "a"} {cp 1} {score 1} {cost 1} {charge 1} {fore 1} {group "g"} {button 1} {level 1} {not_for_sale}
+  {cw 1} {content "c"} {breed} {basic}
+  {scorre 5}
+  {tagz "b"}}
+}
+{army {title "t"} {icon "i"} {id 1} {appid_base 1 2} {flag "f"}
+ {flagg "f"}}

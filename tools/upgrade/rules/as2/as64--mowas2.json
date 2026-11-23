@@ -1,0 +1,58 @@
+[
+ {
+  "id": "version",
+  "kind": "version",
+  "from": "as64",
+  "to": "mowas2",
+  "scope": "mod.info",
+  "action": "rewrite",
+  "evidence": "live 2026-11-04 \"was disabled: Unsupported game version\"",
+  "tag": "V",
+  "origin": "manual",
+  "test": "L2 Mod: activate mod",
+  "classic": {
+   "min": "3.262",
+   "max": "3.262"
+  }
+ },
+ {
+  "id": "require-as64plus",
+  "kind": "require_drop",
+  "from": "as64",
+  "to": "mowas2",
+  "scope": "mod.info",
+  "action": "rewrite",
+  "evidence": "Require as64+ cannot be met off as64",
+  "tag": "V",
+  "origin": "manual",
+  "test": "L2",
+  "name": "as64+"
+ },
+ {
+  "id": "as64-only-paths",
+  "kind": "path_drop",
+  "from": "as64",
+  "to": "mowas2",
+  "scope": "as64/core, set/as64, localization/as64",
+  "action": "rewrite",
+  "evidence": "VFS-46, LOC-23: read by as64.exe only",
+  "tag": "V",
+  "origin": "manual",
+  "test": "L2",
+  "re": "^(as64/core/|(resource/)?set/as64/|localization/(as64/[^/]+\\.lng|#as64\\.lng)$)"
+ },
+ {
+  "id": "block-dll",
+  "kind": "block",
+  "from": "as64",
+  "to": "mowas2",
+  "scope": "*.dll",
+  "action": "block",
+  "evidence": " refuse list; a DLL calls one exe at fixed addresses",
+  "tag": "I",
+  "origin": "manual",
+  "test": "none: refused, listed in UPGRADE.md",
+  "why": "DLL left out: fixed to one exe build, no conversion",
+  "re": "\\.dll$"
+ }
+]

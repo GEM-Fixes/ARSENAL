@@ -1,0 +1,5 @@
+{game_entity "a"
+  {foo 1}
+  {gears 1}
+  (include "/properties/stuff_small.ext")
+}

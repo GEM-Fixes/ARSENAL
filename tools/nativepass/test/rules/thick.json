@@ -1,0 +1,5 @@
+[
+{"name":"thickness 0 added to a setting without one","class":"tank_medium","def":"{game_entity\n\t{volume \"body1\"\n\t\t{thickness 30\n\t\t\t{front 80}\n\t\t}\n\t}\n\t{armor\n\t\t{setting \"body\"\n\t\t\t{volumes \"body*\"}\n\t\t}\n\t}\n}\n","expect":"{game_entity\n\t{volume \"body1\"\n\t\t{thickness 30\n\t\t\t{front 80}\n\t\t}\n\t}\n\t{armor\n\t\t{setting \"body\"\n\t\t\t{volumes \"body*\"}\n\t\t\t{thickness 0}\n\t\t}\n\t}\n}\n"},
+{"name":"own thickness stays","class":"cannon","def":"{game_entity\n\t{armor\n\t\t{setting \"body\"\n\t\t\t{thickness 10 5}\n\t\t}\n\t}\n}\n","expect":"{game_entity\n\t{armor\n\t\t{setting \"body\"\n\t\t\t{thickness 10 5}\n\t\t}\n\t}\n}\n"},
+{"name":"other class untouched","class":"human","def":"{game_entity\n\t{armor\n\t\t{setting \"body\"\n\t\t\t{volumes \"body*\"}\n\t\t}\n\t}\n}\n","expect":"{game_entity\n\t{armor\n\t\t{setting \"body\"\n\t\t\t{volumes \"body*\"}\n\t\t}\n\t}\n}\n"}
+]

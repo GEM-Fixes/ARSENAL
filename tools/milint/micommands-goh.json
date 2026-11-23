@@ -1,0 +1,37 @@
+{
+ "about": "GoH .mi vocabulary as a delta over micommands.json (as64). Each entry cites its gohweb row or note. Hand-kept delta, not generated. Check: node gen-micommands.js --goh --the game <gohweb the game dir> (commands and terms against the eCmd_/eTerm_ class stems; fields from the notes below).",
+ "commands": {
+  "benchmark": "GHMIS-30",
+  "interface": "GHMIS-29"
+ },
+ "terms": {
+  "altitude": "GHMIS-32",
+  "reinforcements_score": "GHMIS-33"
+ },
+ "fields": {
+  "mode": "GHMIS-30",
+  "profile": "GHMIS-30",
+  "trigger_state": "GHMIS-30",
+  "camera": "GHMIS-30",
+  "camera_trigger": "GHMIS-30",
+  "type": "GHMIS-29",
+  "altitude": "GHMIS-32",
+  "op": "GHMIS-32",
+  "value": "GHMIS-32",
+  "absolute": "GHMIS-32",
+  "compare": "GHMIS-33",
+  "scoreCurrent": "GHMIS-33",
+  "disable_random_spawn_position": "(not part of this release)",
+  "cheating": "GHMIS-17",
+  "stop_engine": "(not part of this release)",
+  "veterancy": "(not part of this release)",
+  "no_restart": "(not part of this release)",
+  "clone_places": "(not part of this release)",
+  "stack": "(not part of this release)",
+  "user_player": "(not part of this release)"
+ },
+ "gone": {
+  "autoassign": ["nearest"],
+  "third_person_control": ["default"]
+ }
+}

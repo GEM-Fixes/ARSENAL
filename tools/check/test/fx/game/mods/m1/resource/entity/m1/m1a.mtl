@@ -1,0 +1,4 @@
+{material bump
+	{diffuse "tex_unique"}
+	{bump "tex_dup"}
+}

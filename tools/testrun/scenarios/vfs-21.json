@@ -1,0 +1,39 @@
+{
+  "name": "vfs-21",
+  "rows": [
+    "VFS-21"
+  ],
+  "mode": "menu",
+  "fixture": [
+    "vfs-21a",
+    "vfs-21b"
+  ],
+  "mods": [
+    "as64+",
+    "vfs-21a",
+    "vfs-21b"
+  ],
+  "params": {},
+  "src": [
+    "(not part of this release)",
+    " (exec)",
+    " (mod_set order = mount order)"
+  ],
+  "note": "vfs-21a ships at/vfs21_a.cfg and at/vfs21_b.cfg (.cfg: loose .txt is never indexed, VFS-06). vfs-21b (later) has mod.info {Delete \"resource/at/vfs21_a.cfg\"} and {Delete \"at/vfs21_b.cfg\"}. Row says the prefix-less form matches nothing: a is gone (\"file not found\"), b still echoes its marker. Needs 2 folders: --stage-as e2e_test,e2e_test2. Live 2026-11-03 PASS; control with vfs-21a alone echoes both markers.",
+  "steps": [
+    {
+      "cmd": "exec \"vfs21_a.cfg\"",
+      "expect": "file not found"
+    },
+    {
+      "cmd": "exec \"vfs21_b.cfg\"",
+      "expect": "trs_vfs21_marker_b"
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    }
+  ]
+}

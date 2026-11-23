@@ -1,0 +1,50 @@
+{
+  "name": "net-17",
+  "rows": [
+    "NET-17"
+  ],
+  "fixture": [
+    "net-17"
+  ],
+  "mode": "mp",
+  "params": {
+    "map": "multi/1v1_road:combat"
+  },
+  "src": [
+    " (ComputeCrc)",
+    " (folder)",
+    " (mp_resource)",
+    ",86"
+  ],
+  "note": "Hex precomputed from the fixture bytes. a.inc (mask *.inc): crc with start = size, 5FDE4E1F; plain crc from 0 would be 4CA51A24. b.dat (no mask): LE size from 0xffffffff, 20843F37. Folder: children little-endian from 0xffffffff, FA6DE82B. Mode mp: the syncer rebuilds on core load, in the menu it can be stale after mod_set. [T] mp_resource path form.",
+  "steps": [
+    {
+      "wait": 1
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "mp_resource properties/trs_net17/a.inc",
+      "match": "5FDE4E1F",
+      "want": true
+    },
+    {
+      "reply": "mp_resource properties/trs_net17/b.dat",
+      "match": "20843F37",
+      "want": true
+    },
+    {
+      "reply": "mp_resource properties/trs_net17",
+      "match": "FA6DE82B",
+      "want": true
+    }
+  ],
+  "mods": [
+    "as64+",
+    "net-17"
+  ]
+}

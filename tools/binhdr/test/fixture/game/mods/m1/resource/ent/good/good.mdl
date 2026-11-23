@@ -1,0 +1,15 @@
+{Skeleton
+ {bone "basis"
+  {bone revolute "gun"
+   {limits -5 20}
+   {speed 30}
+  }
+  {bone socket "mg"
+   {limits 1 2}
+  }
+ }
+}
+ {Volume "body"
+  {Box 1 1 1}
+  {Bone "basis"}
+ }

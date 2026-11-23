@@ -1,0 +1,4 @@
+{game_entity
+	{Extension "m1a.mdl"}
+	{Chassis {Locomotion {TurnTime 5}} {speed {Slow 5} {Normal 10} {Fast 20}}}
+}

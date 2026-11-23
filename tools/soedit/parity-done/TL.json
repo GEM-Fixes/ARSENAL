@@ -1,0 +1,11 @@
+{
+  "TL-01": { "state": "done", "where": "tools/gui/ext/models/sub/timeline.client.js:127 mousedown on the ruler, move", "test": "timeline.test.js ok 5 (scrub)", "note": "A click on a bone row also picks the frame and the bone." },
+  "TL-02": { "state": "done", "where": "timeline.client.js:127 drag on an empty spot, Shift+click from the current frame", "test": "timeline.test.js ok 5", "note": "" },
+  "TL-03": { "state": "done", "where": "timeline.client.js:139 up: anm.frames.move once at the drop", "test": "timeline.test.js ok 5 (frames 2..3 to 5)", "note": "One op and one undo step for the whole drag (SOEdit repeated left / right moves). A key outside the range can be dragged on its own: anm.key.move." },
+  "TL-04": { "state": "done", "where": "timeline.client.js:144 dblclick, SH.edit (anim.client.js pose form)", "test": "timeline.test.js ok 5", "note": "" },
+  "TL-05": { "state": "done", "where": "timeline.client.js:145 wheel steps, Ctrl+wheel zooms, Shift+wheel scrolls; arrow keys in anim.client.js", "test": "timeline.test.js ok 5; anim.test.js ok 4", "note": "" },
+  "TL-06": { "state": "done", "where": "timeline.client.js:152 menu: Edit pose, Insert a frame after, Duplicate, Delete, Earlier, Later (plus Set key, Delete key, Copy, Paste, Reverse, Fill between)", "test": "timeline.test.js ok 6", "note": "" },
+  "TL-07": { "state": "done", "where": "timeline.client.js:152 menu: Select all, Previous key, Next key", "test": "timeline.test.js ok 6", "note": "" },
+  "TL-08": { "state": "done", "where": "timeline.client.js:152 menu: Undo, Redo (D.undo, D.redo)", "test": "timeline.test.js ok 6 (undo)", "note": "" },
+  "TL-09": { "state": "done", "where": "timeline.client.js:71 Fill between uses the selected range; the range shows in the toolbar", "test": "timeline.test.js ok 5 (fill 1..6 with an ease)", "note": "No separate start / end boxes: the selection is the range. Also the model's sequences under the timeline (tl.seq.add / set / delete, tools/lib/model/edit/anm.js:757): speed in steps of 0.1, smooth 0..1, flags, file, length in seconds; Gates of Hell keys (events, additive) are refused because this game stops loading the model on them." }
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NotepadPlus>
+	<InternalCommands>
+		<Shortcut id="42001" Ctrl="yes" Alt="yes" Shift="yes" Key="75" />
+	</InternalCommands>
+	<Macros />
+	<UserDefinedCommands />
+	<PluginCommands />
+	<ScintillaKeys />
+</NotepadPlus>

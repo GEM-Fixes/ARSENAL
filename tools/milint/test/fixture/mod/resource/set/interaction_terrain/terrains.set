@@ -1,0 +1,4 @@
+{terrains
+	{"ground" {pp "ground no_pass"}}
+	{"mud" {pp "swamp no_pass"}}
+}

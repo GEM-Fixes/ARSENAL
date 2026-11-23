@@ -1,0 +1,14 @@
+{
+  "name": "sp-load",
+  "rows": [],
+  "mode": "sp",
+  "mods": [],
+  "params": { "mission": "" },
+  "steps": [
+    { "wait": 10 }
+  ],
+  "verdict": [
+    { "log": "\\*{5,} Exception \\*{5,}", "want": false },
+    { "log": "Block terminator expected", "want": false }
+  ]
+}

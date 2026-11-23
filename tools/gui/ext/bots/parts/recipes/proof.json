@@ -1,0 +1,6 @@
+{
+  "proven": true,
+  "report": "(not part of this release)",
+  "untried": ["fallback", "front", "tanks", "save", "phases", "cap"],
+  "note": "as64(3) instance 5, run bc: habits on for both bots, 0 Lua call failed, bots buy, group attack, replace losses, match log [V]. Fallback, front, tanks, save, phases and cap were not on in that match [T]."
+}

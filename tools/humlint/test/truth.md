@@ -1,0 +1,26 @@
+# file:line: CODE (seeded defects; diffed by run.sh)
+resource/properties/human.ext:6: HUM_VITALITY_KEY
+resource/properties/human.ext:11: HUM_STAMINA_ROW
+resource/properties/human.ext:16: HUM_VITALITY_KEY
+resource/properties/human.ext:18: HUM_VITALITY_KEY
+resource/properties/human.ext:24: HUM_BOX_SIZE_INT8
+resource/properties/human.ext:27: WARN_HUM_USER_AMOUNT
+resource/properties/human.ext:28: HUM_HOLDER_TWO_ITEMS
+resource/set/interaction_entity/dmg.inc:8: HUM_THROW_EFFECTS
+resource/set/interaction_entity/dmg.inc:11: HUM_DAMAGE_KEY
+resource/set/ability/test.set:8: HUM_POSTURE_RELOAD
+resource/set/ability/test.set:13: HUM_ABILITY_BASE
+resource/set/breed/b1.set:4: HUM_ABILITY_NO_LEVELS
+resource/set/multiplayer/units/u.set:2: WARN_HUM_BREED_UNKNOWN
+resource/properties/human_fsm.ext:5: HUM_FSM_DYING_EDGES
+resource/properties/human_fsm.ext:6: HUM_FSM_SPLIT_ORDER
+resource/entity/x/x.mdl:3: HUM_DURATION_ZERO
+resource/set/ability/reload.set:1: HUM_WEAPON_RELOAD_PERK
+resource/set/breed/b2.set:3: HUM_WEAPON_RELOAD_PERK
+resource/set/breed/b2.set:7: HUM_VETERANCY_TIED
+resource/set/breed/b2.set:11: HUM_FILLED_N_GLOBAL
+resource/set/breed/b2.set:13: HUM_IN_HANDS_RANGE
+resource/properties/humbox.ext:8: HUM_HOLDER_TWO_ITEMS
+resource/set/stuff/gun/badrifle:1: HUM_WEAPON_NO_TAG
+resource/set/vision/vision_generic.inc:1: HUM_VISION_RADIUS_TINY
+resource/properties/human_big.ext:6: WARN_HUM_HEALTH_FAR

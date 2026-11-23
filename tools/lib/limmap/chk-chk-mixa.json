@@ -1,0 +1,15 @@
+{"form":"limmap/1","part":"chk-chk-mixa","codes":{
+"WARN_ARMOR_AREA_REPEATED":{"tool":"statsheet","sev":"silent","lim":["DMG-23"],"at":"tools/statsheet/statsheet.js:100","class":"silent","why":"same-name armor setting twice in one block: later thickness replaces earlier"},
+"WARN_ARMOR_SPLIT_FLATTENED":{"tool":"statsheet","sev":"silent","lim":["DMG-25"],"at":"tools/statsheet/statsheet.js:112","class":"silent","why":"nonzero armor area side overwrites differing thickness of split volumes"},
+"WARN_PEN_TABLE_SHORT":{"tool":"statsheet","sev":"silent","lim":["GPL-03"],"at":"tools/statsheet/statsheet.js:164","class":"silent","why":"penetration table ends before weapon range plus 5"},
+"WARN_PLY_INLINE_TEX_MISSING":{"tool":"binhdr","sev":"silent","lim":["FMT-16"],"at":"tools/binhdr/ply.js:150","class":"silent","why":"inline layered material names a texture with no image file"},
+"WARN_GUN_NO_FORESIGHT":{"tool":"wpn","sev":"silent","lim":["PORT-180"],"at":"tools/wpn/check.js:68","class":"silent","why":"gun template chain has no foresight: gun turns, never fires"},
+"WARN_PLACE_NO_FORESIGHT":{"tool":"wpn","sev":"silent","lim":["PORT-178"],"at":"tools/wpn/check.js:80","class":"silent","why":"gun place and template chain both lack a foresight: no aim bone"}},
+"result":{
+"DMG-23":{"state":"built","code":"WARN_ARMOR_AREA_REPEATED","why":""},
+"DMG-25":{"state":"built","code":"WARN_ARMOR_SPLIT_FLATTENED","why":""},
+"GPL-03":{"state":"built","code":"WARN_PEN_TABLE_SHORT","why":""},
+"FMT-16":{"state":"built","code":"WARN_PLY_INLINE_TEX_MISSING","why":""},
+"PORT-113":{"state":"had","code":"PLY_BONEMAP_LIMIT","why":""},
+"PORT-178":{"state":"built","code":"WARN_PLACE_NO_FORESIGHT","why":""},
+"PORT-180":{"state":"built","code":"WARN_GUN_NO_FORESIGHT","why":""}}}

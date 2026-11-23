@@ -1,0 +1,16 @@
+{panel_control
+	{cancel}
+	{drop}
+	{examine}
+	{repair}
+	{rotate}
+	{heal}
+	{attach}
+	{detach}
+	{reinforce}
+	{collect}
+	{select}
+	{board}
+	{enter}
+	{care}
+}

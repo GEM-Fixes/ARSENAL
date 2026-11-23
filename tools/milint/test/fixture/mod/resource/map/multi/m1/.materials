@@ -1,0 +1,5 @@
+{materials
+	{"mtl0" {layer bump {diffuse "/a"}}}
+	{"mtl1" {layer bump {diffuse "/b"}}}
+	{"mtl9" {layer bump {diffuse "/c"}}}
+}

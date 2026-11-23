@@ -1,0 +1,35 @@
+{
+  "name": "vfs-50b",
+  "rows": [
+    "VFS-50"
+  ],
+  "fixture": [
+    "vfs-50b"
+  ],
+  "mods": [
+    "as64+"
+  ],
+  "overlap": false,
+  "src": [
+    " (needs ..., which is not installed)"
+  ],
+  "note": "Half 2: Require \"as64-only\" is no mode name. Pass: mod_set refuses with the not-installed text. [T] MUST RUN UNSTAGED (install.js, then testrun --scenario without --stage-as): under --stage-as the mod is listed at start, stays applied:false, and the mounted check aborts with TESTRUN_STAGE before any step. \"as64\" and \"legacy\" take the same code path, not run separately.",
+  "steps": [
+    {
+      "wait": 5
+    },
+    {
+      "cmd": "mod_set as64+ vfs-50b",
+      "expect": "\"vfs-50b\" needs \"as64-only\", which is not installed"
+    }
+  ],
+  "verdict": [
+    {
+      "reply": "mod_set as64+ vfs-50b",
+      "match": "needs \"as64-only\", which is not installed",
+      "want": true
+    }
+  ],
+  "mode": "menu",
+  "params": {}
+}

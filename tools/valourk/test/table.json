@@ -1,0 +1,17 @@
+{
+ "classes": { "tank_medium": { "keys": {} } },
+ "factors": {
+  "tank_medium": {
+   "speed": { "mode": "copy", "as2_p5": 5, "as2_p95": 80 },
+   "turn_time": { "mode": "copy", "as2_p5": 2, "as2_p95": 30 },
+   "start_time": { "mode": "copy", "as2_p5": 2, "as2_p95": 30 },
+   "mass": { "mode": "copy", "as2_p5": 1000, "as2_p95": 60000 },
+   "fuel": { "mode": "copy", "as2_p5": 50, "as2_p95": 900 }
+  },
+  "w:gun": {
+   "pen_a": { "mode": "copy" },
+   "pen_c": { "mode": "copy" },
+   "pen_e": { "mode": "copy" }
+  }
+ }
+}

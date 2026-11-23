@@ -1,0 +1,119 @@
+{
+ "form": "limclass/1",
+ "area": "UI",
+ "rows": {
+  "UI-01": {
+   "chk": "never",
+   "class": "info",
+   "why": "screens are C++; nothing to hit, data cannot add dialogs",
+   "never": "engine design fact, no mod file to check"
+  },
+  "UI-02": {
+   "chk": "never",
+   "class": "info",
+   "why": "layout is fixed in C++; mods cannot move it",
+   "never": "engine layout constants, nothing in mod files"
+  },
+  "UI-03": {
+   "chk": "built",
+   "class": "silent",
+   "why": "missing picture shows nothing, no error"
+  },
+  "UI-04": {
+   "chk": "never",
+   "class": "info",
+   "why": "fact about which .ps actions exist",
+   "never": "capability list, not a mod-file mistake"
+  },
+  "UI-05": {
+   "chk": "built",
+   "class": "desync",
+   "why": "action sets must match host and client or MP breaks",
+   "tool": "uilint",
+   "how": "interface/action file set differs from vanilla set in a mod; flag MP mismatch risk"
+  },
+  "UI-06": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unknown instruction raises fatal error"
+  },
+  "UI-07": {
+   "chk": "built",
+   "class": "silent",
+   "why": "right_special.set never loaded, no effect"
+  },
+  "UI-08": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unknown condition term logs, item rule ignored"
+  },
+  "UI-09": {
+   "chk": "built",
+   "class": "silent",
+   "why": "cell clash hides item, no message"
+  },
+  "UI-10": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "dummy button shows, does nothing; minimap case worse"
+  },
+  "UI-11": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unknown key tokens ignored silently"
+  },
+  "UI-12": {
+   "chk": "built",
+   "class": "silent",
+   "why": "wrong mouse key name leaves key unbound"
+  },
+  "UI-13": {
+   "chk": "built",
+   "class": "silent",
+   "why": "mod default keys may not show"
+  },
+  "UI-14": {
+   "chk": "built",
+   "class": "silent",
+   "why": "custom action cannot be bound, no message"
+  },
+  "UI-15": {
+   "chk": "built",
+   "class": "silent",
+   "why": "new keys.set id stored but nothing reads it"
+  },
+  "UI-16": {
+   "chk": "built",
+   "class": "crash",
+   "why": "missing main size 10 font is fatal at startup"
+  },
+  "UI-17": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "dup of UI-10: dummy button"
+  },
+  "UI-18": {
+   "chk": "built",
+   "class": "silent",
+   "why": "mod default settings.set never read",
+   "tool": "uilint",
+   "how": "mod ships interface/profiles/default/settings.set, which the engine never reads"
+  },
+  "UI-19": {
+   "chk": "built",
+   "class": "silent",
+   "why": "non-XVID video, decoder is xvid (unverified)"
+  },
+  "UI-20": {
+   "chk": "built",
+   "class": "silent",
+   "why": "oversize video shows still frame"
+  },
+  "UI-21": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "missing cursor texture draws as checker, no log"
+  }
+ },
+ "dead": []
+}

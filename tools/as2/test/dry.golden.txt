@@ -1,0 +1,22 @@
+$ node tools/modinfo/modinfo.js mymod
+$ node tools/build/build.js mymod --game game
+$ ARSENAL install mymod --name mymod --game game
+install: mymod -> game\mods\mymod (copy)
+$ node tools/modswitch/modswitch.js --game game --set mymod --write --bak options.set.as2-e2e
+$ node tools/testrun/testrun.js --map m1 --logdir L
+$ node tools/logtriage/logtriage.js L --mod mymod --game game --since <testrun-start>
+$ node tools/modswitch/modswitch.js --game game --restore --write --bak options.set.as2-e2e
+rc=0
+$ node tools/modinfo/modinfo.js mymod
+$ node tools/build/build.js mymod --game game
+$ ARSENAL install mymod --name nm --game game
+install: mymod -> game\mods\nm (copy)
+$ node tools/modswitch/modswitch.js --game game --set nm --write --bak options.set.as2-e2e
+$ node tools/testrun/testrun.js --map m1 --logdir L
+$ node tools/logtriage/logtriage.js L --mod mymod --game game --since <testrun-start>
+$ node tools/modswitch/modswitch.js --game game --restore --write --bak options.set.as2-e2e
+rc=0
+$ node tools/testrun/testrun.js --probe
+rc=0
+install: mymod -> game\mods\mymod (junction)
+rc=0

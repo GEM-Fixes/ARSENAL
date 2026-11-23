@@ -1,0 +1,8 @@
+; entity def, comment with cp1251 bytes: Привет
+{entity
+  {mass 12.5}
+  ; inner comment { with brace
+  {"name" "quoted \"inner\" value" "second"}
+  {mdl {file "/entity/x.mdl"} {scale 1.0 1.0 1.0}}
+  (include "base.ext")
+}

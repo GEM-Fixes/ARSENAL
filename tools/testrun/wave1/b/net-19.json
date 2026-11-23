@@ -1,0 +1,64 @@
+{
+  "name": "net-19",
+  "rows": [
+    "NET-19"
+  ],
+  "fixture": [
+    "net-19"
+  ],
+  "mode": "mp",
+  "params": {
+    "map": "multi/1v1_road:combat"
+  },
+  "src": [
+    "(not part of this release)",
+    ",201-211",
+    "resource/set/registry/resource_syncer.reg"
+  ],
+  "note": "Masks from the vanilla reg. */map matches sub/map (content 1ECA6566) not notmap (size 5FCD50C1). /set/* matches /set/trs_net19/z.xyz (content 44F1D01D), so names carry the leading slash. y.zzz, no mask (size 05EF60EB). *.backup is excluded: \"is not found!\" though s_select lists it. Case not tested: resource names are lowercased before the match, so no reachable input differs by case [T].",
+  "steps": [
+    {
+      "wait": 1
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "mp_resource properties/trs_net19/sub/map",
+      "match": "1ECA6566",
+      "want": true
+    },
+    {
+      "reply": "mp_resource properties/trs_net19/notmap",
+      "match": "5FCD50C1",
+      "want": true
+    },
+    {
+      "reply": "mp_resource set/trs_net19/z.xyz",
+      "match": "44F1D01D",
+      "want": true
+    },
+    {
+      "reply": "mp_resource properties/trs_net19/y.zzz",
+      "match": "05EF60EB",
+      "want": true
+    },
+    {
+      "reply": "mp_resource properties/trs_net19/c.backup",
+      "match": "is not found!",
+      "want": true
+    },
+    {
+      "reply": "s_select \"/properties/trs_net19/\"",
+      "match": "c\\.backup",
+      "want": true
+    }
+  ],
+  "mods": [
+    "as64+",
+    "net-19"
+  ]
+}

@@ -1,0 +1,5 @@
+; ide fixes fixture: the only file that defines ide_fx_set_macro (a .set: an include of it pulls its blocks in too)
+(define "ide_fx_set_macro"
+	{mass 2000}
+)
+{ide_fx_set_block 1}

@@ -1,0 +1,269 @@
+{
+ "thing": "explore",
+ "files": [
+  "/api/x/ide",
+  "/api/x/view",
+  "/api/x/pro",
+  "/api/x/docs",
+  "/api/x/help",
+  "/api/x/guides",
+  "/api/x/files",
+  "/api/x/units",
+  "/api/x/art",
+  "/api/x/models",
+  "/api/x/balance",
+  "/api/x/maps"
+ ],
+ "groups": [
+  {
+   "id": "unit",
+   "name": "unit"
+  },
+  {
+   "id": "gun",
+   "name": "gun"
+  },
+  {
+   "id": "map",
+   "name": "map"
+  },
+  {
+   "id": "sound",
+   "name": "sound"
+  },
+  {
+   "id": "model",
+   "name": "model"
+  },
+  {
+   "id": "picture",
+   "name": "picture"
+  },
+  {
+   "id": "mod",
+   "name": "mod"
+  },
+  {
+   "id": "log",
+   "name": "log"
+  },
+  {
+   "id": "limits",
+   "name": "limits"
+  }
+ ],
+ "vars": [
+  {
+   "key": "unit.find",
+   "plain": "Where is a unit defined and which file wins?",
+   "tool": "GET /api/x/ide/copies; GET /api/x/files/which",
+   "group": "unit",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "unit.stats",
+   "plain": "What are a unit's numbers?",
+   "tool": "GET /api/x/units/stats",
+   "group": "unit",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "unit.compare",
+   "plain": "How does it compare to another unit?",
+   "tool": "POST /api/x/units/compare",
+   "group": "unit",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "unit.price",
+   "plain": "What does an army cost?",
+   "tool": "GET /api/x/units/armyprice",
+   "group": "unit",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "unit.refs",
+   "plain": "Where is a name used?",
+   "tool": "POST /api/x/ide/refs",
+   "group": "unit",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "unit.name_lookup",
+   "plain": "Find any name fast (q.js)",
+   "tool": "q.js CLI",
+   "group": "unit",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "gun.armor",
+   "plain": "What can this gun pierce?",
+   "tool": "models armor/shot, armor/table",
+   "group": "gun",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "gun.balance",
+   "plain": "Balance table for guns",
+   "tool": "POST /api/x/balance/table",
+   "group": "gun",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "map.list",
+   "plain": "Which maps exist and modes?",
+   "tool": "GET /api/x/maps/list",
+   "group": "map",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "map.picture",
+   "plain": "What does a map look like?",
+   "tool": "GET /api/x/maps/picture; view map/info",
+   "group": "map",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "map.entities",
+   "plain": "What objects are on a map?",
+   "tool": "mapview --entities CLI",
+   "group": "map",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "sound.play",
+   "plain": "Listen to a sound",
+   "tool": "view sound/pcm, sound/plan",
+   "group": "sound",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "sound.weapon",
+   "plain": "Which sound does a weapon use?",
+   "tool": "GET /api/x/art/sound",
+   "group": "sound",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "model.open",
+   "plain": "Open a model in 3D",
+   "tool": "models open, viewer",
+   "group": "model",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "model.owner",
+   "plain": "Which unit uses this model?",
+   "tool": "view model/owner",
+   "group": "model",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "picture.view",
+   "plain": "View a texture or icon",
+   "tool": "view picture/image",
+   "group": "picture",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "picture.font",
+   "plain": "See a font page",
+   "tool": "view font/page",
+   "group": "picture",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "mod.files",
+   "plain": "Browse the mod and game files",
+   "tool": "GET /api/x/files/tree",
+   "group": "mod",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "mod.diff",
+   "plain": "What does my mod change vs vanilla?",
+   "tool": "pro overdiff, misdiff, verdiff",
+   "group": "mod",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "mod.conflicts",
+   "plain": "Which mods clash?",
+   "tool": "pro conflicts; share clashes",
+   "group": "mod",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "mod.search",
+   "plain": "Search all files",
+   "tool": "GET /api/x/files/search",
+   "group": "mod",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "log.read",
+   "plain": "What went wrong in the last run?",
+   "tool": "POST /api/x/logs/explain",
+   "group": "log",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "log.exe_compare",
+   "plain": "Does as64 differ from GoH here?",
+   "tool": "q.js -g CLI",
+   "group": "log",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "limits.search",
+   "plain": "Can the game do X?",
+   "tool": "docs limit; help limit",
+   "group": "limits",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "limits.guides",
+   "plain": "Is there a guide?",
+   "tool": "guides search",
+   "group": "limits",
+   "tag": "V",
+   "where": null
+  },
+  {
+   "key": "limits.glossary",
+   "plain": "What does a word mean?",
+   "tool": "help glossary",
+   "group": "limits",
+   "tag": "V",
+   "where": null
+  }
+ ],
+ "gaps": [
+  "map.entities: mapview --entities has no route; add ?entities=1 to maps/picture",
+  "unit.name_lookup and log.exe_compare: q.js not in GUI; add GET /api/x/help/q?name=&g="
+ ]
+}

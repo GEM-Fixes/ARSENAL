@@ -1,0 +1,12 @@
+{Skeleton
+ {bone "basis"
+  {VolumeView "skin.ply"}
+  {bone "a"}
+  {bone "A"}
+  {bone "lodb" {LODView {VolumeView "x.ply"}} {bone "kid" {VolumeView "x.ply"}}}
+  {animation {sequence "big"}}
+ }
+}
+{Volume "v1" {Polyhedron "nc.vol"} {Bone "a"}}
+{Volume "V1" {Box 1 1 1} {Bone "a"}}
+{Volume "v3" {Polyhedron "cube.vol"} {Bone "a"} {Matrix34 1 0 0 1 0 0 0 0 1 0 0 0}}

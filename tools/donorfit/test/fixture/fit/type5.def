@@ -1,0 +1,19 @@
+;SDL invented fixture, the one-line shape: a secondary crew line whose door is absent from the mdl and that no weapon uses
+(define "xcrew"
+	{placer {place "%place" {group "crew"}}}
+	{boarder
+		{door "%door1"}
+		{door "%door2"}
+	}
+)
+{game_entity
+	{Extension "fit.mdl"}
+	("xcrew" place(driver) door1(emit1) door2(emit1))
+	("xcrew" place(gunner2) door1(emit1) door2(emit9))
+	{Weaponry
+		{place "gun"
+			{type "cannon"}
+			{gunner "driver"}
+		}
+	}
+}

@@ -1,0 +1,382 @@
+{
+ "form": "limmap/1",
+ "part": "clone-entity",
+ "codes": {
+  "CLONE_ASSET": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:370",
+   "class": "info",
+   "why": "asset copy summary"
+  },
+  "CLONE_BAD_ARGS": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:127",
+   "class": "tool",
+   "why": "bad flag value"
+  },
+  "CLONE_BASE_AMBIGUOUS": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:153",
+   "class": "tool",
+   "why": "tag query matches several bases"
+  },
+  "CLONE_BASE_BINARY": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:393",
+   "class": "tool",
+   "why": "base def unreadable as text"
+  },
+  "CLONE_BASE_MISSING": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "SDL-49",
+    "LOG-07"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:152",
+   "class": "crash",
+   "why": "engine prints pattern not found, uses dummy stuff"
+  },
+  "CLONE_BREED": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:327",
+   "class": "info",
+   "why": "breed copy summary"
+  },
+  "CLONE_ENTITY_EXISTS": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:391",
+   "class": "tool",
+   "why": "refuses to overwrite existing name"
+  },
+  "CLONE_FROM_SELF": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "SDL-57"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:169",
+   "class": "crash",
+   "why": "from finds clone itself, dies at load"
+  },
+  "CLONE_GOH_BONES_UNCHECKED": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:610",
+   "class": "info",
+   "why": "tool does not compare bones"
+  },
+  "CLONE_GOH_MODEL_AMBIGUOUS": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:525",
+   "class": "tool",
+   "why": "model-from matches several mdl"
+  },
+  "CLONE_GOH_MODEL_MISSING": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:533",
+   "class": "tool",
+   "why": "model-from matches no mdl"
+  },
+  "CLONE_GOH_PLACED": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:609",
+   "class": "info",
+   "why": "GoH placement summary"
+  },
+  "CLONE_HUMAN_SKIN": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:481",
+   "class": "info",
+   "why": "usage hint for humanskin"
+  },
+  "CLONE_INCLUDE_UNRESOLVED": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "KEY-27"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:473",
+   "class": "crash",
+   "why": "relative include fails from the clone folder"
+  },
+  "CLONE_LNG_KEY_EXISTS": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "LOC-04",
+    "LOC-03"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:633",
+   "class": "silent",
+   "why": "duplicate lng key, later definition wins"
+  },
+  "CLONE_LNG_RENAMED": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "LOC-01"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:626",
+   "class": "silent",
+   "why": "same-path lng replaces the dependency file whole"
+  },
+  "CLONE_MATERIAL_ARMOR": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:288",
+   "class": "info",
+   "why": "no vanilla armor macro variant"
+  },
+  "CLONE_MATERIAL_BURN": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:289",
+   "class": "info",
+   "why": "optional burning prop hint"
+  },
+  "CLONE_MATERIAL_NONE": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:282",
+   "class": "info",
+   "why": "no material word to swap"
+  },
+  "CLONE_MODEL_REF": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "KEY-27"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:478",
+   "class": "info",
+   "why": "rooted model path since relative resolves at def"
+  },
+  "CLONE_MODEL_UNRESOLVED": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "KEY-32"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:442",
+   "class": "crash",
+   "why": "Extension name does not resolve"
+  },
+  "CLONE_MOD_DROPPED": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:304",
+   "class": "tool",
+   "why": "listed mods not applied to vfs"
+  },
+  "CLONE_MP_SYNC": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "VFS-29"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:498",
+   "class": "desync",
+   "why": "entity/set keys CRC-compared in MP"
+  },
+  "CLONE_MTL_MISSING": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "FMT-03"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:421",
+   "class": "crash",
+   "why": "mesh names a mtl that is nowhere"
+  },
+  "CLONE_NO_ASSETS": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:477",
+   "class": "info",
+   "why": "copy-assets found nothing"
+  },
+  "CLONE_NO_X_VARIANT": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "STR-14"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:434",
+   "class": "review",
+   "why": "clone lacks destroyed variant, swap unverified"
+  },
+  "CLONE_OUT_UNSAFE": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:122",
+   "class": "tool",
+   "why": "out folder is game or GoH tree"
+  },
+  "CLONE_SET_BAD": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:227",
+   "class": "tool",
+   "why": "bad --set value"
+  },
+  "CLONE_SWAP_COUNT": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:322",
+   "class": "tool",
+   "why": "swap pattern count not one"
+  },
+  "CLONE_TAGS_NOT_COPIED": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "SDL-54"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:207",
+   "class": "review",
+   "why": "stuff tags come from file name"
+  },
+  "CLONE_TAG_EXISTS": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "SDL-54"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:160",
+   "class": "silent",
+   "why": "existing tag set wins, clone ignored"
+  },
+  "CLONE_TINT_UNSUPPORTED": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:358",
+   "class": "tool",
+   "why": "tint decoder lacks that format"
+  },
+  "DAMAGE_REPLACES": {
+   "tool": "clone-entity",
+   "sev": "silent",
+   "lim": [
+    "KEY-17"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:183",
+   "class": "silent",
+   "why": "damage without add replaces inherited"
+  },
+  "FILE_MISSING": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/srcdrift/srcdrift.js:80",
+   "class": "tool",
+   "why": "limits cite names a source file absent from src"
+  },
+  "KEY19_ANCESTOR": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "KEY-19"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:199",
+   "class": "silent",
+   "why": "throw_off_always lost at CopyFrom hop"
+  },
+  "KEY19_REEMIT": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "KEY-19"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:191",
+   "class": "info",
+   "why": "tool re-emits throw_off_always"
+  },
+  "ROSTER_LINE": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:491",
+   "class": "info",
+   "why": "prints base card line to add"
+  },
+  "ROSTER_REPLACES": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "VFS-01"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:495",
+   "class": "silent",
+   "why": "mod copy replaces whole vanilla roster file"
+  },
+  "WARN_CLONE_GOH_FILE_MISSING": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "PORT-131"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:605",
+   "class": "crash",
+   "why": "GoH model names files absent from tree"
+  },
+  "WARN_CLONE_ROOTED_TEX_MISSING": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "PORT-152"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:607",
+   "class": "silent",
+   "why": "missing texture draws checker, no log line"
+  },
+  "WARN_CLONE_ROOTED_TEX_UNCHECKED": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/clone-entity/clone-entity.js:608",
+   "class": "info",
+   "why": "dollar root textures not traced"
+  },
+  "WARN_CLONE_TAG_SHADOW": {
+   "tool": "clone-entity",
+   "sev": "review",
+   "lim": [
+    "SDL-64"
+   ],
+   "at": "tools/clone-entity/clone-entity.js:164",
+   "class": "silent",
+   "why": "clone tags superset shadows existing stuff"
+  }
+ }
+}

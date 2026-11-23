@@ -1,0 +1,53 @@
+{
+  "name": "fmt-14",
+  "draft": true,
+  "rows": [
+    "FMT-14"
+  ],
+  "mode": "mp",
+  "fixture": [
+    "fmt-14"
+  ],
+  "mods": [
+    "as64+",
+    "fmt-14"
+  ],
+  "params": {
+    "map": "multi/1v1_road:combat"
+  },
+  "src": [
+    " ( lists only .wav)",
+    " (unknown sound file warning)",
+    " (mission sound command -> PlayInterfaceSound)",
+    " (-nosound only disables output; Play and folder listing still run)"
+  ],
+  "note": "combat.mi = stock copy + one start trigger playing four names in order: mp3-only folder, ogg-only folder, wav folder (control), missing folder (end marker). Pass: mp3/ogg names warn as unknown exactly like a missing folder, wav name does not, so only .wav is registered. Log check only, runs under -nosound. [T] the trigger runs with its empty condition (stock 'environment' has the same form). [T] whether the VFS indexes .mp3/.ogg at all: same verdict either way. Does not cover the row's stereo 3D claim, audible silence, or a .mp3 name used with extension.",
+  "steps": [
+    {
+      "wait_log": "unknown sound file '[^']*trs_fmt14_nofolder/x'",
+      "timeout": 45
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "log": "unknown sound file '[^']*trs_fmt14_mp3/x'",
+      "want": true
+    },
+    {
+      "log": "unknown sound file '[^']*trs_fmt14_ogg/x'",
+      "want": true
+    },
+    {
+      "log": "unknown sound file '[^']*trs_fmt14_nofolder/x'",
+      "want": true
+    },
+    {
+      "log": "unknown sound file '[^']*trs_fmt14_wav/x'",
+      "want": false
+    }
+  ]
+}

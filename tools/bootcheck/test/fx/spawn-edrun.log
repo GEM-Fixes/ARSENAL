@@ -1,0 +1,29 @@
+186 mods
+[00:00:16] Localization key redefinition: interface/ok in /interface/text/#editor.lng (/interface/text/#editor.lng, 123)
+Build: 2026.11.05 17:56 - 0x5EEB1B6E
+Product: Men of War: Assault Squad 2 Editor - v3.301.1x64 - editor
+Commit: 19c1ea0b6
+Repository: 138448 resources
+[00:00:28] Entity redefinition: radio_station (eentityraw.cpp, 157) @ [main_loop]
+[00:00:28] Entity redefinition: shellhole_big (eentityraw.cpp, 157) @ [main_loop]
+[00:00:28] Entity redefinition: shellhole_medium (eentityraw.cpp, 157) @ [main_loop]
+[00:00:29] 'use_blend_tex' is not supported (/set/interaction_entity/entity.set/construction/parts.inc, 83)
+Phase Loading... took 12060.9ms.
+Phase Starting game... took 0.0013ms.
+[00:00:34] Media file "/sound/mission/multi/edrun_test/story" not found (edevicemedia.cpp, 467) @ [main_loop]
+[00:00:34] MediaManager: can't open MSS media stream for file "/music/loading_theme.mp3" (edevicemedia.cpp, 88) @ [main_loop]
+[00:00:35] Automatic MIP generation not supported. Bitmap: '/texture/fx/explosion/exp_sled' (/texture/fx/explosion/exp_sled.ebm, 3)
+[00:00:36] can't spawn entity uk-staghound (/map/multi/edrun_test/combat.mi, 84)
+[00:00:36] Not all entities will get their tags (esceneserialize.cpp, 845) @ [main_loop]
+EDRUN rmw8y82cj start
+EDRUN rmw8y82cj clock 0
+EDRUN rmw8y82cj ctlpz arm
+EDRUN rmw8y82cj di_stag arm
+EDRUN rmw8y82cj ctlpz shooterready
+EDRUN rmw8y82cj di_stag shooterready
+EDRUN rmw8y82cj ctlpz order
+EDRUN rmw8y82cj ctlpz foeready
+EDRUN rmw8y82cj clock 20
+[00:00:45] Undefined material for entity : howitzer_shell{raw} (/entity/inventory/-ammo/howitzer_shell/howitzer_shell.def, 5)
+EDRUN rmw8y82cj ctlpz kill
+EDRUN rmw8y82cj clock 40

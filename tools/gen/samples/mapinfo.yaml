@@ -1,0 +1,11 @@
+# Lets 4 players into the 1v1 map Road and sets its texture variant (map.info of resource/map/multi/1v1_road).
+# Edit map and set: maxPlayers, minPlayers, texMod, ranked, rankedMinPlayers, rankedMaxPlayers, parameters.
+# gen mapinfo.yaml --target as64 --game <AS2 dir> --out <mods dir>/my_mapinfo --no-stat   (add --plan first)
+name: my_mapinfo
+title: My Map Info
+ops:
+  - op: mapinfo
+    map: multi/1v1_road
+    set:
+      maxPlayers: 4
+      texMod: 1

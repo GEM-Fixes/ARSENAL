@@ -1,0 +1,10 @@
+{"form":"limmap/1","part":"chk-chk-mixc","codes":{
+"WARN_SETTINGS_SET_IGNORED":{"tool":"uilint","sev":"silent","lim":["UI-18"],"at":"tools/uilint/uilint.js:85","class":"silent","why":"mod-shipped interface/profiles/<id>/settings.set is never read by the engine"},
+"WARN_ACTION_SET_MP_MISMATCH":{"tool":"uilint","sev":"silent","lim":["UI-05"],"at":"tools/uilint/uilint.js:90","class":"desync","why":"mod adds an interface/action file vanilla lacks; MP action ids may mismatch"},
+"WARN_FORESIGHT_NOT_UNDER_LINK":{"tool":"fxlint","sev":"silent","lim":["TST-83"],"at":"tools/fxlint/fxlint.js:113","class":"silent","why":"place foresight bone not under its linkbone and shared with another place"}
+},"result":{
+"UI-18":{"state":"built","code":"WARN_SETTINGS_SET_IGNORED","why":null},
+"UI-05":{"state":"built","code":"WARN_ACTION_SET_MP_MISMATCH","why":null},
+"TST-83":{"state":"built","code":"WARN_FORESIGHT_NOT_UNDER_LINK","why":null},
+"MOV-31":{"state":"never","code":null,"why":"vanilla tags and link bones disagree both ways; bones also serve boarding"}
+}}

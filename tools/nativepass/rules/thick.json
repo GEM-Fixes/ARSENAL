@@ -1,0 +1,3 @@
+{"form":"nativerules/1","rules":[
+{"id":"thick-01","key":"entity/armor/setting/thickness","class":["tank_medium","tank_heavy","tank_light","cannon","btr"],"act":"set","when":"absent","value":0,"why":"vanilla peers carry a per-area thickness; the GoH port carries its plates per volume (volume/thickness/*, kept by armor-01). An area thickness of 0 is the reader's default and means the volume's own plate is used, so the key is added with no change to any armour number","src":"reader  (one number = every side); 0 = volume's own:  (area != 0.0f replaces own) and  (default 0, comment '0 for theirs'); key presence vanilla 60 of 60 tank_medium, 67 of 69 cannon, 29 of 30 btr","tag":"V"}
+]}

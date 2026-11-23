@@ -1,0 +1,205 @@
+{
+  "v": 1,
+  "about": "Map Viewer data palettes. Frozen in tools/mapviz/README.md section 5.4. Colours are #RRGGBB or #RRGGBBAA. Parts read this file, never write it.",
+  "sides": {
+    "a": { "fill": "#0072B2", "line": "#004B75", "wash": "#0072B233", "text": "#FFFFFF", "shape": "filled" },
+    "b": { "fill": "#D55E00", "line": "#8C3E00", "wash": "#D55E0033", "text": "#FFFFFF", "shape": "outlined" },
+    "neutral": { "fill": "#7F7F7F", "line": "#4D4D4D", "wash": "#7F7F7F26", "text": "#FFFFFF", "shape": "filled" }
+  },
+  "water": {
+    "bands": [
+      { "code": 0, "id": "none", "fill": "#00000000" },
+      { "code": 1, "id": "noProne", "fill": "#BFE6EF99", "hatch": { "color": "#3C8DA3", "angle": 45, "gap": 8, "width": 1 } },
+      { "code": 2, "id": "swim", "fill": "#5FB7C9B3", "hatch": { "color": "#22697A", "angle": 135, "gap": 6, "width": 1 } }
+    ],
+    "drown": { "fill": "#1F6F80CC", "hatch": { "color": "#0B2F38", "angle": 0, "gap": 5, "width": 1.5 } },
+    "check": { "fill": "#CC79A780", "hatch": { "color": "#7A3D63", "angle": 90, "gap": 6, "width": 1 } },
+    "label": { "text": "#0B2F38", "halo": "#FFFFFFCC" }
+  },
+  "cover": {
+    "bands": [
+      { "code": 0, "id": "none", "fill": "#00000000" },
+      { "code": 1, "id": "lie", "fill": "#F0E442" },
+      { "code": 2, "id": "low", "fill": "#E6B33C" },
+      { "code": 3, "id": "kneel", "fill": "#C9862B" },
+      { "code": 4, "id": "squat", "fill": "#9C5A1E" },
+      { "code": 5, "id": "stand", "fill": "#5E3410" }
+    ],
+    "conceal": { "fill": "#009E7366", "hatch": { "color": "#00664A", "angle": 60, "gap": 7, "width": 1 } },
+    "lip": { "fill": "#E6B33C99" },
+    "tick": { "line": "#2B1A08", "width": 1.5, "length": 4 },
+    "point": { "row0": "#5E3410", "row1": "#009E73" }
+  },
+  "height": {
+    "stops": [
+      { "at": 0, "color": "#3F7F4F" },
+      { "at": 0.25, "color": "#8FB36A" },
+      { "at": 0.5, "color": "#D8D08A" },
+      { "at": 0.75, "color": "#C49A64" },
+      { "at": 1, "color": "#F2EDE4" }
+    ],
+    "below": "#2E5E3A",
+    "above": "#FFFFFF",
+    "shade": { "light": "#FFFFFF", "dark": "#000000", "strength": 0.55 },
+    "contour": { "line": "#7A5A3A", "index": "#5A3E22", "width": 0.75, "indexWidth": 1.5, "label": "#5A3E22", "halo": "#FFFFFFB3" }
+  },
+  "slope": {
+    "classDeg": 6,
+    "blockDeg": { "wheeled": 24, "tracked": 30, "infantry": 42 },
+    "classes": [
+      "#00000000", "#FFF5CC40", "#FFE9994D", "#FFD86659", "#FDBB4C80", "#F89A3C99",
+      "#EE7633B3", "#D9472BCC", "#B42A2AD9", "#8E1B26E0", "#6E1222E6", "#540C1CEB",
+      "#3D0814F0", "#29050CF5", "#140404FA"
+    ]
+  },
+  "ground": {
+    "types": [
+      { "code": 0, "id": "undef", "fill": "#00000000" },
+      { "code": 1, "id": "ground", "fill": "#C8BC92" },
+      { "code": 2, "id": "no_pass", "fill": "#4D4D4D" },
+      { "code": 3, "id": "shallow_water", "fill": "#BFE6EF" },
+      { "code": 4, "id": "water", "fill": "#5FB7C9" },
+      { "code": 5, "id": "deep_water", "fill": "#1F6F80" },
+      { "code": 6, "id": "swamp", "fill": "#6B8E5A" },
+      { "code": 7, "id": "road", "fill": "#9C8A70" },
+      { "code": 8, "id": "no_pass_human", "fill": "#7A5C7A" },
+      { "code": 9, "id": "snow", "fill": "#F2F4F7" },
+      { "code": 10, "id": "forest", "fill": "#5E7F4A" },
+      { "code": 11, "id": "slope", "fill": "#A08F7A" }
+    ],
+    "other": "#B0A890",
+    "materials": {
+      "ground": "#C8BC92", "road": "#9C8A70", "country_road": "#B49E7C", "sand": "#E2D3A2", "grass": "#93B26B",
+      "snow": "#F2F4F7", "rock": "#9A968E", "mud": "#7E6A4E", "bridge": "#8A7A66", "bridge_wood": "#8A6A48",
+      "shallow_water": "#BFE6EF", "water": "#5FB7C9", "deep_water": "#1F6F80", "underwater": "#3E8A9C", "other": "#B0A890"
+    }
+  },
+  "pass": {
+    "codes": [
+      { "code": 0, "id": "nodata", "fill": "#00000000" },
+      { "code": 1, "id": "open", "fill": "#00000000" },
+      { "code": 2, "id": "slow", "fill": "#E69F0059" },
+      { "code": 3, "id": "blockedSlope", "fill": "#B42A2A80", "hatch": { "color": "#5C1010", "angle": 45, "gap": 6, "width": 1 } },
+      { "code": 4, "id": "blockedGround", "fill": "#33333380", "hatch": { "color": "#111111", "angle": 135, "gap": 6, "width": 1 } },
+      { "code": 5, "id": "blockedObject", "fill": "#5C3A1E99", "hatch": { "color": "#2B1A08", "angle": 90, "gap": 5, "width": 1 } },
+      { "code": 6, "id": "crossObject", "fill": "#E69F0066", "hatch": { "color": "#7A5200", "angle": 0, "gap": 6, "width": 1 } },
+      { "code": 7, "id": "outsidePather", "fill": "#00000033", "hatch": { "color": "#000000", "angle": 45, "gap": 10, "width": 1 } }
+    ],
+    "travel": { "stops": [ { "at": 0, "color": "#FFFFFF00" }, { "at": 1, "color": "#56B4E9B3" } ], "iso": "#2B5C7A" },
+    "route": { "line": "#000000", "width": 2, "casing": "#FFFFFF", "casingWidth": 4 }
+  },
+  "masks": {
+    "outsidePather": { "fill": "#00000033", "hatch": { "color": "#000000", "angle": 45, "gap": 10, "width": 1 } },
+    "outsideWorld": { "fill": "#00000059", "hatch": { "color": "#000000", "angle": 135, "gap": 10, "width": 1 } },
+    "noData": { "fill": "#80808040", "hatch": { "color": "#606060", "angle": 135, "gap": 4, "width": 1 } },
+    "blocked": { "fill": "#33333366", "hatch": { "color": "#111111", "angle": 45, "gap": 5, "width": 1 } },
+    "degraded": { "fill": "#CC79A740", "hatch": { "color": "#7A3D63", "angle": 0, "gap": 6, "width": 1 } },
+    "approx": { "fill": "#00000000", "hatch": { "color": "#7F7F7F", "angle": 90, "gap": 9, "width": 0.75 } }
+  },
+  "sight": {
+    "seen": "#56B4E966",
+    "hidden": "#00000000",
+    "partly": "#56B4E933",
+    "ring": "#2B5C7A",
+    "fan": "#2B5C7A33",
+    "fire": { "clear": "#009E7366", "terrain": "#8C5A2B80", "object": "#33333380", "water": "#0072B266" }
+  },
+  "danger": {
+    "stops": [ { "at": 0, "color": "#FFFFFF00" }, { "at": 0.5, "color": "#E69F0080" }, { "at": 1, "color": "#B42A2ACC" } ]
+  },
+  "strong": {
+    "stops": [ { "at": 0, "color": "#FFFFFF00" }, { "at": 0.5, "color": "#CC79A766" }, { "at": 1, "color": "#6A2C5ACC" } ],
+    "symbol": "#3D1A34",
+    "labels": { "reverse": "#0072B2", "dead": "#7F7F7F", "high": "#D55E00", "uncont": "#E69F00", "first": "#009E73", "garrison": "#6A2C5A", "hull": "#3D1A34" }
+  },
+  "objects": {
+    "line": "#3A3A3A",
+    "fill": "#8A8A8A40",
+    "selected": "#D55E00",
+    "categories": {
+      "building": { "fill": "#C8B8A6", "line": "#5A4A3A" },
+      "building_part": { "fill": "#D8CCBE", "line": "#6A5A4A" },
+      "wall": { "fill": "#9C8A70", "line": "#4D3F2E" },
+      "fence": { "fill": "#B49E7C", "line": "#6A5A40" },
+      "emplacement": { "fill": "#A08F7A", "line": "#4D4033" },
+      "tree": { "fill": "#5E7F4A99", "line": "#2F4A24" },
+      "bush": { "fill": "#93B26B99", "line": "#4F6F3A" },
+      "rock": { "fill": "#9A968E", "line": "#4D4A45" },
+      "wreck": { "fill": "#7A6A5A", "line": "#3A3028" },
+      "bridge": { "fill": "#8A7A66", "line": "#45392C" },
+      "water_surface": { "fill": "#5FB7C966", "line": "#22697A" },
+      "ground_decal": { "fill": "#C8BC9266", "line": "#8A7E5A" },
+      "road_decal": { "fill": "#9C8A7066", "line": "#5A4A3A" },
+      "crater": { "fill": "#7E6A4E99", "line": "#45392A" },
+      "service": { "fill": "#CC79A7", "line": "#7A3D63" },
+      "placed_unit": { "fill": "#0072B2", "line": "#004B75" },
+      "other": { "fill": "#B0A890", "line": "#5A5448" }
+    }
+  },
+  "checks": { "mark": "#CC79A7", "ring": "#7A3D63", "halo": "#FFFFFFCC", "fine": "#009E73" },
+  "marks": {
+    "flagRing": "#1A1A1A",
+    "flagRingWidth": 2,
+    "spawnArrow": "#1A1A1A",
+    "measure": "#000000",
+    "measureCasing": "#FFFFFF",
+    "profile": "#000000",
+    "scaleBar": "#1A1A1A",
+    "northArrow": "#1A1A1A",
+    "halo": "#FFFFFFCC",
+    "cursor": "#000000"
+  },
+  "styles": {
+    "staff": {
+      "paper": "#F3EEDF",
+      "ink": "#2B2B2B",
+      "relief": { "light": "#FFFFFF", "dark": "#5A4A3A", "strength": 0.35 },
+      "tint": [ { "at": 0, "color": "#E8EFD8" }, { "at": 0.5, "color": "#EFE6C6" }, { "at": 1, "color": "#E6D3B3" } ],
+      "contour": "#8A6A4A",
+      "contourIndex": "#6A4A2A",
+      "water": "#A9D3E6",
+      "waterLine": "#3C7FA0",
+      "waterBands": ["#D4EAF2", "#A9D3E6", "#6FAFCB"],
+      "wood": "#B7D3A0",
+      "woodStamp": "#5E8A4A",
+      "building": "#C8B8A6",
+      "buildingLine": "#5A4A3A",
+      "road": "#B08A5A",
+      "roadCasing": "#5A4A3A",
+      "grain": 0.04
+    },
+    "painted": {
+      "landCover": {
+        "ground": "#B9A878", "road": "#8E7C62", "country_road": "#A58F6C", "sand": "#D9C68E", "grass": "#7FA05A",
+        "snow": "#EEF0F2", "rock": "#8F8B82", "mud": "#6E5C42", "wood": "#4F6F3A", "building": "#A08C78", "water": "#4F8FA6",
+        "other": "#A89E80"
+      },
+      "relief": { "light": "#FFF8E8", "dark": "#3A3226", "strength": 0.5 },
+      "posterize": 6,
+      "kuwahara": 8,
+      "canvas": "#EDE6D6",
+      "grain": 0.06
+    },
+    "recon": {
+      "ramp": [ { "at": 0, "color": "#1E1E1E" }, { "at": 1, "color": "#E6E6E6" } ],
+      "curve": [ [0, 0], [0.25, 0.18], [0.5, 0.5], [0.75, 0.82], [1, 1] ],
+      "grain": 0.08,
+      "vignette": 0.3,
+      "pencil": { "a": "#2F5FA8", "b": "#D2481E", "mark": "#C0392B", "width": 3 }
+    },
+    "field_sketch": {
+      "paper": "#D9D9D6",
+      "graphite": "#3A3A3A",
+      "light": "#7A7A7A",
+      "hachureFromClass": 1,
+      "roadSmudge": "#8C8C88",
+      "buildingFill": "#BDBDB8",
+      "buildingLine": "#2E2E2E",
+      "waterHatch": "#4A5A66",
+      "crest": "#555555",
+      "crestDash": [6, 3, 1, 3],
+      "tree": "#4C4C4C",
+      "thumbnail": { "pencil": "#B03A2E", "hachureFromClass": 3, "minStroke": 2 }
+    }
+  }
+}

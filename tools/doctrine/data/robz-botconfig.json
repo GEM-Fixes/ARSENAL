@@ -1,0 +1,808 @@
+{
+ "source": "Men of War doctrine pack SDK, 3-game/profiles/robz.yaml bot_config (values and notes from the RobZ godny bot.data.lua). Reference only.",
+ "count": 207,
+ "keys": {
+  "SplitTest": {
+   "v": "false",
+   "note": "TEST: at the start, buy the same 10-man squad with different split values and report how many groups arrive (result: max 2)"
+  },
+  "ArrivalTimeout": {
+   "v": "75",
+   "note": "an order whose soldiers haven't arrived after this long is treated as \"unit not found\" and skipped"
+  },
+  "Debug": {
+   "v": "true",
+   "note": "writes robz_bot.log next to game.log and posts a short status in chat"
+  },
+  "ReportPeriod": {
+   "v": "120",
+   "note": "seconds between chat status lines (Debug only)"
+  },
+  "ThinkPeriod": {
+   "v": "2",
+   "note": "how often the bot re-plans"
+  },
+  "RetargetMin": {
+   "v": "2",
+   "note": "a unit keeps a new order at least this long before it can be sent somewhere else"
+  },
+  "InfantrySplit": {
+   "v": "1",
+   "note": "max soldiers per bot group for infantry: 1 = every soldier gets his own orders"
+  },
+  "VehicleSplit": {
+   "v": "6",
+   "note": "vehicles keep vehicle + crew together (splitting the crew would pull them out of the vehicle)"
+  },
+  "LandGrabTime": {
+   "v": "200"
+  },
+  "GrabPerFlag": {
+   "v": "2",
+   "note": "holding flags"
+  },
+  "HoldFlags": {
+   "v": "false",
+   "note": "false: never send groups to flags our team already holds; everyone goes for neutral/enemy flags"
+  },
+  "StageAtOwnFlags": {
+   "v": "false",
+   "note": "true: attacks gather at the nearest held flag first (sends groups to held flags)"
+  },
+  "HoldMaxShare": {
+   "v": "0.45",
+   "note": "at most this share of groups sit on flags (threatened flags ignore the cap)"
+  },
+  "FrontRange": {
+   "v": "0.35",
+   "note": "a held flag is \"front\" if a flag we don't own is closer than this * base-to-base distance"
+  },
+  "MidRange": {
+   "v": "0.60",
+   "note": "attacking"
+  },
+  "GatherMax": {
+   "v": "90",
+   "note": "after this long an attack launches with LaunchShare of the strength it wants..."
+  },
+  "LaunchShare": {
+   "v": "0.8",
+   "note": "...(it used to go with half, and lost men piecemeal)"
+  },
+  "WaveTimeout": {
+   "v": "260",
+   "note": "an attack that has not taken its flag by then is called off"
+  },
+  "SwitchMargin": {
+   "v": "2.0",
+   "note": "how much better another target must look before the bot changes its main target"
+  },
+  "ReorderPeriod": {
+   "v": "150",
+   "note": "attackers get their order re-issued this often (unsticks them)"
+  },
+  "AltTriesPerSecond": {
+   "v": "4",
+   "note": "when the preferred unit can't be bought, try up to this many alternatives each second"
+  },
+  "SaveForVehicles": {
+   "v": "true",
+   "note": "hold money for a wanted vehicle or emplacement instead of buying more infantry"
+  },
+  "SaveMinGroups": {
+   "v": "40",
+   "note": "...once at least this many soldiers are on the field"
+  },
+  "SaveMaxTime": {
+   "v": "45",
+   "note": "...for up to this many seconds (was 90: no infantry for 1.5 min per tank)"
+  },
+  "SaveAltGap": {
+   "v": "25",
+   "note": "while saving, still buy one cheap infantry squad every 25 s"
+  },
+  "SaveAltMaxCost": {
+   "v": "220"
+  },
+  "SameUnitGap": {
+   "v": "{ light = 150, tank = 90, td = 90 }",
+   "note": "the same vehicle type isn't bought again for this long (5 BA-64s in a row): mix T-60/T-70/BT/T-26"
+  },
+  "EarlyPush": {
+   "v": "300",
+   "note": "first 5 min: light vehicles lead (no hanging back), lines assault sooner"
+  },
+  "EarlyAssaultRatio": {
+   "v": "0.7"
+  },
+  "EarlyLineMax": {
+   "v": "20",
+   "note": "infantry waits at most 20 s on the line before going in (later: LineMax)"
+  },
+  "EarlyMaxDefenders": {
+   "v": "2.5",
+   "note": "...even against a few defenders, to get a foothold"
+  },
+  "VehMinAT": {
+   "v": "{ light = 2700, tank = 900, td = 1100, heavy = 800 }",
+   "note": "planned spots stay this far from known enemy AT (light 135 m; tanks 45 m: out of panzerfaust/bazooka reach)"
+  },
+  "LightFleeDist": {
+   "v": "1800",
+   "note": "enemy AT within 90 m of a light vehicle: it pulls back..."
+  },
+  "LightFleeTo": {
+   "v": "2800",
+   "note": "...to 140 m away"
+  },
+  "LightFleeTime": {
+   "v": "10",
+   "note": "tanks / TDs: keep the hull toward the target (turn on the spot with the v11 DLL), close in when out of range"
+  },
+  "FaceTolTank": {
+   "v": "30",
+   "note": "degrees off before a tank turns"
+  },
+  "FaceTolTD": {
+   "v": "12",
+   "note": "tank destroyers have little gun traverse"
+  },
+  "FaceEvery": {
+   "v": "6"
+  },
+  "FaceWait": {
+   "v": "2",
+   "note": "while a hull turns, check again this often (no orders until it faces the target)"
+  },
+  "TurnMax": {
+   "v": "10",
+   "note": "give a hull turn this long before firing as it stands"
+  },
+  "TurnRetry": {
+   "v": "20",
+   "note": "...and no new turn at that target for this long"
+  },
+  "TankSoft": {
+   "v": "true",
+   "note": "tanks / TDs with no armour to fight attack enemy MGs, then visible infantry"
+  },
+  "TankSoftRange": {
+   "v": "2200",
+   "note": "110 m"
+  },
+  "TankSoftHold": {
+   "v": "12"
+  },
+  "TankAtSafe": {
+   "v": "900",
+   "note": "no drive up on an MG if enemy AT soldiers stand within 45 m of the stop"
+  },
+  "DangerDist": {
+   "v": "2600",
+   "note": "soldiers walk (advance) instead of sprinting within 130 m of a known enemy MG or vehicle"
+  },
+  "UseFirePos": {
+   "v": "true",
+   "note": "map intel: MGs / snipers / AT rifles dig in (and support attacks) at the map's firing positions"
+  },
+  "FlagValueWeight": {
+   "v": "1.5",
+   "note": "map intel: attack-target bonus for the most valuable flag (contested + defensible), scaled 0-100"
+  },
+  "LearnOpenTime": {
+   "v": "300",
+   "note": "replays: for the first 5 min, flags human players took first on this map get a bonus ..."
+  },
+  "LearnOpenWeight": {
+   "v": "2.5",
+   "note": "... this much for their first pick, less down their order"
+  },
+  "ApproachInside": {
+   "v": "200",
+   "note": "drive to 10 m inside max range"
+  },
+  "ApproachExtra": {
+   "v": "4000",
+   "note": "...for enemy armour up to 200 m beyond it"
+  },
+  "AtPoses": {
+   "v": "true"
+  },
+  "WreckIgnore": {
+   "v": "120"
+  },
+  "UnderFireHold": {
+   "v": "2400",
+   "note": "a soldier who sees an enemy within 120 m (or was hit in the last 15 s) gets no move longer than UnderFireMaxMove"
+  },
+  "UnderFireMaxMove": {
+   "v": "600",
+   "note": "30 m (they were sent across the map mid-firefight and shot running)"
+  },
+  "TankDirector": {
+   "v": "true",
+   "note": "tanks/TDs aim at enemy armour the director knows of (turning to face it), not only armour in sight"
+  },
+  "ProbeWait": {
+   "v": "4",
+   "note": "before the first purchase succeeds: try another unit after this long"
+  },
+  "BuyWaitBase": {
+   "v": "25",
+   "note": "after that: wait this long + cost * BuyWaitPerCost for money before giving up on a unit"
+  },
+  "BuyWaitPerCost": {
+   "v": "0.07"
+  },
+  "CooldownBase": {
+   "v": "90",
+   "note": "a unit that could not be bought is skipped for CooldownBase * failures (max CooldownMax)"
+  },
+  "CooldownMax": {
+   "v": "600",
+   "note": "robzbot.dll (per-unit control). Without the DLL the bot plays the old squad-to-flag way."
+  },
+  "UseRobzDll": {
+   "v": "true"
+  },
+  "DisbandSquads": {
+   "v": "true",
+   "note": "break every infantry squad up on arrival (like pressing K); vehicles keep their crew"
+  },
+  "Run": {
+   "v": "true",
+   "note": "run when the destination is far and no enemy is close"
+  },
+  "RunDist": {
+   "v": "400",
+   "note": "run only if the destination is farther than this (20 m). Replays: humans run ~56% of moves, the bot ran 11%"
+  },
+  "CalmDist": {
+   "v": "1000",
+   "note": "any enemy this close to the unit: walk (50 m)"
+  },
+  "CalmDestDist": {
+   "v": "600",
+   "note": "...or this close to where he is going (30 m)"
+  },
+  "CalmStop": {
+   "v": "700",
+   "note": "a running man stops running only when an enemy gets this close to him (35 m)"
+  },
+  "PoseGap": {
+   "v": "20",
+   "note": "seconds before the same soldier is given another stance order"
+  },
+  "PoseRiflemen": {
+   "v": "false",
+   "note": "false: only gunners (MG, AT rifle, sniper) are told to lie down; riflemen keep the game's own stance"
+  },
+  "Screen": {
+   "v": "true",
+   "note": "hold ground in front of our front-line flags instead of sitting on them"
+  },
+  "ScreenAt": {
+   "v": "0.35",
+   "note": "...this far from our flag toward the nearest flag we don't own"
+  },
+  "StageBack": {
+   "v": "700",
+   "note": "attacks gather this far short of the target flag, on the ground between flags (35 m)"
+  },
+  "MicroPeriod": {
+   "v": "2",
+   "note": "seconds between unit-level checks (combat reactions, anti-tank targeting)"
+  },
+  "AtRange": {
+   "v": "1400",
+   "note": "anti-tank infantry / guns engage visible enemy vehicles within this range (70 m)"
+  },
+  "TankRange": {
+   "v": "3000",
+   "note": "tanks engage visible enemy vehicles within this range (120 m; players fight armour at ~110 m)"
+  },
+  "TDRange": {
+   "v": "3400"
+  },
+  "HurtFaceRange": {
+   "v": "4500",
+   "note": "a tank/TD that is being hit attacks (turns to face) the nearest known enemy vehicle or gun within 225 m   -- tank destroyers out to 170 m (p"
+  },
+  "VehBack": {
+   "v": "{ light = 200, tank = 500, td = 800, heavy = 400 }",
+   "note": "2026-11-02: tanks closer to the front (were 1200/1200/900)   -- (tank was 1800, td 1400: they sat behind walls at the back)"
+  },
+  "VehClearShift": {
+   "v": "150",
+   "note": "a vehicle spot with no line of sight to the enemy (walls, houses) slides sideways in 7.5 m steps until it has one"
+  },
+  "VehClearSteps": {
+   "v": "6"
+  },
+  "VehMinInf": {
+   "v": "{ light = 900, tank = 1200, td = 1400, heavy = 1000 }",
+   "note": "(were 2000/1800/1500: tanks never reached enemy MGs)"
+  },
+  "VehMinArmor": {
+   "v": "{ light = 2400, tank = 1600, td = 2200, heavy = 1200 }",
+   "note": "and how close enemy vehicles may get"
+  },
+  "FullForce": {
+   "v": "1.5",
+   "note": "'an attack launched with this many times the strength it needs is \"full force\": vehicles drive in with it'"
+  },
+  "VehFollow": {
+   "v": "400",
+   "note": "a vehicle is re-sent when the front has moved its spot by more than 20 m"
+  },
+  "AttackSpread": {
+   "v": "0.8",
+   "note": "anti-tank: once enemy armour has been on the field this long with no AT gun / TD of ours, buy one (winners: ~3 min)"
+  },
+  "AtReact": {
+   "v": "10"
+  },
+  "AtHuntRange": {
+   "v": "2600",
+   "note": "AT soldiers go after any enemy vehicle within 130 m that the director knows about, seen or not"
+  },
+  "AtkHold": {
+   "v": "20",
+   "note": "a unit fighting a vehicle keeps at it (turning, firing) this long before the planner may move it"
+  },
+  "CrewCheck": {
+   "v": "true",
+   "note": "enemy vehicles with no crew inside (and no gun crew next to them) are dead/abandoned: ignored"
+  },
+  "CrewDist": {
+   "v": "250",
+   "note": "crew counted inside a vehicle within 12 m of it"
+  },
+  "GunCrewDist": {
+   "v": "200",
+   "note": "gun crew standing within 10 m of a gun"
+  },
+  "BuyAtGuns": {
+   "v": "false",
+   "note": "towed AT guns are not bought: AI-owned guns never move (every human gun moved, every AI gun stayed at spawn)"
+  },
+  "LightUntil": {
+   "v": "180",
+   "note": "no jeeps after 3 min"
+  },
+  "ProneAfter": {
+   "v": "2",
+   "note": "a vehicle that has killed PestKills of our men (died within PestRange of it) is hunted and countered, even a jeep"
+  },
+  "PestKills": {
+   "v": "3"
+  },
+  "PestRange": {
+   "v": "2400",
+   "note": "120 m"
+  },
+  "BuyEmplacements": {
+   "v": "false",
+   "note": "MG nests / mortars / light guns are not bought for now (they did not leave spawn)"
+  },
+  "LightWhenArmour": {
+   "v": "0.6",
+   "note": "once the enemy has vehicles, this share of the armoured-car budget goes to tanks and AT instead     -- seconds after enemy armour appears be"
+  },
+  "AtNeedMax": {
+   "v": "5",
+   "note": "anti-tank wanted: 1 + 2 per enemy armoured vehicle, capped (AT gun / TD = 2, AT soldier = 1)"
+  },
+  "AtCheapMax": {
+   "v": "350",
+   "note": "before TDAfter only AT guns up to this cost (light AT guns) - plus AT rifles / bazookas"
+  },
+  "WreckAfter": {
+   "v": "45",
+   "note": "a vehicle our AT has fired at this long..."
+  },
+  "WreckNoDamage": {
+   "v": "30",
+   "note": "...without losing health for this long is treated as a wreck for 5 minutes"
+  },
+  "TDAfter": {
+   "v": "600",
+   "note": "no tank destroyers before 10 min: early armour is answered with AT soldiers and AT guns (players' first TD ~17 min)"
+  },
+  "AtGunBackMax": {
+   "v": "4000",
+   "note": "AT guns sit at our held flag one step back from the front (players: ~100 m behind the line)"
+  },
+  "Combat": {
+   "v": "true"
+  },
+  "EngageDist": {
+   "v": "2000",
+   "note": "100 m (was 70 m: men under fire from 70-120 m kept walking)"
+  },
+  "CoverRadius": {
+   "v": "320",
+   "note": "cover is looked for within 16 m of the soldier (or of his spot when he arrives)"
+  },
+  "CoverCalls": {
+   "v": "6",
+   "note": "cover searches per check (they cost a little CPU)"
+  },
+  "EngageHold": {
+   "v": "10",
+   "note": "seconds an engaged soldier stays down before he may move again"
+  },
+  "Disengage": {
+   "v": "8",
+   "note": "no enemy in sight for this long: back to the plan"
+  },
+  "BoundStep": {
+   "v": "320",
+   "note": "fire and movement: an attacker that is winning his fight moves up this far (16 m), then goes down again"
+  },
+  "BoundEvery": {
+   "v": "10",
+   "note": "half the line moves while the other half fires, swapping every this many seconds"
+  },
+  "BoundRatio": {
+   "v": "1.0",
+   "note": "bound only when our soldiers near him are at least this many times the enemies he can see"
+  },
+  "LineGap": {
+   "v": "300",
+   "note": "the line forms this far outside the flag zone (15 m) while the flag is defended"
+  },
+  "LineSpacing": {
+   "v": "110",
+   "note": "5.5 m between soldiers on the line (winning humans ~5 m to the nearest friend; bot clumped)"
+  },
+  "LineMax": {
+   "v": "90",
+   "note": "seconds a line waits before it assaults the flag anyway (only if the defence is thin by then)"
+  },
+  "AssaultRatio": {
+   "v": "1.3",
+   "note": "...or as soon as the attackers outnumber the defenders this much (director)"
+  },
+  "CapRefill": {
+   "v": "20",
+   "note": "a capture team man killed: nobody new goes into that flag zone for 20 s (no pouring men in one by one)"
+  },
+  "CapWalkDist": {
+   "v": "2400",
+   "note": "capture team walks (doesn't sprint) into a zone with any enemy within 120 m of it"
+  },
+  "CaptureTeam": {
+   "v": "4",
+   "note": "(was 6: bot captures were 13-22 man blobs) replays: players take a flag with ~6 men inside 50 m (about 20 within 100 m a minute before)"
+  },
+  "DigBands": {
+   "v": "{ 300, 700 }",
+   "note": "replays: players dig in ~15 m behind a held flag and spread out to the sides (~50 m from the point)"
+  },
+  "DigSpacing": {
+   "v": "180",
+   "note": "9 m apart along the defensive line (players hold a ~150 m wide front)"
+  },
+  "DigClearShift": {
+   "v": "80",
+   "note": "a spot whose view of the flag is blocked by a building is moved sideways in 4 m steps"
+  },
+  "BuildSandbags": {
+   "v": "true",
+   "note": "soldiers who carry sandbags build a short wall in front of their spot, facing the enemy"
+  },
+  "BuildLen": {
+   "v": "90",
+   "note": "4.5 m of sandbags per wall"
+  },
+  "WallsPerSpot": {
+   "v": "2",
+   "note": "a builder puts up this many walls side by side at his spot (a proper line, not single bags)"
+  },
+  "BuildTime": {
+   "v": "75",
+   "note": "seconds a builder is left alone to finish (no new orders, no cover moves, no AT hunting)"
+  },
+  "SpotArrive": {
+   "v": "250",
+   "note": "a soldier within 12 m of his spot counts as there (builds sandbags, takes cover)"
+  },
+  "SpotCoverRadius": {
+   "v": "400",
+   "note": "defenders / line soldiers are sent to the best cover facing the enemy within 20 m of their spot (was 30 m: buildings across the street)"
+  },
+  "SandbagBonus": {
+   "v": "250",
+   "note": "sandbags are the preferred cover..."
+  },
+  "SandbagCrowd": {
+   "v": "3",
+   "note": "...until this many soldiers are already using that sandbag"
+  },
+  "Fortify": {
+   "v": "true",
+   "note": "any soldier carrying sandbags who stops somewhere puts up a wall facing the enemy"
+  },
+  "FortifyStill": {
+   "v": "12",
+   "note": "...after standing still this long (s)"
+  },
+  "FortifyStillMG": {
+   "v": "4",
+   "note": "machine gunners: almost as soon as they stop"
+  },
+  "FortifyEnemyMin": {
+   "v": "1300",
+   "note": "not with an enemy closer than 65 m (he'd stand up to build)"
+  },
+  "FortifyEnemyMinMG": {
+   "v": "900",
+   "note": "gunners: 45 m"
+  },
+  "FortifyGap": {
+   "v": "120",
+   "note": "not within 6 m of a wall we already built"
+  },
+  "FortifyHold": {
+   "v": "25",
+   "note": "seconds he is left alone to build"
+  },
+  "FortifyRetry": {
+   "v": "20"
+  },
+  "MGNests": {
+   "v": "true",
+   "note": "a gunner without sandbags gets a wall built in front of him by the nearest carrier"
+  },
+  "NestStill": {
+   "v": "6"
+  },
+  "NestHelpDist": {
+   "v": "700",
+   "note": "carrier within 35 m"
+  },
+  "NestHold": {
+   "v": "35"
+  },
+  "MGSandbagMult": {
+   "v": "2.5",
+   "note": "gunners prefer sandbags 2.5x more than riflemen do, one gun per sandbag wall"
+  },
+  "TeamZones": {
+   "v": "true"
+  },
+  "ZoneMargin": {
+   "v": "1000",
+   "note": "the frontage runs 50 m past the outermost flag / spawn / map point..."
+  },
+  "ZoneMarginShare": {
+   "v": "0.08",
+   "note": "...or 8% of its length, whichever is more"
+  },
+  "ZoneOutPenalty": {
+   "v": "4",
+   "note": "attack score lost by a flag outside our slice..."
+  },
+  "ZoneOutPerWidth": {
+   "v": "6",
+   "note": "...plus this per slice-width it lies outside"
+  },
+  "ZoneHelpReach": {
+   "v": "0.5",
+   "note": "attacks reach at most half a slice past our edge (helping the neighbour)"
+  },
+  "ZoneHelpShare": {
+   "v": "0.4",
+   "note": "a teammate's flag under attack: send this share of what we would send to our own"
+  },
+  "MGKeep": {
+   "v": "true"
+  },
+  "MGMin": {
+   "v": "1700",
+   "note": "an enemy closer than 85 m: the gunner falls back..."
+  },
+  "MGWant": {
+   "v": "2100",
+   "note": "...to about 105 m from it; he moves up when nothing is within this"
+  },
+  "MGMax": {
+   "v": "2700",
+   "note": "he engages out to 135 m"
+  },
+  "MGDigBack": {
+   "v": "700",
+   "note": "gunners dig in 35 m behind a contested flag"
+  },
+  "MGLineBack": {
+   "v": "250",
+   "note": "in an attack line the gunners stay 12 m behind the riflemen\t-- snipers and AT riflemen get the same treatment: they stay back and shoot from"
+  },
+  "SniperMin": {
+   "v": "1900",
+   "note": "95 m"
+  },
+  "SniperWant": {
+   "v": "2400",
+   "note": "120 m"
+  },
+  "SniperMax": {
+   "v": "3200",
+   "note": "160 m"
+  },
+  "ATRMin": {
+   "v": "1900",
+   "note": "95 m: AT riflemen fight at the rifle's max range, 100-115 m"
+  },
+  "ATRWant": {
+   "v": "2100",
+   "note": "105 m"
+  },
+  "ATRMax": {
+   "v": "2300",
+   "note": "115 m"
+  },
+  "ATRVehRange": {
+   "v": "2300",
+   "note": "AT riflemen fire at any visible enemy vehicle within 115 m before anything else"
+  },
+  "Grenades": {
+   "v": "false",
+   "note": "switched off for now (user request 2026-10-31); smoke is separate (Smoke)"
+  },
+  "GrenadeRange": {
+   "v": "750",
+   "note": "37 m"
+  },
+  "AtGrenadeRange": {
+   "v": "450",
+   "note": "22 m: anti-tank grenades at vehicles"
+  },
+  "GrenadeSafe": {
+   "v": "250",
+   "note": "not if one of our own men is within 12 m of the target"
+  },
+  "GrenadeGap": {
+   "v": "20",
+   "note": "seconds between two grenades from one soldier"
+  },
+  "EmplaceMax": {
+   "v": "4",
+   "note": "at most this many alive (or on order) at once"
+  },
+  "GunMove": {
+   "v": "true"
+  },
+  "AtGunBack": {
+   "v": "2000",
+   "note": "AT guns: 100 m behind the front (players ~118 m)"
+  },
+  "EmplaceBack": {
+   "v": "1200",
+   "note": "MG nests / light guns: 60 m behind the front (players ~64 m)"
+  },
+  "GunSpread": {
+   "v": "350",
+   "note": "17 m apart sideways"
+  },
+  "GunStuckTime": {
+   "v": "90",
+   "note": "a gun that has not moved 2 m this long after an order counts as stuck"
+  },
+  "VehStep": {
+   "v": "1500",
+   "note": "a vehicle is moved at most 75 m per order (players: ~55 m moves, the bot: 155 m)"
+  },
+  "Smoke": {
+   "v": "true"
+  },
+  "SmokeRange": {
+   "v": "900"
+  },
+  "SmokeCount": {
+   "v": "4",
+   "note": "smokes per flag at a time (different throwers): the front edge toward the enemy, both sides, the middle"
+  },
+  "SmokeMaxFrac": {
+   "v": "0.95",
+   "note": "each thrown by the man furthest from its spot who can still reach it (max range)"
+  },
+  "SmokeEvery": {
+   "v": "40",
+   "note": "seconds between smokes on the same flag"
+  },
+  "SmokeAttackEvery": {
+   "v": "25",
+   "note": "the flag our launched attack is going for gets smoke this often while our men close in"
+  },
+  "SingleGap": {
+   "v": "30",
+   "note": "seconds between any two one- or two-man purchases"
+  },
+  "SingleMen": {
+   "v": "2",
+   "note": "a purchase of this many men or fewer counts as a \"single\" buy"
+  },
+  "AltGap": {
+   "v": "15",
+   "note": "seconds between two \"buy something else instead\" purchases (bot bought 33 times per 10 min, humans ~11)"
+  },
+  "SingleSameGap": {
+   "v": "90",
+   "note": "seconds before the same one-man unit is bought again"
+  },
+  "SingleShare": {
+   "v": "0.25",
+   "note": "one-man purchases at most this share of our soldiers (at least 3 allowed)"
+  },
+  "SingleGuessCost": {
+   "v": "60",
+   "note": "before we have seen it arrive, a non-vehicle unit this cheap is assumed to be one man"
+  },
+  "BackShare": {
+   "v": "0.42"
+  },
+  "MidHoldMin": {
+   "v": "2",
+   "note": "strength kept on each middle flag we hold (1 = four soldiers): the capture team + men dug in around it"
+  },
+  "BuyLead": {
+   "v": "30",
+   "note": "a unit still on cooldown is only planned for when it comes out within this many seconds"
+  },
+  "Director": {
+   "v": "true"
+  },
+  "DirNear": {
+   "v": "500",
+   "note": "enemies within the flag zone + this count as defending / attacking that flag (25 m)"
+  },
+  "DirApproach": {
+   "v": "2000",
+   "note": "enemies within the flag zone + this count as moving on that flag (100 m)"
+  },
+  "DirAvoid": {
+   "v": "1.2",
+   "note": "attack-target score lost per point of enemy strength on the flag (go where they are weak)"
+  },
+  "DirAttackRatio": {
+   "v": "1.4",
+   "note": "an attack wants this many times the defenders' strength before it launches"
+  },
+  "DirDefendRatio": {
+   "v": "1.1",
+   "note": "a threatened flag of ours gets this many times the attackers' strength as holders"
+  },
+  "early": {
+   "v": "{ inf = 0.50, support = 0.10, atinf = 0.08, emplace = 0.04, light = 0.28 }",
+   "note": "(2026-11-01) aggressive opening: infantry + light tanks / armoured cars for a foothold                         -- first 5 min (players: AT m"
+  },
+  "mid": {
+   "v": "{ inf = 0.42, support = 0.10, atinf = 0.07, sniper = 0.02, emplace = 0.08, atgun = 0.04, light = 0.13, tank = 0.08, td = 0.03 }",
+   "note": "(2026-11-01) fewer tanks, keep buying infantry -- 5-15 min (first medium tank ~13 min)"
+  },
+  "late": {
+   "v": "{ inf = 0.40, support = 0.09, atinf = 0.06, sniper = 0.02, atgun = 0.05, emplace = 0.08, light = 0.11, tank = 0.10, td = 0.04, heavy = 0.02 }"
+  },
+  "antiTank": {
+   "v": "{ atinf = 0.07, td = 0.05, atgun = 0.03 }",
+   "note": "added when the enemy has tanks"
+  },
+  "BotStrength": {
+   "v": "{ inf = 1.0, support = 0.9, sniper = 0.5, atinf = 0.8, atgun = 0.7, emplace = 0.8, light = 1.5, tank = 2.5, td = 2.0, heavy = 3.5 }",
+   "note": "who should be left holding a flag (higher = better holder)"
+  },
+  "BotHoldPref": {
+   "v": "{ atgun = 6, emplace = 6, support = 5, sniper = 5, inf = 4, atinf = 3, light = 2, td = 2, tank = 1, heavy = 0 }",
+   "note": "split test: 10-man infantry squads per army (cheapest first); the test uses the first one the game lets it buy"
+  },
+  "SplitTestValues": {
+   "v": "{ 1, 2, 3, 5, 10 }",
+   "note": "each value is tried twice"
+  },
+  "comp": {
+   "v": "{ tank = 1.4, td = 0.45 }"
+  }
+ }
+}

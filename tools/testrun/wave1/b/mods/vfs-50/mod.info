@@ -1,0 +1,5 @@
+{mod
+ {Name "trs vfs-50"}
+ {MinGameVersion "3.301"}
+ {Require "as64+"}
+}

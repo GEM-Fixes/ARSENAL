@@ -1,0 +1,210 @@
+{
+ "form": "limclass/1",
+ "area": "KEY",
+ "rows": {
+  "KEY-01": {
+   "chk": "built",
+   "class": "silent",
+   "why": "loose .patch edits do nothing, no message"
+  },
+  "KEY-02": {
+   "chk": "built",
+   "class": "silent",
+   "why": "ERROR line logged; other blocks skip, no visible stop"
+  },
+  "KEY-03": {
+   "chk": "built",
+   "class": "silent",
+   "why": "no blast damage, no message"
+  },
+  "KEY-04": {
+   "chk": "built",
+   "class": "silent",
+   "why": "warning logged only; angle capped quietly"
+  },
+  "KEY-05": {
+   "chk": "never",
+   "class": "info",
+   "why": "engine field with no SDL key; nothing a modder can set",
+   "never": "engine internal, no key to check"
+  },
+  "KEY-06": {
+   "chk": "built",
+   "class": "silent",
+   "why": "ERROR line in log; bone speed misbehaves"
+  },
+  "KEY-07": {
+   "chk": "built",
+   "class": "silent",
+   "why": "block skipped, only a log line"
+  },
+  "KEY-08": {
+   "chk": "built",
+   "class": "silent",
+   "why": "extra collider ids unsupported, no message"
+  },
+  "KEY-09": {
+   "chk": "built",
+   "class": "silent",
+   "why": "keys apply to whole weapon, no message"
+  },
+  "KEY-10": {
+   "chk": "built",
+   "class": "silent",
+   "why": "wrong overmatch, no message"
+  },
+  "KEY-11": {
+   "chk": "built",
+   "class": "silent",
+   "why": "edit has no effect"
+  },
+  "KEY-12": {
+   "chk": "built",
+   "class": "silent",
+   "why": "reload edit has no effect under that key"
+  },
+  "KEY-13": {
+   "chk": "built",
+   "class": "silent",
+   "why": "ERROR logged; effect not applied"
+  },
+  "KEY-14": {
+   "chk": "built",
+   "class": "silent",
+   "why": "key ignored"
+  },
+  "KEY-15": {
+   "chk": "built",
+   "class": "silent",
+   "why": "error logged for bad gear order"
+  },
+  "KEY-16": {
+   "chk": "built",
+   "class": "silent",
+   "why": "per-volume thickness lost quietly"
+  },
+  "KEY-17": {
+   "chk": "built",
+   "class": "silent",
+   "why": "inherited blastwave layers lost quietly"
+  },
+  "KEY-18": {
+   "chk": "built",
+   "class": "silent",
+   "why": "larger values invalid, no message"
+  },
+  "KEY-19": {
+   "chk": "built",
+   "class": "silent",
+   "why": "clone loses push without notice"
+  },
+  "KEY-20": {
+   "chk": "built",
+   "class": "silent",
+   "why": "term never selects"
+  },
+  "KEY-21": {
+   "chk": "built",
+   "class": "silent",
+   "why": "warning, value ignored"
+  },
+  "KEY-22": {
+   "chk": "built",
+   "class": "silent",
+   "why": "warning/ERROR logged; default profile used"
+  },
+  "KEY-23": {
+   "chk": "built",
+   "class": "review",
+   "why": "patch delete may remove mod-shipped file; intent decides",
+   "tool": "milint",
+   "how": ".pat delete entries naming a file the same mod ships in resource/"
+  },
+  "KEY-24": {
+   "chk": "never",
+   "class": "desync",
+   "why": "compared file types differ between players in multiplayer",
+   "never": "needs other players files, runtime sync"
+  },
+  "KEY-25": {
+   "chk": "built",
+   "class": "silent",
+   "why": "curve keys dead for that weapon, no message"
+  },
+  "KEY-26": {
+   "chk": "never",
+   "class": "info",
+   "why": "meta note: reference source newer than shipped build",
+   "never": "meta claim, no code can decide"
+  },
+  "KEY-27": {
+   "chk": "built",
+   "class": "silent",
+   "why": "bare model ref fails to resolve when def moved"
+  },
+  "KEY-28": {
+   "chk": "built",
+   "class": "info",
+   "why": "accepted by design, any count of values"
+  },
+  "KEY-29": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unknown key vocab miss, warning only"
+  },
+  "KEY-30": {
+   "chk": "built",
+   "class": "silent",
+   "why": "ERROR logged when entity used; name missing"
+  },
+  "KEY-31": {
+   "chk": "built",
+   "class": "info",
+   "why": "live test results of KEY-27"
+  },
+  "KEY-32": {
+   "chk": "built",
+   "class": "info",
+   "why": "source trace of KEY-27"
+  },
+  "KEY-33": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unknown key in blow block fails load"
+  }
+ },
+ "dead": [
+  {
+   "row": "KEY-16",
+   "tool": "statsheet",
+   "code": "ARMOR_VOLUME_SHADOWED",
+   "fix": {
+    "code": "ARMOR_VOLUME_SHADOWED"
+   }
+  },
+  {
+   "row": "KEY-21",
+   "tool": "keylint",
+   "code": "WARN_PERK_LEVEL",
+   "fix": {
+    "code": "WARN_PERK_LEVEL"
+   }
+  },
+  {
+   "row": "KEY-29",
+   "tool": "keylint",
+   "code": "WARN_UNKNOWN_KEY",
+   "fix": {
+    "code": "WARN_UNKNOWN_KEY"
+   }
+  },
+  {
+   "row": "KEY-30",
+   "tool": "keylint",
+   "code": "WARN_PATHER_UNKNOWN",
+   "fix": {
+    "code": "WARN_PATHER_UNKNOWN"
+   }
+  }
+ ]
+}

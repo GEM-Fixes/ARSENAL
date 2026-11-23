@@ -1,0 +1,25 @@
+ARSENAL advanced: tools kept off the front door. Run them by name: ARSENAL <tool> --help
+
+  goh2as2        port a Gates of Hell unit to AS64 or MoW:AS2 (family: donorfit donorpick portfix artport helmetport as2togoh)
+  donorfit       check a donor .def against a model: bones, doors, crew seats
+  donorpick      pick the vanilla donor unit for a Gates of Hell unit
+  portfix        whole-mod repairs after a port replaced vanilla files
+  artport        Gates of Hell icons and portraits into a mod folder
+  helmetport     Gates of Hell helmets and headgear to AS64
+  as2togoh       the other way: an AS2 mod to a Gates of Hell copy
+  edrun          run a map through the editor (starts the editor)
+  prove          per-unit verdicts from live matches (starts the game)
+  lng            translation table: extract a .tsv, merge it back
+  botrecipe      patched copy of a mod's bot.lua with the known bot fixes
+  release-check  after a game update: new baseline and what it breaks
+  patch-entity   change one value in a unit or set file
+  clone-entity   copy a unit under a new name
+  place-entity   place an entity on a map
+  vfs            show which file wins across game, paks and mods
+  modswitch      set which mods the game loads
+  conflicts      files two mods both change
+  statsheet      unit stats as a table
+  linters        check runs these; one at a time: modinfo refcheck sdllint keylint lnglint milint uilint ialint strlint movlint fxlint humlint
+  workflow       game (where is the game; --kind goh) | probe | e2e <mod> --map m | dev-loop <mod> --map m   (--target as64|mowas2|goh)
+
+every tool, with usage: ARSENAL --all

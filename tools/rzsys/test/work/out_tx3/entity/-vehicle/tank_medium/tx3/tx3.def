@@ -1,0 +1,4 @@
+{game_entity
+(include "/properties/tank.ext")
+{props "medium" "turret_rotator"}
+}

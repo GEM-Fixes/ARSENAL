@@ -1,0 +1,38 @@
+{
+  "name": "mov-33",
+  "rows": [
+    "MOV-33"
+  ],
+  "src": [
+    "(not part of this release)",
+    " (plain global)",
+    " (atom not found)"
+  ],
+  "note": "Pass: dbg_pathSearchLimit reads 60, g_unitsPerMeter is refused as no var. [T] the exact error path for an unknown name, so the second match accepts the quoted name only after ERR.",
+  "steps": [
+    {
+      "wait": 1
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "dbg_pathSearchLimit",
+      "match": "^dbg_pathSearchLimit = 60\\b",
+      "want": true
+    },
+    {
+      "reply": "g_unitsPerMeter",
+      "match": "^ERR .*g_unitsPerMeter",
+      "want": true
+    }
+  ],
+  "mode": "menu",
+  "mods": [
+    "as64+"
+  ],
+  "params": {}
+}

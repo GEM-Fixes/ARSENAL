@@ -1,0 +1,44 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Mini Atlas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500&display=swap">
+<style>
+:root { --bg: #eef0e8; }
+body { background: var(--bg); }
+</style>
+
+<main>
+<header style="display:grid;gap:10px">
+  <p class="path">Fixture</p>
+  <h1>Mini Atlas</h1>
+  <p class="lede">A small page in the shape of the doctrine atlas.</p>
+  <div class="legend"><span><i style="border-color:var(--own)"></i>own, movement</span><span><i style="border-color:var(--enemy);border-top-style:dashed"></i>enemy, fire</span></div>
+</header>
+<section><h2>Layers</h2><p>Each level.</p><div class="layers"><div class="layer"><div class="layer-fig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" role="img" aria-label="g-one"><title>g-one</title><defs><marker id="g-one-move" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="g-move-head"/></marker></defs><rect x="64" y="208" width="672" height="224" rx="6" class="g-zone-ground"/><rect x="288" y="296" width="224" height="128" rx="6" class="g-zone-cover"/><text x="400" y="321" class="g-zone-label" text-anchor="middle">cover</text><line x1="480" y1="376" x2="688" y2="376" class="g-move" marker-end="url(#g-one-move)"/><text x="600" y="364" class="g-note" text-anchor="middle">way out</text><rect x="313" y="31" width="172" height="50" rx="3" class="g-enemy"/><text x="400" y="64" class="g-unit-label g-enemy-text" text-anchor="middle">target</text><rect x="324" y="343" width="151" height="50" rx="3" class="g-own"/><text x="400" y="376" class="g-unit-label g-own-text" text-anchor="middle">rifleman</text></svg>
+</div><div><h3>Squad</h3><p>One squad.</p></div></div></div></section>
+<section><h2>Compartments</h2><p>Stop at the summary, or open a card.</p>
+<div class="filters"><div class="fgroup" role="group" aria-label="echelon"><span class="flabel">echelon</span><button class="f on" data-k="echelon" data-v="">All</button><button class="f" data-k="echelon" data-v="company">company</button><button class="f" data-k="echelon" data-v="squad">squad</button></div></div><p id="none" class="meta" hidden>No compartment matches. Clear a filter.</p><div class="cells"><article class="cell" data-echelon="company" data-branch="infantry" data-phase="attack" data-nation="US">
+<div class="cell-top"><div class="cell-text"><p class="path">company / infantry / attack</p><h3>Card 1</h3><p class="kw"><span class="chip ">cover</span></p><p>Summary of card 1.</p><p class="nat"><span class="chip nat-chip">US</span></p></div>
+<div class="fig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" role="img" aria-label="f-1"><title>f-1</title><defs><marker id="f-1-move" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="g-move-head"/></marker></defs><rect x="64" y="208" width="672" height="224" rx="6" class="g-zone-ground"/><rect x="288" y="296" width="224" height="128" rx="6" class="g-zone-cover"/><text x="400" y="321" class="g-zone-label" text-anchor="middle">cover</text><line x1="480" y1="376" x2="688" y2="376" class="g-move" marker-end="url(#f-1-move)"/><text x="600" y="364" class="g-note" text-anchor="middle">way out</text><rect x="313" y="31" width="172" height="50" rx="3" class="g-enemy"/><text x="400" y="64" class="g-unit-label g-enemy-text" text-anchor="middle">target</text><rect x="324" y="343" width="151" height="50" rx="3" class="g-own"/><text x="400" y="376" class="g-unit-label g-own-text" text-anchor="middle">rifleman</text></svg>
+</div></div>
+<details><summary>How it works, with numbers</summary><div class="l2"><p>Method line. <span class="refs">c-X-0001</span></p><p class="gaps"><b>Gaps:</b> none.</p></div></details>
+<details><summary>Evidence: 1 claims</summary><ol class="l3"><li id="c-X-0001"><b>c-X-0001</b> <span class="tag">US / own</span> A claim. <span class="num">300 yd</span><br><small>FM 0-0 Fixture, p. 1</small></li></ol></details></article><article class="cell" data-echelon="squad" data-branch="infantry" data-phase="defense" data-nation="US">
+<div class="cell-top"><div class="cell-text"><p class="path">squad / infantry / defense</p><h3>Card 2</h3><p class="kw"><span class="chip ">cover</span></p><p>Summary of card 2.</p><p class="nat"><span class="chip nat-chip">US</span></p></div>
+<div class="fig"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" role="img" aria-label="f-2"><title>f-2</title><defs><marker id="f-2-move" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="g-move-head"/></marker></defs><rect x="64" y="208" width="672" height="224" rx="6" class="g-zone-ground"/><rect x="288" y="296" width="224" height="128" rx="6" class="g-zone-cover"/><text x="400" y="321" class="g-zone-label" text-anchor="middle">cover</text><line x1="480" y1="376" x2="688" y2="376" class="g-move" marker-end="url(#f-2-move)"/><text x="600" y="364" class="g-note" text-anchor="middle">way out</text><rect x="313" y="31" width="172" height="50" rx="3" class="g-enemy"/><text x="400" y="64" class="g-unit-label g-enemy-text" text-anchor="middle">target</text><rect x="324" y="343" width="151" height="50" rx="3" class="g-own"/><text x="400" y="376" class="g-unit-label g-own-text" text-anchor="middle">rifleman</text></svg>
+</div></div>
+<details><summary>How it works, with numbers</summary><div class="l2"><p>Method line. <span class="refs">c-X-0001</span></p><p class="gaps"><b>Gaps:</b> none.</p></div></details>
+<details><summary>Evidence: 1 claims</summary><ol class="l3"><li id="c-X-0002"><b>c-X-0002</b> <span class="tag">US / own</span> A claim. <span class="num">300 yd</span><br><small>FM 0-0 Fixture, p. 1</small></li></ol></details></article></div></section>
+<section><h2>In the game: rules</h2><p>Rules name roles. A fit tag says how far the game can express it: <span class="fit fit-direct">direct</span> <span class="fit fit-proxy">proxy</span> <span class="fit fit-engine">engine</span> <span class="fit fit-out">out</span>.</p><div class="rules"><article class="rule"><p class="path">force policy</p><h3>A rule</h3><p><b>When</b> Always</p><ul><li>Do it.</li></ul><p class="why">Because.</p><p class="fits"><span class="fitpair">shape <span class="fit fit-engine">engine</span></span></p></article></div></section>
+<section><h2>How solid this is</h2>
+<div class="tablewrap"><table><thead><tr><th>Compartment</th><th>Claims</th></tr></thead><tbody><tr><th>company.infantry.attack</th><td>1</td></tr><tr><th>squad.infantry.defense</th><td>1</td></tr></tbody></table></div>
+<p>Schema 1: 1 rules.</p></section>
+</main>
+<script>
+const state = { echelon: '' };
+const cells = [...document.querySelectorAll('.cell')];
+document.querySelectorAll('.f').forEach(b => b.addEventListener('click', () => {
+  state[b.dataset.k] = b.dataset.v;
+  let shown = 0;
+  for (const c of cells) { const ok = Object.entries(state).every(([k, v]) => !v || c.dataset[k] === v); c.hidden = !ok; if (ok) shown++; }
+  document.getElementById('none').hidden = shown > 0;
+}));
+</script>

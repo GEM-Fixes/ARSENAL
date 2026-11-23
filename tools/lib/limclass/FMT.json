@@ -1,0 +1,131 @@
+{
+ "form": "limclass/1",
+ "area": "FMT",
+ "rows": {
+  "FMT-01": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unknown chunk tag aborts load"
+  },
+  "FMT-02": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unsupported DDS format load error"
+  },
+  "FMT-03": {
+   "chk": "built",
+   "class": "crash",
+   "why": "missing mtl crashes when mesh loads"
+  },
+  "FMT-04": {
+   "chk": "built",
+   "class": "silent",
+   "why": "stray tga replaces dds without message"
+  },
+  "FMT-05": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unexpected token on plain bone"
+  },
+  "FMT-06": {
+   "chk": "built",
+   "class": "crash",
+   "why": "bad VOL tag load error"
+  },
+  "FMT-07": {
+   "chk": "built",
+   "class": "silent",
+   "why": "volume dropped, armor lost, no error"
+  },
+  "FMT-08": {
+   "chk": "built",
+   "class": "crash",
+   "why": "bone count/version error at load"
+  },
+  "FMT-09": {
+   "chk": "built",
+   "class": "silent",
+   "why": "track skipped, no animation, no error"
+  },
+  "FMT-10": {
+   "chk": "built",
+   "class": "silent",
+   "why": "over-limit data corrupt or ignored"
+  },
+  "FMT-11": {
+   "chk": "never",
+   "class": "silent",
+   "why": "stride mismatch effect undecided by code",
+   "never": "stride not derivable from fvf; vanilla varies"
+  },
+  "FMT-12": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "obsolete message, basis auto-fixed"
+  },
+  "FMT-13": {
+   "chk": "built",
+   "class": "crash",
+   "why": "bad magic: resource object not created"
+  },
+  "FMT-14": {
+   "chk": "built",
+   "class": "silent",
+   "why": "non-wav sound ignored, no sound"
+  },
+  "FMT-15": {
+   "chk": "built",
+   "class": "silent",
+   "why": "oversize map unrepresentable, no message"
+  },
+  "FMT-16": {
+   "chk": "built",
+   "class": "silent",
+   "why": "inline material logs nothing",
+   "tool": "binhdr",
+   "how": "parse inline material block; check texture strings resolve to files"
+  },
+  "FMT-17": {
+   "chk": "built",
+   "class": "crash",
+   "why": "bad SDL signature fatal"
+  },
+  "FMT-18": {
+   "chk": "built",
+   "class": "review",
+   "why": "exporter limit; engine effect unknown"
+  },
+  "FMT-19": {
+   "chk": "built",
+   "class": "silent",
+   "why": "duplicate bone: first wins, no message"
+  },
+  "FMT-20": {
+   "chk": "built",
+   "class": "review",
+   "why": "exporter error; vanilla ships violations"
+  },
+  "FMT-21": {
+   "chk": "never",
+   "class": "info",
+   "why": "3ds Max exporter concepts, not engine",
+   "never": "3ds Max exporter concepts, not in mod files"
+  },
+  "FMT-22": {
+   "chk": "built",
+   "class": "silent",
+   "why": "wrong-folder ref fails to load quietly"
+  },
+  "FMT-23": {
+   "chk": "built",
+   "class": "review",
+   "why": "overflow effect untested, per-submesh cap"
+  },
+  "FMT-24": {
+   "chk": "built",
+   "class": "crash",
+   "why": "BeginFrame rejects index outside FRMS count"
+  }
+ },
+ "dead": []
+}

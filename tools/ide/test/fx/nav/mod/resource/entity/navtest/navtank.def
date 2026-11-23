@@ -1,0 +1,5 @@
+; nav fixture: a mod entity that names a vanilla entity
+{game_entity
+	(include "/properties/vehicle.ext")
+	{entity "large_cartridge"}
+}

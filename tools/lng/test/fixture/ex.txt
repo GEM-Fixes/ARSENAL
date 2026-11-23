@@ -1,0 +1,3 @@
+localization/#my.lng:3: LNG_DUP_KEY "hello" repeats; later wins in game, rows pair by order on merge
+localization/bad.lng: LNG_ENC invalid UTF-8 at line 1 (LOC-05)
+2 findings

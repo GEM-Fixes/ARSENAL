@@ -1,0 +1,360 @@
+{
+ "form": "verdict/1",
+ "mod": "mod",
+ "units": [
+  {
+   "unit": "pv_box",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": null,
+    "n": null,
+    "first": [],
+    "why": "part file unreadable: absent.json"
+   },
+   "scale": {
+    "ok": false,
+    "why": "L 260 above peers 100..180"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": false,
+   "native": false
+  },
+  {
+   "unit": "pv_clean",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": null,
+    "n": null,
+    "first": [],
+    "why": "part file unreadable: absent.json"
+   },
+   "scale": {
+    "ok": true,
+    "why": ""
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": false,
+   "native": false
+  },
+  {
+   "unit": "pv_gaps",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": null,
+    "n": null,
+    "first": [],
+    "why": "part file unreadable: absent.json"
+   },
+   "scale": {
+    "ok": null,
+    "why": "unit not in unitbox output"
+   },
+   "gaps": {
+    "hand": 1,
+    "unexplained": 2
+   },
+   "bar": false,
+   "native": false
+  },
+  {
+   "unit": "pv_inc",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": null,
+    "n": null,
+    "first": [],
+    "why": "part file unreadable: absent.json"
+   },
+   "scale": {
+    "ok": null,
+    "why": "unit not in unitbox output"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": false,
+   "native": false
+  },
+  {
+   "unit": "pv_keys",
+   "class": "tank_medium",
+   "keys": {
+    "ok": false,
+    "missing": [
+     "entity/volume/thickness/front"
+    ],
+    "extra": [
+     "entity/extender:smokescreen/cooldown"
+    ]
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": null,
+    "n": null,
+    "first": [],
+    "why": "part file unreadable: absent.json"
+   },
+   "scale": {
+    "ok": null,
+    "why": "unit not in unitbox output"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": false,
+   "native": false
+  },
+  {
+   "unit": "pv_path",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": null,
+    "n": null,
+    "first": [],
+    "why": "part file unreadable: absent.json"
+   },
+   "scale": {
+    "ok": null,
+    "why": "unit not in unitbox output"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": false,
+   "native": false
+  },
+  {
+   "unit": "pv_syn",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": false,
+    "n": 1
+   },
+   "refs": {
+    "ok": null,
+    "n": null,
+    "first": [],
+    "why": "part file unreadable: absent.json"
+   },
+   "scale": {
+    "ok": null,
+    "why": "unit not in unitbox output"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": false,
+   "native": false
+  },
+  {
+   "unit": "pv_txt",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": null,
+    "n": null,
+    "first": [],
+    "why": "part file unreadable: absent.json"
+   },
+   "scale": {
+    "ok": null,
+    "why": "model in text-only.tsv"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": false,
+   "native": false
+  },
+  {
+   "unit": "pv_vals",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": false,
+    "out": [
+     {
+      "key": "speed",
+      "value": 80,
+      "min": 18,
+      "max": 72
+     }
+    ]
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": null,
+    "n": null,
+    "first": [],
+    "why": "part file unreadable: absent.json"
+   },
+   "scale": {
+    "ok": null,
+    "why": "unit not in unitbox output"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": false,
+   "native": false
+  },
+  {
+   "unit": "pv_weap",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": null,
+    "n": null,
+    "first": [],
+    "why": "part file unreadable: absent.json"
+   },
+   "scale": {
+    "ok": null,
+    "why": "unit not in unitbox output"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": false,
+   "native": false
+  }
+ ],
+ "counts": {
+  "units": 10,
+  "bar": 0,
+  "native": 0,
+  "byPart": {
+   "keys": 1,
+   "values": 1,
+   "syntax": 1,
+   "refs": 0,
+   "scale": 1,
+   "gaps": 1
+  }
+ }
+}

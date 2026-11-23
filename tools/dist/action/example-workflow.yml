@@ -1,0 +1,19 @@
+# .github/workflows/lint.yml in a mod repo. Replace OWNER/REPO@ref with the repo hosting this action.
+name: lint-mod
+on: [push, pull_request]
+permissions:
+  contents: read
+  security-events: write   # needed by upload-sarif
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: OWNER/REPO/tools/dist/action@main
+        with:
+          path: mymod
+          tools: sdllint keylint
+          fail-on: error

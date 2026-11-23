@@ -1,0 +1,7 @@
+; file:line CODE -- real vanilla defects (shown as info). a_hause_109c_5_x places itself via a bone its mdl lacks
+resource/entity/construction/fence/x/a_hause_109c_5_x/a_hause_109c_5_x.def:5 STR_PLACE_BONE
+resource/entity/construction/fence/x/a_hause_109c_5_x/a_hause_109c_5_x.def:6 STR_PLACE_BONE
+resource/entity/construction/fence/x/a_hause_109c_5_x/a_hause_109c_5_x.def:7 STR_PLACE_BONE
+resource/entity/construction/fence/x/a_hause_109c_5_x/a_hause_109c_5_x.def:8 STR_PLACE_BONE
+resource/entity/construction/fence/x/a_hause_109c_5_x/a_hause_109c_5_x.def:9 STR_PLACE_BONE
+resource/entity/construction/fence/x/a_hause_1608_x/a_hause_1608_x.def:4 STR_PLACE_BONE

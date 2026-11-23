@@ -1,0 +1,76 @@
+{
+  "name": "mis-25",
+  "draft": true,
+  "rows": [
+    "MIS-25"
+  ],
+  "mode": "menu",
+  "fixture": [
+    "mis-25"
+  ],
+  "mods": [
+    "as64+",
+    "mis-25"
+  ],
+  "params": {
+    "map": "multi/1v1_road:combat",
+    "botSlot": "2"
+  },
+  "src": [
+    "resource gamelogic.pak script/multiplayer/bot.data.lua:2, bot.lua:202-216 (the only use: SetQuantTimer delay)",
+    " (SetQuantTimer)",
+    "TST-03 (combat.set {enableBots} gives a bot slot)"
+  ],
+  "note": "OrderRotationPeriod is no engine string: only stock bot.data.lua sets it and stock bot.lua passes it to SetQuantTimer. Fixture sets it to 5000 and repeats that timer in a probe bot.lua. Pass on as64: the mod's value reaches the script, the timer repeats at about 5 s of wall clock (dt window 3-9 s for a loaded machine), and a 600 s timer has not fired, so the delay is honoured in ms. Does NOT settle retail 3.262 unless the queue also runs it on mowas_2.exe [T]. [T] slot id 2 (override --param botSlot=N). [T] quant timers count game time, so a slowed game can leave the dt window: re-run alone before calling it false.",
+  "steps": [
+    {
+      "cmd": "mp_lan"
+    },
+    {
+      "wait_stage": true
+    },
+    {
+      "cmd": "mp_host {map} 2"
+    },
+    {
+      "wait_stage": true
+    },
+    {
+      "cmd": "mp_slots"
+    },
+    {
+      "cmd": "mp_slot {botSlot} normal"
+    },
+    {
+      "cmd": "mp_ready"
+    },
+    {
+      "cmd": "mp_start"
+    },
+    {
+      "wait": "loaded",
+      "timeout": 300
+    },
+    {
+      "wait": 60
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "log": "TRS25 start period=5000",
+      "want": true
+    },
+    {
+      "log": "TRS25 tick=3 dt=[3-9]\\.\\d",
+      "want": true
+    },
+    {
+      "log": "TRS25 late fired",
+      "want": false
+    }
+  ]
+}

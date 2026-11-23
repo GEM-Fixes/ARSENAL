@@ -1,0 +1,36 @@
+{colliders
+ {"nothing" {colliderId "c01"}}
+ {"c1" {colliderId "c02"}}
+ {"c2" {colliderId "c03"}}
+ {"c3" {colliderId "c04"}}
+ {"c4" {colliderId "c05"}}
+ {"c5" {colliderId "c06"}}
+ {"c6" {colliderId "c07"}}
+ {"c7" {colliderId "c08"}}
+ {"c8" {colliderId "c09"}}
+ {"c9" {colliderId "c10"}}
+ {"c10" {colliderId "c11"}}
+ {"c11" {colliderId "c12"}}
+ {"c12" {colliderId "c13"}}
+ {"c13" {colliderId "c14"}}
+ {"c14" {colliderId "c15"}}
+ {"c15" {colliderId "c16"}}
+ {"c16" {colliderId "c17"}}
+ {"c17" {colliderId "c18"}}
+ {"c18" {colliderId "c19"}}
+ {"c19" {colliderId "c20"}}
+ {"c20" {colliderId "c21"}}
+ {"c21" {colliderId "c22"}}
+ {"c22" {colliderId "c23"}}
+ {"c23" {colliderId "c24"}}
+ {"c24" {colliderId "c25"}}
+ {"c25" {colliderId "c26"}}
+ {"c26" {colliderId "c27"}}
+ {"c27" {colliderId "c28"}}
+ {"c28" {colliderId "c29"}}
+ {"c29" {colliderId "c30"}}
+ {"c30" {colliderId "c31"}}
+ {"c31" {colliderId "c32"}}
+ {"c32" {colliderId "c33"}}
+ {"c33" {colliderId "c32 c01"}}
+}

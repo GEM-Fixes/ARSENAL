@@ -1,0 +1,30 @@
+{map
+	{Land
+		{Position 0 0}
+	}
+	{Clips
+		{"[auto]"
+			{world -1000 -1000 1000 1000}
+			{camera -900 -900 900 900}
+			{pather -900 -900 900 900}
+			{distance 200 800}
+			{viewAngle 20 50}
+		}
+	}
+	{Entity "tree1" 0x2
+		{Position 10 10}
+	}
+	{Entity "tree1" 0x10
+		{Position 20 10}
+		{xform zl 5}
+	}
+	{Entity "hut1" 0x12
+		{Position 100 200}
+		{xform zl 90}
+	}
+	{Entity "hut1" 0x13
+		{Position -5.5 7 3.25}
+		{xform scale 1.5}
+	}
+	{Link 0x2 {0x10 "1"}}
+}

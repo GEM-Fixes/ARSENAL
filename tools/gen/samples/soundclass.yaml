@@ -1,0 +1,11 @@
+# A new loudness row "shoot far" in sound.set: full volume to 60 m, silent from 400 m. A sound folder uses it with loudness: shoot far.
+# Edit name, min, max (m) and priority; the mod holds the whole sound.set (every vanilla row kept, 'default' kept).
+# gen soundclass.yaml --target as64 --game <AS2 dir> --out <mods dir>/my_loud --no-stat   (add --plan first)
+name: my_loud
+title: My Loudness
+ops:
+  - op: soundclass
+    name: shoot far
+    min: 60
+    max: 400
+    priority: 5

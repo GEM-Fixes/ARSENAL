@@ -1,0 +1,5 @@
+{visions
+	{"vis_a" {radius 5}}
+	{"vis_b" {radius 6}}
+	{"vis_a" {radius 7}} ;@VISION_DUP
+}

@@ -1,0 +1,5 @@
+{game_entity
+	{patherId "vehicle.small"}
+	{mass 30000}
+	(include "pv_syn.ext")
+}

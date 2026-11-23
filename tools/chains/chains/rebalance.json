@@ -1,0 +1,15 @@
+{
+  "name": "rebalance",
+  "desc": "QUICKSTART 2: sheet before, patch a number, overdiff/conflicts/mpsync, sheet after, mp-load scenario",
+  "steps": [
+    { "tool": "newmod", "argv": ["$MOD", "--name", "E2E Rebalance", "--game", "$GAME", "$TARGETOPT"] },
+    { "tool": "statsheet", "argv": ["$GAME", "--sheet", "weapons", "-o", "$MOD/sheet_before.md", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "patch-entity", "argv": ["$MOD", "--game", "$GAME", "--file", "set/stuff/rifle/g43", "--set", "from/healthDamage=200", "$EXEOPT"] },
+    { "tool": "overdiff", "argv": ["$MOD", "--game", "$GAME", "--summary", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "conflicts", "argv": ["--game", "$GAME", "--mods", "$MODNAME", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "statsheet", "argv": ["$GAME", "--mods", "$MODNAME", "--sheet", "weapons", "-o", "$MOD/sheet_after.md", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "build", "argv": ["$MOD", "--game", "$GAME", "$EXEOPT"], "exit": [0, 1], "match": "\\S" },
+    { "tool": "mpsync", "argv": ["--mod", "$MOD", "--game", "$GAME", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "testrun", "argv": ["--scenario", "tools/testrun/scenarios/mp-load.json", "--exe", "$GAME/$EXEFILE", "--mods", "$MODNAME"], "match": "VERDICT PASS", "reject": "VERDICT FAIL" }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "VOL-01": {
+    "state": "done",
+    "where": "tools/lib/model/edit/vol.js:391 vol.add; vol.client.js:77 add row (bone picked)",
+    "test": "edit-vol: add box / cylinder / sphere / polyhedron",
+    "note": "Default name volume<N> as in SOEdit; also sphere, polyhedron from a .vol or new bytes, and vol.addFromMesh (box, cylinder, sphere, convex hull of the bone mesh) at vol.js:416. Extras beyond SOEdit: vol.setThickness (vol.js:567): whole value and per side in engine order front, top, left, right, rear, bottom; null removes; vol.setProps (vol.js:575): tags, component, density, material; vol.addFromMesh hull: convex hull of the bone mesh written as a new .vol with sides from the outward normals."
+  },
+  "VOL-02": {
+    "state": "done",
+    "where": "tools/lib/model/edit/vol.js:391 vol.add; vol.client.js:77",
+    "test": "edit-vol: add box / cylinder / sphere / polyhedron",
+    "note": "Same op as VOL-01: the bone list in the add row stands in for the top menu."
+  },
+  "VOL-03": {
+    "state": "done",
+    "where": "tools/lib/model/edit/vol.js:446 vol.delete; vol.client.js:178 two-click delete",
+    "test": "edit-vol: delete, rename, duplicate, bone link",
+    "note": "Option dropFile also removes a .vol no other volume uses."
+  },
+  "VOL-04": {
+    "state": "done",
+    "where": "tools/lib/model/edit/vol.js:744 state vol.get; vol.client.js:107 drawForm",
+    "test": "vol.test.js selection both ways",
+    "note": "Form shows sizes in units and metres, thickness in mm per side, tags, component, matrix, world placement, .vol details."
+  },
+  "VOL-05": {
+    "state": "done",
+    "where": "tools/lib/model/edit/vol.js:454 vol.rename",
+    "test": "edit-vol: delete, rename, duplicate, bone link",
+    "note": "Refuses a name in use, quotes and non-ASCII. vol.duplicate at vol.js:462 is extra."
+  },
+  "VOL-06": {
+    "state": "done",
+    "where": "tools/lib/model/edit/vol.js:477 vol.setBone; vol.client.js:116",
+    "test": "edit-vol: delete, rename, duplicate, bone link",
+    "note": "Refuses a bone whose name is shared with an earlier bone (the engine would take the first)."
+  },
+  "VOL-07": {
+    "state": "done",
+    "where": "tools/lib/model/edit/vol.js:503 vol.setMatrix, 504 vol.setPosition, 508 vol.setOrientation",
+    "test": "edit-vol: shape, matrix, position, orientation, transform, round",
+    "note": "Orientation as 9 numbers or angles in SOEdit order; a flat orientation is refused."
+  },
+  "VOL-08": {
+    "state": "done",
+    "where": "tools/lib/model/edit/vol.js:533 vol.round; vol.client.js:151",
+    "test": "edit-vol: shape, matrix, position, orientation, transform, round",
+    "note": ""
+  },
+  "VOL-09": {
+    "state": "done",
+    "where": "tools/lib/model/edit/vol.js:483 vol.setShape",
+    "test": "edit-vol: shape, matrix, position, orientation, transform, round",
+    "note": "Sizes are entered in units with metres shown beside them (20 units per metre)."
+  },
+  "VOL-10": {
+    "state": "done",
+    "where": "tools/lib/model/edit/vol.js:554 vol.fit, 433 fitPts; vol.client.js:138",
+    "test": "edit-vol: fit to the bone mesh (VOL-10/12 done right), mesh volumes, hull",
+    "note": "Broken upstream, done right here: no false error box; a clear refusal when the bone or its mesh is missing (no NULL crash); the box fits the bone-space bounds of the vertices the mesh really uses and is centred through the volume matrix, where SOEdit used the raw mesh AABB sizes and left the box uncentred."
+  },
+  "VOL-11": {
+    "state": "done",
+    "where": "tools/lib/model/edit/vol.js:483 vol.setShape (cylinder radius, height)",
+    "test": "edit-vol: shape, matrix, position, orientation, transform, round",
+    "note": "SOEdit's dialog says diameter but stores the value as the first arg, which the engine reads as radius; here the field is called radius. The axis is set through the matrix (local Z along the axis) at add and fit time."
+  },
+  "VOL-12": {
+    "state": "done",
+    "where": "tools/lib/model/edit/vol.js:554 vol.fit kind cylinder, axis x|y|z",
+    "test": "edit-vol: fit to the bone mesh (VOL-10/12 done right), mesh volumes, hull",
+    "note": "Broken upstream, done right here: no false error, no NULL crash, radius and height from the used vertices, centred, and the chosen axis turns the matrix so local Z lies along it (SOEdit used the axis only for the size pick)."
+  },
+  "VOL-13": {
+    "state": "done",
+    "where": "tools/lib/model/edit/vol.js:483 vol.setShape polyhedron; vol.client.js:127 file pick, 187 drawVolFile",
+    "test": "edit-vol: box <-> polyhedron, .vol transform, mirror, sides",
+    "note": "Extra: vol.toPolyhedron (592), vol.toBox (607), vol.volTransform with mirror (628), vol.volSides (650), and vol.get shows vertex, triangle and side counts, bounds and which volumes share the file."
+  },
+  "VOL-14": {
+    "state": "done",
+    "where": "tools/gui/ext/models/sub/vol.client.js:152 copy into page clipboard (ST.clip)",
+    "test": "vol.test.js copy/paste matrix",
+    "note": "Page state only, as in SOEdit (in-memory clipboard)."
+  },
+  "VOL-15": {
+    "state": "done",
+    "where": "tools/gui/ext/models/sub/vol.client.js:153 paste through vol.setMatrix (vol.js:503)",
+    "test": "vol.test.js copy/paste matrix",
+    "note": ""
+  },
+  "VOL-16": {
+    "state": "done",
+    "where": "tools/lib/model/edit/vol.js:513 vol.transform (move, rotate, scale)",
+    "test": "edit-vol: shape, matrix, position, orientation, transform, round",
+    "note": "Op done; the drag itself in the 3D view belongs to the viewer and gizmos (E5) and would call vol.transform. Differs from SOEdit: scale goes into the box or cylinder sizes instead of being baked into the matrix, so the matrix stays a pure rotation; a polyhedron is pointed to vol.volTransform. A change that does nothing is refused."
+  }
+}

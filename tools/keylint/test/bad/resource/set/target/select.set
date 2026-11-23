@@ -1,0 +1,5 @@
+{selectors
+ {selector {type "tank_bullet"}
+  {group {select in_ik_range} {ignore attacking}}
+ }
+}

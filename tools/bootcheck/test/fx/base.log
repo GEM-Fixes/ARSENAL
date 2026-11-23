@@ -1,0 +1,46 @@
+202 mods
+[00:00:22] Localization key redefinition: interface/ok in /interface/text/#editor.lng (/interface/text/#editor.lng, 123)
+Build: 2026.11.05 17:54 - 0x5EEB1B6E
+Product: Men of War: Assault Squad 2 - v3.301.1x64 - standard
+Commit: 19c1ea0b6
+Repository: 138659 resources
+[00:00:33] Entity redefinition: radio_station (eentityraw.cpp, 157) @ [main_loop]
+[00:00:33] Entity redefinition: shellhole_big (eentityraw.cpp, 157) @ [main_loop]
+[00:00:33] Entity redefinition: shellhole_medium (eentityraw.cpp, 157) @ [main_loop]
+[00:00:33] 'use_blend_tex' is not supported (/set/interaction_entity/entity.set/construction/parts.inc, 83)
+Phase Loading... took 5260.16ms.
+Phase Loading multiplayer resources... took 1789.55ms.
+Phase Starting game... took 0.0012ms.
+[00:00:35] MediaManager: can't open MSS media stream for file "/music/main_theme.mp3" (edevicemedia.cpp, 88) @ [main_loop]
+control> mod_set as64+ chaint_t
+[00:00:36] Mission '/map/multi/chaint_barrikady/ammunition.mi' is skipped - game type(ammunition) is undefined (mp_card_map.cpp, 269) @ [main_loop]
+[00:00:36] Join: accepted
+Starting "multi/chaint_barrikady:chaint_zones"
+[00:00:38] Media file "/sound/mission/multi/chaint_barrikady/story" not found (edevicemedia.cpp, 467) @ [main_loop]
+[00:00:39] Automatic MIP generation not supported. Bitmap: '/texture/fx/explosion/exp_sled' (/texture/fx/explosion/exp_sled.ebm, 3)
+[00:00:40] unknown terrain_pp type - snow (/entity/service/land/land, 13)
+[00:00:40] can't spawn entity factory_barracks (/map/multi/chaint_barrikady/map, 25)
+[00:00:40] Undeclared place "p_lamp" (/map/multi/chaint_barrikady/map, 553)
+[00:00:40] Undeclared place "p_l" (/map/multi/chaint_barrikady/map, 643)
+[00:00:40] Undeclared place "p_c" (/map/multi/chaint_barrikady/map, 714)
+[00:00:40] Undeclared place "p_r" (/map/multi/chaint_barrikady/map, 797)
+[00:00:40] Unknown props : "crater big" (/entity/landscape/cut_entity/crater_big/crater_big.def, 4)
+[00:00:40] Undeclared place "driver1" (/map/multi/chaint_barrikady/map, 37683)
+[00:00:40] Link failed: no entity to link 01d0 (/map/multi/chaint_barrikady/map, 61723)
+[00:00:40] Edifice item failed: entity 0x2130 not found (/map/multi/chaint_barrikady/map, 64231)
+[00:00:40] Undeclared place "ammo" (/map/multi/chaint_barrikady/chaint_zones.mi, 5)
+[00:00:40] Extender "fortification" not found (/map/multi/chaint_barrikady/chaint_zones.mi, 24)
+[00:00:40] Can't apply environment preset "goh/multi/2v2_barrikadiy/var1", using defaults
+[00:00:40] /entity/service/flag/flag_00.dds: Cannot load texture with DXT compression into common texture. Please resave DDS file without DXT compression. (ebitmapimagedds.cpp, 349) @ [render_material_load]
+[00:00:41] Not all entities will get their tags (esceneserialize.cpp, 845) @ [main_loop]
+[00:00:56] Using bump material on non-bump geometry. Bump disabled. (/entity/-vehicle/btr/sdkfz251_1/sdkfz251_1.def/sdkfz251_d.mdl, 448)
+[00:01:00] /texture/common/checker_cube.dds: No MIP levels! (ebitmapimagedds.cpp, 409) @ [render_material_load]
+GameThreadStart
+[00:01:18] Media file "/music/rus_ambient_lvl1.wav" not found (edevicemedia.cpp, 467) @ [quant]
+[00:01:20] Unknown var functor players:composition (ehelpervar.cpp, 204) @ [quant]
+  human[11:mp/ger/squadleader2] u:mp/ger/squadleader2 cp:2.5 cw:1.5 score:1 chrg:0
+  human[12:mp/ger/rifle2] u:mp/ger/rifle2 cp:2.5 cw:1 score:0.5 chrg:0
+  human[15:mp/ger/smg2] u:mp/ger/smg2 cp:2.5 cw:1 score:0.75 chrg:0
+[00:02:50] Media file "/music/action_theme_2.wav" not found (edevicemedia.cpp, 467) @ [quant]
+  human[29:mp/ger/bazooker] u:mp/ger/bazooker cp:3 cw:1 score:2 chrg:0
+  human[30:mp/ger/bazooker2] u:mp/ger/bazooker2 cp:3 cw:1 score:2 chrg:0

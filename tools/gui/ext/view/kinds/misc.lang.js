@@ -1,0 +1,38 @@
+// view kind misc, strings: rows [key, en, ru, uk, zh], every key starts with view.misc.
+// Author: Imperator_Aug (ARSENAL, ia-2fbf036f)
+'use strict';
+module.exports = [
+  // JOBS: the name of this viewer's requests in the footer job list
+  ['view.misc.job.read', 'Viewer: reading the file contents', 'Просмотр: читается содержимое файла', 'Перегляд: читається вміст файлу', '查看器：正在读取文件内容'],
+  ['view.misc.label', 'Archive', 'Архив', 'Архів', '归档'],
+  ['view.misc.filter', 'Filter by name', 'Фильтр по имени', 'Фільтр за назвою', '按名称筛选'],
+  ['view.misc.sortBy', 'Sort by this column', 'Сортировать по этому столбцу', 'Сортувати за цим стовпцем', '按此列排序'],
+  ['view.misc.c.name', 'name', 'имя', 'назва', '名称'],
+  ['view.misc.c.size', 'size', 'размер', 'розмір', '大小'],
+  ['view.misc.c.packed', 'packed', 'сжато', 'стиснено', '压缩后'],
+  ['view.misc.c.method', 'method', 'метод', 'метод', '方式'],
+  ['view.misc.c.time', 'time', 'время', 'час', '时间'],
+  ['view.misc.m.store', 'stored', 'без сжатия', 'без стиснення', '存储'],
+  ['view.misc.m.deflate', 'deflate', 'deflate', 'deflate', 'deflate'],
+  ['view.misc.m.other', 'method {n} (neither stored nor deflate)', 'метод {n} (не store и не deflate)', 'метод {n} (не store і не deflate)', '方式 {n}（既非存储也非 deflate）'],
+  ['view.misc.dir', 'folder', 'папка', 'тека', '文件夹'],
+  ['view.misc.none', 'none', 'нет', 'немає', '无'],
+  ['view.misc.h.entries', 'Entries', 'Записи', 'Записи', '条目'],
+  ['view.misc.entries', '{n} ({f} files, {d} folders)', '{n} (файлов: {f}, папок: {d})', '{n} (файлів: {f}, тек: {d})', '{n}（{f} 个文件，{d} 个文件夹）'],
+  ['view.misc.h.total', 'Size', 'Размер', 'Розмір', '大小'],
+  ['view.misc.total', '{t} unpacked, {p} packed ({r}%)', '{t} распаковано, {p} сжато ({r}%)', '{t} розпаковано, {p} стиснено ({r}%)', '解压后 {t}，压缩后 {p}（{r}%）'],
+  ['view.misc.h.method', 'Methods', 'Методы', 'Методи', '压缩方式'],
+  ['view.misc.h.format', 'Format', 'Формат', 'Формат', '格式'],
+  ['view.misc.zip64', 'zip64 (big entries or many of them)', 'zip64 (большие записи или их много)', 'zip64 (великі записи або їх багато)', 'zip64（条目很大或很多）'],
+  ['view.misc.h.open', 'Opening entries', 'Открытие записей', 'Відкриття записів', '打开条目'],
+  ['view.misc.canOpen', 'Click a file to open it.', 'Щёлкните файл, чтобы открыть его.', 'Клацніть файл, щоб відкрити його.', '点击文件即可打开。'],
+  ['view.misc.cut', 'Only the first {n} entries are listed.', 'Показаны только первые {n} записей.', 'Показано лише перші {n} записів.', '只列出前 {n} 个条目。'],
+  ['view.misc.matches', '{n} entries', 'записей: {n}', 'записів: {n}', '{n} 个条目'],
+  ['view.misc.shown', 'first {n} of {of} entries, type to narrow', 'первые {n} из {of}, введите фильтр', 'перші {n} з {of}, введіть фільтр', '共 {of} 个条目，显示前 {n} 个，输入筛选'],
+  ['view.misc.openHint', 'Open this file', 'Открыть этот файл', 'Відкрити цей файл', '打开此文件'],
+  ['view.misc.why.nested', 'This archive is itself inside a pak: its entries can be listed but not opened.', 'Этот архив сам лежит в паке: записи можно посмотреть, но не открыть.', 'Цей архів сам лежить у паку: записи можна переглянути, але не відкрити.', '此归档本身位于 pak 内：只能列出条目，无法打开。'],
+  ['view.misc.why.zip', 'The game does not read .zip files, so their entries cannot be opened here.', 'Игра не читает файлы .zip, поэтому их записи здесь не открываются.', 'Гра не читає файли .zip, тому їхні записи тут не відкриваються.', '游戏不读取 .zip 文件，因此这里无法打开其条目。'],
+  ['view.misc.why.shadow', 'That name opens another copy (a loose file or another pak comes first), so this entry cannot be opened by name.', 'По этому имени открывается другая копия (раньше идёт отдельный файл или другой пак), поэтому эту запись не открыть по имени.', 'За цією назвою відкривається інша копія (раніше йде окремий файл або інший пак), тому цей запис не відкрити за назвою.', '该名称会打开另一个副本（独立文件或其他 pak 优先），因此无法按名称打开此条目。'],
+  ['view.misc.why.none', 'No way to open this entry was found.', 'Способ открыть эту запись не найден.', 'Спосіб відкрити цей запис не знайдено.', '找不到打开此条目的方法。'],
+  ['view.misc.why.dir', 'This is a folder.', 'Это папка.', 'Це тека.', '这是文件夹。'],
+];

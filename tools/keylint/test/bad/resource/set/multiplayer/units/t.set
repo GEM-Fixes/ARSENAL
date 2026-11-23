@@ -1,0 +1,10 @@
+{units
+ {"mp/x/test"
+  {Cost 5}
+  {charge 5.0}
+  {level (+ 1 2)}
+  {order 3}
+  {cost 5.5}
+  {cp (+ 1 2)}
+ }
+}

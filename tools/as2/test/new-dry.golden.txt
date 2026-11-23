@@ -1,0 +1,11 @@
+note: the mod folder is "my_mod", not "My_Mod": names are kept lowercase
+new: my_mod  (AS64 mod: MinGameVersion 3.301, no MaxGameVersion)
+dir  resource/entity
+dir  resource/set
+dir  resource/interface
+dir  localization
+file mod.info (72 bytes)
+file localization/#my_mod.lng (10 bytes)
+file .gitignore (185 bytes)
+file readme.txt (286 bytes)
+0 findings

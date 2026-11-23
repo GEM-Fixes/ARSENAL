@@ -1,0 +1,40 @@
+;SDL
+{game
+	{class armored_warfare}
+	{settings
+		{gameDuration "45 min"}
+		{gameDuration "90 min"}
+	}
+	{teamSettings
+		{minTeamPlayers 2}
+		{minTeamSlots 2}
+	}
+	{presets
+		{"bad"
+			{common
+				{unitset {value "^arcade"}}
+				{unitset {value "all^arcade"}}
+				{unitLimits "flamer=3,sniper=2"}
+				{unitLimits "flamer=3;sniper=2"}
+				{budgets {hero {buttons "hero"}}}
+			}
+			{bots
+				{easy {balancingFactorBonus {cp 0.75}}}
+				{hard {balancingFactorBonus {cp 1.5}} {chargeFactors {value "*=0"}}}
+			}
+		}
+		{"budgets"
+			{common {budgets
+				{vehicle {mode "standard"} {resource {start 100} {finish 200} {growTime 10}
+					{payback {cp "0	25	50"} {restore "1.5	1	0.5"}}}}
+				{v2 {mode "standard"} {resource {period 5}}}
+				{v3 {mode "custom"} {resource {speed 2}}}
+				{v4 {mode "with_update"} {resource {restoreBegin 3}}}
+				{v5 {mode "without_update"} {resource {speed 3}}}
+				{v6 {mode "standard"} {resource {payback {cp "0 25 50"} {restore "1 1 1"}}}}
+				{v7 {mode "standard"} {resource {payback {cp "0	25"} {restore "1"}}}}
+				{v8 {mode "standard"} {resource {payback {cp "50	25"} {restore "1	1"}}}}
+			}}
+		}
+	}
+}

@@ -1,0 +1,358 @@
+{
+ "form": "verdict/1",
+ "mod": "mod",
+ "units": [
+  {
+   "unit": "pv_box",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": true,
+    "n": 0,
+    "first": []
+   },
+   "scale": {
+    "ok": false,
+    "why": "L 260 above peers 100..180"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": false,
+   "native": false
+  },
+  {
+   "unit": "pv_clean",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": true,
+    "n": 0,
+    "first": []
+   },
+   "scale": {
+    "ok": true,
+    "why": "goh source model (2 ply from GoH)",
+    "src": "goh-ply"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": true,
+   "native": true
+  },
+  {
+   "unit": "pv_gaps",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": true,
+    "n": 0,
+    "first": []
+   },
+   "scale": {
+    "ok": null,
+    "why": "unit not in unitbox output"
+   },
+   "gaps": {
+    "hand": 1,
+    "unexplained": 2
+   },
+   "bar": false,
+   "native": false
+  },
+  {
+   "unit": "pv_inc",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": false,
+    "n": 1,
+    "first": [
+     "resource/entity/-vehicle/fx/tank_medium/pv_inc/pv_inc.def:4 INCLUDE_MISSING"
+    ]
+   },
+   "scale": {
+    "ok": null,
+    "why": "unit not in unitbox output"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": false,
+   "native": false
+  },
+  {
+   "unit": "pv_keys",
+   "class": "tank_medium",
+   "keys": {
+    "ok": false,
+    "missing": [
+     "entity/volume/thickness/front"
+    ],
+    "extra": [
+     "entity/extender:smokescreen/cooldown"
+    ]
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": true,
+    "n": 0,
+    "first": []
+   },
+   "scale": {
+    "ok": null,
+    "why": "unit not in unitbox output"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": false,
+   "native": false
+  },
+  {
+   "unit": "pv_path",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": false,
+    "n": 1,
+    "first": [
+     "resource/entity/-vehicle/fx/tank_medium/pv_path/pv_path.def:2 WARN_PATHER_UNKNOWN"
+    ]
+   },
+   "scale": {
+    "ok": null,
+    "why": "unit not in unitbox output"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": false,
+   "native": false
+  },
+  {
+   "unit": "pv_syn",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": false,
+    "n": 1
+   },
+   "refs": {
+    "ok": true,
+    "n": 0,
+    "first": []
+   },
+   "scale": {
+    "ok": null,
+    "why": "unit not in unitbox output"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": false,
+   "native": false
+  },
+  {
+   "unit": "pv_txt",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": true,
+    "n": 0,
+    "first": []
+   },
+   "scale": {
+    "ok": null,
+    "why": "model in text-only.tsv"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": true,
+   "native": true
+  },
+  {
+   "unit": "pv_vals",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": false,
+    "out": [
+     {
+      "key": "speed",
+      "value": 80,
+      "min": 18,
+      "max": 72
+     }
+    ]
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": true,
+    "n": 0,
+    "first": []
+   },
+   "scale": {
+    "ok": null,
+    "why": "unit not in unitbox output"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": true,
+   "native": false
+  },
+  {
+   "unit": "pv_weap",
+   "class": "tank_medium",
+   "keys": {
+    "ok": true,
+    "missing": [],
+    "extra": []
+   },
+   "values": {
+    "ok": true,
+    "out": []
+   },
+   "syntax": {
+    "ok": true,
+    "n": 0
+   },
+   "refs": {
+    "ok": false,
+    "n": 2,
+    "first": [
+     "resource/entity/-vehicle/fx/tank_medium/pv_weap/pv_weap.def:6 REF_AMMO_UNKNOWN",
+     "resource/entity/-vehicle/fx/tank_medium/pv_weap/pv_weap.def:6 REF_WEAPON_UNKNOWN"
+    ]
+   },
+   "scale": {
+    "ok": null,
+    "why": "unit not in unitbox output"
+   },
+   "gaps": {
+    "hand": 0,
+    "unexplained": 0
+   },
+   "bar": false,
+   "native": false
+  }
+ ],
+ "counts": {
+  "units": 10,
+  "bar": 3,
+  "native": 2,
+  "byPart": {
+   "keys": 1,
+   "values": 1,
+   "syntax": 1,
+   "refs": 3,
+   "scale": 1,
+   "gaps": 1
+  }
+ }
+}

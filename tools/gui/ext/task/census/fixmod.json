@@ -1,0 +1,334 @@
+{
+ "thing": "fixmod",
+ "files": [
+  "contract check",
+  "contract fix",
+  "GET/POST /api/x/logs/*",
+  "ide lint"
+ ],
+ "groups": [
+  {
+   "id": "input",
+   "name": "Which mod"
+  },
+  {
+   "id": "check",
+   "name": "Check"
+  },
+  {
+   "id": "fix",
+   "name": "Fix"
+  },
+  {
+   "id": "logs",
+   "name": "Logs and retest"
+  }
+ ],
+ "vars": [
+  {
+   "key": "in.mod",
+   "where": "fix --mod; check --mod",
+   "type": "path",
+   "plain": "The mod to fix.",
+   "unit": "",
+   "vanilla": null,
+   "group": "input",
+   "ref": null,
+   "tool": "fix",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "in.game",
+   "where": "fix --game (req)",
+   "type": "path",
+   "plain": "Game install.",
+   "unit": "",
+   "vanilla": null,
+   "group": "input",
+   "ref": null,
+   "tool": "fix",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "in.mods",
+   "where": "fix --mods",
+   "type": "list",
+   "plain": "Other mods loaded with it.",
+   "unit": "",
+   "vanilla": null,
+   "group": "input",
+   "ref": null,
+   "tool": "fix",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "in.target",
+   "where": "fix --target",
+   "type": "choice",
+   "plain": "Game build.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "as64",
+     "classic",
+     "mowas2"
+    ]
+   },
+   "group": "input",
+   "ref": null,
+   "tool": "fix",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "chk.with",
+   "where": "check --with --exe --only --fast --jobs --locs",
+   "type": "list",
+   "plain": "What check runs.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "as64",
+     "mowas2",
+     "goh"
+    ]
+   },
+   "group": "check",
+   "ref": null,
+   "tool": "check",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "chk.verdict",
+   "where": "check verdict",
+   "type": "choice",
+   "plain": "Will it load?",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "LOADS_STATIC",
+     "LIKELY_CRASH",
+     "REFUSED"
+    ]
+   },
+   "group": "check",
+   "ref": null,
+   "tool": "check",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "fix.mode",
+   "where": "fix mode (pos 1)",
+   "type": "choice",
+   "plain": "Plan or apply.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "plan",
+     "apply"
+    ]
+   },
+   "group": "fix",
+   "ref": null,
+   "tool": "fix",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "fix.out",
+   "where": "fix --out (req when apply)",
+   "type": "path",
+   "plain": "Where the fixed copy goes.",
+   "unit": "",
+   "vanilla": null,
+   "group": "fix",
+   "ref": null,
+   "tool": "fix",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "fix.only",
+   "where": "fix --only",
+   "type": "list",
+   "plain": "Which fixers.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "lng",
+     "repoint",
+     "set",
+     "include",
+     "macro",
+     "enc",
+     "spell",
+     "syntax",
+     "asread",
+     "stubmtl",
+     "quarantine",
+     "modinfo",
+     "botkeys",
+     "lngdup"
+    ]
+   },
+   "group": "fix",
+   "ref": null,
+   "tool": "fix",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "fix.spell",
+   "where": "fixer spell (not pre-ticked)",
+   "type": "bool",
+   "plain": "Fix spelling of names.",
+   "unit": "",
+   "vanilla": null,
+   "group": "fix",
+   "ref": null,
+   "tool": "fix",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "fix.quarantine",
+   "where": "fixer quarantine (only with --only)",
+   "type": "bool",
+   "plain": "Move broken files aside.",
+   "unit": "",
+   "vanilla": null,
+   "group": "fix",
+   "ref": null,
+   "tool": "fix",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "fix.set",
+   "where": "fix --set file:path=value (repeat)",
+   "type": "list",
+   "plain": "Set single values.",
+   "unit": "",
+   "vanilla": null,
+   "group": "fix",
+   "ref": null,
+   "tool": "fix",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "log.find",
+   "where": "GET /api/x/logs/find ?dir",
+   "type": "path",
+   "plain": "Find game logs.",
+   "unit": "",
+   "vanilla": null,
+   "group": "logs",
+   "ref": null,
+   "tool": "GET /api/x/logs/find",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "log.explain",
+   "where": "POST /api/x/logs/explain {dir|file, inst, all, mod}",
+   "type": "list",
+   "plain": "Explain log errors.",
+   "unit": "",
+   "vanilla": null,
+   "group": "logs",
+   "ref": null,
+   "tool": "POST /api/x/logs/explain",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "log.dump",
+   "where": "POST /api/x/logs/dump {file}",
+   "type": "file",
+   "plain": "Read a crash dump.",
+   "unit": "",
+   "vanilla": null,
+   "group": "logs",
+   "ref": null,
+   "tool": "POST /api/x/logs/dump",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "log.enabled",
+   "where": "GET /api/x/logs/enabled",
+   "type": "list",
+   "plain": "Which mods were on.",
+   "unit": "",
+   "vanilla": null,
+   "group": "logs",
+   "ref": null,
+   "tool": "GET /api/x/logs/enabled",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "log.modwhy",
+   "where": "POST /api/x/logs/modwhy {mod, deep}",
+   "type": "list",
+   "plain": "Why the mod is not showing.",
+   "unit": "",
+   "vanilla": null,
+   "group": "logs",
+   "ref": null,
+   "tool": "POST /api/x/logs/modwhy",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "log.unit",
+   "where": "POST /api/x/logs/unit {mod, unit, deep}",
+   "type": "list",
+   "plain": "Why a unit fails.",
+   "unit": "",
+   "vanilla": null,
+   "group": "logs",
+   "ref": null,
+   "tool": "POST /api/x/logs/unit",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ide.fixes",
+   "where": "ide lint fixes include spell syntax macro",
+   "type": "list",
+   "plain": "Line fixes in the Editor.",
+   "unit": "",
+   "vanilla": null,
+   "group": "logs",
+   "ref": null,
+   "tool": "ide lint",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "after.play",
+   "where": "play --mod --inst",
+   "type": "text",
+   "plain": "Test again.",
+   "unit": "",
+   "vanilla": null,
+   "group": "logs",
+   "ref": null,
+   "tool": "play",
+   "limit": null,
+   "tag": "T"
+  }
+ ],
+ "gaps": [
+  "fix.set: --set rows have no form; add a row editor (file, path, value) to the fix page",
+  "fix.quarantine: opt-in only; show it as an unticked choice with a warning",
+  "chk findings with no fixer: no walk-through; link each code to its limits row and Editor line"
+ ]
+}

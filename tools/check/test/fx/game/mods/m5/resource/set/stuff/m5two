@@ -1,0 +1,4 @@
+{weapon_bullet
+	{projectileDamageThreshold 0.25}
+	{fireSound "shot_unique"}
+}

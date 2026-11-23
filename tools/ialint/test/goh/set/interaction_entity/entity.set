@@ -1,0 +1,23 @@
+; invented GoH-form interaction data: the four events GoH adds (GHINT-17, GHINT-45); ialint test of the GoH event set
+{entities
+	{"tank"
+		{on destroy
+			{con "part destroyed"}
+		}
+		{on blast_wreaked
+			{con "blast pierced"}
+		}
+		{on animation_event "reload_done"
+			{con "anim event"}
+		}
+		{on hatch open
+			{con "hatch opened"}
+		}
+		{on fire "gun_goh"
+			{con "fired"}
+		}
+		{on spawn
+			{con "spawned"}
+		}
+	}
+}

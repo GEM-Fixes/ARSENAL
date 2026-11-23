@@ -1,0 +1,408 @@
+{
+ "thing": "mod",
+ "files": [
+  "contract new",
+  "tools/newmod",
+  "mod.info",
+  "resource/",
+  "localization/#<slug>.lng",
+  "options.set",
+  "POST /api/x/share/info"
+ ],
+ "groups": [
+  {
+   "id": "make",
+   "name": "Make the mod"
+  },
+  {
+   "id": "info",
+   "name": "mod.info"
+  },
+  {
+   "id": "layout",
+   "name": "Files"
+  },
+  {
+   "id": "active",
+   "name": "Turn on in the game"
+  },
+  {
+   "id": "check",
+   "name": "Check and test"
+  }
+ ],
+ "vars": [
+  {
+   "key": "new.dir",
+   "where": "new <dir> (contract new.dir pos req); newmod <dir>",
+   "type": "path",
+   "plain": "The mod folder name.",
+   "unit": "",
+   "vanilla": {
+    "re": "lowercase, no spaces"
+   },
+   "group": "make",
+   "ref": null,
+   "tool": "new",
+   "limit": "VFS-05",
+   "tag": "V"
+  },
+  {
+   "key": "new.name",
+   "where": "new --name -> mod.info Name",
+   "type": "text",
+   "plain": "Mod name in the game list.",
+   "unit": "",
+   "vanilla": null,
+   "group": "make",
+   "ref": null,
+   "tool": "new",
+   "limit": "VFS-60",
+   "tag": "V"
+  },
+  {
+   "key": "new.desc",
+   "where": "new --desc -> mod.info Desc",
+   "type": "text",
+   "plain": "Mod description.",
+   "unit": "",
+   "vanilla": null,
+   "group": "make",
+   "ref": null,
+   "tool": "new",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "new.deps",
+   "where": "new --deps -> mod.info Require",
+   "type": "list",
+   "plain": "Mods this one needs loaded first.",
+   "unit": "",
+   "vanilla": null,
+   "group": "make",
+   "ref": null,
+   "tool": "new",
+   "limit": "VFS-17",
+   "tag": "V"
+  },
+  {
+   "key": "new.target",
+   "where": "newmod --target",
+   "type": "choice",
+   "plain": "Game the mod is for.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "as64",
+     "mowas2",
+     "goh"
+    ]
+   },
+   "group": "make",
+   "ref": null,
+   "tool": "newmod CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "new.game_version",
+   "where": "newmod --game-version -> MinGameVersion/MaxGameVersion",
+   "type": "text",
+   "plain": "Game version range.",
+   "unit": "",
+   "vanilla": null,
+   "group": "make",
+   "ref": null,
+   "tool": "newmod CLI",
+   "limit": "VFS-19",
+   "tag": "V"
+  },
+  {
+   "key": "new.lang",
+   "where": "newmod --lang",
+   "type": "choice",
+   "plain": "Language of the first text file.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "en",
+     "ru",
+     "uk",
+     "zh"
+    ]
+   },
+   "group": "make",
+   "ref": null,
+   "tool": "newmod CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "new.game",
+   "where": "new --game",
+   "type": "path",
+   "plain": "Game install.",
+   "unit": "",
+   "vanilla": null,
+   "group": "make",
+   "ref": null,
+   "tool": "new",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "new.dry",
+   "where": "new --dryRun",
+   "type": "bool",
+   "plain": "Preview only.",
+   "unit": "",
+   "vanilla": null,
+   "group": "make",
+   "ref": null,
+   "tool": "new",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "info.name",
+   "where": "mod.info {Name \"x\"}",
+   "type": "text",
+   "plain": "Name.",
+   "unit": "",
+   "vanilla": {
+    "max": 200
+   },
+   "group": "info",
+   "ref": null,
+   "tool": "POST /api/x/share/info",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "info.desc",
+   "where": "mod.info {Desc \"x\"}",
+   "type": "text",
+   "plain": "Description (\\\" escape).",
+   "unit": "",
+   "vanilla": {
+    "max": 8000
+   },
+   "group": "info",
+   "ref": null,
+   "tool": "POST /api/x/share/info",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "info.min_game_version",
+   "where": "mod.info {MinGameVersion}",
+   "type": "text",
+   "plain": "Oldest game it runs on; 3.301+ = Enhanced.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "3.262.0",
+     "3.301"
+    ]
+   },
+   "group": "info",
+   "ref": null,
+   "tool": "POST /api/x/share/info",
+   "limit": "VFS-19",
+   "tag": "V"
+  },
+  {
+   "key": "info.max_game_version",
+   "where": "mod.info {MaxGameVersion}",
+   "type": "text",
+   "plain": "Newest game.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "3.262.1"
+    ]
+   },
+   "group": "info",
+   "ref": null,
+   "tool": "POST /api/x/share/info",
+   "limit": "VFS-48",
+   "tag": "V"
+  },
+  {
+   "key": "info.require",
+   "where": "mod.info {Require \"folder[:n]\"}",
+   "type": "list",
+   "plain": "Needed mods.",
+   "unit": "",
+   "vanilla": null,
+   "group": "info",
+   "ref": null,
+   "tool": null,
+   "limit": "VFS-50",
+   "tag": "V"
+  },
+  {
+   "key": "info.delete",
+   "where": "mod.info {Delete \"resource/..\"}",
+   "type": "list",
+   "plain": "Hide vanilla files.",
+   "unit": "",
+   "vanilla": null,
+   "group": "info",
+   "ref": null,
+   "tool": null,
+   "limit": "VFS-21",
+   "tag": "V"
+  },
+  {
+   "key": "info.fileid",
+   "where": "mod.info {FileId n}",
+   "type": "number",
+   "plain": "Workshop id.",
+   "unit": "",
+   "vanilla": null,
+   "group": "info",
+   "ref": null,
+   "tool": null,
+   "limit": "VFS-60",
+   "tag": "V"
+  },
+  {
+   "key": "info.version",
+   "where": "mod.info {Version} (game skips)",
+   "type": "text",
+   "plain": "Your version label.",
+   "unit": "",
+   "vanilla": null,
+   "group": "info",
+   "ref": null,
+   "tool": "POST /api/x/share/version",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "layout.resource",
+   "where": "resource/ or resource.pak",
+   "type": "path",
+   "plain": "Game data folder.",
+   "unit": "",
+   "vanilla": null,
+   "group": "layout",
+   "ref": null,
+   "tool": null,
+   "limit": "VFS-23",
+   "tag": "V"
+  },
+  {
+   "key": "layout.pat",
+   "where": "N.pat (+ .patch id, delete, remap)",
+   "type": "file",
+   "plain": "Patch packs.",
+   "unit": "",
+   "vanilla": null,
+   "group": "layout",
+   "ref": null,
+   "tool": null,
+   "limit": "VFS-24",
+   "tag": "V"
+  },
+  {
+   "key": "layout.localization",
+   "where": "localization/ or localization.pak",
+   "type": "path",
+   "plain": "Text folder.",
+   "unit": "",
+   "vanilla": null,
+   "group": "layout",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "layout.folder_rules",
+   "where": "inside <game>/mods, lowercase, no case clash, has mod.info",
+   "type": "path",
+   "plain": "Folder must follow these rules.",
+   "unit": "",
+   "vanilla": null,
+   "group": "layout",
+   "ref": null,
+   "tool": null,
+   "limit": "VFS-61",
+   "tag": "V"
+  },
+  {
+   "key": "active.list",
+   "where": "options.set {mods \"folder:n\"}",
+   "type": "list",
+   "plain": "Which mods the game loads, in order.",
+   "unit": "",
+   "vanilla": null,
+   "group": "active",
+   "ref": null,
+   "tool": "install",
+   "limit": "VFS-17",
+   "tag": "V"
+  },
+  {
+   "key": "active.install",
+   "where": "install --mod --name --link --force",
+   "type": "bool",
+   "plain": "Link or copy the mod into the game.",
+   "unit": "",
+   "vanilla": null,
+   "group": "active",
+   "ref": null,
+   "tool": "install",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "active.uninstall",
+   "where": "uninstall --name --yes",
+   "type": "bool",
+   "plain": "Remove it from the game.",
+   "unit": "",
+   "vanilla": null,
+   "group": "active",
+   "ref": null,
+   "tool": "uninstall",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "check.check",
+   "where": "check --mod --with --exe --only --fast",
+   "type": "list",
+   "plain": "Check the whole mod.",
+   "unit": "",
+   "vanilla": null,
+   "group": "check",
+   "ref": null,
+   "tool": "check",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "check.play",
+   "where": "play --mod --map --inst",
+   "type": "text",
+   "plain": "Start a test.",
+   "unit": "",
+   "vanilla": null,
+   "group": "check",
+   "ref": null,
+   "tool": "play",
+   "limit": null,
+   "tag": "V"
+  }
+ ],
+ "gaps": [
+  "new.target/game_version/lang: newmod flags missing from contract new; add the three fields to COMMANDS.new",
+  "info.delete: no tool; add share info field Delete (list) with resource/ path check",
+  "info.require syntax \"folder:n\": free text only; add a picker from GET /api/x/share/mods",
+  "layout.pat (.pat patch documents): no tool; document as hand-off"
+ ]
+}

@@ -1,0 +1,257 @@
+// Lang rows of the Code Pieces group ia2-pat (more common patterns, numbers 57-74): [key, en, ru, uk, zh].
+// Author: Imperator_Aug (ARSENAL, ia-a32a1816)
+'use strict';
+
+// Labels of the extra copies of a name (v1 has no mirrored fields, so each copy is its own field).
+const AGAIN = {
+  event: ['Same event again', 'То же событие ещё раз', 'Та сама подія ще раз', '再填同一个事件'],
+  macro: ['Same helper again', 'Тот же помощник ещё раз', 'Той самий помічник ще раз', '再填同一个辅助宏'],
+  view: ['Same view again', 'Тот же view ещё раз', 'Той самий view ще раз', '再填同一个 view'],
+  flag: ['Same flag again', 'Тот же флаг ещё раз', 'Той самий прапорець ще раз', '再填同一个标志'],
+  timer: ['Same timer again', 'Тот же таймер ещё раз', 'Той самий таймер ще раз', '再填同一个计时器'],
+  tags: ['Same base tags again', 'Те же базовые теги ещё раз', 'Ті самі базові теги ще раз', '再填同一组基础标签']
+};
+const K = 'ide.kit.p.';
+function again(id, field, what) { return [K + id + '.f.' + field].concat(AGAIN[what]); }
+function r(key, en, ru, uk, zh) { return [K + key, en, ru, uk, zh]; }
+
+module.exports = [
+  // 57 b.pat.n_of_m
+  r('b.pat.n_of_m', 'Act when N of M parts are broken', 'Действие, когда сломаны N из M частей', 'Дія, коли зламано N із M частин', '当 M 个部件中有 N 个损坏时执行'),
+  r('b.pat.n_of_m.d', 'Adds a check that counts how many of four parts are broken and calls your action once three are. It counts again from the part states on every call, so it never counts a part twice.',
+    'Добавляет проверку, которая считает, сколько из четырёх частей сломано, и вызывает ваше действие, когда сломаны три. Счёт идёт заново по состоянию частей при каждом вызове, поэтому часть не считается дважды.',
+    'Додає перевірку, яка рахує, скільки з чотирьох частин зламано, і викликає вашу дію, коли зламано три. Лічба йде заново за станом частин під час кожного виклику, тому частина не рахується двічі.',
+    '添加一个检查：统计四个部件中有几个已损坏，达到三个时调用你的动作。每次调用都按部件当前状态重新计数，所以同一部件不会被算两次。'),
+  r('b.pat.n_of_m.n', 'The part names must exist in the unit .def. Call the check from your break reaction, as the game does: {on break {call "check_explosion"}}. For another N, add or remove broken_N flags.',
+    'Имена частей должны быть в .def юнита. Вызывайте проверку из реакции break, как в игре: {on break {call "check_explosion"}}. Для другого N добавьте или уберите флаги broken_N.',
+    'Імена частин мають бути в .def юніта. Викликайте перевірку з реакції break, як у грі: {on break {call "check_explosion"}}. Для іншого N додайте або приберіть прапорці broken_N.',
+    '部件名必须在单位的 .def 中存在。像游戏那样在 break 反应里调用检查：{on break {call "check_explosion"}}。要改变 N，就增减 broken_N 标志。'),
+  r('b.pat.n_of_m.f.check', 'Check event', 'Событие проверки', 'Подія перевірки', '检查事件'),
+  r('b.pat.n_of_m.f.part1', 'First part', 'Первая часть', 'Перша частина', '第一个部件'),
+  r('b.pat.n_of_m.f.part1.h', 'A part (component) name from the .def.', 'Имя части (component) из .def.', 'Ім\'я частини (component) з .def.', '.def 中的部件（component）名。'),
+  r('b.pat.n_of_m.f.part2', 'Second part', 'Вторая часть', 'Друга частина', '第二个部件'),
+  r('b.pat.n_of_m.f.part3', 'Third part', 'Третья часть', 'Третя частина', '第三个部件'),
+  r('b.pat.n_of_m.f.part4', 'Fourth part', 'Четвёртая часть', 'Четверта частина', '第四个部件'),
+  r('b.pat.n_of_m.f.action', 'Event to call', 'Вызываемое событие', 'Подія для виклику', '要调用的事件'),
+
+  // 58 b.pat.even4
+  r('b.pat.even4', 'Even pick among four', 'Равный выбор из четырёх', 'Рівний вибір із чотирьох', '四选一（概率相等）'),
+  r('b.pat.even4.d', 'Picks one of four branches, each with the same 25% chance: the chances 1/4, 1/3 and 1/2 in a row work out even. Not tried in game.',
+    'Выбирает одну из четырёх веток, у каждой одинаковый шанс 25%: шансы 1/4, 1/3 и 1/2 подряд дают равные доли. Не проверено в игре.',
+    'Обирає одну з чотирьох гілок, у кожної однаковий шанс 25%: шанси 1/4, 1/3 і 1/2 поспіль дають рівні частки. Не перевірено в грі.',
+    '从四个分支中选一个，每个都是 25% 的概率：依次使用 1/4、1/3、1/2 的概率正好均分。未在游戏中测试。'),
+  r('b.pat.even4.f.first', 'First choice', 'Первый вариант', 'Перший варіант', '第一个选项'),
+  r('b.pat.even4.f.first.h', 'One action, for example a call of your own event.', 'Одно действие, например вызов своего события.', 'Одна дія, наприклад виклик своєї події.', '一个动作，例如调用你自己的事件。'),
+  r('b.pat.even4.f.second', 'Second choice', 'Второй вариант', 'Другий варіант', '第二个选项'),
+  r('b.pat.even4.f.third', 'Third choice', 'Третий вариант', 'Третій варіант', '第三个选项'),
+
+  // 59 b.pat.jitter
+  r('b.pat.jitter', 'Same effect started at random offsets', 'Один эффект со случайной задержкой', 'Один ефект із випадковою затримкою', '同一特效随机错开启动'),
+  r('b.pat.jitter.d', 'Adds a helper that starts a view after 0, 0.3, 0.6 or 0.9 seconds at random and pauses it 0.7 seconds later. Used for several views, the puffs do not all start at once, like the steam of a warming locomotive.',
+    'Добавляет помощника, который запускает view через 0, 0.3, 0.6 или 0.9 секунды случайно и ставит его на паузу через 0.7 секунды. Для нескольких view клубы не стартуют разом, как пар прогревающегося паровоза.',
+    'Додає помічника, який запускає view через 0, 0.3, 0.6 або 0.9 секунди випадково і ставить його на паузу через 0.7 секунди. Для кількох view клуби не стартують разом, як пара паротяга, що прогрівається.',
+    '添加一个辅助宏：随机在 0、0.3、0.6 或 0.9 秒后启动一个 view，0.7 秒后暂停。用于多个 view 时，烟团不会同时出现，就像预热中的机车蒸汽。'),
+  r('b.pat.jitter.n', 'The views must already be added (add_view) on spawn.', 'View должны быть уже добавлены (add_view) в spawn.', 'View мають бути вже додані (add_view) у spawn.', '这些 view 必须已在 spawn 中添加（add_view）。'),
+  r('b.pat.jitter.f.macro', 'Helper name', 'Имя помощника', 'Ім\'я помічника', '辅助宏名'),
+  again('b.pat.jitter', 'macro_2', 'macro'),
+  again('b.pat.jitter', 'macro_3', 'macro'),
+  r('b.pat.jitter.f.view1', 'First view', 'Первый view', 'Перший view', '第一个 view'),
+  r('b.pat.jitter.f.view2', 'Second view', 'Второй view', 'Другий view', '第二个 view'),
+
+  // 60 b.pat.paced_loop
+  r('b.pat.paced_loop', 'Loop whose pace depends on state', 'Цикл, темп которого зависит от состояния', 'Цикл, темп якого залежить від стану', '节奏随状态变化的循环'),
+  r('b.pat.paced_loop.d', 'Adds a loop that puffs a view and calls itself again. Above the speed it waits one time, below it another, so the pace follows how fast the unit moves.',
+    'Добавляет цикл, который выпускает клуб view и снова вызывает себя. Выше заданной скорости ждёт одно время, ниже другое, так темп следует за скоростью юнита.',
+    'Додає цикл, який випускає клуб view і знову викликає себе. Вище заданої швидкості чекає один час, нижче інший, тож темп іде за швидкістю юніта.',
+    '添加一个循环：播放一次 view 后再次调用自己。高于设定速度时等待一个时长，低于时等待另一个时长，节奏随单位移动速度变化。'),
+  r('b.pat.paced_loop.f.loop', 'Loop event', 'Событие цикла', 'Подія циклу', '循环事件'),
+  r('b.pat.paced_loop.f.loop.h', 'Start it with a call; stop it with kill_delay of the same name.', 'Запускайте вызовом; останавливайте kill_delay с тем же именем.', 'Запускайте викликом; зупиняйте kill_delay з тим самим ім\'ям.', '用 call 启动；用同名的 kill_delay 停止。'),
+  r('b.pat.paced_loop.f.speed', 'Fast above speed', 'Быстро выше скорости', 'Швидко вище швидкості', '高于此速度为快'),
+  r('b.pat.paced_loop.f.speed.h', 'Speed in km/h, as velocity reads it.', 'Скорость в км/ч, как её читает velocity.', 'Швидкість у км/год, як її читає velocity.', '速度，单位 km/h，与 velocity 相同。'),
+  r('b.pat.paced_loop.f.fast_wait', 'Wait when fast', 'Пауза на скорости', 'Пауза на швидкості', '快速时的等待'),
+  again('b.pat.paced_loop', 'loop_2', 'event'),
+  r('b.pat.paced_loop.f.fast_view', 'View when fast', 'View на скорости', 'View на швидкості', '快速时的 view'),
+  again('b.pat.paced_loop', 'fast_view_2', 'view'),
+  again('b.pat.paced_loop', 'loop_3', 'event'),
+  r('b.pat.paced_loop.f.slow_wait', 'Wait when slow', 'Пауза медленно', 'Пауза повільно', '慢速时的等待'),
+  again('b.pat.paced_loop', 'loop_4', 'event'),
+  r('b.pat.paced_loop.f.slow_view', 'View when slow', 'View медленно', 'View повільно', '慢速时的 view'),
+  again('b.pat.paced_loop', 'slow_view_2', 'view'),
+  again('b.pat.paced_loop', 'loop_5', 'event'),
+
+  // 61 b.pat.on_off_word
+  r('b.pat.on_off_word', 'Start and stop a loop from one event word', 'Запуск и остановка цикла одним событием', 'Запуск і зупинка циклу однією подією', '用一个事件启动和停止循环'),
+  r('b.pat.on_off_word.d', 'One reaction reads the name the event came with: "on" starts your loop, "off" stops it. The game uses this for the warm event of a steam locomotive.',
+    'Одна реакция читает имя, с которым пришло событие: "on" запускает ваш цикл, "off" останавливает. Игра так делает для события warm паровоза.',
+    'Одна реакція читає ім\'я, з яким прийшла подія: "on" запускає ваш цикл, "off" зупиняє. Гра так робить для події warm паротяга.',
+    '一个反应读取事件附带的名称："on" 启动你的循环，"off" 停止它。游戏在蒸汽机车的 warm 事件中这样使用。'),
+  r('b.pat.on_off_word.n', 'The sender must give the name on or off; the game does it for warm. A plain call from your script gives no name.',
+    'Отправитель должен передать имя on или off; игра делает это для warm. Простой call из вашего скрипта имени не передаёт.',
+    'Відправник має передати ім\'я on або off; гра робить це для warm. Простий call з вашого скрипту імені не передає.',
+    '发送方必须带上名称 on 或 off；游戏对 warm 会这样做。你脚本里的普通 call 不带名称。'),
+  r('b.pat.on_off_word.f.event', 'Event that comes', 'Входящее событие', 'Вхідна подія', '收到的事件'),
+  r('b.pat.on_off_word.f.loop', 'Loop event', 'Событие цикла', 'Подія циклу', '循环事件'),
+  again('b.pat.on_off_word', 'loop_2', 'event'),
+
+  // 62 b.pat.ripple
+  r('b.pat.ripple', 'Timed chain: each step waits for the one before', 'Цепочка по времени: шаг ждёт предыдущий', 'Ланцюжок у часі: крок чекає попередній', '定时链：每步等待上一步'),
+  r('b.pat.ripple.d', 'Runs the first step now, the second about 0.3 seconds later and the third 0.3 seconds after that, each with a small random spread. The game blows up a ship in a ripple of blasts this way.',
+    'Выполняет первый шаг сразу, второй примерно через 0.3 секунды, третий ещё через 0.3, каждый с небольшим случайным разбросом. Так игра взрывает корабль серией взрывов.',
+    'Виконує перший крок одразу, другий приблизно через 0.3 секунди, третій ще через 0.3, кожен з невеликим випадковим розкидом. Так гра підриває корабель серією вибухів.',
+    '第一步立即执行，第二步约 0.3 秒后，第三步再过 0.3 秒，每步都有少量随机偏差。游戏用这种方式让船连环爆炸。'),
+  r('b.pat.ripple.f.step1', 'First step', 'Первый шаг', 'Перший крок', '第一步'),
+  r('b.pat.ripple.f.step1.h', 'One action in braces.', 'Одно действие в фигурных скобках.', 'Одна дія у фігурних дужках.', '一个用花括号括起的动作。'),
+  r('b.pat.ripple.f.step2', 'Second step', 'Второй шаг', 'Другий крок', '第二步'),
+  r('b.pat.ripple.f.step3', 'Third step', 'Третий шаг', 'Третій крок', '第三步'),
+
+  // 63 b.pat.macro_branch
+  r('b.pat.macro_branch', 'A macro that is a whole else-branch', 'Макрос как целая ветка else', 'Макрос як ціла гілка else', '作为完整 else 分支的宏'),
+  r('b.pat.macro_branch.d', 'A helper holds a check and its action together, so each else line is one helper call. Here each try plays animation0, animation1 or animation2 with a 10% chance; if none plays, the event calls itself again.',
+    'Помощник держит проверку и её действие вместе, поэтому каждая строка else — один вызов помощника. Здесь каждая попытка с шансом 10% играет animation0, animation1 или animation2; если ничего не сыграло, событие вызывает себя снова.',
+    'Помічник тримає перевірку і її дію разом, тому кожен рядок else — один виклик помічника. Тут кожна спроба з шансом 10% грає animation0, animation1 або animation2; якщо нічого не зіграло, подія викликає себе знову.',
+    '辅助宏把条件和动作放在一起，所以每个 else 行就是一次宏调用。这里每次尝试以 10% 概率播放 animation0、animation1 或 animation2；都没播放时，事件再次调用自己。'),
+  r('b.pat.macro_branch.f.macro', 'Helper name', 'Имя помощника', 'Ім\'я помічника', '辅助宏名'),
+  r('b.pat.macro_branch.f.anim', 'Animation name start', 'Начало имени анимации', 'Початок імені анімації', '动画名前缀'),
+  r('b.pat.macro_branch.f.anim.h', 'The number 0, 1 or 2 is added after it.', 'После него добавляется номер 0, 1 или 2.', 'Після нього додається номер 0, 1 або 2.', '后面会加上编号 0、1 或 2。'),
+  r('b.pat.macro_branch.f.event', 'Event name', 'Имя события', 'Ім\'я події', '事件名'),
+  again('b.pat.macro_branch', 'macro_2', 'macro'),
+  again('b.pat.macro_branch', 'macro_3', 'macro'),
+  again('b.pat.macro_branch', 'macro_4', 'macro'),
+  again('b.pat.macro_branch', 'event_2', 'event'),
+
+  // 64 b.pat.macro_handlers
+  r('b.pat.macro_handlers', 'One macro makes start and stop handlers per index', 'Один макрос создаёт реакции старта и стопа по номеру', 'Один макрос створює реакції старту і стопу за номером', '一个宏按编号生成开始和停止反应'),
+  r('b.pat.macro_handlers.d', 'A helper writes two reactions, burn_N_start and burn_N_stop, for each number you pass. Start adds a fire effect on bone fx_fireN_1 and starts it; stop stops it.',
+    'Помощник пишет две реакции, burn_N_start и burn_N_stop, для каждого переданного номера. Старт добавляет эффект огня на кость fx_fireN_1 и запускает его; стоп останавливает.',
+    'Помічник пише дві реакції, burn_N_start і burn_N_stop, для кожного переданого номера. Старт додає ефект вогню на кістку fx_fireN_1 і запускає його; стоп зупиняє.',
+    '辅助宏为传入的每个编号写出两个反应：burn_N_start 和 burn_N_stop。开始时在骨骼 fx_fireN_1 上添加火焰特效并启动；停止时停止它。'),
+  r('b.pat.macro_handlers.n', 'Something must call burn_1_start, burn_1_stop and the others; the model needs bones fx_fire1_1, fx_fire2_1.',
+    'Кто-то должен вызывать burn_1_start, burn_1_stop и другие; в модели нужны кости fx_fire1_1, fx_fire2_1.',
+    'Хтось має викликати burn_1_start, burn_1_stop та інші; у моделі потрібні кістки fx_fire1_1, fx_fire2_1.',
+    '需要有代码调用 burn_1_start、burn_1_stop 等；模型需要骨骼 fx_fire1_1、fx_fire2_1。'),
+  r('b.pat.macro_handlers.f.macro', 'Helper name', 'Имя помощника', 'Ім\'я помічника', '辅助宏名'),
+  r('b.pat.macro_handlers.f.effect', 'Fire effect', 'Эффект огня', 'Ефект вогню', '火焰特效'),
+  again('b.pat.macro_handlers', 'macro_2', 'macro'),
+  again('b.pat.macro_handlers', 'macro_3', 'macro'),
+
+  // 65 b.pat.macro_options
+  r('b.pat.macro_options', 'Pass option words into a macro', 'Передать слова-опции в макрос', 'Передати слова-опції в макрос', '把选项词传给宏'),
+  r('b.pat.macro_options.d', 'A helper puts %params where the option words go; the caller fills them with params(...). Here the animation plays with loop and callback.',
+    'Помощник ставит %params туда, где нужны слова-опции; вызывающий заполняет их через params(...). Здесь анимация играет с loop и callback.',
+    'Помічник ставить %params туди, де потрібні слова-опції; той, хто викликає, заповнює їх через params(...). Тут анімація грає з loop і callback.',
+    '辅助宏在需要选项词的位置写 %params；调用方用 params(...) 填入。这里动画以 loop 和 callback 播放。'),
+  r('b.pat.macro_options.f.macro', 'Helper name', 'Имя помощника', 'Ім\'я помічника', '辅助宏名'),
+  r('b.pat.macro_options.f.anim', 'Animation', 'Анимация', 'Анімація', '动画'),
+  r('b.pat.macro_options.f.event', 'Event name', 'Имя события', 'Ім\'я події', '事件名'),
+  again('b.pat.macro_options', 'macro_2', 'macro'),
+  r('b.pat.macro_options.f.options', 'Option words', 'Слова-опции', 'Слова-опції', '选项词'),
+  r('b.pat.macro_options.f.options.h', 'Words separated by spaces, for example loop callback.', 'Слова через пробел, например loop callback.', 'Слова через пробіл, наприклад loop callback.', '用空格分隔的词，例如 loop callback。'),
+
+  // 66 b.pat.where_is_he
+  r('b.pat.where_is_he', 'Branch on where a soldier is (vehicle, seat, height)', 'Ветки по месту бойца (техника, место, высота)', 'Гілки за місцем бійця (техніка, місце, висота)', '按士兵所在位置分支（载具、座位、高度）'),
+  r('b.pat.where_is_he.d', 'Picks a branch by where the soldier is: in a vehicle of the given kind (in the given seat or not), linked high up (on a ladder or not), linked to something else, or not linked at all. The game chooses the death fall this way.',
+    'Выбирает ветку по месту бойца: в технике заданного вида (на заданном месте или нет), высоко (на лестнице или нет), в чём-то другом или ни к чему не привязан. Так игра выбирает падение при смерти.',
+    'Обирає гілку за місцем бійця: у техніці заданого виду (на заданому місці чи ні), високо (на драбині чи ні), у чомусь іншому або ні до чого не прив\'язаний. Так гра обирає падіння під час смерті.',
+    '按士兵所在位置选分支：在指定类型的载具中（是否在指定座位）、在高处（是否在梯子上）、在其他东西里，或完全没有附着。游戏用这种方式选择死亡时的跌落方式。'),
+  r('b.pat.where_is_he.f.host', 'Vehicle tag', 'Тег техники', 'Тег техніки', '载具标签'),
+  r('b.pat.where_is_he.f.role', 'Seat', 'Место', 'Місце', '座位'),
+  r('b.pat.where_is_he.f.in_seat', 'In that seat', 'На этом месте', 'На цьому місці', '在该座位时'),
+  r('b.pat.where_is_he.f.in_seat.h', 'One action, for example a call of your own event.', 'Одно действие, например вызов своего события.', 'Одна дія, наприклад виклик своєї події.', '一个动作，例如调用你自己的事件。'),
+  r('b.pat.where_is_he.f.in_other_seat', 'In another seat', 'На другом месте', 'На іншому місці', '在其他座位时'),
+  r('b.pat.where_is_he.f.height', 'High above (m)', 'Высота (м)', 'Висота (м)', '高度（米）'),
+  r('b.pat.where_is_he.f.on_ladder', 'On a ladder', 'На лестнице', 'На драбині', '在梯子上时'),
+  r('b.pat.where_is_he.f.up_high', 'High up, not climbing', 'Наверху, не лезет', 'Нагорі, не лізе', '在高处、未攀爬时'),
+  r('b.pat.where_is_he.f.in_other', 'In something else', 'В чём-то другом', 'У чомусь іншому', '在其他东西里时'),
+
+  // 67 b.pat.mp_branch
+  r('b.pat.mp_branch', 'Different in multiplayer, for the player, for AI', 'По-разному в мультиплеере, для игрока, для ИИ', 'По-різному в мультиплеєрі, для гравця, для ШІ', '多人模式、玩家、AI 各不相同'),
+  r('b.pat.mp_branch.d', 'One branch runs in multiplayer games, one for a unit the player controls, and the last for AI units. The game throws soldiers off vehicles differently this way.',
+    'Одна ветка работает в мультиплеере, одна — для юнита под управлением игрока, последняя — для юнитов ИИ. Так игра по-разному сбрасывает бойцов с техники.',
+    'Одна гілка працює в мультиплеєрі, одна — для юніта під керуванням гравця, остання — для юнітів ШІ. Так гра по-різному скидає бійців з техніки.',
+    '一个分支用于多人游戏，一个用于玩家控制的单位，最后一个用于 AI 单位。游戏用这种方式以不同方式把士兵甩下载具。'),
+  r('b.pat.mp_branch.f.in_mp', 'In multiplayer', 'В мультиплеере', 'У мультиплеєрі', '多人模式时'),
+  r('b.pat.mp_branch.f.in_mp.h', 'One action, for example a call of your own event.', 'Одно действие, например вызов своего события.', 'Одна дія, наприклад виклик своєї події.', '一个动作，例如调用你自己的事件。'),
+  r('b.pat.mp_branch.f.for_player', 'For the player', 'Для игрока', 'Для гравця', '玩家控制时'),
+
+  // 68 b.pat.hook_family
+  r('b.pat.hook_family', 'Base calls a hook, each variant fills it', 'База вызывает крючок, варианты его заполняют', 'База викликає гачок, варіанти його заповнюють', '基础块调用钩子，各变体来填充'),
+  r('b.pat.hook_family.d', 'The base block calls a hook event on spawn; a variant block, for units that carry both tags, fills that event with its own lines. overload makes only the variant version run. The game does this for sheds and for the numbered map flags.',
+    'Базовый блок вызывает событие-крючок в spawn; блок варианта, для юнитов с обоими тегами, заполняет его своими строками. overload делает так, что работает только версия варианта. Игра так делает для сараев и номерных флагов карты.',
+    'Базовий блок викликає подію-гачок у spawn; блок варіанта, для юнітів з обома тегами, заповнює її своїми рядками. overload робить так, що працює лише версія варіанта. Гра так робить для сараїв і номерних прапорів мапи.',
+    '基础块在 spawn 时调用一个钩子事件；变体块（用于同时带两个标签的单位）用自己的代码填充该事件。overload 使只有变体版本运行。游戏对棚屋和带编号的地图旗帜这样做。'),
+  r('b.pat.hook_family.f.base', 'Base tags', 'Базовые теги', 'Базові теги', '基础标签'),
+  r('b.pat.hook_family.f.hook', 'Hook event', 'Событие-крючок', 'Подія-гачок', '钩子事件'),
+  r('b.pat.hook_family.f.variant', 'Variant tag', 'Тег варианта', 'Тег варіанта', '变体标签'),
+  r('b.pat.hook_family.f.variant.h', 'The unit must carry this tag and the base tags.', 'У юнита должны быть этот тег и базовые теги.', 'Юніт має мати цей тег і базові теги.', '单位必须同时带有此标签和基础标签。'),
+  again('b.pat.hook_family', 'base_2', 'tags'),
+  again('b.pat.hook_family', 'hook_2', 'event'),
+
+  // 69 b.pat.cleanup
+  r('b.pat.cleanup', 'Clean up loops and sounds on death', 'Остановить циклы и звуки при гибели', 'Зупинити цикли і звуки під час загибелі', '死亡时清理循环和声音'),
+  r('b.pat.cleanup.d', 'Stops a looping sound, stops an effect, ends a running loop timer and tags the unit "destroyed", so other reactions can tell it is a wreck.',
+    'Останавливает зацикленный звук и эффект, завершает таймер цикла и ставит юниту тег "destroyed", чтобы другие реакции знали, что это обломки.',
+    'Зупиняє зациклений звук і ефект, завершує таймер циклу і ставить юніту тег "destroyed", щоб інші реакції знали, що це уламки.',
+    '停止循环声音和特效，结束正在运行的循环计时器，并给单位加上 "destroyed" 标签，让其他反应知道它已是残骸。'),
+  r('b.pat.cleanup.n', 'Use the names of the loops, sounds and views your unit really uses.', 'Укажите имена циклов, звуков и view, которые юнит действительно использует.', 'Вкажіть імена циклів, звуків і view, які юніт справді використовує.', '填写单位实际使用的循环、声音和 view 名。'),
+  r('b.pat.cleanup.f.loop_sound', 'Looping sound', 'Зацикленный звук', 'Зациклений звук', '循环声音'),
+  r('b.pat.cleanup.f.fx', 'Effect view', 'View эффекта', 'View ефекту', '特效 view'),
+  r('b.pat.cleanup.f.loop', 'Loop timer', 'Таймер цикла', 'Таймер циклу', '循环计时器'),
+  r('b.pat.cleanup.f.loop.h', 'The name of a named delay.', 'Имя именованной задержки (delay).', 'Ім\'я іменованої затримки (delay).', '具名 delay 的名称。'),
+
+  // 70 b.pat.wreck_guard
+  r('b.pat.wreck_guard', 'Ignore everything once it is a wreck', 'Ничего не делать, если это обломки', 'Нічого не робити, якщо це уламки', '成为残骸后忽略一切'),
+  r('b.pat.wreck_guard.d', 'Wraps your lines so they run only while the unit is not tagged "destroyed". The game tags a vehicle so when it blows up.',
+    'Оборачивает ваши строки, чтобы они работали, только пока у юнита нет тега "destroyed". Игра ставит этот тег технике при взрыве.',
+    'Обгортає ваші рядки, щоб вони працювали, лише поки юніт не має тегу "destroyed". Гра ставить цей тег техніці під час вибуху.',
+    '包住你的代码，只在单位没有 "destroyed" 标签时运行。游戏在载具爆炸时会打上这个标签。'),
+
+  // 71 b.pat.heartbeat
+  r('b.pat.heartbeat', 'Heartbeat only while manned', 'Пульс, только пока есть экипаж', 'Пульс, лише поки є екіпаж', '仅在有人操作时运行的心跳'),
+  r('b.pat.heartbeat.d', 'When the unit becomes operable it starts your loop 0.3 seconds later; when it stops being operable both timers are ended. The game checks for sinking this way.',
+    'Когда юнит становится управляемым, через 0.3 секунды запускается ваш цикл; когда перестаёт, оба таймера завершаются. Так игра проверяет, тонет ли техника.',
+    'Коли юніт стає керованим, через 0.3 секунди запускається ваш цикл; коли перестає, обидва таймери завершуються. Так гра перевіряє, чи тоне техніка.',
+    '单位变为可操作后 0.3 秒启动你的循环；不再可操作时两个计时器都被结束。游戏用这种方式检查载具是否下沉。'),
+  r('b.pat.heartbeat.n', 'The loop event must reschedule itself with a named delay of the same name, like {delay 0.5 "check_sinking" {call "check_sinking"}}.',
+    'Событие цикла должно само себя перезапускать именованной задержкой с тем же именем, например {delay 0.5 "check_sinking" {call "check_sinking"}}.',
+    'Подія циклу має сама себе перезапускати іменованою затримкою з тим самим ім\'ям, наприклад {delay 0.5 "check_sinking" {call "check_sinking"}}.',
+    '循环事件必须用同名的具名 delay 重新安排自己，例如 {delay 0.5 "check_sinking" {call "check_sinking"}}。'),
+  r('b.pat.heartbeat.f.start', 'Start timer', 'Таймер старта', 'Таймер старту', '启动计时器'),
+  r('b.pat.heartbeat.f.loop', 'Loop event', 'Событие цикла', 'Подія циклу', '循环事件'),
+  again('b.pat.heartbeat', 'start_2', 'timer'),
+  again('b.pat.heartbeat', 'loop_2', 'timer'),
+
+  // 72 b.pat.two_state
+  r('b.pat.two_state', 'Two-state switch with tags and volumes', 'Переключатель двух состояний с тегами и volume', 'Перемикач двох станів з тегами і volume', '带标签和 volume 的双状态开关'),
+  r('b.pat.two_state.d', 'Switches to state A: turns the touch volume of B off and that of A on, and swaps the state tags. Add a second copy with A and B swapped for the way back, as the game does for railway points.',
+    'Переключает в состояние A: выключает touch-volume B и включает volume A, меняет теги состояния. Для обратного пути добавьте вторую копию с A и B наоборот, как игра делает для стрелок.',
+    'Перемикає в стан A: вимикає touch-volume B і вмикає volume A, міняє теги стану. Для зворотного шляху додайте другу копію з A і B навпаки, як гра робить для стрілок.',
+    '切换到状态 A：关闭 B 的 touch volume、打开 A 的，并交换状态标签。再加一份 A、B 互换的副本用于切回，游戏的铁路道岔就是这样做的。'),
+  r('b.pat.two_state.n', 'Both volumes must be named in the unit .def.', 'Оба volume должны быть заданы в .def юнита.', 'Обидва volume мають бути задані в .def юніта.', '两个 volume 都必须在单位 .def 中命名。'),
+  r('b.pat.two_state.f.to_a', 'Switch event', 'Событие переключения', 'Подія перемикання', '切换事件'),
+  r('b.pat.two_state.f.vol_b', 'Volume to turn off', 'Volume выключить', 'Volume вимкнути', '要关闭的 volume'),
+  r('b.pat.two_state.f.vol_a', 'Volume to turn on', 'Volume включить', 'Volume увімкнути', '要打开的 volume'),
+  r('b.pat.two_state.f.state_a', 'Tag to add', 'Тег добавить', 'Тег додати', '要添加的标签'),
+  r('b.pat.two_state.f.state_b', 'Tag to remove', 'Тег убрать', 'Тег прибрати', '要移除的标签'),
+
+  // 73 b.pat.latch_delay
+  r('b.pat.latch_delay', 'Arm once on landing, act a few seconds later', 'Взвести при падении, сработать через пару секунд', 'Звести під час падіння, спрацювати за кілька секунд', '落地时只布防一次，几秒后触发'),
+  r('b.pat.latch_delay.d', 'When an activated item first hits the ground, a flag makes sure it arms only once; under water it just hides, otherwise your event is called after a few seconds. The game times smoke shells this way.',
+    'Когда активированный предмет впервые касается земли, флаг следит, чтобы он взвёлся только раз; под водой он просто прячется, иначе через несколько секунд вызывается ваше событие. Так игра отсчитывает дымовые мины.',
+    'Коли активований предмет уперше торкається землі, прапорець стежить, щоб він звівся лише раз; під водою він просто ховається, інакше за кілька секунд викликається ваша подія. Так гра відлічує димові міни.',
+    '已激活的物品第一次触地时，用一个标志确保只布防一次；在水下就直接隐藏，否则几秒后调用你的事件。游戏的烟雾弹就是这样计时的。'),
+  r('b.pat.latch_delay.n', 'The block needs the event it calls (activate in the game).', 'В блоке нужно вызываемое событие (в игре activate).', 'У блоці потрібна подія, яку викликають (у грі activate).', '块中需要被调用的事件（游戏中是 activate）。'),
+  r('b.pat.latch_delay.f.flag', 'Armed flag', 'Флаг взвода', 'Прапорець зведення', '布防标志'),
+  again('b.pat.latch_delay', 'flag_2', 'flag'),
+  r('b.pat.latch_delay.f.seconds', 'Delay', 'Задержка', 'Затримка', '延迟'),
+  r('b.pat.latch_delay.f.event', 'Event to call', 'Вызываемое событие', 'Подія для виклику', '要调用的事件'),
+
+  // 74 b.pat.not_bridge
+  r('b.pat.not_bridge', 'Crater only when not on a bridge and not under water', 'Воронка, только если не на мосту и не под водой', 'Вирва, лише якщо не на мосту і не під водою', '仅在不在桥上且不在水下时留弹坑'),
+  r('b.pat.not_bridge.d', 'Calls your crater event only when the ground under the unit is not a bridge and the unit is not under water. The game does this when a vehicle blows up.',
+    'Вызывает событие воронки, только если под юнитом не мост и он не под водой. Игра так делает при взрыве техники.',
+    'Викликає подію вирви, лише якщо під юнітом не міст і він не під водою. Гра так робить під час вибуху техніки.',
+    '只在单位下方的地面不是桥、且单位不在水下时调用弹坑事件。游戏在载具爆炸时这样做。'),
+  r('b.pat.not_bridge.n', 'The block needs the event it calls (spawn_shellhole in the game).', 'В блоке нужно вызываемое событие (в игре spawn_shellhole).', 'У блоці потрібна подія, яку викликають (у грі spawn_shellhole).', '块中需要被调用的事件（游戏中是 spawn_shellhole）。'),
+  r('b.pat.not_bridge.f.ground', 'Ground to skip', 'Пропустить землю', 'Пропустити землю', '要跳过的地面'),
+  r('b.pat.not_bridge.f.event', 'Crater event', 'Событие воронки', 'Подія вирви', '弹坑事件')
+];

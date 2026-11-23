@@ -1,0 +1,1 @@
+{"name":"q2","mode":"mp","map":"mp_test","sameLaunch":true,"steps":[{"cmd":"echo two"}],"verdict":[{"reply":"mp_state","path":"sides.0.unitsAlive","op":">=","value":5}]}

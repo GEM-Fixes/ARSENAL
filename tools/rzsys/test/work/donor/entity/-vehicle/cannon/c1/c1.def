@@ -1,0 +1,4 @@
+{entity
+{props "vehicle" "cannon" "big_weapons"}
+{weapon "75mm_x" filled}
+}

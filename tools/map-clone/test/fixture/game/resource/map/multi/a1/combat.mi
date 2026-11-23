@@ -1,0 +1,8 @@
+{mission
+	; a1
+	{Entity "x" 0xc000
+		{Ref "map/multi/a1/combat"}
+		{Same "a1"}
+		{Other "a1_b"}
+	}
+}

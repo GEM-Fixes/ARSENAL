@@ -1,0 +1,218 @@
+{
+ "form": "limclass/1",
+ "area": "MOV",
+ "rows": {
+  "MOV-01": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unknown key gives unexpected token, load stops"
+  },
+  "MOV-02": {
+   "chk": "built",
+   "class": "silent",
+   "why": "bad gear list only logged"
+  },
+  "MOV-03": {
+   "chk": "built",
+   "class": "silent",
+   "why": "omitted TurnTime makes near-instant turns, no message"
+  },
+  "MOV-04": {
+   "chk": "built",
+   "class": "silent",
+   "why": "second Locomotion resets speeds quietly"
+  },
+  "MOV-05": {
+   "chk": "never",
+   "class": "silent",
+   "never": "engine behaviour; tuning only matters in direct control",
+   "why": "value has no effect on ordered moves"
+  },
+  "MOV-06": {
+   "chk": "never",
+   "class": "silent",
+   "never": "engine speed rule, not a data error",
+   "why": "MaxSpeed ignored for ordered moves"
+  },
+  "MOV-07": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unordered speeds give odd gait, no message"
+  },
+  "MOV-08": {
+   "chk": "never",
+   "class": "info",
+   "never": "engine formula, nothing to mistype",
+   "why": "engine terrain speed rule"
+  },
+  "MOV-09": {
+   "chk": "never",
+   "class": "silent",
+   "never": "fixed engine ground list",
+   "why": "material types have no speed effect"
+  },
+  "MOV-10": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unknown terrain maps to undef, logs only"
+  },
+  "MOV-11": {
+   "chk": "never",
+   "class": "silent",
+   "never": "engine rule on AI vs player movers",
+   "why": "player orders still enter blocked terrain"
+  },
+  "MOV-12": {
+   "chk": "built",
+   "class": "silent",
+   "why": "omitted terrain type costs 0"
+  },
+  "MOV-13": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unit fails to load, Wrong pather name"
+  },
+  "MOV-14": {
+   "chk": "never",
+   "class": "silent",
+   "never": "engine pathing; needs map and game",
+   "why": "steep routes not planned, no message"
+  },
+  "MOV-15": {
+   "chk": "never",
+   "class": "silent",
+   "never": "pathing tuning, runtime",
+   "why": "obstacle cost is flat, detours unexpected"
+  },
+  "MOV-16": {
+   "chk": "never",
+   "class": "silent",
+   "never": "runtime order state",
+   "why": "move order fails quietly, no replan"
+  },
+  "MOV-17": {
+   "chk": "never",
+   "class": "info",
+   "never": "duplicate row",
+   "why": "duplicate of MAP-06"
+  },
+  "MOV-18": {
+   "chk": "never",
+   "class": "silent",
+   "never": "runtime stuck counter",
+   "why": "move order fails after 21 escape tries"
+  },
+  "MOV-19": {
+   "chk": "never",
+   "class": "silent",
+   "never": "engine chassis behaviour",
+   "why": "wheeled unit cannot turn in place"
+  },
+  "MOV-20": {
+   "chk": "built",
+   "class": "silent",
+   "why": "missing pivot bones give warning, wrong steering"
+  },
+  "MOV-21": {
+   "chk": "never",
+   "class": "silent",
+   "never": "engine physics rule",
+   "why": "vehicle cannot climb past MaxSlope"
+  },
+  "MOV-22": {
+   "chk": "never",
+   "class": "silent",
+   "never": "runtime physics state",
+   "why": "tilted vehicle cannot be crewed"
+  },
+  "MOV-23": {
+   "chk": "never",
+   "class": "silent",
+   "never": "runtime ground type",
+   "why": "swim request ignored on land"
+  },
+  "MOV-24": {
+   "chk": "built",
+   "class": "crash",
+   "why": "7th Strafe entry: fatal error with message at load"
+  },
+  "MOV-25": {
+   "chk": "never",
+   "class": "silent",
+   "never": "runtime physics threshold",
+   "why": "fast vehicles plough through blockers"
+  },
+  "MOV-26": {
+   "chk": "built",
+   "class": "silent",
+   "why": "groups past 32 fail without clear message"
+  },
+  "MOV-27": {
+   "chk": "never",
+   "class": "info",
+   "never": "engine flag meaning",
+   "why": "fact about a flag in vanilla humans"
+  },
+  "MOV-28": {
+   "chk": "never",
+   "class": "silent",
+   "never": "runtime physics timing",
+   "why": "impulse inside 0.5 s ignored"
+  },
+  "MOV-29": {
+   "chk": "never",
+   "class": "cosmetic",
+   "never": "cannot fire, no static case",
+   "why": "log line, cannot fire per row note"
+  },
+  "MOV-30": {
+   "chk": "never",
+   "class": "silent",
+   "never": "runtime target ground type",
+   "why": "boat order fails to shore targets"
+  },
+  "MOV-31": {
+   "chk": "never",
+   "class": "silent",
+   "tool": "movlint",
+   "how": "tractor/trailer tags and link1/link2 bones present within 12 m in .mdl",
+   "why": "tow hook attach fails quietly beyond 12 m",
+   "never": "vanilla tags and link bones disagree both ways; bones also serve boarding"
+  },
+  "MOV-32": {
+   "chk": "never",
+   "class": "info",
+   "never": "engine fact",
+   "why": "ocean is visual only"
+  },
+  "MOV-33": {
+   "chk": "built",
+   "class": "info",
+   "why": "console var facts, live probe check"
+  },
+  "MOV-34": {
+   "chk": "built",
+   "class": "silent",
+   "why": "warning only, steering wrong"
+  }
+ },
+ "dead": [
+  {
+   "row": "MOV-13",
+   "tool": "movlint",
+   "code": "WARN_PATHER_UNKNOWN",
+   "fix": {
+    "code": "PATHER_UNKNOWN"
+   }
+  },
+  {
+   "row": "MOV-33",
+   "tool": "cvarcheck",
+   "code": "CVAR_ABSENT",
+   "fix": {
+    "code": null,
+    "why": "cvarcheck retired to tools/_retired"
+   }
+  }
+ ]
+}

@@ -1,0 +1,9 @@
+{"form":"nativerules/1","rules":[
+{"id":"extender-01","key":"entity/extender:smokescreen","class":"*","act":"keep","why":"as64 registers the smokescreen extender; vanilla peers lack it by chance","tag":"V"},
+{"id":"extender-02","key":"entity/extender:smokescreen/cooldown","class":"*","act":"keep","why":"as64 smokescreen extender reads cooldown seconds","tag":"V"},
+{"id":"extender-03","key":"entity/extender:cannon/trailing","class":"*","act":"keep","why":"as64 cannon extender reads a trailing group","tag":"V"},
+{"id":"extender-04","key":"entity/extender:cannon/trailing/workers","class":"*","act":"keep","why":"as64 cannon extender reads workers inside trailing","tag":"V"},
+{"id":"extender-05","key":"entity/extender:shield/off","class":"*","act":"keep","why":"as64 shield extender reads off beside on","tag":"V"},
+{"id":"extender-06","key":"entity/weaponry/place/gunner","class":"*","act":"keep","why":"as64 weapon place reads Gunner","tag":"V"},
+{"id":"extender-07","key":"entity/weaponry/restoreiktime","class":"*","act":"keep","why":"as64 weaponry reads RestoreIKTime seconds","tag":"V"}
+]}

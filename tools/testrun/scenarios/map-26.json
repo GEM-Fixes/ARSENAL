@@ -1,0 +1,76 @@
+{
+  "name": "map-26",
+  "rows": [
+    "MAP-26"
+  ],
+  "mode": "mp",
+  "fixture": [
+    "map-26"
+  ],
+  "mods": [
+    "as64+",
+    "map-26"
+  ],
+  "params": {
+    "map": "multi/1v1_road:combat"
+  },
+  "prepare": [
+    {
+      "argv": [
+        "node",
+        "tools/clone-entity/clone-entity.js",
+        "--game",
+        "{game}",
+        "--out",
+        "{mods}/map-26",
+        "--entity",
+        "flag_ring",
+        "--as",
+        "trs_m26",
+        "--copy-assets"
+      ]
+    },
+    {
+      "argv": [
+        "node",
+        "tools/place-entity/place-entity.js",
+        "{mods}/map-26",
+        "--game",
+        "{game}",
+        "--mods",
+        "map-26",
+        "--map",
+        "multi/1v1_road",
+        "--entity",
+        "trs_m26",
+        "--pos",
+        "-220,-800"
+      ]
+    }
+  ],
+  "src": [
+    "(not part of this release)",
+    "(not part of this release)",
+    "(not part of this release)"
+  ],
+  "note": "single-machine half only: map {Entity \"trs_m26\"} resolves the mod def (no \"define not found\" in game.log, map starts). The MP half of the row (client without the mod fails/desyncs) needs a second machine: not scripted.",
+  "steps": [
+    {
+      "wait": 5
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "log": "define not found[^\\n]*trs_m26",
+      "want": false
+    },
+    {
+      "log": "trs_m26[^\\n]*(not found|unknown)",
+      "want": false
+    }
+  ]
+}

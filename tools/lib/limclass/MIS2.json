@@ -1,0 +1,206 @@
+{
+  "form": "limclass/1",
+  "area": "MIS2",
+  "rows": {
+    "MIS-30": {
+      "chk": "built",
+      "class": "review",
+      "why": "dangling ref exists in vanilla; intent decides"
+    },
+    "MIS-31": {
+      "chk": "built",
+      "class": "info",
+      "why": "tool detection is partial; fact about the lint"
+    },
+    "MIS-32": {
+      "chk": "built",
+      "class": "silent",
+      "why": "stale names: bot never buys, no error"
+    },
+    "MIS-33": {
+      "chk": "never",
+      "class": "silent",
+      "why": "Lua error returns nil, silent idle bot",
+      "never": "runtime Lua error, only game.log shows it"
+    },
+    "MIS-34": {
+      "chk": "never",
+      "class": "silent",
+      "why": "switch runs every case on old build",
+      "never": "engine build bug, not mod content"
+    },
+    "MIS-35": {
+      "chk": "built",
+      "class": "crash",
+      "why": "Block terminator expected at map load",
+      "tool": "milint",
+      "how": "condition terms: each term must be its own {\"n.kind\" ...} block, no bare strings"
+    },
+    "MIS-36": {
+      "chk": "built",
+      "class": "silent",
+      "why": "near fires early, no message",
+      "tool": "milint",
+      "how": "near term distance above about 100: warn it is metres, units/20 suspected"
+    },
+    "MIS-37": {
+      "chk": "never",
+      "class": "silent",
+      "why": "team army override answered ok but ignored",
+      "never": "runtime console answer, not mod content"
+    },
+    "MIS-38": {
+      "chk": "never",
+      "class": "silent",
+      "why": "wrong player number: selector empty",
+      "never": "slot-to-side numbering known only live"
+    },
+    "MIS-39": {
+      "chk": "never",
+      "class": "silent",
+      "why": "placed vehicles empty, no message",
+      "tool": "milint",
+      "how": "vehicle placed in .mi without crew: warn, crew by trigger or buy",
+     "never": "empty owned vehicles are normal vanilla intent; no defect signal"
+    },
+    "MIS-40": {
+      "chk": "built",
+      "class": "crash",
+      "why": "access violation in mission trigger",
+      "tool": "milint",
+      "how": "actor_state command whose selector has player but no {type human}"
+    },
+    "MIS-41": {
+      "chk": "built",
+      "class": "crash",
+      "why": "access violation when trigger runs",
+      "tool": "milint",
+      "how": "camera_follow_bone command in a mission of a multiplayer mode"
+    },
+    "MIS-42": {
+      "chk": "built",
+      "class": "silent",
+      "why": "vehicle never reads dead, score never fires",
+      "tool": "milint",
+      "how": "{state dead} condition on a selector of vehicles: suggest not moveable"
+    },
+    "MIS-43": {
+      "chk": "never",
+      "class": "silent",
+      "why": "destroyed entity gone from selector",
+      "never": "runtime selector timing, needs intent"
+    },
+    "MIS-44": {
+      "chk": "never",
+      "class": "silent",
+      "why": "empty vehicle gets no shots",
+      "never": "runtime AI targeting, reason unread"
+    },
+    "MIS-45": {
+      "chk": "never",
+      "class": "silent",
+      "why": "match ends early, no warning",
+      "never": "runtime team membership, depends on players"
+    },
+    "MIS-46": {
+      "chk": "never",
+      "class": "silent",
+      "why": "Spawn return true for unknown card",
+      "never": "return value use inside Lua logic, intent needed"
+    },
+    "MIS-47": {
+      "chk": "built",
+      "class": "silent",
+      "why": "game_speed has no effect in MP",
+      "tool": "milint",
+      "how": "game_speed command in a mission of a multiplayer mode: no effect"
+    },
+    "MIS-48": {
+      "chk": "built",
+      "class": "crash",
+      "why": "fatal at map load",
+      "tool": "milint",
+      "how": "trigger with empty {actions} block"
+    },
+    "MIS-49": {
+      "chk": "never",
+      "class": "silent",
+      "why": "not inactive does not drop entity",
+      "never": "runtime selector state, depends on world"
+    },
+    "MIS-50": {
+      "chk": "built",
+      "class": "crash",
+      "why": "access violation on buy",
+      "tool": "refcheck",
+      "how": "card content entities missing from mounted mods and vanilla, crewed veh(crew) form"
+    },
+    "MIS-51": {
+      "chk": "built",
+      "class": "crash",
+      "why": "empty spawn entity: crash or skip, outcome untested"
+    },
+    "MIS-52": {
+      "chk": "never",
+      "class": "silent",
+      "why": "order refused with warning, no order runs",
+      "never": "needs runtime boarding state"
+    },
+    "MIS-53": {
+      "chk": "built",
+      "class": "silent",
+      "why": "component term dropped, count true at once",
+      "tool": "milint",
+      "how": "standard selector containing destroyed_components or broken_components"
+    },
+    "MIS-54": {
+      "chk": "never",
+      "class": "review",
+      "why": "test strategy: state is a weak kill test",
+      "never": "kill-test choice depends on intent"
+    },
+    "MIS-55": {
+      "chk": "never",
+      "class": "review",
+      "why": "state true at start; not a kill test",
+      "never": "kill-test choice depends on intent"
+    },
+    "MIS-56": {
+      "chk": "never",
+      "class": "review",
+      "why": "broken includes destroyed; intent decides",
+      "never": "intent decides which damage level"
+    },
+    "MIS-57": {
+      "chk": "never",
+      "class": "review",
+      "why": "dead matches knocked out too; intent decides",
+      "never": "intent decides what counts as a kill"
+    },
+    "MIS-58": {
+      "chk": "never",
+      "class": "silent",
+      "why": "kill mark on gun never fires",
+      "never": "runtime damage behaviour, needs the game"
+    },
+    "MIS-59": {
+      "chk": "never",
+      "class": "silent",
+      "why": "kill mark on soft truck never fires",
+      "never": "runtime damage behaviour, needs the game"
+    },
+    "MIS-60": {
+      "chk": "never",
+      "class": "info",
+      "why": "mode clone loads; flags untested",
+      "never": "tool run result; nothing to hit"
+    },
+    "MIS-61": {
+      "chk": "never",
+      "class": "silent",
+      "why": "match ends at 17 s, no message",
+      "never": "lobby choice at run time, not in files"
+    }
+  },
+  "dead": []
+}

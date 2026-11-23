@@ -1,0 +1,216 @@
+{
+ "form": "limmap/1",
+ "part": "fix-2",
+ "codes": {
+  "FIX_QUARANTINE_NOT_MINE": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/crashfix.js:152",
+   "class": "tool",
+   "why": "tool refuses to delete a def from another layer"
+  },
+  "FIX_QUARANTINE_REFCHECK_FAILED": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/crashfix.js:144",
+   "class": "tool",
+   "why": "path checker could not load the mod"
+  },
+  "FIX_QUARANTINE_UNNAMED": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/crashfix.js:154",
+   "class": "tool",
+   "why": "tool cannot name the crash entities"
+  },
+  "FIX_REFCHECK_FAILED": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/fix.js:140",
+   "class": "tool",
+   "why": "path checker could not load the mod"
+  },
+  "FIX_REPOINTED": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/fix.js:218",
+   "class": "info",
+   "why": "summary line of one applied path edit"
+  },
+  "FIX_REPOINT_AMBIGUOUS": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/edits.js:72",
+   "class": "tool",
+   "why": "several candidate files, tool will not guess"
+  },
+  "FIX_REPOINT_NON_ASCII": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/edits.js:73",
+   "class": "tool",
+   "why": "candidate path has odd characters, tool refuses"
+  },
+  "FIX_REPOINT_NOT_MINE": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/edits.js:53",
+   "class": "tool",
+   "why": "file wins from another layer, tool will not edit"
+  },
+  "FIX_REPOINT_NOT_ON_LINE": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/edits.js:81",
+   "class": "tool",
+   "why": "value not found once on the finding line"
+  },
+  "FIX_REPOINT_NO_CANDIDATE": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/edits.js:72",
+   "class": "tool",
+   "why": "no same-name file to repoint to"
+  },
+  "FIX_REPOINT_PARSE": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/edits.js:50",
+   "class": "tool",
+   "why": "cannot read path from the finding message"
+  },
+  "FIX_SET": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/fix.js:218",
+   "class": "info",
+   "why": "summary line of one applied --set edit"
+  },
+  "FIX_SET_BAD_SPEC": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/edits.js:99",
+   "class": "tool",
+   "why": "--set argument not file:path=value"
+  },
+  "FIX_SET_NO_FILE": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/edits.js:109",
+   "class": "tool",
+   "why": "--set file not in the vfs"
+  },
+  "FIX_SET_SKIPPED": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/fix.js:163",
+   "class": "tool",
+   "why": "--set given but --only excludes it"
+  },
+  "FIX_SOURCE_TOUCHED": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/fix.js:235",
+   "class": "tool",
+   "why": "tool guard: a source file would change"
+  },
+  "FIX_STUBMTL_BINHDR_FAILED": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/crashfix.js:109",
+   "class": "tool",
+   "why": "binhdr run did not finish"
+  },
+  "FIX_STUBMTL_NOT_MINE": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/crashfix.js:126",
+   "class": "tool",
+   "why": "mesh wins from another layer, tool will not stub"
+  },
+  "FIX_STUBMTL_NO_SOURCE": {
+   "tool": "fix",
+   "sev": "review",
+   "lim": [
+    "FMT-03"
+   ],
+   "at": "tools/fix/lib/crashfix.js:133",
+   "class": "crash",
+   "why": "missing .mtl crashes at mesh load, no sibling to copy"
+  },
+  "FIX_STUBMTL_PARSE": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/crashfix.js:128",
+   "class": "tool",
+   "why": "cannot read .mtl key from the finding"
+  },
+  "FIX_STUBMTL_UNREFERENCED": {
+   "tool": "fix",
+   "sev": "review",
+   "lim": [
+    "FMT-03"
+   ],
+   "at": "tools/fix/fix.js:159",
+   "class": "info",
+   "why": "unreached mesh with missing .mtl is harmless"
+  },
+  "LNG_NOT_UTF8": {
+   "tool": "fix",
+   "sev": "review",
+   "lim": [
+    "LOC-05"
+   ],
+   "at": "tools/packer/packer.js:63",
+   "class": "silent",
+   "why": "non-UTF-8 .lng shows U+FFFD for non-ASCII chars"
+  },
+  "NO_TAGS": {
+   "tool": "fix",
+   "sev": "cosmetic",
+   "lim": [
+    "LOC-05"
+   ],
+   "at": "tools/lnglint/lnglint.js:75",
+   "class": "crash",
+   "why": ".lng root must be {tags, else fatal Identifier expected"
+  },
+  "PATCH_NOT_SDL": {
+   "tool": "fix",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/fix/lib/edits.js:115",
+   "class": "tool",
+   "why": "patch-entity could not parse the target file"
+  },
+  "QUARANTINE_REFUSED": {
+   "tool": "fix",
+   "sev": "review",
+   "lim": [
+    "ENG-37"
+   ],
+   "at": "tools/fix/lib/crashfix.js:168",
+   "class": "crash",
+   "why": "armor ref to deleted def is a null deref"
+  }
+ }
+}

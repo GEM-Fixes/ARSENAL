@@ -1,0 +1,39 @@
+name: 'MoW AS2 mod lint'
+description: 'Run as2 linters (sdllint, keylint, ...) on a Men of War: Assault Squad 2 mod folder; upload SARIF to code scanning'
+inputs:
+  path:
+    description: 'Mod folder (repo-relative)'
+    required: false
+    default: '.'
+  tools:
+    description: 'Space-separated as2 tools to run'
+    required: false
+    default: 'sdllint keylint'
+  fail-on:
+    description: 'Fail the job on findings at this level: error, warning or none'
+    required: false
+    default: 'error'
+runs:
+  using: composite
+  steps:
+    - name: Run linters
+      shell: bash
+      run: |
+        set -u
+        mkdir -p "$RUNNER_TEMP/as2-sarif"
+        files=()
+        for t in ${{ inputs.tools }}; do
+          node "${{ github.action_path }}/../../as2/as2.js" "$t" "${{ inputs.path }}" --format sarif -q > "$RUNNER_TEMP/as2-sarif/$t.sarif"
+          files+=("$RUNNER_TEMP/as2-sarif/$t.sarif")
+        done
+        rc=0
+        node "${{ github.action_path }}/merge-sarif.js" "$RUNNER_TEMP/as2-sarif/merged.sarif" --prefix "${{ inputs.path }}" --fail-on "${{ inputs.fail-on }}" "${files[@]}" || rc=$?
+        echo "sarif=$RUNNER_TEMP/as2-sarif/merged.sarif" >> "${GITHUB_OUTPUT:-/dev/null}"
+        exit $rc
+      id: lint
+    - name: Upload SARIF
+      if: always() && hashFiles(format('{0}/as2-sarif/merged.sarif', runner.temp)) != ''
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ runner.temp }}/as2-sarif/merged.sarif
+        category: as2-lint

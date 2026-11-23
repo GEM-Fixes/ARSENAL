@@ -1,0 +1,9 @@
+{
+  "note": "Settings of ARSENAL Setup (tools/installer/build.js). nodeInstallers: the official Node.js installers for the whole computer, sha256 from https://nodejs.org/dist/v26.13.0/SHASUMS256.txt, read 2026-11-15; the version must equal tools/dist/launch/node-pin.json (Linux uses that file's tar.gz rows). historical: the download link of the historical index, its sha256 and size in bytes; empty url = the installer shows it as not available yet.",
+  "nodeInstallers": {
+    "windows-x64": { "file": "node-v26.13.0-x64.msi", "sha256": "0e5ee99c7cbf922887f04af268e3665990748945336a44956f47cc0df695b6df" },
+    "windows-arm64": { "file": "node-v26.13.0-arm64.msi", "sha256": "a9d7e34eaeeadd4ecbd9f0795f49f9d2c2625e63fc4e2f77709f039497f57033" },
+    "darwin": { "file": "node-v26.13.0.pkg", "sha256": "445b202997c959dddbd54ad8c82956371b495b03c73d56044a6f82dfb3249c46" }
+  },
+  "historical": { "url": "", "sha256": "", "bytes": 0 }
+}

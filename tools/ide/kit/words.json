@@ -1,0 +1,712 @@
+{
+ "src": {
+  "events": "tools/ialint/ialint.js EVENTS minus inflammation_time",
+  "terrainEvents": "set/interaction_terrain/effects (hit, detonate; bullet never fires)",
+  "conditions": " REGISTER_CONDITION",
+  "actions": "tools/fxlint/actions.json actions",
+  "containers": "tools/fxlint/actions.json containers without if, delay, delay_ex; plus tear",
+  "valueBlocks": "blocks that hold values, not actions",
+  "ctxOfEvent": "design Appendix B",
+  "ctxOfCond": "design Appendix B",
+  "ctxOfAct": "the pieces' watch-outs (volume, part or the other unit)",
+  "terrains": "set/interaction_terrain/terrains.set block names",
+  "ables": "engine ability names plus exploded, collect",
+  "places": "tools/ialint/ialint.js VANILLA_PLACES",
+  "helperEvents": "set/interaction_entity/** (define) bodies, events of the helpers they call included"
+ },
+ "events": [
+  "accelerate",
+  "animation_end",
+  "blast",
+  "blast_hit",
+  "blow",
+  "board",
+  "brake",
+  "break",
+  "break_armor",
+  "break_armor_again",
+  "bullet_hit",
+  "contact",
+  "crew",
+  "engine",
+  "fire",
+  "ground_hit",
+  "grounded",
+  "ik",
+  "move",
+  "movement_mode_changed",
+  "operatable",
+  "overlap",
+  "pierce",
+  "repair",
+  "spawn",
+  "swim",
+  "terrain_fx",
+  "terrain_pp",
+  "turn"
+ ],
+ "terrainEvents": [
+  "hit",
+  "detonate",
+  "bullet"
+ ],
+ "conditions": [
+  "able",
+  "air",
+  "altitude",
+  "boarding",
+  "bone",
+  "broken",
+  "burned",
+  "can_crush",
+  "chassis",
+  "component",
+  "contact_velocity",
+  "crew_in_place",
+  "dead",
+  "destroyed",
+  "difficulty",
+  "effector",
+  "effector_velocity",
+  "explosive_amount",
+  "fallen",
+  "false",
+  "flora_regenerate",
+  "fogged",
+  "has_place",
+  "hit_side",
+  "impregnable",
+  "inactive",
+  "kill_flags",
+  "linked",
+  "lying",
+  "material",
+  "min_energy",
+  "min_mass",
+  "min_speed",
+  "mine_effector",
+  "mined",
+  "move_backward",
+  "move_forward",
+  "name",
+  "operatable",
+  "personage",
+  "place",
+  "rain",
+  "rand",
+  "senseless",
+  "simulating",
+  "stuff",
+  "stuff_activated",
+  "stuff_filled",
+  "sunlight",
+  "swimming",
+  "tagged",
+  "terrain_fx",
+  "terrain_pp",
+  "tex_mod",
+  "true",
+  "turn_left",
+  "turn_right",
+  "under_water",
+  "user_control",
+  "user_squad",
+  "velocity",
+  "volume",
+  "volume_armored",
+  "volume_bone_level",
+  "water_level",
+  "work"
+ ],
+ "actions": [
+  "able",
+  "add_view",
+  "ani_play",
+  "ani_stop",
+  "ani_wind",
+  "animate_place",
+  "area",
+  "attack_load",
+  "attack_save",
+  "auto_operatable",
+  "blastwave",
+  "bone",
+  "break_window_in_hole",
+  "bullet_detonate",
+  "burn",
+  "call",
+  "change_obstacle",
+  "chassis_work",
+  "clear_inventory",
+  "component",
+  "components",
+  "con",
+  "constrain_velocity",
+  "crew_emit",
+  "crew_enable",
+  "crew_throw_off",
+  "damage_report",
+  "delay",
+  "delay_effect",
+  "delay_ex",
+  "delete",
+  "depend_on_wind",
+  "die",
+  "drop_orders",
+  "explode_inventory",
+  "explosive",
+  "fall_down",
+  "fire",
+  "for_each_link",
+  "for_each_volume",
+  "get_off",
+  "gravity",
+  "health_damage_blast",
+  "health_damage_blow",
+  "health_damage_count",
+  "health_damage_crush",
+  "health_damage_pierce",
+  "hide",
+  "if",
+  "ik_enable",
+  "impulse",
+  "inactive",
+  "inherited",
+  "kick_entity_manager",
+  "kill_crew",
+  "kill_delay",
+  "kill_flags",
+  "knockdown",
+  "land",
+  "link_grenade_to_nearest_human",
+  "link_sound",
+  "log",
+  "movement_limit",
+  "movement_type",
+  "mtl_enable_skin",
+  "physics_work",
+  "pillar_fall",
+  "pillar_up",
+  "play_sound",
+  "player",
+  "rail_break",
+  "rail_switch",
+  "reset_manual_control",
+  "rtfunc",
+  "scale",
+  "set",
+  "set_heater",
+  "set_skeleton",
+  "signal",
+  "smoke",
+  "spawn",
+  "spawn_human",
+  "start_sound",
+  "stat_notify",
+  "stop_sound",
+  "stuff_detonate",
+  "stunned",
+  "tags",
+  "take_off",
+  "talk",
+  "tear",
+  "tex_mod",
+  "tex_morph",
+  "throw_off",
+  "throw_on_ground",
+  "unlink_trailer",
+  "update_shadow",
+  "update_visibility_patch",
+  "use_blend_tex",
+  "use_local_light",
+  "view",
+  "volume",
+  "volumes",
+  "weapon_work",
+  "with_effector",
+  "with_linked_entity"
+ ],
+ "containers": [
+  "for_each_link",
+  "for_each_volume",
+  "spawn",
+  "spawn_human",
+  "take_off",
+  "tear",
+  "with_effector",
+  "with_linked_entity"
+ ],
+ "valueBlocks": [
+  "effects",
+  "explode_inventory",
+  "health_damage_blast",
+  "health_damage_blow",
+  "health_damage_count",
+  "health_damage_crush",
+  "health_damage_pierce",
+  "table"
+ ],
+ "ctxOfEvent": {
+  "spawn": [],
+  "board": [
+   "instigator",
+   "sender"
+  ],
+  "bullet_hit": [
+   "bullet",
+   "volume",
+   "part",
+   "instigator",
+   "value",
+   "source"
+  ],
+  "pierce": [
+   "bullet",
+   "volume",
+   "part",
+   "instigator",
+   "value",
+   "source"
+  ],
+  "blast_hit": [
+   "volume",
+   "part",
+   "value",
+   "source"
+  ],
+  "blast": [
+   "volume",
+   "part",
+   "value",
+   "source"
+  ],
+  "break_armor": [
+   "bullet",
+   "volume",
+   "part",
+   "instigator",
+   "value",
+   "sender",
+   "source"
+  ],
+  "break_armor_again": [
+   "bullet",
+   "volume",
+   "part",
+   "instigator",
+   "value",
+   "sender",
+   "source"
+  ],
+  "contact": [
+   "volume",
+   "part",
+   "instigator",
+   "value"
+  ],
+  "ground_hit": [
+   "volume",
+   "part",
+   "value",
+   "sender"
+  ],
+  "break": [
+   "part"
+  ],
+  "repair": [
+   "part"
+  ],
+  "fire": [
+   "value",
+   "sender"
+  ],
+  "blow": [
+   "instigator",
+   "value",
+   "sender"
+  ],
+  "move": [
+   "value"
+  ],
+  "turn": [
+   "value"
+  ],
+  "movement_mode_changed": [
+   "sender"
+  ],
+  "animation_end": [
+   "sender"
+  ],
+  "ik": [
+   "sender"
+  ],
+  "overlap": [
+   "instigator"
+  ],
+  "operatable": [],
+  "accelerate": [],
+  "brake": [],
+  "engine": [],
+  "swim": [],
+  "grounded": [],
+  "terrain_pp": [],
+  "terrain_fx": []
+ },
+ "ctxOfCond": {
+  "stuff": [
+   "source"
+  ],
+  "volume": [
+   "volume"
+  ],
+  "material": [
+   "volume"
+  ],
+  "volume_bone_level": [
+   "volume"
+  ],
+  "volume_armored": [
+   "volume"
+  ],
+  "component": [
+   "part",
+   "volume"
+  ],
+  "min_energy": [
+   "value"
+  ],
+  "min_speed": [
+   "value"
+  ],
+  "contact_velocity": [
+   "value"
+  ],
+  "move_forward": [
+   "value"
+  ],
+  "move_backward": [
+   "value"
+  ],
+  "turn_left": [
+   "value"
+  ],
+  "turn_right": [
+   "value"
+  ],
+  "effector": [
+   "instigator"
+  ],
+  "effector_velocity": [
+   "instigator"
+  ],
+  "mine_effector": [
+   "instigator"
+  ],
+  "can_crush": [
+   "instigator"
+  ],
+  "name": [
+   "sender"
+  ],
+  "hit_side": [
+   "bullet"
+  ]
+ },
+ "ctxOfAct": {
+  "volume": [
+   "volume"
+  ],
+  "component": [
+   "part",
+   "volume"
+  ],
+  "for_each_volume": [
+   "volume",
+   "part"
+  ],
+  "tear from_volume": [
+   "volume",
+   "part"
+  ],
+  "blastwave position": [
+   "volume",
+   "part"
+  ],
+  "with_effector": [
+   "instigator"
+  ]
+ },
+ "terrains": [
+  "ground",
+  "road",
+  "country_road",
+  "rock",
+  "ice",
+  "swamp",
+  "sand",
+  "shallow_water",
+  "water",
+  "deep_water",
+  "underwater",
+  "air",
+  "puddle",
+  "mud",
+  "bridge",
+  "bridge_wood",
+  "snow",
+  "grass"
+ ],
+ "ables": [
+  "ally_crew",
+  "ammo_out_indicator",
+  "any_crew",
+  "crew",
+  "fight",
+  "minimap",
+  "neutral",
+  "personage",
+  "recruit",
+  "repair",
+  "repaired",
+  "select",
+  "talk",
+  "unmask",
+  "burning",
+  "emit_crew_on_injure",
+  "emit_on_attack",
+  "emit_on_mandie",
+  "emit_passangers_on_enemy",
+  "sinking",
+  "exploded",
+  "collect"
+ ],
+ "places": [
+  "charge",
+  "flamer1",
+  "flamer2",
+  "flamer3",
+  "flamer4",
+  "flamer5",
+  "gun",
+  "gun2",
+  "hand_right",
+  "mgun",
+  "mgun1",
+  "mgun2",
+  "mgun3",
+  "mgun_linked1",
+  "mgun_linked2",
+  "mgun_linked3",
+  "mgun_linked4",
+  "mgun_own1",
+  "mgun_own2",
+  "mgun_own3",
+  "mgun_own4",
+  "zenite"
+ ],
+ "helperEvents": {
+  "bishop_sound": [
+   "\"add_movement_sound"
+  ],
+  "blast_damage_contusion": [],
+  "blast_torpedo_detonate": [],
+  "body_break_fx": [],
+  "break_window": [],
+  "burn_bone_fx": [],
+  "burn_by_engine": [
+   "\"burn_by_engine"
+  ],
+  "burn_from_volume": [],
+  "burn_part": [
+   "\"burn_%0_start",
+   "\"burn_%0_stop"
+  ],
+  "burn_start": [],
+  "burn_volume": [],
+  "burn_volume_fx": [],
+  "cometa34_sound": [
+   "\"add_movement_sound"
+  ],
+  "contact_part": [],
+  "cut_big_part": [],
+  "cut_big_piece": [],
+  "cut_part": [],
+  "cut_piece": [],
+  "cut_pieces": [],
+  "cut_shield_part": [],
+  "cut_stone": [],
+  "cut_subpiece": [],
+  "cut_subpieces": [],
+  "cut_wall": [],
+  "damage_cannon_process_pierce": [],
+  "damage_process_bullet_hit": [],
+  "damage_process_pierce": [],
+  "door": [
+   "\"close%0",
+   "\"close_fast%0",
+   "\"open%0",
+   "\"open_fast%0",
+   "\"update_area%0"
+  ],
+  "fire_barrel": [],
+  "fire_start": [],
+  "foliage": [],
+  "gmc_sound": [
+   "\"add_movement_sound"
+  ],
+  "gun_hit": [],
+  "handle_ik": [
+   "ik begin basis",
+   "ik begin gun_rot",
+   "ik begin turret",
+   "ik begin turret_rotator",
+   "ik end basis",
+   "ik end gun_rot",
+   "ik end turret",
+   "ik end turret_rotator"
+  ],
+  "hanomag_sound": [
+   "\"add_movement_sound"
+  ],
+  "health_damage": [],
+  "ho-ri_sound": [
+   "\"add_movement_sound"
+  ],
+  "horch_sound": [
+   "\"add_movement_sound"
+  ],
+  "imp": [],
+  "is_sound": [
+   "\"add_movement_sound"
+  ],
+  "kubel_sound": [
+   "\"add_movement_sound"
+  ],
+  "kv_sound": [
+   "\"add_movement_sound"
+  ],
+  "link_flash": [],
+  "lt_turret_sound": [
+   "\"add_movement_sound"
+  ],
+  "m10wolverine_sound": [
+   "\"add_movement_sound"
+  ],
+  "m3_sound": [
+   "\"add_movement_sound"
+  ],
+  "m4_sound": [
+   "\"add_movement_sound"
+  ],
+  "m4_turret_sound": [
+   "\"add_movement_sound"
+  ],
+  "m7_sound": [
+   "\"add_movement_sound"
+  ],
+  "m8_sound": [
+   "\"add_movement_sound"
+  ],
+  "m8grayhound_sound": [
+   "\"add_movement_sound"
+  ],
+  "mk6_sound": [
+   "\"add_movement_sound"
+  ],
+  "mk7_sound": [
+   "\"add_movement_sound"
+  ],
+  "opel_sound": [
+   "\"add_movement_sound"
+  ],
+  "piece_crush": [],
+  "piece_explosion": [],
+  "pierce_check": [],
+  "pierce_torpedo_detonate": [],
+  "pz1_sound": [
+   "\"add_movement_sound"
+  ],
+  "pz3_sound": [
+   "\"add_movement_sound"
+  ],
+  "pz4_sound": [
+   "\"add_movement_sound"
+  ],
+  "pz5g_sound": [
+   "\"add_movement_sound"
+  ],
+  "pz6_sound": [
+   "\"add_movement_sound"
+  ],
+  "rand_fire": [],
+  "rand_start": [],
+  "rand_tear_wheel": [],
+  "random_animation": [],
+  "random_animation_end": [
+   "animation_end animation%0"
+  ],
+  "sdkfz234_sound": [
+   "\"add_movement_sound"
+  ],
+  "sdkfz_sound": [
+   "\"add_movement_sound"
+  ],
+  "set_crown_visible": [],
+  "shellhole_show_with_delay": [
+   "spawn"
+  ],
+  "sink_sequence": [],
+  "sink_terrain": [
+   "terrain_pp %0 enter",
+   "terrain_pp %0 leave"
+  ],
+  "sink_volume": [],
+  "spawn_pieces": [],
+  "start_shooter_flash": [
+   "fire mgun_own%0"
+  ],
+  "stir": [],
+  "su76_sound": [
+   "\"add_movement_sound"
+  ],
+  "t26_sound": [
+   "\"add_movement_sound"
+  ],
+  "t34_sound": [
+   "\"add_movement_sound"
+  ],
+  "t70_sound": [
+   "\"add_movement_sound"
+  ],
+  "tear_marine_part": [],
+  "tear_wheel": [],
+  "teargun": [],
+  "terrain_fx": [
+   "terrain_fx %0 enter",
+   "terrain_fx %0 leave"
+  ],
+  "terrain_fx_dog": [
+   "terrain_fx %0 enter",
+   "terrain_fx %0 leave"
+  ],
+  "terrain_fx_human": [
+   "terrain_fx %0 enter",
+   "terrain_fx %0 leave"
+  ],
+  "throwing_weapon": [
+   "contact"
+  ],
+  "torpedo_detonate": [],
+  "track_hit": [],
+  "try_break_window": [],
+  "try_get_off": [],
+  "update_area": [],
+  "update_hatch": [],
+  "update_hatch_event": [
+   "%event"
+  ],
+  "wespe_sound": [
+   "\"add_movement_sound"
+  ]
+ }
+}

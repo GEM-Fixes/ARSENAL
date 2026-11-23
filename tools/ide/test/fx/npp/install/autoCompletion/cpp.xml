@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NotepadPlus>
+	<AutoComplete language="C++">
+		<Environment ignoreCase="no" startFunc="(" stopFunc=")" paramSeparator="," terminal=";" additionalWordChar="" />
+		<KeyWord name="abort" func="yes"><Overload retVal="void"><Param name="void" /></Overload></KeyWord>
+	</AutoComplete>
+</NotepadPlus>

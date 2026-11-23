@@ -1,0 +1,184 @@
+{
+ "form": "limclass/1",
+ "area": "LOC",
+ "rows": {
+  "LOC-01": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "vanilla keys show raw text"
+  },
+  "LOC-02": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "raw key text shown"
+  },
+  "LOC-03": {
+   "chk": "built",
+   "class": "silent",
+   "why": "case-colliding keys overwrite each other quietly"
+  },
+  "LOC-04": {
+   "chk": "built",
+   "class": "silent",
+   "why": "later key wins; text changes quietly"
+  },
+  "LOC-05": {
+   "chk": "built",
+   "class": "crash",
+   "why": "UTF-16 or bad root is fatal; cp1251 shows U+FFFD"
+  },
+  "LOC-06": {
+   "chk": "built",
+   "class": "silent",
+   "why": "multi-line string breaks parsing; effect not stated"
+  },
+  "LOC-07": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "rest of text swallowed"
+  },
+  "LOC-08": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "stray < starts a tag, text garbled"
+  },
+  "LOC-09": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "unverified tag spelling renders wrong"
+  },
+  "LOC-10": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "wrong key prefix shows raw text"
+  },
+  "LOC-11": {
+   "chk": "built",
+   "class": "silent",
+   "why": "info button missing, no message"
+  },
+  "LOC-12": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "typoed key shows raw"
+  },
+  "LOC-13": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "wrong key shows raw text"
+  },
+  "LOC-14": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "missing glyph shows as ?"
+  },
+  "LOC-15": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "mismatched key shows raw"
+  },
+  "LOC-16": {
+   "chk": "never",
+   "class": "info",
+   "why": "workflow fact: restart needed for text change",
+   "never": "workflow fact, nothing to check in files"
+  },
+  "LOC-17": {
+   "chk": "built",
+   "class": "info",
+   "why": "tools only; one lng set in install"
+  },
+  "LOC-18": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "empty desc.lng wipes vanilla names to raw keys"
+  },
+  "LOC-19": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "new name does not show; vanilla text wins"
+  },
+  "LOC-20": {
+   "chk": "built",
+   "class": "info",
+   "why": "how mod-local # file keys are named"
+  },
+  "LOC-21": {
+   "chk": "built",
+   "class": "info",
+   "why": "lint limitation: includes unexpanded"
+  },
+  "LOC-22": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "log noise only, text unchanged"
+  },
+  "LOC-23": {
+   "chk": "built",
+   "class": "info",
+   "why": "tool coverage note for as64 lng files"
+  },
+  "LOC-24": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "wrong key shows raw path in lobby"
+  },
+  "LOC-25": {
+   "chk": "never",
+   "class": "info",
+   "why": "whole-file replacement hides redefinition log lines",
+   "never": "workflow fact; whole-file replace shown only in log"
+  },
+  "LOC-26": {
+   "chk": "never",
+   "class": "info",
+   "why": "non-ASCII file name works; nothing to hit",
+   "never": "works as is, no limit to hit"
+  },
+  "LOC-27": {
+   "chk": "never",
+   "class": "cosmetic",
+   "why": "non-ASCII garbled on wrapped console line",
+   "never": "runtime console rendering only"
+  },
+  "LOC-28": {
+   "chk": "built",
+   "class": "silent",
+   "why": "engine fills % specs in lng text in order"
+  }
+ },
+ "dead": [
+  {
+   "row": "LOC-10",
+   "tool": "lng-add",
+   "code": "LNG_KEY_PREFIX",
+   "fix": {
+    "code": "LNG_KEY_PREFIX"
+   }
+  },
+  {
+   "row": "LOC-14",
+   "tool": "lnglint",
+   "code": "GLYPH",
+   "fix": {
+    "code": "GLYPH"
+   }
+  },
+  {
+   "row": "LOC-18",
+   "tool": "lng-add",
+   "code": "LNG_FILE_REPLACES_VANILLA",
+   "fix": {
+    "code": "LNG_FILE_REPLACES_VANILLA"
+   }
+  },
+  {
+   "row": "LOC-19",
+   "tool": "lng-add",
+   "code": "WARN_LNG_KEY_SHADOWS_VANILLA",
+   "fix": {
+    "code": "WARN_LNG_KEY_SHADOWS_VANILLA"
+   }
+  }
+ ]
+}

@@ -1,0 +1,82 @@
+177 mods
+[00:00:08] Localization key redefinition: interface/ok in /interface/text/#editor.lng (/interface/text/#editor.lng, 123)
+Build: 2026.11.05 17:56 - 0x5EEB1B6E
+Product: Men of War: Assault Squad 2 Editor - v3.301.1x64 - editor
+Commit: 19c1ea0b6
+Repository: 138413 resources
+[00:00:16] Entity redefinition: radio_station (eentityraw.cpp, 157) @ [main_loop]
+[00:00:16] Entity redefinition: shellhole_big (eentityraw.cpp, 157) @ [main_loop]
+[00:00:16] Entity redefinition: shellhole_medium (eentityraw.cpp, 157) @ [main_loop]
+[00:00:16] 'use_blend_tex' is not supported (/set/interaction_entity/entity.set/construction/parts.inc, 83)
+Phase Loading... took 7845.34ms.
+Phase Starting game... took 0.0018ms.
+[00:00:19] Media file "/sound/mission/multi/edrun_test/story" not found (edevicemedia.cpp, 467) @ [main_loop]
+[00:00:19] MediaManager: can't open MSS media stream for file "/music/loading_theme.mp3" (edevicemedia.cpp, 88) @ [main_loop]
+[00:00:20] Automatic MIP generation not supported. Bitmap: '/texture/fx/explosion/exp_sled' (/texture/fx/explosion/exp_sled.ebm, 3)
+[00:00:20] Trying to create Weapon from non-weapon Stuff. Item: [56] 1 mortar150 fg ammo (/entity/150mm_type_97/150mm_type_97.def, 45)
+***************** Exception *****************
+Program will be terminated.
+EXCEPTION_ACCESS_VIOLATION read at 0x0000000000000430
+
+At as64_ed.exe+0x7735be (Actor::eWeapon::SetItem+0x80e, eWeapon.cpp:96) [main_loop]
+RAX=000000008000004e	RBX=0000000000456180	RCX=0000000000000000	RDX=0000036521644060
+RSI=00000364f820a080	RDI=0000000000000014	RSP=00000000124edc50	RBP=00000000124edd50
+R8 =0232000002340176	R9 =0000000000000000	R10=0000036521644060	R11=0000000000000246
+R12=00000000124ee680	R13=0000036520df4200	R14=0000000000000000	R15=0000000000000098
+>>> world: load mission "/map/multi/edrun_test/combat.mi"
+>> file "/map/multi/edrun_test/combat.mi"
+> file "/entity/150mm_type_97/150mm_type_97.def"
+
+45:				{weapon "mortar150"???}
+46:				("abm_field_gun")
+47:			}
+48:		}
+49:		{sensor
+
+
+Call stack:
+  #00 as64_ed.exe+0x7735be (Actor::eWeapon::SetItem+0x80e, eWeapon.cpp:96)
+  #01 as64_ed.exe+0x78111e (Actor::Weapon::ePlace::ReadKeyword+0x35e, eWeaponPlace.cpp:493)
+  #02 as64_ed.exe+0x780da8 (Actor::Weapon::ePlace::ReadField+0x178, eWeaponPlace.cpp:436)
+  #03 as64_ed.exe+0xb3c66 (eResource::Read+0x146, eResource.cpp:26)
+  #04 as64_ed.exe+0x7077e8 (Actor::eWeaponry::ReadKeyword+0x198, eActorWeaponry.cpp:690)
+  #05 as64_ed.exe+0x707638 (Actor::eWeaponry::ReadField+0x178, eActorWeaponry.cpp:670)
+  #06 as64_ed.exe+0xb3c66 (eResource::Read+0x146, eResource.cpp:26)
+  #07 as64_ed.exe+0x97f94a (eActor::ReadKeyword+0x3ba, eActorSerialize.cpp:248)
+  #08 as64_ed.exe+0x97f578 (eActor::ReadField+0x178, eActorSerialize.cpp:164)
+  #09 as64_ed.exe+0xb3c66 (eResource::Read+0x146, eResource.cpp:26)
+  #10 as64_ed.exe+0x7d78f8 (eEntityDescriptions::ReadEntity+0x2f8, eEntityRaw.cpp:184)
+  #11 as64_ed.exe+0x7d68f5 (Entity::eEntityName::Load+0x125, eEntityRaw.cpp:111)
+
+Men of War: Assault Squad 2 Editor - v3.301.1x64 - editor
+2026.11.05 17:56 - 0x5EEB1B6E
+Commit: 19c1ea0b6
+
+Call stack (full):
+  #00 as64_ed.exe+0x7735be (Actor::eWeapon::SetItem+0x80e, eWeapon.cpp:96)
+  #01 as64_ed.exe+0x78111e (Actor::Weapon::ePlace::ReadKeyword+0x35e, eWeaponPlace.cpp:493)
+  #02 as64_ed.exe+0x780da8 (Actor::Weapon::ePlace::ReadField+0x178, eWeaponPlace.cpp:436)
+  #03 as64_ed.exe+0xb3c66 (eResource::Read+0x146, eResource.cpp:26)
+  #04 as64_ed.exe+0x7077e8 (Actor::eWeaponry::ReadKeyword+0x198, eActorWeaponry.cpp:690)
+  #05 as64_ed.exe+0x707638 (Actor::eWeaponry::ReadField+0x178, eActorWeaponry.cpp:670)
+  #06 as64_ed.exe+0xb3c66 (eResource::Read+0x146, eResource.cpp:26)
+  #07 as64_ed.exe+0x97f94a (eActor::ReadKeyword+0x3ba, eActorSerialize.cpp:248)
+  #08 as64_ed.exe+0x97f578 (eActor::ReadField+0x178, eActorSerialize.cpp:164)
+  #09 as64_ed.exe+0xb3c66 (eResource::Read+0x146, eResource.cpp:26)
+  #10 as64_ed.exe+0x7d78f8 (eEntityDescriptions::ReadEntity+0x2f8, eEntityRaw.cpp:184)
+  #11 as64_ed.exe+0x7d68f5 (Entity::eEntityName::Load+0x125, eEntityRaw.cpp:111)
+  #12 as64_ed.exe+0x249fcf (eScene::ReadEntity+0xaff, eSceneSerialize.cpp:310)
+  #13 as64_ed.exe+0x24ba3b (eScene::ReadKeyword+0x28b, eSceneSerialize.cpp:548)
+  #14 as64_ed.exe+0x24b792 (eScene::ReadField+0x172, eSceneSerialize.cpp:508)
+  #15 as64_ed.exe+0xb3c66 (eResource::Read+0x146, eResource.cpp:26)
+  #16 as64_ed.exe+0x223a42 (Scene::eManager::ReadSceneFiles+0x11e2, eSceneManager.cpp:394)
+  #17 as64_ed.exe+0x21e0f0 (Scene::eManager::LoadSceneFiles+0xec0, eSceneManager.cpp:119)
+  #18 as64_ed.exe+0x21d142 (Scene::eManager::LoadMission+0xe2, eSceneManager.cpp:69)
+  #19 as64_ed.exe+0x46e258 (eDP_Start::OnActivate+0xa18, eDP_Start.cpp:301)
+  #20 as64_ed.exe+0x46d1f6 (ShowStartPage+0x136, eDP_Start.cpp:207)
+  #21 as64_ed.exe+0x20435b (Core::eMainThread::Run+0x8b, eMainThread.cpp:205)
+  #22 as64_ed.exe+0x20360c (eTaskThread::ThreadProc+0x5c, task_thread.cpp:120)
+  #23 as64_ed.exe+0xc47b7e (thread_start<unsigned int (__cdecl*)(void *),1>+0x4e, thread.cpp:97)
+  #24 KERNEL32.DLL+0x17123 (BaseThreadInitThunk+0x13)
+  #25 ntdll.dll+0x4cc90 (RtlUserThreadStart+0x20)
+

@@ -1,0 +1,4 @@
+{game_entity
+	("armor_medium" turret(52 52 52 20) body(45 45 45 22))
+	("armor_engine" t(45 45 45 22))
+}

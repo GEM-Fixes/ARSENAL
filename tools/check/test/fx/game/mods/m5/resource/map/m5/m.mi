@@ -1,0 +1,13 @@
+{mission
+	{Environment "old/clear"}
+	{triggers
+		{"environment"
+			{condition}
+			{actions
+				{"environment" {name "old/fog"}}
+				{"environment" {name "old/fog"}}
+				{"environment" {name "gone/none"}}
+			}
+		}
+	}
+}

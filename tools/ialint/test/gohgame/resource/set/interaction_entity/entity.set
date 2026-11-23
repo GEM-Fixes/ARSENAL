@@ -1,0 +1,8 @@
+; invented mini GoH install for the ialint test: its one fire place (gun_main) is the vanilla place list under GoH
+{entities
+	{"tank"
+		{on fire "gun_main"
+			{con "fired"}
+		}
+	}
+}

@@ -1,0 +1,12 @@
+file	key	source	translation	context
+localization/#my.lng	hello	Привет		L2
+localization/#my.lng	hello	dup	doppelt	L3
+localization/desc.lng	desc/entity/foo	Fox <c(ff0000)>red</c> %s	Renard <c(ff0000)>rouge</c> %s	L3 params=%s
+localization/desc.lng	desc/entity/bar	Line\none "q"	Zwei\nZeilen "x"	L4
+localization/desc.lng	desc/info/squad/s1	old source	Trupp	L7 params={0}
+localizations/default/interface/text/desc/desc_x.pot	desc/squad/sq(ger)	Squad %d	Trupp %s	L7 params=%d note for translator
+localizations/default/interface/text/desc/desc_x.pot	desc/squad/long	A B	AB neu	L11
+resource/game.pak!interface/text/packed.lng	packed/p/q	Packed text	Gepackt	L1
+
+localization/desc.lng	desc/entity/nokey	x	y	
+localization/nofile.lng	k	x	y	

@@ -1,0 +1,6 @@
+{effects
+	{"grass"
+		{on hit {spawn "x"} }
+		{on bullet {spawn "y"} }
+	}
+}

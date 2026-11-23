@@ -1,0 +1,328 @@
+{
+ "_doc": "DMGSCALE: GoH->AS2 multipliers for stuffport --scale-damage auto. Fit by run/dmgscale/fit.js from vanilla AS2 (as64+) vs GoH set/stuff guns of the same file name; scale = median of AS2/GoH per key; spread = IQR/median; apply = spread <= 0.25 (edit apply/scale in a copy and pass it as --scale-damage <file.json>). penetration = projectileDamage + projectileDamageTable y; range = {range a b} + projectileDamageTable x; speed = {speed} incl. parameters blocks. Class from the AS2 key dir: set/stuff/gun (autocannon when recoveryTime < 1), rifle, mgun, smg, pistol; other dirs are not scaled. [I] until the in-game twin.",
+ "_dmgfix": "DMGFIX: twin.keys get ratio = vanilla AS2 twin value / ported GoH value (dmgtwin.js; twin = the AS2 key the port replaces, else same name, else unique calibre match), class scale only as fallback; ratio outside twin.min..max keeps the class scale. rifle rechargeTime apply set true by hand (spread 0.333 from 2 ptr outliers; 9/10 pairs 0.5..0.7, 6 at 0.5; mosin 6 -> 3 = vanilla); refit with run/dmgscale/fit.js overwrites it. GOHFIX: rechargeTime is a twin key (kwk43 refire 10 s class-scaled vs vanilla 8 s).",
+ "twin": { "keys": ["penetration", "healthDamage", "rechargeTime"], "min": 0.2, "max": 5 },
+ "source": "run/dmgscale/pairs.json: vanilla AS2 (as64+) vs GoH set/stuff, same file name; ratio = AS2/GoH, multiplier on GoH values",
+ "classes": {
+  "gun": {
+   "pairs": 34,
+   "keys": {
+    "penetration": {
+     "scale": 0.851,
+     "n": 34,
+     "min": 0.642,
+     "max": 0.986,
+     "q1": 0.796,
+     "q3": 0.887,
+     "spread": 0.107,
+     "apply": true
+    },
+    "speed": {
+     "scale": 0.667,
+     "n": 34,
+     "min": 0.597,
+     "max": 0.834,
+     "q1": 0.667,
+     "q3": 0.689,
+     "spread": 0.034,
+     "apply": true
+    },
+    "range": {
+     "scale": 0.6,
+     "n": 34,
+     "min": 0.55,
+     "max": 0.647,
+     "q1": 0.581,
+     "q3": 0.619,
+     "spread": 0.063,
+     "apply": true
+    },
+    "rechargeTime": {
+     "scale": 0.813,
+     "n": 34,
+     "min": 0.556,
+     "max": 1.143,
+     "q1": 0.75,
+     "q3": 0.871,
+     "spread": 0.148,
+     "apply": true
+    }
+   }
+  },
+  "autocannon": {
+   "pairs": 6,
+   "keys": {
+    "penetration": {
+     "scale": 1.163,
+     "n": 6,
+     "min": 0.972,
+     "max": 1.818,
+     "q1": 1.091,
+     "q3": 1.163,
+     "spread": 0.062,
+     "apply": true
+    },
+    "speed": {
+     "scale": 0.728,
+     "n": 6,
+     "min": 0.613,
+     "max": 0.921,
+     "q1": 0.667,
+     "q3": 0.888,
+     "spread": 0.304,
+     "apply": false
+    },
+    "range": {
+     "scale": 0.6,
+     "n": 6,
+     "min": 0.327,
+     "max": 0.625,
+     "q1": 0.6,
+     "q3": 0.6,
+     "spread": 0,
+     "apply": true
+    },
+    "rechargeTime": {
+     "scale": 0.984,
+     "n": 6,
+     "min": 0.001,
+     "max": 2,
+     "q1": 0.527,
+     "q3": 1.278,
+     "spread": 0.763,
+     "apply": false
+    },
+    "healthDamage": {
+     "scale": 0.06,
+     "n": 6,
+     "min": 0.06,
+     "max": 0.08,
+     "q1": 0.06,
+     "q3": 0.06,
+     "spread": 0,
+     "apply": true
+    }
+   }
+  },
+  "rifle": {
+   "pairs": 10,
+   "keys": {
+    "penetration": {
+     "scale": 0.714,
+     "n": 9,
+     "min": 0.698,
+     "max": 1.047,
+     "q1": 0.714,
+     "q3": 0.769,
+     "spread": 0.077,
+     "apply": true
+    },
+    "speed": {
+     "scale": 0.714,
+     "n": 10,
+     "min": 0.67,
+     "max": 1.19,
+     "q1": 0.704,
+     "q3": 0.718,
+     "spread": 0.02,
+     "apply": true
+    },
+    "range": {
+     "scale": 0.571,
+     "n": 10,
+     "min": 0.542,
+     "max": 0.731,
+     "q1": 0.542,
+     "q3": 0.625,
+     "spread": 0.146,
+     "apply": true
+    },
+    "rechargeTime": {
+     "scale": 0.5,
+     "n": 10,
+     "min": 0.5,
+     "max": 0.875,
+     "q1": 0.5,
+     "q3": 0.667,
+     "spread": 0.333,
+     "apply": true
+    },
+    "healthDamage": {
+     "scale": 2.5,
+     "n": 10,
+     "min": 1.719,
+     "max": 5,
+     "q1": 2.291,
+     "q3": 2.857,
+     "spread": 0.226,
+     "apply": true
+    }
+   }
+  },
+  "mgun": {
+   "pairs": 6,
+   "keys": {
+    "penetration": {
+     "scale": 0.714,
+     "n": 6,
+     "min": 0.289,
+     "max": 1.154,
+     "q1": 0.505,
+     "q3": 0.714,
+     "spread": 0.293,
+     "apply": false
+    },
+    "speed": {
+     "scale": 0.709,
+     "n": 6,
+     "min": 0.688,
+     "max": 0.717,
+     "q1": 0.702,
+     "q3": 0.714,
+     "spread": 0.017,
+     "apply": true
+    },
+    "range": {
+     "scale": 0.625,
+     "n": 6,
+     "min": 0.25,
+     "max": 0.625,
+     "q1": 0.612,
+     "q3": 0.625,
+     "spread": 0.021,
+     "apply": true
+    },
+    "rechargeTime": {
+     "scale": 0.853,
+     "n": 6,
+     "min": 0.588,
+     "max": 1,
+     "q1": 0.618,
+     "q3": 1,
+     "spread": 0.448,
+     "apply": false
+    },
+    "healthDamage": {
+     "scale": 1.688,
+     "n": 6,
+     "min": 1.688,
+     "max": 2.778,
+     "q1": 1.688,
+     "q3": 1.688,
+     "spread": 0,
+     "apply": true
+    }
+   }
+  },
+  "smg": {
+   "pairs": 3,
+   "keys": {
+    "penetration": {
+     "scale": 0.75,
+     "n": 3,
+     "min": 0.75,
+     "max": 0.75,
+     "q1": 0.75,
+     "q3": 0.75,
+     "spread": 0,
+     "apply": true
+    },
+    "speed": {
+     "scale": 0.714,
+     "n": 3,
+     "min": 0.679,
+     "max": 0.734,
+     "q1": 0.696,
+     "q3": 0.724,
+     "spread": 0.039,
+     "apply": true
+    },
+    "range": {
+     "scale": 0.563,
+     "n": 3,
+     "min": 0.563,
+     "max": 0.563,
+     "q1": 0.563,
+     "q3": 0.563,
+     "spread": 0,
+     "apply": true
+    },
+    "rechargeTime": {
+     "scale": 0.769,
+     "n": 3,
+     "min": 0.769,
+     "max": 0.769,
+     "q1": 0.769,
+     "q3": 0.769,
+     "spread": 0,
+     "apply": true
+    },
+    "healthDamage": {
+     "scale": 2.273,
+     "n": 3,
+     "min": 2.273,
+     "max": 2.455,
+     "q1": 2.273,
+     "q3": 2.364,
+     "spread": 0.04,
+     "apply": true
+    }
+   }
+  },
+  "pistol": {
+   "pairs": 3,
+   "keys": {
+    "penetration": {
+     "scale": 1,
+     "n": 3,
+     "min": 1,
+     "max": 1,
+     "q1": 1,
+     "q3": 1,
+     "spread": 0,
+     "apply": true
+    },
+    "speed": {
+     "scale": 0.476,
+     "n": 3,
+     "min": 0.456,
+     "max": 0.638,
+     "q1": 0.466,
+     "q3": 0.557,
+     "spread": 0.191,
+     "apply": true
+    },
+    "range": {
+     "scale": 0.5,
+     "n": 3,
+     "min": 0.5,
+     "max": 0.5,
+     "q1": 0.5,
+     "q3": 0.5,
+     "spread": 0,
+     "apply": true
+    },
+    "rechargeTime": {
+     "scale": 0.923,
+     "n": 3,
+     "min": 0.545,
+     "max": 0.923,
+     "q1": 0.734,
+     "q3": 0.923,
+     "spread": 0.205,
+     "apply": true
+    },
+    "healthDamage": {
+     "scale": 2.5,
+     "n": 3,
+     "min": 2.292,
+     "max": 2.5,
+     "q1": 2.396,
+     "q3": 2.5,
+     "spread": 0.042,
+     "apply": true
+    }
+   }
+  }
+ }
+}

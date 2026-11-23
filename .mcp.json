@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "arsenal": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["tools/mcp/server.js"],
+      "env": {}
+    },
+    "arsenal-gui": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["tools/mcp/gui.js"],
+      "env": {}
+    }
+  }
+}

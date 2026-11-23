@@ -1,0 +1,51 @@
+{entities
+	{"tank"
+		{inflammation_time 3}
+		{on spawn
+			{set "a" 1}
+			{able "select" 1 repaired 0}
+		}
+		{on "hit"
+			{call "go"}
+			{call spawn}
+			{kill_delay "t"}
+			{delay 1 "t" {con "x"} }
+			{explode_inventory
+				{0.5 "ex_a" 3}
+				{1 "ex_b" 5}
+			}
+		}
+		{on "go"
+			{if "a" {con "a"} else not "b" {con "b"} else able "select" {con "c"} }
+		}
+		{on ik begin "turret" {con "1"} }
+		{on ik end "turret" {con "2"} }
+		{on ik begin "hull" {con "3"} }
+	}
+	{"car"
+		{on "hit" overload {con "x"} }
+	}
+}
+{entities
+	{"human"
+		{on bullet_hit
+			{health_damage_pierce 1 {effects "dead"}}
+			{if hit_side left {con "l"} }
+		}
+		{on "dead" {die} }
+		{on blast {if hit_side front {con "f"} } }
+		{on ground_hit {if velocity 5 {con "g"} } }
+	}
+	{"gun_car"
+		{on bullet_hit
+			{delay 1 {con "s"} }
+			{delay_ex 1 {if hit_side front {con "t"} } }
+			{delay_ex 1 {if tagged "x" {con "e"} } }
+			{delay_effect 1 "later"}
+			{tags add "ghost2"}
+		}
+		{on "later" {con "x"} }
+		{on fire "gun" {con "f"} }
+		{on fire "mgun" {con "m"} }
+	}
+}

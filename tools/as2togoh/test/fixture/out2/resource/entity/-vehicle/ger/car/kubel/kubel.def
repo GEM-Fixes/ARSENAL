@@ -1,0 +1,5 @@
+{game_entity
+	(include "/properties/tank.ext")
+	{extension "kubel.mdl"}
+	{mass 30000}
+}

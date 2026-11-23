@@ -1,0 +1,16 @@
+; nav fixture: one thing per line for the classifier
+{game_entity
+	(include "/properties/vehicle.ext")
+	{mass 0x20}
+	{Extension "t34m.mdl"}
+	{##+ volume "body"}
+	("navmac" p(1))
+	{weapon "t34m"}
+	(mod "as64+"
+		{health 100}
+	)
+	{#foo bar}
+}
+(define "navmac"
+	{speed %p}
+)

@@ -1,0 +1,2 @@
+map/multi/m9: MAPCLONE_NO_MAP no files under resource/map/multi/m9 (loose or packed) in fixture/game
+1 findings

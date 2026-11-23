@@ -1,0 +1,379 @@
+{
+ "form": "limmap/1",
+ "part": "mix-3",
+ "codes": {
+  "RC_UNUSED_SUPPRESSION": {
+   "tool": "lib",
+   "sev": "review",
+   "at": "tools/lib/report.js:39",
+   "class": "tool",
+   "why": "unused ignore entry in .lintrc",
+   "kind": "tool"
+  },
+  "WARN_MOD_DUPLICATE": {
+   "tool": "lib",
+   "sev": "review",
+   "at": "tools/lib/vfs.js:277",
+   "class": "tool",
+   "why": "mod listed twice in the tool input list",
+   "kind": "tool"
+  },
+  "WARN_NAME_NONASCII": {
+   "tool": "lib",
+   "sev": "review",
+   "at": "tools/lib/names.js:55",
+   "class": "review",
+   "why": "engine accepts Unicode letters; spec says ASCII",
+   "lim": [
+    "VFS-05"
+   ]
+  },
+  "WARN_LNG_PARAM_MISMATCH": {
+   "tool": "lng",
+   "sev": "silent",
+   "at": "tools/lng/lng.js:149",
+   "class": "silent",
+   "why": "engine fills % specs in lng text in order",
+   "lim": [
+    "LOC-28"
+   ]
+  },
+  "LANG_NOOP": {
+   "tool": "lng-add",
+   "sev": "review",
+   "at": "tools/lng-add/lng-add.js:185",
+   "class": "info",
+   "why": "engine has one lng set",
+   "lim": [
+    "LOC-17"
+   ]
+  },
+  "ENC_UTF8": {
+   "tool": "lnglint",
+   "sev": "silent",
+   "at": "tools/lnglint/lnglint.js:42",
+   "class": "silent",
+   "why": "lng must be UTF-8; cp1251 shows U+FFFD",
+   "lim": [
+    "LOC-05"
+   ]
+  },
+  "LNG_OVERRIDES_VANILLA": {
+   "tool": "lnglint",
+   "sev": "silent",
+   "at": "tools/lnglint/vcompare.js:72",
+   "class": "silent",
+   "why": "same-path lng replaces vanilla file",
+   "lim": [
+    "LOC-01"
+   ]
+  },
+  "MIXED_SCRIPT": {
+   "tool": "lnglint",
+   "sev": "cosmetic",
+   "at": "tools/lnglint/lnglint.js:33",
+   "class": "tool",
+   "why": "text-quality heuristic; engine draws any UTF-8 as written",
+   "kind": "tool"
+  },
+  "PO_LAX": {
+   "tool": "lnglint",
+   "sev": "review",
+   "at": "tools/lnglint/lnglint.js:141",
+   "class": "tool",
+   "why": "gettext .po form check; AS2 engine reads no .po",
+   "kind": "tool"
+  },
+  "PO_NO_MSGSTR": {
+   "tool": "lnglint",
+   "sev": "review",
+   "at": "tools/lnglint/lnglint.js:117",
+   "class": "tool",
+   "why": "gettext .po entry shape; AS2 engine reads no .po",
+   "kind": "tool"
+  },
+  "PO_SYNTAX": {
+   "tool": "lnglint",
+   "sev": "review",
+   "at": "tools/lnglint/lnglint.js:103",
+   "class": "tool",
+   "why": "gettext .po syntax; AS2 engine reads no .po",
+   "kind": "tool"
+  },
+  "PO_TAG_NO_GT": {
+   "tool": "lnglint",
+   "sev": "review",
+   "at": "tools/lnglint/lnglint.js:112",
+   "class": "tool",
+   "why": ".po text tag form; wraps TAG_STRAY (LOC-08) as info",
+   "kind": "tool"
+  },
+  "WARN_LNG_FILE_SHADOWS_VANILLA": {
+   "tool": "lnglint",
+   "sev": "silent",
+   "at": "tools/lnglint/vcompare.js:79",
+   "class": "silent",
+   "why": "same-path lng replaces vanilla file",
+   "lim": [
+    "LOC-01"
+   ]
+  },
+  "STUFF_KEY_MISSING": {
+   "tool": "loccover",
+   "sev": "review",
+   "at": "tools/loccover/loccover.js:253",
+   "class": "review",
+   "why": "stuff desc key rule; mod-added only info",
+   "lim": [
+    "LOC-15"
+   ]
+  },
+  "STUFF_SKIPPED": {
+   "tool": "loccover",
+   "sev": "review",
+   "at": "tools/loccover/loccover.js:223",
+   "class": "tool",
+   "why": "entityindex failed; stuff check skipped",
+   "kind": "tool"
+  },
+  "MAPCLONE_BAD_NAME": {
+   "tool": "map-clone",
+   "sev": "review",
+   "at": "tools/map-clone/map-clone.js:35",
+   "class": "tool",
+   "why": "bad --name or --target argument",
+   "kind": "tool"
+  },
+  "MAPCLONE_BINARY_REF": {
+   "tool": "map-clone",
+   "sev": "review",
+   "at": "tools/map-clone/map-clone.js:121",
+   "class": "tool",
+   "why": "binary file copied unedited, tool note",
+   "kind": "tool"
+  },
+  "MAPCLONE_COPIED": {
+   "tool": "map-clone",
+   "sev": "review",
+   "at": "tools/map-clone/map-clone.js:182",
+   "class": "tool",
+   "why": "copy summary line",
+   "kind": "tool"
+  },
+  "MAPCLONE_GAME_MISMATCH": {
+   "tool": "map-clone",
+   "sev": "review",
+   "at": "tools/map-clone/map-clone.js:100",
+   "class": "review",
+   "why": "first map.net byte is the cell size: GoH 5, AS2 10",
+   "lim": [
+    "PORT-70",
+    "MAP-28"
+   ]
+  },
+  "MAPCLONE_LOC_ADDED": {
+   "tool": "map-clone",
+   "sev": "review",
+   "at": "tools/map-clone/map-clone.js:156",
+   "class": "tool",
+   "why": "tool added a mission.lng name key",
+   "kind": "tool"
+  },
+  "MAPCLONE_MISSION_SKIPPED": {
+   "tool": "map-clone",
+   "sev": "review",
+   "at": "tools/map-clone/map-clone.js:113",
+   "class": "tool",
+   "why": "--no-mission flag: root .mi not copied",
+   "kind": "tool"
+  },
+  "MAPCLONE_MODE_SKIPPED": {
+   "tool": "map-clone",
+   "sev": "review",
+   "at": "tools/map-clone/map-clone.js:114",
+   "class": "tool",
+   "why": "--only-mode flag: other modes not copied",
+   "kind": "tool"
+  },
+  "MAPCLONE_MODINFO": {
+   "tool": "map-clone",
+   "sev": "review",
+   "at": "tools/map-clone/map-clone.js:180",
+   "class": "tool",
+   "why": "mod.info written or kept by the tool",
+   "kind": "tool"
+  },
+  "MAPCLONE_NAME_EXISTS": {
+   "tool": "map-clone",
+   "sev": "review",
+   "at": "tools/map-clone/map-clone.js:94",
+   "class": "tool",
+   "why": "new map name already taken in game folder",
+   "kind": "tool"
+  },
+  "MAPCLONE_NET_PROBLEM": {
+   "tool": "map-clone",
+   "sev": "review",
+   "at": "tools/map-clone/map-clone.js:104",
+   "class": "tool",
+   "why": "source map.net problems re-reported, copied as is",
+   "kind": "tool"
+  },
+  "MAPCLONE_NO_MODE": {
+   "tool": "map-clone",
+   "sev": "review",
+   "at": "tools/map-clone/map-clone.js:105",
+   "class": "tool",
+   "why": "--only-mode names a mode the map lacks",
+   "kind": "tool"
+  },
+  "MAPCLONE_NO_NET": {
+   "tool": "map-clone",
+   "sev": "review",
+   "at": "tools/map-clone/map-clone.js:98",
+   "class": "tool",
+   "why": "source map folder has no map.net",
+   "kind": "tool"
+  },
+  "MAPCLONE_OUT_EXISTS": {
+   "tool": "map-clone",
+   "sev": "review",
+   "at": "tools/map-clone/map-clone.js:161",
+   "class": "tool",
+   "why": "output folder exists; tool refuses to overwrite",
+   "kind": "tool"
+  },
+  "MAPCLONE_REF_CHANGED": {
+   "tool": "map-clone",
+   "sev": "review",
+   "at": "tools/map-clone/map-clone.js:120",
+   "class": "tool",
+   "why": "tool rewrote old map name refs",
+   "kind": "tool"
+  },
+  "MAPCLONE_TARGET_DEFAULT": {
+   "tool": "map-clone",
+   "sev": "review",
+   "at": "tools/map-clone/map-clone.js:174",
+   "class": "tool",
+   "why": "no --target; tool defaulted to as64",
+   "kind": "tool"
+  },
+  "WARN_MAPCLONE_INCLUDE_MISSING": {
+   "tool": "map-clone",
+   "sev": "silent",
+   "at": "tools/map-clone/map-clone.js:136",
+   "class": "crash",
+   "why": "mode .mi include not found stops map load",
+   "lim": [
+    "MAP-36"
+   ]
+  },
+  "MI_CAMERA_FOLLOW_MP": {
+   "tool": "milint",
+   "sev": "silent",
+   "at": "tools/milint/mi.js:212",
+   "class": "crash",
+   "why": "camera_follow_bone in MP: g_followCamera null",
+   "lim": [
+    "MIS-41"
+   ]
+  },
+  "WARN_MIS_BOT_ORDER": {
+   "tool": "milint",
+   "sev": "silent",
+   "at": "tools/milint/milint.js:331",
+   "class": "silent",
+   "why": "bot Lua orders limited to Spawn CaptureFlag SayChat",
+   "lim": [
+    "MIS-08"
+   ]
+  },
+  "WARN_MI_ACTOR_STATE_ALL": {
+   "tool": "milint",
+   "sev": "silent",
+   "at": "tools/milint/mi.js:216",
+   "class": "crash",
+   "why": "actor_state on player selector hits brainless entity",
+   "lim": [
+    "MIS-40"
+   ]
+  },
+  "WARN_MI_ENTITY_DUP": {
+   "tool": "milint",
+   "sev": "silent",
+   "at": "tools/milint/mi.js:55",
+   "class": "silent",
+   "why": "entity uid must be unique across map and mode files",
+   "lim": [
+    "MAP-24"
+   ]
+  },
+  "WARN_MI_EVENT_REF": {
+   "tool": "milint",
+   "sev": "silent",
+   "at": "tools/milint/mi.js:149",
+   "class": "silent",
+   "why": "undefined event: condition false, command no-op, no log",
+   "lim": [
+    "MIS-85"
+   ]
+  },
+  "WARN_MI_MID_REF": {
+   "tool": "milint",
+   "sev": "silent",
+   "at": "tools/milint/mi.js:171",
+   "class": "silent",
+   "why": "mids selector with no holder picks nothing, silently",
+   "lim": [
+    "MIS-86"
+   ]
+  },
+  "WARN_MI_TRIGGER_REF": {
+   "tool": "milint",
+   "sev": "silent",
+   "at": "tools/milint/mi.js:150",
+   "class": "silent",
+   "why": "undefined trigger: condition false, command no-op, no log",
+   "lim": [
+    "MIS-85"
+   ]
+  },
+  "WARN_MI_VAR_REF": {
+   "tool": "milint",
+   "sev": "silent",
+   "at": "tools/milint/mi.js:152",
+   "class": "silent",
+   "why": "undefined var: cmp_i false, set_i no-op, no log",
+   "lim": [
+    "MIS-85"
+   ]
+  },
+  "WARN_MI_WAYPOINT_REF": {
+   "tool": "milint",
+   "sev": "silent",
+   "at": "tools/milint/mi.js:172",
+   "class": "silent",
+   "why": "undefined waypoint: order refused with warning, spawn skipped",
+   "lim": [
+    "MIS-87"
+   ]
+  },
+  "MIS_DIFF_BLOCK_ADDED": {
+   "tool": "misdiff",
+   "sev": "silent",
+   "at": "tools/misdiff/misdiff.js:178",
+   "class": "tool",
+   "why": "diff of two mission files, a report line",
+   "kind": "tool"
+  },
+  "MIS_DIFF_BLOCK_CHANGED": {
+   "tool": "misdiff",
+   "sev": "silent",
+   "at": "tools/misdiff/misdiff.js:178",
+   "class": "tool",
+   "why": "diff of two mission files, a report line",
+   "kind": "tool"
+  }
+ }
+}

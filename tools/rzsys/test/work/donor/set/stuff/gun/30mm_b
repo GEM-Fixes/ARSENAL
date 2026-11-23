@@ -1,0 +1,5 @@
+{from "pattern gun"
+{range 200 200}
+{rechargeTime 4}
+("damage_170" a(20) b(20) c(20) d(20) e(20) range(200))
+}

@@ -1,0 +1,15 @@
+{"form":"limmap/1","part":"int-2h","codes":{
+"GEN_SPEC_PARSE":{"tool":"gen","sev":"crash","kind":"tool","at":"tools/gen/lib/specschema.js:6","class":"tool","why":"spec file is not valid YAML or JSON"},
+"GEN_SPEC_TYPE":{"tool":"gen","sev":"crash","kind":"tool","at":"tools/gen/lib/specschema.js:6","class":"tool","why":"spec field has the wrong type"},
+"GEN_SPEC_VALUE":{"tool":"gen","sev":"crash","kind":"tool","at":"tools/gen/lib/specschema.js:6","class":"tool","why":"spec field value is outside the allowed set"},
+"GEN_SPEC_FIELD_UNKNOWN":{"tool":"gen","sev":"review","kind":"tool","at":"tools/gen/lib/specschema.js:6","class":"tool","why":"spec field the schema does not know"},
+"GEN_SPEC_FIELD_MISSING":{"tool":"gen","sev":"crash","kind":"tool","at":"tools/gen/lib/specschema.js:6","class":"tool","why":"required spec field is absent"},
+"GEN_SPEC_OP_UNKNOWN":{"tool":"gen","sev":"crash","kind":"tool","at":"tools/gen/lib/specschema.js:6","class":"tool","why":"spec names an op gen does not have"},
+"GEN_SPEC_TARGET":{"tool":"gen","sev":"crash","kind":"tool","at":"tools/gen/lib/specschema.js:6","class":"tool","why":"spec target is not a known game"},
+"GEN_SPEC_TARGET_OP":{"tool":"gen","sev":"crash","kind":"tool","at":"tools/gen/lib/specschema.js:6","class":"tool","why":"op is not offered for the spec target"},
+"GEN_SPEC_CSV_MISSING":{"tool":"gen","sev":"crash","kind":"tool","at":"tools/gen/lib/specschema.js:6","class":"tool","why":"csv file named by the spec is absent"},
+"PORTGAP_STUFF_NAME":{"tool":"goh2as2","sev":"review","kind":"tool","at":"tools/goh2as2/goh2as2.js:174","class":"tool","why":"stuff name check removed a key with no rule row"},
+"PORT_TEXT_ONLY":{"tool":"goh2as2","sev":"review","kind":"tool","at":"tools/goh2as2/goh2as2.js:1650","class":"tool","why":"text-only run: binary assets were not copied"},
+"WARN_PORT_BURST_KEY":{"tool":"goh2as2","sev":"review","kind":"tool","at":"tools/goh2as2/goh2as2.js:373","class":"tool","why":"burst sub-key as64 has no reader case for, dropped"},
+"WARN_PORT_SPREADING_KEY":{"tool":"goh2as2","sev":"review","kind":"tool","at":"tools/goh2as2/goh2as2.js:373","class":"tool","why":"spreading sub-key as64 has no reader case for, dropped"}
+}}

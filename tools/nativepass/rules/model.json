@@ -1,0 +1,7 @@
+{"form":"nativerules/1","rules":[
+{"id":"model-01","key":"entity/decalview/nogetshadows","class":["tank_medium","tank_heavy","tank_light"],"act":"set","when":"absent","value":"","why":"vanilla decal views carry the NoGetShadows flag","src":"reader; vanilla 60 of 60 tank_medium","tag":"I"},
+{"id":"model-02","key":"entity/decalview/sprite/preturn","class":["tank_medium","tank_heavy","tank_light"],"act":"set","when":"absent","value":90,"why":"GoH selection sprite has PreTurn 90 commented out; vanilla sets it","src":"reader; vanilla 60 of 60 tank_medium (90)","tag":"I"},
+{"id":"model-03","key":"entity/nogroupmesh","class":"*","act":"keep","why":"as64 entity reader takes NoGroupMesh (bool); vanilla inventory defs carry it","src":",447-450","tag":"V"},
+{"id":"model-04","key":"entity/skeleton/bone","class":"*","act":"keep","why":"as64 entity Skeleton block is read by the model (skeleton) reader, which takes Bone","tag":"V"},
+{"id":"model-05","key":"entity/skeleton/bone/position","class":"*","act":"keep","why":"as64 bone reader takes Position","src":";","tag":"V"}
+]}

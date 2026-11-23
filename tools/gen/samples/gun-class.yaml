@@ -1,0 +1,17 @@
+# A new machine gun my_mg42 from the vanilla mg42 (mgun/ folder): faster fire, longer bursts, a bigger belt, quicker reload.
+# Edit like, class (rifle mg smg pistol launcher cannon mounted) and the values; params passes raw macro calls, e.g. recoveryTime: r(1500).
+# gen gun-class.yaml --target as64 --game <AS2 dir> --out <mods dir>/my_gun --no-stat   (add --plan first: writes nothing, lists what it would write)
+name: my_gun
+title: My Gun
+ops:
+  - op: gun
+    name: my_mg42
+    like: mg42
+    class: mg
+    rof: 1500
+    burst: long
+    spread: 1.2
+    reload: 4
+    magazine: 150
+    fire_sound: mgun/mg42_burst/
+    display: MG 42 (fast)

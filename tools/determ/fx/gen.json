@@ -1,0 +1,4 @@
+{"name":"sq","ops":[
+ {"op":"breed","name":"gen_rifle","army":"rus","like":"rifle","set":{"inventory/item[0]#1":"\"mosin gen\""}},
+ {"op":"squad","name":"gen_riflemen","army":"rus","like":"riflemans","display":"Отряд","members":["squadleader:1","gen_rifle:5"],"fields":{"cost":100}}
+]}

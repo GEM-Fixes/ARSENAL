@@ -1,0 +1,81 @@
+{
+  "name": "key-27",
+  "rows": [
+    "KEY-27"
+  ],
+  "fixture": [
+    "key-27"
+  ],
+  "mode": "mp",
+  "params": {
+    "map": "multi/1v1_road:combat"
+  },
+  "prepare": [
+    {
+      "argv": [
+        "node",
+        "tools/clone-entity/clone-entity.js",
+        "--game",
+        "{game}",
+        "--out",
+        "{mods}/key-27",
+        "--entity",
+        "flag_ring",
+        "--as",
+        "trs_k27"
+      ]
+    },
+    {
+      "argv": [
+        "node",
+        "tools/place-entity/place-entity.js",
+        "{mods}/key-27",
+        "--game",
+        "{game}",
+        "--mods",
+        "key-27",
+        "--map",
+        "multi/1v1_road",
+        "--entity",
+        "trs_k27",
+        "--pos",
+        "-220,-800"
+      ]
+    }
+  ],
+  "src": [
+    "(not part of this release)",
+    "(not part of this release)",
+    "tools/clone-entity/clone-entity.js:306 (CLONE_MODEL_REF, rooted)",
+    "(not part of this release)"
+  ],
+  "note": "Clone with no --copy-assets: def in service/trs_k27/, Extension \"/entity/service/flag_ring/flag_ring.mdl\" (rooted). Live wave1c: the former entity-relative path failed (File not found resource/entity/service/trs_k27/service/flag_ring/flag_ring.mdl): a relative Extension resolves ONLY next to the def. Pass: map loads, no \"Resource not found\"/Exception. [T] rooted path.",
+  "steps": [
+    {
+      "wait": 5
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "log": "Resource not found[^\\n]*flag_ring",
+      "want": false
+    },
+    {
+      "event": "loaded",
+      "want": true
+    },
+    {
+      "reply": "mp_resource entity/service/trs_k27/trs_k27.def",
+      "match": " *[0-9A-F]{8}",
+      "want": true
+    }
+  ],
+  "mods": [
+    "as64+",
+    "key-27"
+  ]
+}

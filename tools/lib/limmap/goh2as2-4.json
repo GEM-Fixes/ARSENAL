@@ -1,0 +1,426 @@
+{
+ "form": "limmap/1",
+ "part": "goh2as2-4",
+ "codes": {
+  "WARN_PORT_STUFF_MISSING": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1028",
+   "class": "crash",
+   "why": "tag has no as64 Stuff: null stuff crash",
+   "lim": [
+    "PORT-121",
+    "LOG-07"
+   ]
+  },
+  "WARN_PORT_TAIL_DROPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffnames.js:95",
+   "class": "cosmetic",
+   "why": "no tail entity in as64",
+   "lim": [
+    "PORT-204"
+   ]
+  },
+  "WARN_PORT_TARGET_SEL_MAP": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1210",
+   "class": "silent",
+   "why": "GoH-only selector type gives null selector",
+   "lim": [
+    "AI-23"
+   ]
+  },
+  "WARN_PORT_TARGET_SEL_UNKNOWN": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1211",
+   "class": "silent",
+   "why": "unknown selector type: no auto target",
+   "lim": [
+    "AI-24"
+   ]
+  },
+  "WARN_PORT_TEXKEY_RENAMED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1161",
+   "class": "silent",
+   "why": "same key other bytes replaces AS2 texture",
+   "lim": [
+    "PORT-161"
+   ]
+  },
+  "WARN_PORT_VIEW_DROPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffnames.js:87",
+   "class": "cosmetic",
+   "why": "flying-model view absent in as64",
+   "lim": [
+    "PORT-205"
+   ]
+  },
+  "WARN_PORT_VIEW_MAPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffnames.js:83",
+   "class": "cosmetic",
+   "why": "trace view texture absent in as64",
+   "lim": [
+    "PORT-206"
+   ]
+  },
+  "WARN_PORT_WEAPON_INLINED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1356",
+   "class": "info",
+   "why": "tool inlines include so weapon swap reaches it",
+   "kind": "tool"
+  },
+  "WARN_PORT_WEAPON_SWAPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1437",
+   "class": "review",
+   "why": "donor fires donor weapon; swap by type, not calibre",
+   "lim": [
+    "PORT-130",
+    "PORT-111"
+   ]
+  },
+  "WARN_PORT_WPN_IMPORT": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1580",
+   "class": "review",
+   "why": "weapon imported needs stuff entry",
+   "lim": [
+    "PORT-124"
+   ]
+  },
+  "WARN_SP_FILL_UNKNOWN": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffport.js:266",
+   "class": "silent",
+   "why": "fill item unmapped, gun finds no ammo",
+   "lim": [
+    "PORT-207"
+   ]
+  },
+  "WARN_SP_ITEM_DROPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffport.js:361",
+   "class": "crash",
+   "why": "item with no Stuff becomes dummy_checker, crash later",
+   "lim": [
+    "LOG-07"
+   ]
+  },
+  "WARN_SP_KIT_HANDS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffport.js:381",
+   "class": "silent",
+   "why": "in_hands counts item blocks, dropped item",
+   "lim": [
+    "HUM-21"
+   ]
+  },
+  "WARN_SP_KIT_NONE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffport.js:367",
+   "class": "review",
+   "why": "breed needs inventory to carry items",
+   "lim": [
+    "PORT-124"
+   ]
+  },
+  "WARN_SP_KIT_NO_INV": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffport.js:389",
+   "class": "review",
+   "why": "breed needs inventory to carry items",
+   "lim": [
+    "PORT-124"
+   ]
+  },
+  "WARN_SP_SCALE_MACRO": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffport.js:483",
+   "class": "silent",
+   "why": "macro call speed stays GoH scale",
+   "lim": [
+    "PORT-197"
+   ]
+  },
+  "WARN_SP_SCALE_NOKEY": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffport.js:485",
+   "class": "silent",
+   "why": "kept macro values not scaled",
+   "lim": [
+    "PORT-197"
+   ]
+  },
+  "WARN_SP_SCALE_SKIP": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffport.js:452",
+   "class": "silent",
+   "why": "no scale class, GoH scale values kept",
+   "lim": [
+    "PORT-197"
+   ]
+  },
+  "WARN_SP_SCALE_TWIN_RANGE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/dmgtwin.js:83",
+   "class": "review",
+   "why": "twin ratio outside range, class scale kept",
+   "lim": [
+    "PORT-95"
+   ]
+  },
+  "WARN_SP_SKILL_KIND": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffport.js:313",
+   "class": "crash",
+   "why": "unknown ability base is a load error",
+   "lim": [
+    "HUM-14"
+   ]
+  },
+  "WARN_SP_SKILL_LEVEL": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffport.js:323",
+   "class": "silent",
+   "why": "missing levels give silent top-level buff",
+   "lim": [
+    "GPL-13"
+   ]
+  },
+  "WARN_SP_SKILL_MACRO": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffport.js:315",
+   "class": "crash",
+   "why": "GoH defines absent in as64: define not found, fatal",
+   "lim": [
+    "GPL-11"
+   ]
+  },
+  "WARN_SP_SKILL_NONE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffport.js:341",
+   "class": "tool",
+   "why": "input file has no ability blocks",
+   "kind": "tool"
+  },
+  "WARN_SP_TAG_DROPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffport.js:175",
+   "class": "crash",
+   "why": "item tag no Stuff carries: dummy_checker, crash later",
+   "lim": [
+    "LOG-07"
+   ]
+  },
+  "WARN_SP_TYPE_UNMAPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffport.js:165",
+   "class": "silent",
+   "why": "GoH shell type has no AS2 shell",
+   "open": "reader of shell type words in bullet {parameters} not found"
+  },
+  "WARN_SP_UNRESOLVED_ARG": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffport.js:115",
+   "class": "tool",
+   "why": "macro arg left unexpanded by tool",
+   "kind": "tool"
+  },
+  "WARN_XLATE_CREW_PEERS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/translate.js:322",
+   "class": "tool",
+   "why": "statistic against AS2 class peers, no engine fact",
+   "kind": "tool"
+  },
+  "WARN_XLATE_FIT_LEFT": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1620",
+   "class": "silent",
+   "why": "donorfit misses left: unit may not operate",
+   "lim": [
+    "PORT-123"
+   ]
+  },
+  "WARN_XLATE_LISTED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/translate.js:338",
+   "class": "review",
+   "why": "GoH keys with no AS2 reader not translated",
+   "lim": [
+    "PORT-88"
+   ]
+  },
+  "WARN_XLATE_NATIVE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1494",
+   "class": "review",
+   "why": "key paths no AS2 peer holds",
+   "lim": [
+    "PORT-53"
+   ]
+  },
+  "WARN_XLATE_NO_SLOT": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/translate.js:240",
+   "class": "tool",
+   "why": "donor lacks block to write value",
+   "kind": "tool"
+  },
+  "WARN_XLATE_REACTIVE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1425",
+   "class": "tool",
+   "why": "tool fallback when its reactive rewrite throws",
+   "kind": "tool"
+  },
+  "WARN_XLATE_SEATS_DROPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/translate.js:327",
+   "class": "review",
+   "why": "seat count differs rep vs donor",
+   "lim": [
+    "PORT-158"
+   ]
+  },
+  "WARN_XL_NO_FACTOR": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/translate.js:217",
+   "class": "review",
+   "why": "no conversion factor, donor value kept",
+   "lim": [
+    "PORT-95"
+   ]
+  },
+  "XLATE_ARMOUR_FALLBACK": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/translate.js:252",
+   "class": "tool",
+   "why": "old aggregate armour rule used",
+   "kind": "tool"
+  },
+  "XLATE_ARMOUR_FLAG": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/translate.js:252",
+   "class": "review",
+   "why": "armour rule flag raised",
+   "lim": [
+    "PORT-179"
+   ]
+  },
+  "XLATE_FIT_APPLIED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1613",
+   "class": "info",
+   "why": "donorfit fix applied for mdl names",
+   "lim": [
+    "PORT-123"
+   ]
+  },
+  "XLATE_FIT_CREW_EXT": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/fitpass.js:344",
+   "class": "review",
+   "why": "crew macro renamed to fit mdl door",
+   "lim": [
+    "PORT-137"
+   ]
+  },
+  "XLATE_FIT_PLACE_LINKBONE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/fitpass.js:407",
+   "class": "review",
+   "why": "LinkBone added for place missing in mdl",
+   "lim": [
+    "PORT-159"
+   ]
+  },
+  "XLATE_FIT_VOLUME_DROPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/fitpass.js:415",
+   "class": "review",
+   "why": "shield volume absent in mdl removed",
+   "lim": [
+    "PORT-122"
+   ]
+  },
+  "XLATE_NATIVE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1495",
+   "class": "info",
+   "why": "static native key check all held",
+   "lim": [
+    "PORT-53"
+   ]
+  },
+  "XLATE_SKIP": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/translate.js:340",
+   "class": "info",
+   "why": "translate step skipped note",
+   "kind": "tool"
+  },
+  "XLATE_SKIPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/translate.js:210",
+   "class": "info",
+   "why": "no table class: nothing translated",
+   "kind": "tool"
+  },
+  "XLATE_WRITE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/translate.js:339",
+   "class": "info",
+   "why": "value written into donor def record",
+   "kind": "tool"
+  }
+ }
+}

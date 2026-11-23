@@ -1,0 +1,5 @@
+{colliders
+ {"nothing" {colliderId "a"}}
+ {"b" {colliderId "b"}}
+ {"c" {colliderId "c"}}
+}

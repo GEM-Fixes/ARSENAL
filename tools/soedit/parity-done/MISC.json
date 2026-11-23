@@ -1,0 +1,16 @@
+{
+  "MISC-01": { "state": "done", "where": "sub/file.client.js:253 cardKeys, showKeys (F2), M.keys for other parts", "test": "file.test.js ok 6, ok 7", "note": "Key list on the Files tab and in a dialog on F2. Other parts add their keys by pushing { keys, what } to EXT_SCREENS.models.keys; until they do, the list shows the file keys plus Ctrl+Z/Ctrl+Y." },
+  "MISC-02": { "state": "done", "where": "sub/file.client.js:257 cardAbout; lang models.file.about", "test": "file.test.js ok 1", "note": "Says the editor does what SOEdit does, the Credits button and the author credit line were removed (owner 2026-11-15: SOEdit is a reference only)." },
+  "MISC-03": { "state": "not owed", "where": "", "test": "", "note": "Greyed in SOEdit; every button here has a plain-words tooltip instead." },
+  "MISC-04": { "state": "done", "where": "sub/file.client.js:79 drawStatus", "test": "file.test.js ok 4", "note": "Status line: model, file count and changed count, last save time, last draft time, 'F2 shows the keys'." },
+  "MISC-05": { "state": "done", "where": "sub/file.client.js btn (title from models.file.tip.<key>)", "test": "file.test.js ok 1", "note": "Every button of this part has a tooltip in en, ru, uk, zh. Other parts carry their own." },
+  "MISC-06": { "state": "not owed", "where": "", "test": "", "note": "No handler in SOEdit." },
+  "MISC-07": { "state": "not owed", "where": "", "test": "", "note": "Greyed in SOEdit, no handler." },
+  "MISC-08": { "state": "not owed", "where": "", "test": "", "note": "Greyed in SOEdit, no handler." },
+  "MISC-09": { "state": "not owed", "where": "", "test": "", "note": "Greyed in SOEdit, no handler." },
+  "MISC-10": { "state": "not owed", "where": "", "test": "", "note": "Greyed in SOEdit, no handler." },
+  "MISC-11": { "state": "not owed", "where": "", "test": "", "note": "Dead code in SOEdit (the earlier branch returns first)." },
+  "MISC-12": { "state": "done", "where": "sub/file.client.js:290 onKey (typing, textSelected)", "test": "file.test.js ok 6", "note": "Keys of this part do nothing while a text box, select or editable element has the focus, or text is selected, or on another page; an event another part already handled is left alone. The core does the same for Ctrl+Z/Ctrl+Y." },
+  "MISC-13": { "state": "done", "where": "tools/lib/model/edit/file.js:526 file.clipPaste, file.clipCut, file.clipCopy; sub/file.client.js:215 clipCopy, clipCut, clipPaste", "test": "model-edit-file.test.js: bone clipboard copy, paste with renames, cut; file.test.js ok 6", "note": "Cut, copy, paste of a bone with everything under it (buttons and Ctrl+X/C/V). Pasted names that clash get _2, _3; cut reports volumes left without their bone; the root bone cannot be cut." },
+  "MISC-14": { "state": "not owed", "where": "", "test": "", "note": "Duplicate key path of a broken speed edit; the speed function itself is ANM-37 (E4)." }
+}

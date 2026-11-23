@@ -1,0 +1,373 @@
+{
+ "thing": "release",
+ "files": [
+  "GET /api/x/share/mods",
+  "GET /api/x/share/info",
+  "POST /api/x/share/info",
+  "POST /api/x/share/preview",
+  "POST /api/x/share/gate",
+  "POST /api/x/share/package",
+  "POST /api/x/share/workshop",
+  "/api/x/share/uploader",
+  "POST /api/x/share/version",
+  "tools/packer",
+  "mod.info",
+  "preview.jpg"
+ ],
+ "groups": [
+  {
+   "id": "info",
+   "name": "Name, text, version"
+  },
+  {
+   "id": "picture",
+   "name": "Picture"
+  },
+  {
+   "id": "gate",
+   "name": "Release check"
+  },
+  {
+   "id": "pack",
+   "name": "Package"
+  },
+  {
+   "id": "upload",
+   "name": "Upload"
+  }
+ ],
+ "vars": [
+  {
+   "key": "info.name",
+   "where": "POST /api/x/share/info fields.Name",
+   "type": "text",
+   "plain": "Name in the game and on Workshop.",
+   "unit": "",
+   "vanilla": {
+    "max": 200
+   },
+   "group": "info",
+   "ref": null,
+   "tool": "POST /api/x/share/info",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "info.desc",
+   "where": "fields.Desc",
+   "type": "text",
+   "plain": "Description.",
+   "unit": "bytes",
+   "vanilla": {
+    "max": 8000
+   },
+   "group": "info",
+   "ref": null,
+   "tool": "POST /api/x/share/info",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "info.version",
+   "where": "fields.Version; POST /api/x/share/version {kind set|major|minor|patch, value, note}",
+   "type": "text",
+   "plain": "Version label and change note.",
+   "unit": "",
+   "vanilla": null,
+   "group": "info",
+   "ref": null,
+   "tool": "POST /api/x/share/version",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "info.version_kind",
+   "where": "POST /api/x/share/version body.kind",
+   "type": "choice",
+   "plain": "How to bump the version.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "set",
+     "major",
+     "minor",
+     "patch"
+    ]
+   },
+   "group": "info",
+   "ref": null,
+   "tool": "POST /api/x/share/version",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "info.version_note",
+   "where": "POST /api/x/share/version body.note, since",
+   "type": "text",
+   "plain": "What changed.",
+   "unit": "",
+   "vanilla": null,
+   "group": "info",
+   "ref": null,
+   "tool": "POST /api/x/share/version",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "info.range",
+   "where": "fields.MinGameVersion, MaxGameVersion",
+   "type": "choice",
+   "plain": "Classic or Enhanced game.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "classic 3.262.0-3.262.1",
+     "enhanced 3.301+"
+    ]
+   },
+   "group": "info",
+   "ref": null,
+   "tool": "POST /api/x/share/info",
+   "limit": "VFS-19",
+   "tag": "V"
+  },
+  {
+   "key": "info.known_name",
+   "where": "body.knownName",
+   "type": "text",
+   "plain": "The Workshop name to keep matching.",
+   "unit": "",
+   "vanilla": null,
+   "group": "info",
+   "ref": null,
+   "tool": "POST /api/x/share/info",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "pic.preview",
+   "where": "POST /api/x/share/preview {from}",
+   "type": "file",
+   "plain": "Workshop picture (jpg/png/gif under 1 MB).",
+   "unit": "bytes",
+   "vanilla": {
+    "max": 1048576
+   },
+   "group": "picture",
+   "ref": null,
+   "tool": "POST /api/x/share/preview",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gate.deep",
+   "where": "POST /api/x/share/gate {deep}",
+   "type": "bool",
+   "plain": "Run the full release check.",
+   "unit": "",
+   "vanilla": null,
+   "group": "gate",
+   "ref": null,
+   "tool": "POST /api/x/share/gate",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gate.items",
+   "where": "gate: info range name desc version preview junk goh pack check",
+   "type": "list",
+   "plain": "What the release check looks at.",
+   "unit": "",
+   "vanilla": null,
+   "group": "gate",
+   "ref": null,
+   "tool": "POST /api/x/share/gate",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gate.clashes",
+   "where": "POST /api/x/share/clashes {mods>=2}",
+   "type": "list",
+   "plain": "Other mods that change the same files.",
+   "unit": "",
+   "vanilla": null,
+   "group": "gate",
+   "ref": null,
+   "tool": "POST /api/x/share/clashes",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "gate.updated",
+   "where": "POST /api/x/share/updated {mod}",
+   "type": "bool",
+   "plain": "Is the uploaded copy behind?",
+   "unit": "",
+   "vanilla": null,
+   "group": "gate",
+   "ref": null,
+   "tool": "POST /api/x/share/updated",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "pack.out",
+   "where": "POST /api/x/share/outcheck {out}; package {out}",
+   "type": "path",
+   "plain": "Where the package goes.",
+   "unit": "",
+   "vanilla": null,
+   "group": "pack",
+   "ref": null,
+   "tool": "POST /api/x/share/package",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "pack.package",
+   "where": "packer --package",
+   "type": "bool",
+   "plain": "Pack into .pak files.",
+   "unit": "",
+   "vanilla": null,
+   "group": "pack",
+   "ref": null,
+   "tool": "POST /api/x/share/package",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "pack.allow_private",
+   "where": "packer --allow-private",
+   "type": "bool",
+   "plain": "Keep private files.",
+   "unit": "",
+   "vanilla": null,
+   "group": "pack",
+   "ref": null,
+   "tool": "packer CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "pack.summary",
+   "where": "packer --summary",
+   "type": "bool",
+   "plain": "Print the pack list.",
+   "unit": "",
+   "vanilla": null,
+   "group": "pack",
+   "ref": null,
+   "tool": "packer CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "pack.workshop_copy",
+   "where": "POST /api/x/share/workshop {out, knownName}",
+   "type": "path",
+   "plain": "Clean copy for the uploader.",
+   "unit": "",
+   "vanilla": null,
+   "group": "pack",
+   "ref": null,
+   "tool": "POST /api/x/share/workshop",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "up.uploader",
+   "where": "GET/POST /api/x/share/uploader {act install|start}",
+   "type": "choice",
+   "plain": "Install or start the Workshop uploader.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "install",
+     "start"
+    ]
+   },
+   "group": "upload",
+   "ref": null,
+   "tool": "POST /api/x/share/uploader",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "up.title",
+   "where": "Workshop uploader: title",
+   "type": "text",
+   "plain": "Workshop title.",
+   "unit": "",
+   "vanilla": null,
+   "group": "upload",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "up.tags",
+   "where": "Workshop uploader: tags",
+   "type": "list",
+   "plain": "Workshop tags.",
+   "unit": "",
+   "vanilla": null,
+   "group": "upload",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "up.visibility",
+   "where": "Workshop uploader: visibility",
+   "type": "choice",
+   "plain": "Public, friends or hidden.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "public",
+     "friends",
+     "private"
+    ]
+   },
+   "group": "upload",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "up.change_note",
+   "where": "Workshop uploader: change note",
+   "type": "text",
+   "plain": "Change note on Workshop.",
+   "unit": "",
+   "vanilla": null,
+   "group": "upload",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "card.mods",
+   "where": "POST /api/x/share/card {mods}",
+   "type": "list",
+   "plain": "Make a share card for a set of mods.",
+   "unit": "",
+   "vanilla": null,
+   "group": "upload",
+   "ref": null,
+   "tool": "POST /api/x/share/card",
+   "limit": null,
+   "tag": "V"
+  }
+ ],
+ "gaps": [
+  "up.title/tags/visibility/change_note: set only inside the uploader exe; add a checklist card that shows the values to type (from mod.info and version note)",
+  "pack.allow_private/summary: packer flags not exposed; add body fields to POST package"
+ ]
+}

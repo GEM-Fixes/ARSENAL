@@ -1,0 +1,66 @@
+{
+  "name": "ai-13",
+  "rows": [
+    "AI-13"
+  ],
+  "mode": "menu",
+  "mods": [],
+  "params": {
+    "map": "multi/1v1_road:combat",
+    "botSlot": "2"
+  },
+  "src": [
+    " (CaptureFlag: boarded members skipped, no re-crew)",
+    " (mp_userUnits)",
+    "(not part of this release)"
+  ],
+  "manual": "vs a bot, bring a bot vehicle to bail (kill the engine/hit it until the crew leaves). Watch ~60 s: do the bailed crew re-enter by themselves or get new orders from the bot, and the empty vehicle: becomes selectable after 20 s? Not scriptable: no pipe command damages units. mp_userUnits steps record the roster before/after.",
+  "steps": [
+    {
+      "cmd": "mp_lan"
+    },
+    {
+      "wait_stage": true
+    },
+    {
+      "cmd": "mp_host {map} 2"
+    },
+    {
+      "wait_stage": true
+    },
+    {
+      "cmd": "mp_slots"
+    },
+    {
+      "cmd": "mp_slot {botSlot} easy"
+    },
+    {
+      "cmd": "mp_ready"
+    },
+    {
+      "cmd": "mp_start"
+    },
+    {
+      "wait": "loaded",
+      "timeout": 300
+    },
+    {
+      "wait": 20
+    },
+    {
+      "cmd": "mp_userUnits"
+    },
+    {
+      "wait": 60
+    },
+    {
+      "cmd": "mp_userUnits"
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    }
+  ]
+}

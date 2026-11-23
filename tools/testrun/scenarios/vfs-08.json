@@ -1,0 +1,38 @@
+{
+  "name": "vfs-08",
+  "rows": [
+    "VFS-08"
+  ],
+  "mode": "menu",
+  "fixture": [
+    "vfs-08"
+  ],
+  "mods": [
+    "as64+",
+    "vfs-08"
+  ],
+  "params": {},
+  "src": [
+    " (MountMod: resource.pak, then resource/)",
+    " (exec)",
+    "(not part of this release)"
+  ],
+  "note": "same path at/vfs08.cfg in the mod root resource.pak (marker \"pak\") and loose resource/ (marker \"loose\"). exec echoes the winner. Probe ext is .cfg: a loose .txt is never indexed (VFS-06), so the old .txt run always showed pak. Live 2026-11-03 [V]: loose wins (MountMod: pak, then resource/; later mount wins); lib/vfs agrees. The row also speaks of a same-dir enumeration tie, not tested here: see specIssues VFS-08.",
+  "steps": [
+    {
+      "cmd": "exec \"vfs08.cfg\"",
+      "expect": "trs_vfs08_marker_loose"
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "exec \"vfs08.cfg\"",
+      "match": "trs_vfs08_marker_loose",
+      "want": true
+    }
+  ]
+}

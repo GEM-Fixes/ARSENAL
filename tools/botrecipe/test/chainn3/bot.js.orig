@@ -1,0 +1,21 @@
+// CHAIN-N3 (copy of chain-n2 bot.js): bot.data.lua (eng stage 2 buys chainn_cromwell first), card made cheap, mode set in team mode. Writes only G/mods/chainn3_t.
+const fs = require('fs'), path = require('path');
+const G = '<game folder>', M = path.join(G, 'mods/chainn3_t/resource');
+const STOCK = 'run/sessions/w88/AI-3/stock';
+const must = (s, a, b, w) => { if (!s.includes(a)) throw new Error('anchor ' + w); return s.replace(a, b); };
+const put = (f, s) => { const p = path.join(M, f); fs.mkdirSync(path.dirname(p), { recursive: true }); fs.writeFileSync(p, s, 'latin1'); };
+let d = fs.readFileSync(path.join(STOCK, 'script/multiplayer/bot.data.lua'), 'latin1');
+const mk7 = '{priority = 1.0, class = UnitClass.Tank, unit = "mk7"},';
+d = must(d, mk7, mk7 + '\r\n\t\t\t\t{priority = 1000.0, class = UnitClass.Tank, unit = "chainn3_cromwell"},', 'mk7');
+put('script/multiplayer/bot.data.lua', d);
+put('script/multiplayer/bot.main.lua', fs.readFileSync('run/ai3/mod/resource/script/multiplayer/bot.main.lua', 'latin1').replace(/\r?\n/g, '\r\n'));
+const vf = 'set/multiplayer/units/vehicles_eng.set';
+let v = fs.readFileSync(path.join(M, vf), 'latin1');
+const l = /\{"chainn3_cromwell"[^\r\n]*/.exec(v)[0];
+v = v.replace(l, l.replace('g(e2)', 'g(e10)').replace('sc(17.50)', 'sc(2.50)').replace('cp(15)', 'cp(5)'));
+put(vf, v);
+const sf = 'set/multiplayer/games/chainn3_zones.set';
+let s = fs.readFileSync(path.join(M, sf), 'latin1');
+s = must(s, '{armySelectionMode alliance}', '{armySelectionMode team}', 'army mode');
+put(sf, s);
+console.log(/\{"chainn3_cromwell"[^\r\n]*/.exec(v)[0]);

@@ -1,0 +1,23 @@
+{"form":"limmap/1","part":"chk-chk-key","codes":{
+"MTL_DIFFUSE_BARE":{"tool":"keylint","sev":"crash","lim":["SDL-61"],"at":"tools/keylint/chkkey.js:19","class":"crash","why":"mtl diffuse given as bare word, map load fails String expected"},
+"SELECT_NO_CATCHALL":{"tool":"keylint","sev":"silent","lim":["AI-01"],"at":"tools/keylint/chkkey.js:44","class":"silent","why":"selector groups all have select terms, no late catch-all or in_range"},
+"AMMO_RULE_GAP":{"tool":"keylint","sev":"silent","lim":["AI-05"],"at":"tools/keylint/chkkey.js:51","class":"silent","why":"ammo class without rules or without a plain unconditioned block"},
+"WARN_BOT_API_UNKNOWN":{"tool":"keylint","sev":"silent","lim":["AI-12"],"at":"tools/keylint/chkkey.js:104","class":"silent","why":"bot Lua calls a Commands function other than the exported five"},
+"BOT_DATA_UNUSED_KEY":{"tool":"keylint","sev":"silent","lim":["AI-15"],"at":"tools/keylint/chkkey.js:100","class":"silent","why":"bot.data.lua period or AttackBaseTime is never read"},
+"GOH_DEF_KEY_IGNORED":{"tool":"keylint","sev":"silent","lim":["PORT-88"],"at":"tools/keylint/chkkey.js:30","class":"silent","why":"GoH def keys hp_broken, flag_vaultable etc have no as64 reader"},
+"WARN_GOH_MP_KEY_IGNORED":{"tool":"keylint","sev":"silent","lim":["PORT-92"],"at":"tools/keylint/chkkey.js:34","class":"silent","why":"GoH unit and card settings keys cost_ap, research_stage etc not read"},
+"TAGS_MULTI_STRING":{"tool":"keylint","sev":"silent","lim":["SDL-43"],"at":"tools/keylint/chkkey.js:25","class":"silent","why":"entity tags given several quoted strings, only the first is read"},
+"ARMOR_MACRO_ARGS":{"tool":"keylint","sev":"silent","lim":["TST-80"],"at":"tools/keylint/keylint.js:315","class":"silent","why":"armor macro parameter list with other than 1, 2 or 4 values"}
+},"result":{
+"SDL-61":{"state":"built","code":"MTL_DIFFUSE_BARE","why":null},
+"AI-01":{"state":"built","code":"SELECT_NO_CATCHALL","why":null},
+"AI-05":{"state":"built","code":"AMMO_RULE_GAP","why":null},
+"AI-12":{"state":"built","code":"WARN_BOT_API_UNKNOWN","why":null},
+"AI-15":{"state":"built","code":"BOT_DATA_UNUSED_KEY","why":null},
+"GPL-01":{"state":"never","code":null,"why":"95% of vanilla defs lack able blast; shell hits are runtime"},
+"PORT-88":{"state":"built","code":"GOH_DEF_KEY_IGNORED","why":null},
+"PORT-92":{"state":"built","code":"WARN_GOH_MP_KEY_IGNORED","why":null},
+"SDL-43":{"state":"built","code":"TAGS_MULTI_STRING","why":null},
+"TST-80":{"state":"built","code":"ARMOR_MACRO_ARGS","why":null},
+"AI-18":{"state":"never","code":null,"why":"retreatLimit and spread are runtime sensor values, not data"}
+}}

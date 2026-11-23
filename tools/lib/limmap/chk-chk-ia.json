@@ -1,0 +1,21 @@
+{"form":"limmap/1","part":"chk-chk-ia","codes":{
+"INT_EVENT_UNKNOWN":{"tool":"ialint","sev":"crash","lim":["INT-23"],"at":"tools/ialint/ialint.js:129","class":"crash","why":"{on word} outside the 30 engine events stops the load"},
+"INT_GROUND_MIN_ENERGY":{"tool":"ialint","sev":"silent","lim":["INT-24"],"at":"tools/ialint/ialint.js:109","class":"silent","why":"ground_hit value is negative so min_energy never true"},
+"INT_HITSIDE_NOBULLET":{"tool":"ialint","sev":"silent","lim":["INT-07"],"at":"tools/ialint/ialint.js:110","class":"silent","why":"hit_side left/right/top/bottom false without a bullet in the command"},
+"INT_DELAYEX_LOST":{"tool":"ialint","sev":"silent","lim":["INT-03"],"at":"tools/ialint/ialint.js:88","class":"silent","why":"delay_ex drops instigator and bone: effector, hit_side left/right lost"},
+"INT_DELAY_CTX_LOST":{"tool":"ialint","sev":"silent","lim":["INT-13"],"at":"tools/ialint/ialint.js:92","class":"silent","why":"delay and delay_effect run a fresh command without volume or part"},
+"WARN_DELAY_BULLET":{"tool":"ialint","sev":"silent","lim":["GPL-07"],"at":"tools/ialint/ialint.js:91","class":"silent","why":"delay body reads bullet context that the fresh command lacks"},
+"INT_HEALTH_NO_DIE":{"tool":"ialint","sev":"silent","lim":["HUM-06"],"at":"tools/ialint/ialint.js:199","class":"silent","why":"health damage never kills; no die reachable from the handler"},
+"WARN_TAG_ADD_BLOCK":{"tool":"ialint","sev":"silent","lim":["INT-01"],"at":"tools/ialint/ialint.js:201","class":"silent","why":"run-time tags add cannot switch an interaction block on"},
+"WARN_FIRE_PLACE":{"tool":"ialint","sev":"silent","lim":["INT-21"],"at":"tools/ialint/ialint.js:209","class":"silent","why":"fire place name unknown so the owner's fires table never matches"}
+},"result":{
+"INT-23":{"state":"built","code":"INT_EVENT_UNKNOWN","why":null},
+"INT-24":{"state":"built","code":"INT_GROUND_MIN_ENERGY","why":null},
+"INT-07":{"state":"built","code":"INT_HITSIDE_NOBULLET","why":null},
+"INT-03":{"state":"built","code":"INT_DELAYEX_LOST","why":null},
+"INT-13":{"state":"built","code":"INT_DELAY_CTX_LOST","why":null},
+"GPL-07":{"state":"built","code":"WARN_DELAY_BULLET","why":null},
+"HUM-06":{"state":"built","code":"INT_HEALTH_NO_DIE","why":null},
+"INT-01":{"state":"built","code":"WARN_TAG_ADD_BLOCK","why":null},
+"INT-21":{"state":"built","code":"WARN_FIRE_PLACE","why":null}
+}}

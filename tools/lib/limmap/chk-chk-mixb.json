@@ -1,0 +1,16 @@
+{"form":"limmap/1","part":"chk-chk-mixb","codes":{
+"MAP_GRS_GOH_FORM":{"tool":"mapport","sev":"crash","lim":["PORT-72"],"at":"tools/mapport/mapport.js:205","class":"crash","why":"map.grs with VER-/SEED header: 5-byte records, 4 GB alloc fatal on as64"},
+"MAP_KEY_GOH_ONLY":{"tool":"mapport","sev":"crash","lim":["PORT-73"],"at":"tools/mapport/mapport.js:199","class":"crash","why":"GoH-only map keys (Haze, Health...) stop as64 map load with unexpected token"},
+"MOVE_GOH_INTERFACE":{"tool":"modmove","sev":"crash","lim":["PORT-81"],"at":"tools/modmove/lib/static.js:161","class":"crash","why":"GoH interface/ folder in a mod headed for an AS2 exe crashes boot"},
+"MOD_ROOT_DATA_UNMOUNTED":{"tool":"doctor","sev":"silent","lim":["TST-87"],"at":"tools/doctor/crashrules.js:102","class":"silent","why":"set/ or entity/ in the mod root is never mounted"},
+"WARN_UNITS_SET_STOCK_INCLUDES":{"tool":"doctor","sev":"silent","lim":["TST-94"],"at":"tools/doctor/crashrules.js:109","class":"silent","why":"mod common.set replaces the stock unit list without the stock includes"},
+"WARN_ARMY_RANK_LEVEL":{"tool":"doctor","sev":"silent","lim":["TST-95"],"at":"tools/doctor/crashrules.js:127","class":"silent","why":"new army id 6..99 with level above 1 cards: rank lookup unknown"}
+},"result":{
+"PORT-52":{"state":"had","code":"MOVE_MACRO_UNDEFINED","why":null},
+"PORT-72":{"state":"built","code":"MAP_GRS_GOH_FORM","why":null},
+"PORT-73":{"state":"built","code":"MAP_KEY_GOH_ONLY","why":null},
+"PORT-81":{"state":"built","code":"MOVE_GOH_INTERFACE","why":null},
+"TST-87":{"state":"built","code":"MOD_ROOT_DATA_UNMOUNTED","why":null},
+"TST-94":{"state":"built","code":"WARN_UNITS_SET_STOCK_INCLUDES","why":null},
+"TST-95":{"state":"built","code":"WARN_ARMY_RANK_LEVEL","why":null}
+}}

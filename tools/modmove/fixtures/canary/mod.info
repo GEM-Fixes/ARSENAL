@@ -1,0 +1,6 @@
+{Mod
+	{Name "modmove canary"}
+	{Desc "text-only boot probe: a duplicated .lng key makes the engine log one line at boot. no Lua, no data keys."}
+	{MinGameVersion "3.262"}
+	{MaxGameVersion "3.262"}
+}

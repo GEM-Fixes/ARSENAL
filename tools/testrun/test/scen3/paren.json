@@ -1,0 +1,1 @@
+{"name":"paren","verdict":[{"log":"foo","want":true},{"log":"ok (a|b) \\(x\\)"},{"log":"x\\(y","want":true},{"log":"unclosed (a"}]}

@@ -1,0 +1,44 @@
+{
+  "name": "map-22",
+  "rows": [
+    "MAP-22"
+  ],
+  "mode": "mp",
+  "fixture": [
+    "map-22"
+  ],
+  "mods": [
+    "as64+",
+    "map-22"
+  ],
+  "params": {
+    "map": "multi/1v1_road:captureflag"
+  },
+  "src": [
+    " (LoadFolder: one card per <mode>.mi whose title is a game mode)",
+    " (mp_maps lists name mode players title)",
+    " (mp_checkCaptureFlag)"
+  ],
+  "note": "mod adds captureflag.mi to vanilla multi/1v1_road with no map.info change. Decided: mp_maps lists the new card, mp_host accepts it, mp_checkCaptureFlag prints no \"Flags found - N\" / \"Clipper ... not found\". Whether the flag actually captures in play: look (hold, stand a unit in the ring).",
+  "steps": [
+    {
+      "cmd": "mp_maps captureflag",
+      "expect": "multi/1v1_road:captureflag captureflag"
+    },
+    {
+      "cmd": "mp_checkCaptureFlag",
+      "expect": "^(?![\\s\\S]*(Flags found|Clipper))"
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "mp_maps captureflag",
+      "match": "multi/1v1_road:captureflag captureflag",
+      "want": true
+    }
+  ]
+}

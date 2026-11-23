@@ -1,0 +1,410 @@
+{
+ "thing": "gohunit",
+ "files": [
+  "GET /api/x/goh/status",
+  "GET /api/x/goh/units",
+  "GET /api/x/goh/donors",
+  "POST /api/x/goh/convert",
+  "POST /api/x/goh/fit",
+  "GET /api/x/goh/show",
+  "tools/goh2as2",
+  "xlate/table.json",
+  "gen op roster",
+  "contract prove"
+ ],
+ "groups": [
+  {
+   "id": "pick",
+   "name": "Pick unit and donor"
+  },
+  {
+   "id": "run",
+   "name": "Convert"
+  },
+  {
+   "id": "ask",
+   "name": "Answers"
+  },
+  {
+   "id": "stats",
+   "name": "Translated numbers"
+  },
+  {
+   "id": "roster",
+   "name": "Make it buyable"
+  },
+  {
+   "id": "test",
+   "name": "Test"
+  }
+ ],
+ "vars": [
+  {
+   "key": "pick.goh",
+   "where": "goh/status; convert body.goh",
+   "type": "path",
+   "plain": "GoH install.",
+   "unit": "",
+   "vanilla": null,
+   "group": "pick",
+   "ref": null,
+   "tool": "GET /api/x/goh/status",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "pick.unit",
+   "where": "GET /api/x/goh/units ?q; convert body.unit",
+   "type": "ref",
+   "plain": "GoH unit to bring over.",
+   "unit": "",
+   "vanilla": null,
+   "group": "pick",
+   "ref": null,
+   "tool": "GET /api/x/goh/units",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "pick.donor",
+   "where": "GET /api/x/goh/donors ?unit; convert body.donor",
+   "type": "ref",
+   "plain": "Similar as64 unit that lends parts.",
+   "unit": "",
+   "vanilla": null,
+   "group": "pick",
+   "ref": null,
+   "tool": "GET /api/x/goh/donors",
+   "limit": "PORT-46",
+   "tag": "V"
+  },
+  {
+   "key": "pick.out",
+   "where": "convert body.out",
+   "type": "path",
+   "plain": "Mod folder it goes into.",
+   "unit": "",
+   "vanilla": null,
+   "group": "pick",
+   "ref": null,
+   "tool": "POST /api/x/goh/convert",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "pick.game",
+   "where": "convert body.game",
+   "type": "path",
+   "plain": "as64 install.",
+   "unit": "",
+   "vanilla": null,
+   "group": "pick",
+   "ref": null,
+   "tool": "POST /api/x/goh/convert",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "run.dry",
+   "where": "convert body.dry (default true), confirm",
+   "type": "bool",
+   "plain": "Preview first.",
+   "unit": "",
+   "vanilla": null,
+   "group": "run",
+   "ref": null,
+   "tool": "POST /api/x/goh/convert",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "run.fixed_flags",
+   "where": "convert always: --rep-key --pull-props --mtl-fallback --match-weapon --no-ask",
+   "type": "list",
+   "plain": "Steps always on.",
+   "unit": "",
+   "vanilla": null,
+   "group": "run",
+   "ref": null,
+   "tool": "POST /api/x/goh/convert",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "run.fit",
+   "where": "POST /api/x/goh/fit {apply, confirm} (donorfit + portfix macrocheck)",
+   "type": "bool",
+   "plain": "Fit the donor parts.",
+   "unit": "",
+   "vanilla": null,
+   "group": "run",
+   "ref": null,
+   "tool": "POST /api/x/goh/fit",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "run.show",
+   "where": "GET /api/x/goh/show",
+   "type": "file",
+   "plain": "Look at the result.",
+   "unit": "",
+   "vanilla": null,
+   "group": "run",
+   "ref": null,
+   "tool": "GET /api/x/goh/show",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ask.values",
+   "where": "translate --askJson XLATE-2 {choice scale|translated|donor, rest_of_class}",
+   "type": "choice",
+   "plain": "Per value: scale it, use the translation, or keep the donor.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "scale",
+     "translated",
+     "donor"
+    ]
+   },
+   "group": "ask",
+   "ref": null,
+   "tool": "translate (goh2as2)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ask.nation",
+   "where": "translate --nation",
+   "type": "choice",
+   "plain": "Army it belongs to.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "ger",
+     "usa",
+     "rus",
+     "eng",
+     "jap"
+    ]
+   },
+   "group": "ask",
+   "ref": null,
+   "tool": "translate (goh2as2)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ask.drop_limits",
+   "where": "translate --dropLimits",
+   "type": "bool",
+   "plain": "Drop GoH limits.",
+   "unit": "",
+   "vanilla": null,
+   "group": "ask",
+   "ref": null,
+   "tool": "translate (goh2as2)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ask.no_translate",
+   "where": "translate --noTranslate",
+   "type": "bool",
+   "plain": "Copy numbers as they are.",
+   "unit": "",
+   "vanilla": null,
+   "group": "ask",
+   "ref": null,
+   "tool": "translate (goh2as2)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ask.keys",
+   "where": "translate --keys --entity (repeat)",
+   "type": "list",
+   "plain": "Several entities in one run.",
+   "unit": "",
+   "vanilla": null,
+   "group": "ask",
+   "ref": null,
+   "tool": "translate (goh2as2)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "stat.class",
+   "where": "xlate/table.json class",
+   "type": "choice",
+   "plain": "Vehicle class for scaling.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "airborne",
+     "btr",
+     "cannon",
+     "car",
+     "marine",
+     "tank_heavy",
+     "tank_light",
+     "tank_medium",
+     "trailer",
+     "special",
+     "train",
+     "generic"
+    ]
+   },
+   "group": "stats",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "stat.mobility",
+   "where": "mass speed turn_time start_time fuel",
+   "type": "number",
+   "plain": "Movement numbers.",
+   "unit": "",
+   "vanilla": null,
+   "group": "stats",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "stat.thresholds",
+   "where": "threshold_pierce_koef threshold_blast_koef threshold_pierce_value threshold_blast_value part_health",
+   "type": "number",
+   "plain": "Damage thresholds.",
+   "unit": "",
+   "vanilla": null,
+   "group": "stats",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "stat.armor_body",
+   "where": "armor_body_{front,side,rear,top}_{max,med}",
+   "type": "number",
+   "plain": "Hull armour.",
+   "unit": "mm",
+   "vanilla": null,
+   "group": "stats",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "stat.armor_turret",
+   "where": "armor_turret_{front,side,rear,top}_{max,med}",
+   "type": "number",
+   "plain": "Turret armour.",
+   "unit": "mm",
+   "vanilla": null,
+   "group": "stats",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "stat.weapon",
+   "where": "weapon classes bazooka flame gun mgun mortar pistol reactive rifle smg special: range damage recharge pen_a pen_c pen_e",
+   "type": "number",
+   "plain": "Gun numbers.",
+   "unit": "",
+   "vanilla": null,
+   "group": "stats",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "roster.card",
+   "where": "gen roster {unit, like, army, period, name, icon_like, bots}",
+   "type": "list",
+   "plain": "Make it buyable: card, price, army.",
+   "unit": "",
+   "vanilla": null,
+   "group": "roster",
+   "ref": null,
+   "tool": "gen roster",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "roster.name",
+   "where": "desc/entity/<model> text",
+   "type": "text",
+   "plain": "Name shown in game.",
+   "unit": "",
+   "vanilla": null,
+   "group": "roster",
+   "ref": null,
+   "tool": "POST /api/x/units/change",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "roster.icon",
+   "where": "gen roster icon_like; art icons",
+   "type": "file",
+   "plain": "Icon.",
+   "unit": "",
+   "vanilla": null,
+   "group": "roster",
+   "ref": null,
+   "tool": "art icons",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "roster.bots",
+   "where": "gen roster bots; bots buyfirst",
+   "type": "bool",
+   "plain": "Bots buy it.",
+   "unit": "",
+   "vanilla": null,
+   "group": "roster",
+   "ref": null,
+   "tool": "POST /api/x/bots/buyfirst",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "test.prove",
+   "where": "prove --unit --army --kind --depth spawn|move|fire",
+   "type": "choice",
+   "plain": "Spawn, move and fire test.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "spawn",
+     "move",
+     "fire"
+    ]
+   },
+   "group": "test",
+   "ref": null,
+   "tool": "prove",
+   "limit": null,
+   "tag": "T"
+  }
+ ],
+ "gaps": [
+  "ask.values: page always passes --no-ask; add an ask step that runs --askJson and posts answers back",
+  "ask.nation/drop_limits/no_translate: not offered; add body fields to POST convert",
+  "roster.*: no card/price/name/icon after conversion; wire gen roster op as a follow-up step",
+  "ask.keys: one unit per run; accept a unit list",
+  "stat.*: table values not shown before writing; add a table preview in the dry run"
+ ]
+}

@@ -1,0 +1,7 @@
+{Mod
+	{Name "G One (as2 fix)"}
+	{Desc "as2 fix patch for G One. Delete this folder to undo."}
+	{MinGameVersion "3.262.1"}
+	{MaxGameVersion "3.262.1"}
+	{Require "g1"}
+}

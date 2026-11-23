@@ -1,0 +1,7 @@
+;SDL
+{game
+	{maxPlayers 3}
+	{minPlayers 2}
+	{ranked {maxPlayers 99}}
+	{rankedMinPlayers 2}
+}

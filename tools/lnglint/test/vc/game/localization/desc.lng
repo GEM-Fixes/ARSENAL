@@ -1,0 +1,7 @@
+{tags
+	{"a" "keep"}
+	{"b" "dropped one"}
+	{"c" "Hit %s for %d"}
+	{"d" "same"}
+	{"e" "Unit {0} of {1}"}
+}

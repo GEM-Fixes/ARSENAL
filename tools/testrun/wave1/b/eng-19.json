@@ -1,0 +1,40 @@
+{
+  "name": "eng-19",
+  "rows": [
+    "ENG-19"
+  ],
+  "mode": "mp",
+  "params": {
+    "map": "multi/1v1_road:combat"
+  },
+  "src": [
+    " (ed_reloadInteractions)",
+    "(not part of this release)",
+    " (error -> ok:false)"
+  ],
+  "note": "Pass: ed_reloadInteractions answers ok over the pipe (the probed half of the row), and the game still answers mp_state after. Run in a match: ReloadInteractions dereferences g_scene, menu not safe [T]. Retail 3.262 not covered.",
+  "steps": [
+    {
+      "cmd": "ed_reloadInteractions"
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "ed_reloadInteractions",
+      "match": "^(?!ERR)",
+      "want": true
+    },
+    {
+      "reply": "mp_state",
+      "match": "^(?!ERR)",
+      "want": true
+    }
+  ],
+  "mods": [
+    "as64+"
+  ]
+}

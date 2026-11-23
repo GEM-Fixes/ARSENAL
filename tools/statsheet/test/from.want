@@ -1,0 +1,8 @@
+## weapons (3)
+
+| weapon | ammo | range | recharge | damage | threshold | pen table (dist:mm) |
+|---|---|---|---|---|---|---|
+| rf1 | (default) | 65/70 | 2 | 5 |  | 50m:5 100m:0 |
+| rf2 | (default) | 80/90 | 2 | 5 |  | 50m:5 100m:0 |
+| rifle.pattern | (default) | 65/70 | 3 | 5 |  | 50m:5 100m:0 |
+

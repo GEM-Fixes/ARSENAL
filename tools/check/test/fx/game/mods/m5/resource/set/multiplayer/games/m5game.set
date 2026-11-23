@@ -1,0 +1,6 @@
+;SDL
+{game
+	{teamSettings
+		{maxTeamPlayers 4}
+	}
+}

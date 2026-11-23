@@ -1,0 +1,41 @@
+{
+  "_": "GoH 1.067 inputs recorded 2026-11-04 at 1920x1080 windowed fullscreen, base game with no mods. Top bar sits at y=654 on page_main, y=24 on sub-pages. Never add a Workshop row click: DELETE/UNSUBSCRIBE sit under ACTIVATE and rows reflow after a click; enable mods with modswitch.",
+  "game": "goh",
+  "proc": "call_to_arms",
+  "exe": "%GAME%/binaries/x64/call_to_arms.exe",
+  "log": "%USER%/log/game.log",
+  "base": [1920, 1080],
+  "settleMs": 800,
+  "timeout": 30,
+  "routes": {
+    "boot": [
+      { "launch": true, "expect": "GUI: Activate page page_main", "timeout": 240, "note": "launch to page_main" }
+    ],
+    "skirmish": [
+      { "click": [799, 654], "expect": "GUI: Activate page", "note": "MULTIPLAYER" },
+      { "click": [535, 196], "expect": "GUI: Activate page page_skirmish", "note": "Skirmish" },
+      { "click": [535, 196], "expect": "GUI: Activate page page_session_create_skirmish", "note": "Local Skirmish" },
+      { "click": [997, 1025], "expect": "GUI: Activate page page_session\\b", "note": "CREATE" },
+      { "click": [1038, 1019], "settleMs": 5000, "expect": "GUI: Show page gui_page loading", "note": "START, ignored if clicked right after the lobby opens" },
+      { "wait_log": "GUI: Activate page page_scene_game_multi", "timeout": 600, "note": "match loaded" }
+    ],
+    "leave_match": [
+      { "key": "esc", "expect": "GUI: Activate page page_game_menu", "note": "Esc menu" },
+      { "click": [958, 578], "expect": "GUI: Activate page genereic_status_dialog", "note": "Close" },
+      { "click": [1028, 598], "expect": "GUI: Activate page gui_simple dialog popup", "timeout": 120, "note": "YES, results popup" },
+      { "click": [1558, 252], "expect": "GUI: Close active overlay page gui_simple dialog popup", "note": "close results" }
+    ],
+    "close_session": [
+      { "click": [959, 24], "expect": "GUI: Activate page genereic_status_dialog", "note": "EXTRAS asks to close session" },
+      { "click": [1056, 597], "expect": "GUI: Activate page page_extras", "note": "YES" }
+    ],
+    "exit_main": [
+      { "click": [1439, 654], "expect": "GUI: Activate page genereic_status_dialog", "note": "EXIT" },
+      { "click": [1028, 598], "wait_exit": true, "timeout": 60, "note": "YES" }
+    ],
+    "exit_sub": [
+      { "click": [1439, 24], "expect": "GUI: Activate page genereic_status_dialog", "note": "EXIT" },
+      { "click": [1028, 598], "wait_exit": true, "timeout": 60, "note": "YES" }
+    ]
+  }
+}

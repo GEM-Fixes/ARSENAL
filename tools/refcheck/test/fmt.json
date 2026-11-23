@@ -1,0 +1,286 @@
+{
+  "tool": "refcheck",
+  "version": 1,
+  "findings": [
+    {
+      "file": "resource/entity/bad/bad.def",
+      "line": 1,
+      "code": "VISION_MODE_MULTI",
+      "msg": "2 vision_mode extenders: only one vision mode (night/thermal/drone) per actor is supported (VIS-24) (entity bad)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/bad/bad.def",
+      "line": 2,
+      "code": "REF_MODEL_MISSING",
+      "msg": "Extension \"nomodel.mdl\" not found next to the def (relative paths resolve against the file's own folder, leading / = resource/) (entity bad)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/bad/bad.def",
+      "line": 5,
+      "code": "REF_ITEM_UNKNOWN",
+      "msg": "inventory item \"nothing\": no set/stuff file carries all these tags (entity bad)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/bad/bad.def",
+      "line": 6,
+      "code": "REF_WEAPON_UNKNOWN",
+      "msg": "no set/stuff file carries the tags \"nogun\" (entity bad)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/bad/bad.def",
+      "line": 7,
+      "code": "REF_AMMO_UNKNOWN",
+      "msg": "filling \"ammo nobullet\": no set/stuff file carries all these tags (entity bad)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/bad/bad.def",
+      "line": 8,
+      "code": "REF_ANIM_MISSING",
+      "msg": "boarder animation \"no_anim\" has no .anm file (entity bad)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/bad/bad.def",
+      "line": 9,
+      "code": "REF_VISION_UNKNOWN",
+      "msg": "vision \"novis\" is not defined in set/vision/vision.set (entity bad)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/bad/bad.def",
+      "line": 13,
+      "code": "SPEED_BEFORE_LOCO",
+      "msg": "second Locomotion block after {speed}: re-derives all and resets Slow/Normal/Fast; put {speed} last (MOV-04) (entity bad)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/bad/bad.def",
+      "line": 16,
+      "code": "FOOT_ROW_MISSING",
+      "msg": "Chassis foot run lacks row(s) fast: engine default speeds are used (HUM-36) (entity bad)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/bad/bad.def",
+      "line": 17,
+      "code": "STRAFE_MAX",
+      "msg": "Strafe has 7 entries: engine reads at most 6 (MOV-24) (entity bad)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/bad/bad.def",
+      "line": 19,
+      "code": "EXTENDER_UNKNOWN",
+      "msg": "extender \"nosuch\" is not a registered extender type: engine logs 'Extender \"nosuch\" not found' and skips the block (ENG-06) (entity bad)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/bad/bad.def",
+      "line": 20,
+      "code": "DISABLED_ON",
+      "msg": "\"{##on\" has # in its tag: reader skips the block, script silently disabled (DMG-16) (entity bad)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/bad/bad.mdl",
+      "line": 2,
+      "code": "REF_MESH_MISSING",
+      "msg": "ply \"gone.ply\" not found next to resource/entity/bad/bad.mdl",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/bad/bad.mtl",
+      "line": 2,
+      "code": "REF_TEXTURE_MISSING",
+      "msg": "texture \"notex\" not found (resource/entity/bad/notex.dds|tga|ebm)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/badtype/badtype.def",
+      "line": 1,
+      "code": "ENTITY_TYPE_UNKNOWN",
+      "msg": "entity type \"vehicle\" is not registered (entity game_entity actor human fx): fatal \"unknown entity type\" (ENG-02) (entity badtype)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/wf/wf.def",
+      "line": 2,
+      "code": "REF_WRONG_FOLDER",
+      "msg": "Extension \"shared.mdl\" resolves against resource/entity/wf/ only (FMT-22, no entity/basename fallback): not found there, but exists as resource/entity/shared.mdl; write \"/entity/shared.mdl\" or move the file (entity wf)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/wf2/wf2.mdl",
+      "line": 2,
+      "code": "REF_WRONG_FOLDER",
+      "msg": "ply \"a2.ply\" resolves against resource/entity/wf2/ only (FMT-22, no fallback): not found there, but exists as resource/a2.ply",
+      "severity": "error"
+    },
+    {
+      "file": "resource/entity/zdup/ok.def",
+      "line": 1,
+      "code": "ENTITY_REDEFINITION",
+      "msg": "entity name \"ok\" already defined by resource/entity/ok/ok.def [folder]: \"Entity redefinition\", this file [folder] is ignored (first mounted wins; same layer: path order assumed) (ENG-04) (entity ok)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/properties/sh.ext",
+      "line": 1,
+      "code": "REF_WEAPON_UNKNOWN",
+      "msg": "no set/stuff file carries the tags \"nogun_shared\" (+3 entities: shr1, shr2, shr3, shr4)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/set/interaction_entity/entity.set",
+      "line": 9,
+      "code": "WARN_BURN_NO_INFLAMMATION_TIME",
+      "msg": "interaction block \"hay\" handles {on \"burn_volume\"} but no {inflammation_time} reaches it (no block with a subset of its tags sets one): engine default 1e38 ms, never ignites (DMG-17)",
+      "severity": "warning"
+    },
+    {
+      "file": "resource/set/level_of_detail.set",
+      "line": 3,
+      "code": "LOD_ORDER",
+      "msg": "LOD class \"bad\" distance 400 not farther than previous 500: \"Distance should be farther than previous one\" (VIS-20)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/set/pather.set",
+      "line": 3,
+      "code": "PATHER_TERRAIN_UNKNOWN",
+      "msg": "profile odd: terrain \"mud2\" is not a pp ground type: resolves to type 0 (undef) and overwrites its cost (MOV-10)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/set/stuff/badstuff",
+      "line": 2,
+      "code": "REF_SOUND_MISSING",
+      "msg": "fireSound \"snd/none\": no .wav file (looked for resource/sound/weapon/shot/snd/none.wav or a folder holding .wav files) (entity badstuff)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/set/stuff/badstuff",
+      "line": 3,
+      "code": "REF_FSM_MISSING",
+      "msg": "stuff fsm \"nofsm\": no set/stuff/_settings/nofsm.fsm (entity badstuff)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/set/stuff/badstuff",
+      "line": 4,
+      "code": "REF_STUFF_ENTITY_MISSING",
+      "msg": "stuff {entity \"noent\"}: no .def with that name (entity badstuff)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/set/stuff/cyc/loopb.ammo",
+      "line": 2,
+      "code": "REF_FILLING_CYCLE",
+      "msg": "filling \"loopa\" loops: cyc/loopa.ammo -> cyc/loopb.ammo -> cyc/loopa.ammo: the game has no cycle guard, stack overflow at preload with no dump or log line (PORT-83)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/set/stuff/cyc/selfy.pat",
+      "line": 2,
+      "code": "REF_FILLING_CYCLE",
+      "msg": "filling \"selfy\" loops: cyc/selfy.pat -> cyc/selfy.pat: the game has no cycle guard, stack overflow at preload with no dump or log line (PORT-83)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/set/stuff/gun/notes.orig",
+      "line": 1,
+      "code": "STUFF_STRAY_FILE",
+      "msg": "\"notes.orig\" in set/stuff is read as a stuff (any extension except .fsm/.presets): backup/notes file adds or breaks stuff definitions; move it out (SDL-54)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/set/stuff/gun/rifle1.bak",
+      "line": 1,
+      "code": "STUFF_STRAY_FILE",
+      "msg": "\"rifle1.bak\" in set/stuff is read as a stuff (any extension except .fsm/.presets): backup/notes file adds or breaks stuff definitions; move it out (SDL-54)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/set/stuff/gun/short.pattern",
+      "line": 2,
+      "code": "OVERMATCH_SHORT",
+      "msg": "OvermatchDamping last angle 45 < 90: lookup beyond the table gives scale 1.0 (DMG-04)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/set/stuff/gun/short.pattern",
+      "line": 3,
+      "code": "THRESHOLD_LT1",
+      "msg": "projectileDamageThreshold 0.5 is clamped to 1 on read (DMG-19)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/set/stuff/gun/short.pattern",
+      "line": 4,
+      "code": "GOH_KEY",
+      "msg": "\"overmatchCalibre\" is a Gates of Hell key with no engine reader (DMG-20)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/set/vision/settings.set",
+      "line": 4,
+      "code": "TERM_DUP",
+      "msg": "custom term \"t_a\" already defined (hard error) (VIS-03)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/set/vision/settings.set",
+      "line": 5,
+      "code": "TERM_PROP",
+      "msg": "term \"t_c\" property \"colour\": only firing/actor/breed or a built-in/custom term (hard error \"incorrect property\") (VIS-03)",
+      "severity": "error"
+    },
+    {
+      "file": "resource/set/vision/vision.set",
+      "line": 4,
+      "code": "VISION_DUP",
+      "msg": "duplicate vision \"vis_a\" (first at resource/set/vision/vision.set:2): keep names unique (VIS-01)",
+      "severity": "error"
+    }
+  ],
+  "info": [],
+  "counts": {
+    "VISION_MODE_MULTI": 1,
+    "REF_MODEL_MISSING": 1,
+    "REF_ITEM_UNKNOWN": 1,
+    "REF_WEAPON_UNKNOWN": 2,
+    "REF_AMMO_UNKNOWN": 1,
+    "REF_ANIM_MISSING": 1,
+    "REF_VISION_UNKNOWN": 1,
+    "SPEED_BEFORE_LOCO": 1,
+    "FOOT_ROW_MISSING": 1,
+    "STRAFE_MAX": 1,
+    "EXTENDER_UNKNOWN": 1,
+    "DISABLED_ON": 1,
+    "REF_MESH_MISSING": 1,
+    "REF_TEXTURE_MISSING": 1,
+    "ENTITY_TYPE_UNKNOWN": 1,
+    "REF_WRONG_FOLDER": 2,
+    "ENTITY_REDEFINITION": 1,
+    "WARN_BURN_NO_INFLAMMATION_TIME": 1,
+    "LOD_ORDER": 1,
+    "PATHER_TERRAIN_UNKNOWN": 1,
+    "REF_SOUND_MISSING": 1,
+    "REF_FSM_MISSING": 1,
+    "REF_STUFF_ENTITY_MISSING": 1,
+    "REF_FILLING_CYCLE": 2,
+    "STUFF_STRAY_FILE": 2,
+    "OVERMATCH_SHORT": 1,
+    "THRESHOLD_LT1": 1,
+    "GOH_KEY": 1,
+    "TERM_DUP": 1,
+    "TERM_PROP": 1,
+    "VISION_DUP": 1
+  },
+  "total": 35
+}

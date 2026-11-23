@@ -1,0 +1,9 @@
+# A new soldier skin ger_com2, a copy of the vanilla humanskin ger_com under new names (add textures: {diffuse: my_coat.dds} to repaint it).
+# Edit id and like; for a vehicle texture variant give entity: <unit> and textures: {<texture name>: file.dds} instead of like.
+# gen skin.yaml --target as64 --game <AS2 dir> --out <mods dir>/my_skin --no-stat   (add --plan first)
+name: my_skin
+title: My Skin
+ops:
+  - op: skin
+    id: ger_com2
+    like: ger_com

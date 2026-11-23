@@ -1,0 +1,9 @@
+{game_entity
+ {tags "a" "b"}
+ {tags "ok one two"}
+ {hp_broken 5}
+ {flag_vaultable 1}
+ {mass 5}
+ ("armor_medium" turret(1 2 3) body(10 10 10 10))
+ ("armor_medium" turret(5 5) body(10))
+}

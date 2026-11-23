@@ -1,0 +1,2 @@
+{text_hello "Hello {b}%s{/b} world"} ; tag
+{text_esc "say \"hi\""}

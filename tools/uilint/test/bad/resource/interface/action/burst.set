@@ -1,0 +1,12 @@
+{action
+	{cursor}
+	{button "burst_icon"}
+	{instructions
+		{bind}
+		{frobnicate "x"}
+		{if props "vehicle"
+			{plant "bush" default "bush8"}
+			{explode}
+		}
+	}
+}

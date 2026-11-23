@@ -1,0 +1,555 @@
+{
+ "note": "static [I] parse; tag V = loader line located by pattern. match an entry: e.own in own OR e.src startsWith a prefix (dda entries carry no own)",
+ "kinds": {
+  "set/stuff.ammo": {
+   "tag": "V",
+   "loader": "Dcda051/De71163/Fa32985",
+   "why": "ReadStuff: first identifier = stuff type ( via stuff type registry) -> stuff* subclasses; Read(reader)",
+   "prefixes": [
+    "Dcda051/De71163/stuff",
+    "Dcda051/Dec99b8/",
+    "Dcda051/De71163/weapon"
+   ],
+   "own": [
+    "Eafe47b",
+    "E82ad7f",
+    "Efff76d",
+    "E2d6970",
+    "Ee1b2db",
+    "Ef420f4",
+    "E89ffe1",
+    "E4187bb",
+    "Eefbebc",
+    "E235144",
+    "Ee97761"
+   ]
+  },
+  "set/stuff.weapon": {
+   "tag": "V",
+   "loader": "Dcda051/De71163/Fa32985",
+   "why": "ReadStuff: first identifier = stuff type ( via stuff type registry) -> stuff* subclasses; Read(reader)",
+   "prefixes": [
+    "Dcda051/De71163/stuff",
+    "Dcda051/Dec99b8/",
+    "Dcda051/De71163/weapon"
+   ],
+   "own": [
+    "Eafe47b",
+    "E82ad7f",
+    "Efff76d",
+    "E2d6970",
+    "Ee1b2db",
+    "Ef420f4",
+    "E89ffe1",
+    "E4187bb",
+    "Eefbebc",
+    "E235144",
+    "Ee97761"
+   ]
+  },
+  "set/stuff.grenade": {
+   "tag": "V",
+   "loader": "Dcda051/De71163/Fa32985",
+   "why": "ReadStuff: first identifier = stuff type ( via stuff type registry) -> stuff* subclasses; Read(reader)",
+   "prefixes": [
+    "Dcda051/De71163/stuff",
+    "Dcda051/Dec99b8/",
+    "Dcda051/De71163/weapon"
+   ],
+   "own": [
+    "Eafe47b",
+    "E82ad7f",
+    "Efff76d",
+    "E2d6970",
+    "Ee1b2db",
+    "Ef420f4",
+    "E89ffe1",
+    "E4187bb",
+    "Eefbebc",
+    "E235144",
+    "Ee97761"
+   ]
+  },
+  "set/stuff.mine": {
+   "tag": "V",
+   "loader": "Dcda051/De71163/Fa32985",
+   "why": "ReadStuff: first identifier = stuff type ( via stuff type registry) -> stuff* subclasses; Read(reader)",
+   "prefixes": [
+    "Dcda051/De71163/stuff",
+    "Dcda051/Dec99b8/",
+    "Dcda051/De71163/weapon"
+   ],
+   "own": [
+    "Eafe47b",
+    "E82ad7f",
+    "Efff76d",
+    "E2d6970",
+    "Ee1b2db",
+    "Ef420f4",
+    "E89ffe1",
+    "E4187bb",
+    "Eefbebc",
+    "E235144",
+    "Ee97761"
+   ]
+  },
+  "set/stuff.pattern": {
+   "tag": "V",
+   "loader": "Dcda051/De71163/Fa32985",
+   "why": "ReadStuff: first identifier = stuff type ( via stuff type registry) -> stuff* subclasses; Read(reader)",
+   "prefixes": [
+    "Dcda051/De71163/stuff",
+    "Dcda051/Dec99b8/",
+    "Dcda051/De71163/weapon"
+   ],
+   "own": [
+    "Eafe47b",
+    "E82ad7f",
+    "Efff76d",
+    "E2d6970",
+    "Ee1b2db",
+    "Ef420f4",
+    "E89ffe1",
+    "E4187bb",
+    "Eefbebc",
+    "E235144",
+    "Ee97761"
+   ]
+  },
+  "set/stuff.": {
+   "tag": "V",
+   "loader": "Dcda051/De71163/Fa32985",
+   "why": "ReadStuff: first identifier = stuff type ( via stuff type registry) -> stuff* subclasses; Read(reader)",
+   "prefixes": [
+    "Dcda051/De71163/stuff",
+    "Dcda051/Dec99b8/",
+    "Dcda051/De71163/weapon"
+   ],
+   "own": [
+    "Eafe47b",
+    "E82ad7f",
+    "Efff76d",
+    "E2d6970",
+    "Ee1b2db",
+    "Ef420f4",
+    "E89ffe1",
+    "E4187bb",
+    "Eefbebc",
+    "E235144",
+    "Ee97761"
+   ]
+  },
+  "set/stuff.fsm": {
+   "tag": "V",
+   "loader": "Dcda051/De71163/F905ba4",
+   "why": "ReadFsmStates reads fsm state files itself (string keys, no class)",
+   "prefixes": [
+    "Dcda051/De71163/F5423d8"
+   ],
+   "own": []
+  },
+  "set/blow.set": {
+   "tag": "V",
+   "loader": "Dcda051/De71163/F72b3b8",
+   "why": "blow files iterated in human fight",
+   "prefixes": [
+    "Dcda051/De71163/human fight"
+   ],
+   "own": [
+    "E0ce868"
+   ]
+  },
+  "set/ability.set": {
+   "tag": "V",
+   "loader": "Dcda051/De71163/F541c68",
+   "why": "ability files iterated in human abilities",
+   "prefixes": [
+    "Dcda051/De71163/human abilit",
+    "Dcda051/De71163/ability"
+   ],
+   "own": []
+  },
+  "set/breed.set": {
+   "tag": "V",
+   "loader": "Dcda051/De71163/F62f515",
+   "why": "breed files",
+   "prefixes": [
+    "Dcda051/De71163/human breed"
+   ],
+   "own": []
+  },
+  "set/difficulty.dl": {
+   "tag": "V",
+   "loader": "Dcda051/F7e7972",
+   "why": "difficulty levels",
+   "prefixes": [
+    "game/difficulty",
+    "game/scene difficulty"
+   ],
+   "own": []
+  },
+  "set/target.set": {
+   "tag": "V",
+   "loader": "Dcda051/De71163/Fe9c18f",
+   "why": "target selectors / ammo rules",
+   "prefixes": [
+    "Dcda051/De71163/target select",
+    "Dcda051/De71163/actor brain state"
+   ],
+   "own": []
+  },
+  "set/vision.set": {
+   "tag": "V",
+   "loader": "Dcda051/De71163/Fdbfd64",
+   "why": "vision settings + visions",
+   "prefixes": [
+    "Dcda051/De71163/actor vision",
+    "Dcda051/De71163/vision"
+   ],
+   "own": []
+  },
+  "set/talk.set": {
+   "tag": "V",
+   "loader": "Dcda051/De71163/F23d8e4",
+   "why": "talk set",
+   "prefixes": [
+    "Dcda051/De71163/actor talk"
+   ],
+   "own": [
+    "Efb241d",
+    "E589995"
+   ]
+  },
+  "set/panel_control.set": {
+   "tag": "V",
+   "loader": "Dcda051/D2aeede/Fd51e40",
+   "why": "panel layout files",
+   "prefixes": [
+    "Dcda051/D2aeede/panel control",
+    "Dcda051/D2aeede/gc_panel command"
+   ],
+   "own": []
+  },
+  "def": {
+   "tag": "V",
+   "loader": "Dcda051/De71163/F3ad3f7",
+   "why": "ReadEntity: BlockStart, type identifier -> (type)->create(); raw->Read(reader) (entity classes + their extenders)",
+   "prefixes": [
+    "Dcda051/De71163/",
+    "Dcda051/D541983/",
+    "Df2185b/Dca317c/"
+   ],
+   "own": [
+    "Ed6bb04",
+    "Efb241d",
+    "E9ee50a",
+    "E311607",
+    "E1af530",
+    "E6ca606",
+    "E0ce868",
+    "E2f1798",
+    "Ecd2d67",
+    "Eeb75bd",
+    "E24a662",
+    "Eeea26d",
+    "Ef09244",
+    "E61adf7",
+    "Ec1ac70",
+    "E670690",
+    "E88917b",
+    "E5cabaa",
+    "E799865",
+    "E02b7d0",
+    "Ea644e1",
+    "E1e4059",
+    "Eb3b13f",
+    "Ee382f4",
+    "E16aefc",
+    "E50d8c6",
+    "Ee3ff6d",
+    "E739722",
+    "Ea8b2ae",
+    "E0f5cab",
+    "E68cf5a",
+    "E3b064e",
+    "Ea1ecbf",
+    "E17b7be",
+    "E352f48",
+    "Eabba90",
+    "Ed73d2c",
+    "Edf059a",
+    "E08af95",
+    "Ed040d3",
+    "E2d6970",
+    "E5a28da",
+    "E7b81b0",
+    "E0217f2",
+    "E5f0bfc",
+    "Ece4453",
+    "Eb735da",
+    "Ea2036c",
+    "Ee1b2db",
+    "Ef420f4",
+    "E63a898",
+    "E89ffe1",
+    "E4187bb",
+    "Ebd96d4",
+    "E26b0d7",
+    "Eefbebc",
+    "E235144",
+    "Eed6d5e",
+    "E589995",
+    "Ee97761",
+    "Ebb4375",
+    "Ea9a1a7",
+    "E88eaf0",
+    "Efc1f44",
+    "Ebd6708",
+    "E287974"
+   ]
+  },
+  "def1": {
+   "tag": "V",
+   "loader": "Dcda051/De71163/F3ad3f7",
+   "why": "ReadEntity: BlockStart, type identifier -> (type)->create(); raw->Read(reader) (entity classes + their extenders)",
+   "prefixes": [
+    "Dcda051/De71163/",
+    "Dcda051/D541983/",
+    "Df2185b/Dca317c/"
+   ],
+   "own": [
+    "Ed6bb04",
+    "Efb241d",
+    "E9ee50a",
+    "E311607",
+    "E1af530",
+    "E6ca606",
+    "E0ce868",
+    "E2f1798",
+    "Ecd2d67",
+    "Eeb75bd",
+    "E24a662",
+    "Eeea26d",
+    "Ef09244",
+    "E61adf7",
+    "Ec1ac70",
+    "E670690",
+    "E88917b",
+    "E5cabaa",
+    "E799865",
+    "E02b7d0",
+    "Ea644e1",
+    "E1e4059",
+    "Eb3b13f",
+    "Ee382f4",
+    "E16aefc",
+    "E50d8c6",
+    "Ee3ff6d",
+    "E739722",
+    "Ea8b2ae",
+    "E0f5cab",
+    "E68cf5a",
+    "E3b064e",
+    "Ea1ecbf",
+    "E17b7be",
+    "E352f48",
+    "Eabba90",
+    "Ed73d2c",
+    "Edf059a",
+    "E08af95",
+    "Ed040d3",
+    "E2d6970",
+    "E5a28da",
+    "E7b81b0",
+    "E0217f2",
+    "E5f0bfc",
+    "Ece4453",
+    "Eb735da",
+    "Ea2036c",
+    "Ee1b2db",
+    "Ef420f4",
+    "E63a898",
+    "E89ffe1",
+    "E4187bb",
+    "Ebd96d4",
+    "E26b0d7",
+    "Eefbebc",
+    "E235144",
+    "Eed6d5e",
+    "E589995",
+    "Ee97761",
+    "Ebb4375",
+    "Ea9a1a7",
+    "E88eaf0",
+    "Efc1f44",
+    "Ebd6708",
+    "E287974"
+   ]
+  },
+  "ext": {
+   "tag": "V",
+   "loader": "Dcda051/De71163/F9ad514",
+   "why": "ReadExtender: extender block of a def",
+   "prefixes": [
+    "Dcda051/De71163/"
+   ],
+   "own": [
+    "Ed6bb04",
+    "Efb241d",
+    "E9ee50a",
+    "E6ca606",
+    "E0ce868",
+    "E2f1798",
+    "E24a662",
+    "Eeea26d",
+    "Ef09244",
+    "E61adf7",
+    "Ec1ac70",
+    "E670690",
+    "E88917b",
+    "E5cabaa",
+    "E799865",
+    "E02b7d0",
+    "Ea644e1",
+    "E1e4059",
+    "Eb3b13f",
+    "Ee382f4",
+    "E16aefc",
+    "E739722",
+    "Ea8b2ae",
+    "E0f5cab",
+    "E68cf5a",
+    "E3b064e",
+    "Ea1ecbf",
+    "E17b7be",
+    "E352f48",
+    "Eabba90",
+    "Ed73d2c",
+    "Edf059a",
+    "Ed040d3",
+    "E2d6970",
+    "E5a28da",
+    "E7b81b0",
+    "E0217f2",
+    "Ea2036c",
+    "Ee1b2db",
+    "Ef420f4",
+    "E63a898",
+    "E89ffe1",
+    "E4187bb",
+    "Ebd96d4",
+    "E26b0d7",
+    "Eefbebc",
+    "E235144",
+    "Eed6d5e",
+    "E589995",
+    "Ee97761",
+    "Ebb4375",
+    "Ea9a1a7",
+    "E88eaf0",
+    "Efc1f44",
+    "Ebd6708",
+    "E287974"
+   ]
+  },
+  "mtl": {
+   "tag": "V",
+   "loader": "Df2185b/D37eca5/Fa21042",
+   "why": "ReadMaterial / ",
+   "prefixes": [
+    "Df2185b/D37eca5/"
+   ],
+   "own": [
+    "E4f0ba7",
+    "E2157c9",
+    "E89059f",
+    "E599b6b",
+    "Ec612d9",
+    "Ecee641",
+    "Ebb9ba4",
+    "Eef606a",
+    "E5c9003",
+    "E65e878",
+    "Ecf5495",
+    "E76157e",
+    "E8e7a59",
+    "E8c1989",
+    "E4d7630",
+    "E63cd10",
+    "E9115ca",
+    "Efc2c81",
+    "E3eb1ac",
+    "Ee80e85"
+   ]
+  },
+  "mdl": {
+   "tag": "I",
+   "loader": null,
+   "why": "model files: no single loader located ( mesh +  skeleton readers)",
+   "prefixes": [
+    "Df2185b/D37eca5/",
+    "Df2185b/Dca317c/"
+   ],
+   "own": [
+    "E311607",
+    "E1af530",
+    "E4f0ba7",
+    "Ecd2d67",
+    "Eeb75bd",
+    "E2157c9",
+    "E89059f",
+    "E599b6b",
+    "Ec612d9",
+    "Ecee641",
+    "Ebb9ba4",
+    "Eef606a",
+    "E5c9003",
+    "E65e878",
+    "Ecf5495",
+    "E76157e",
+    "E08af95",
+    "E8e7a59",
+    "E8c1989",
+    "E5f0bfc",
+    "Ece4453",
+    "Eb735da",
+    "E4d7630",
+    "E63cd10",
+    "E9115ca",
+    "Efc2c81",
+    "E3eb1ac",
+    "Ee80e85"
+   ]
+  },
+  "fx": {
+   "tag": "I",
+   "loader": null,
+   "why": "animator / particle .fx: no single loader located",
+   "prefixes": [
+    "Df2185b/D37eca5/particle",
+    "Df2185b/D37eca5/sprite animation",
+    "Df2185b/Dca317c/"
+   ],
+   "own": [
+    "E311607",
+    "E1af530",
+    "Ecd2d67",
+    "Eeb75bd",
+    "E599b6b",
+    "Ecee641",
+    "E76157e",
+    "E08af95",
+    "E8e7a59",
+    "E8c1989",
+    "E5f0bfc",
+    "Ece4453",
+    "Eb735da",
+    "E3eb1ac"
+   ]
+  }
+ },
+ "stats": {
+  "kinds": 21,
+  "V": 19
+ }
+}

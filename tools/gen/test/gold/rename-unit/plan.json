@@ -1,0 +1,41 @@
+{
+ "tool": "gen",
+ "name": "my_rename",
+ "target": "mowas2",
+ "plan": true,
+ "verdict": "plan only, nothing written",
+ "ops": {
+  "total": 1,
+  "applied": 1,
+  "list": [
+   {
+    "i": 0,
+    "op": "text",
+    "status": "ok",
+    "findings": 0
+   }
+  ]
+ },
+ "files": [],
+ "skipped": [],
+ "errors": [],
+ "info": [
+  {
+   "file": "<out>",
+   "line": 0,
+   "code": "GAME_NO_MODS",
+   "msg": "no mods/ under <game>",
+   "severity": "note"
+  },
+  {
+   "file": "localization/desc.lng",
+   "line": 0,
+   "code": "GEN_PLAN_TEXT",
+   "msg": "desc/entity/zis2 = Anti-Tank Gun Mk Two (key already defined in desc.lng: goes into a mod copy of desc.lng (same path, it replaces the vanilla file whole, LOC-01, so the key is defined once and the mod text shows; a key in the mod's own '#' file would lose, LOC-19))",
+   "severity": "note"
+  }
+ ],
+ "counts": {},
+ "gate": null,
+ "stat": null
+}

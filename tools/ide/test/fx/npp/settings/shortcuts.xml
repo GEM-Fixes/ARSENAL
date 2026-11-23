@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NotepadPlus>
+	<InternalCommands />
+	<!-- fake shortcuts.xml in the shape Notepad++ 8.9 writes (written for the ARSENAL tests) -->
+	<Macros>
+		<!--
+		<Macro name="commented" Ctrl="yes" Alt="yes" Shift="yes" Key="71">
+			<Action type="1" message="2170" wParam="0" lParam="0" sParam="A" />
+		</Macro>
+		-->
+		<Macro name="Trim and Save" Ctrl="no" Alt="yes" Shift="yes" Key="83">
+			<Action type="2" message="0" wParam="42024" lParam="0" sParam="" />
+		</Macro>
+	</Macros>
+	<UserDefinedCommands>
+		<!--
+		<Command name="Example in a comment" Ctrl="no" Alt="yes" Shift="no" Key="112">https://example.org/$(CURRENT_WORD)</Command>
+		</UserDefinedCommands>
+		-->
+		<Command name="Web Search" Ctrl="no" Alt="yes" Shift="no" Key="114">https://example.org/?q=$(CURRENT_WORD)</Command>
+	</UserDefinedCommands>
+	<PluginCommands />
+	<ScintillaKeys />
+</NotepadPlus>

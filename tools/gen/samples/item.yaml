@@ -1,0 +1,15 @@
+# A long-fuse grenade my_f1 from the vanilla f1: thrown further, bigger blast.
+# Edit id, like (a grenade, mine or item) and the values.
+# gen item.yaml --target as64 --game <AS2 dir> --out <mods dir>/my_item --no-stat   (add --plan first)
+name: my_item
+title: My Item
+ops:
+  - op: item
+    id: my_f1
+    like: f1
+    fuse: 5.5
+    throw:
+      range: 22
+      angle: 35
+    blast:
+      - 2.5 0.5 6

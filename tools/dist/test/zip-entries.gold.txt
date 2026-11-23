@@ -1,0 +1,89 @@
+# 2026-11-09 first golden: START-HERE, LICENSE, NOTICE, CREDITS, guide 01-22, samples (T-ZIP)
+# 2026-11-09 gen samples armor.yaml and squad.yaml added (GX)
+# 2026-11-10 guide is a book: README, Part I p01-p16 and Part III r01-r12 ship with the chapters
+# 2026-11-10 ships at (the Historical sources page)
+# 2026-11-10 W6 U1: one exe (ARSENAL-gui.exe gone), ARSENAL-gui.cmd and Install-ARSENAL.cmd at the top
+# 2026-11-13 gen samples added in 1d13140c3 (army, gun-class, iblock, item, kit, macro, mapinfo, preset, shell, skin, sound, soundclass, stuffmodel, voice); whole documents are tested on fixtures (block 11), not listed here
+# 2026-11-13 guide p17-quick-guided-task.md added (after p16); guide pages now ship as the public text (pub.strip)
+# 2026-11-13 no longer ships: is not public (owner "No tech doc history"; gate TECHDOC_HISTORY)
+# 2026-11-23 guide page p18 (work with Claude) joined the book
+ARSENAL-VER/ARSENAL-gui.cmd
+ARSENAL-VER/ARSENAL.exe
+ARSENAL-VER/CREDITS.md
+ARSENAL-VER/Install-ARSENAL.cmd
+ARSENAL-VER/LICENSE
+ARSENAL-VER/NOTICE
+ARSENAL-VER/START-HERE.md
+ARSENAL-VER/guide/01-getting-started.md
+ARSENAL-VER/guide/02-install-layout.md
+ARSENAL-VER/guide/03-mod-folder-and-load-order.md
+ARSENAL-VER/guide/04-vfs-paks-patches.md
+ARSENAL-VER/guide/05-sdl-language.md
+ARSENAL-VER/guide/06-data-keys-entities.md
+ARSENAL-VER/guide/07-units-vehicles-movement.md
+ARSENAL-VER/guide/08-infantry-and-humans.md
+ARSENAL-VER/guide/09-weapons-ammo-damage.md
+ARSENAL-VER/guide/10-ai-and-bots.md
+ARSENAL-VER/guide/11-interaction-scripts.md
+ARSENAL-VER/guide/12-missions-and-multiplayer-setup.md
+ARSENAL-VER/guide/13-maps.md
+ARSENAL-VER/guide/14-localization.md
+ARSENAL-VER/guide/15-interface-and-icons.md
+ARSENAL-VER/guide/16-effects-sound-models.md
+ARSENAL-VER/guide/17-balance-pricing-gameplay.md
+ARSENAL-VER/guide/18-testing-and-logs.md
+ARSENAL-VER/guide/19-toolchain.md
+ARSENAL-VER/guide/20-packaging-and-release.md
+ARSENAL-VER/guide/21-troubleshooting.md
+ARSENAL-VER/guide/22-glossary.md
+ARSENAL-VER/guide/README.md
+ARSENAL-VER/guide/p01-first-mod.md
+ARSENAL-VER/guide/p02-change-unit-numbers.md
+ARSENAL-VER/guide/p03-add-a-unit.md
+ARSENAL-VER/guide/p04-change-a-gun.md
+ARSENAL-VER/guide/p05-change-armour.md
+ARSENAL-VER/guide/p06-edit-a-model.md
+ARSENAL-VER/guide/p07-text-and-translation.md
+ARSENAL-VER/guide/p08-icons-and-interface.md
+ARSENAL-VER/guide/p09-copy-and-change-a-map.md
+ARSENAL-VER/guide/p10-missions-and-modes.md
+ARSENAL-VER/guide/p11-bots.md
+ARSENAL-VER/guide/p12-unit-from-gates-of-hell.md
+ARSENAL-VER/guide/p13-old-mod-to-64-bit.md
+ARSENAL-VER/guide/p14-check-fix-read-log.md
+ARSENAL-VER/guide/p15-pack-and-share.md
+ARSENAL-VER/guide/p16-find-guides-and-tools.md
+ARSENAL-VER/guide/p17-quick-guided-task.md
+ARSENAL-VER/guide/p18-work-with-claude.md
+ARSENAL-VER/guide/r01-mod-info-and-folder.md
+ARSENAL-VER/guide/r02-entity-definition.md
+ARSENAL-VER/guide/r03-extenders-and-components.md
+ARSENAL-VER/guide/r04-chassis-and-movement.md
+ARSENAL-VER/guide/r05-humans.md
+ARSENAL-VER/guide/r06-weapons-and-ammunition.md
+ARSENAL-VER/guide/r07-armour-volumes-damage.md
+ARSENAL-VER/guide/r08-vision-effects-sound.md
+ARSENAL-VER/guide/r09-interface-and-localization.md
+ARSENAL-VER/guide/r10-interaction-scripts.md
+ARSENAL-VER/guide/r11-mission-files.md
+ARSENAL-VER/guide/r12-bot-lua-and-console.md
+ARSENAL-VER/samples/armor.yaml
+ARSENAL-VER/samples/army.yaml
+ARSENAL-VER/samples/change-price.yaml
+ARSENAL-VER/samples/clone-unit.yaml
+ARSENAL-VER/samples/gun-class.yaml
+ARSENAL-VER/samples/iblock.yaml
+ARSENAL-VER/samples/item.yaml
+ARSENAL-VER/samples/kit.yaml
+ARSENAL-VER/samples/macro.yaml
+ARSENAL-VER/samples/mapinfo.yaml
+ARSENAL-VER/samples/preset.yaml
+ARSENAL-VER/samples/rename-unit.yaml
+ARSENAL-VER/samples/sample.yaml
+ARSENAL-VER/samples/shell.yaml
+ARSENAL-VER/samples/skin.yaml
+ARSENAL-VER/samples/sound.yaml
+ARSENAL-VER/samples/soundclass.yaml
+ARSENAL-VER/samples/squad.yaml
+ARSENAL-VER/samples/stuffmodel.yaml
+ARSENAL-VER/samples/voice.yaml

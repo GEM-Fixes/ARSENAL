@@ -1,0 +1,55 @@
+{
+  "name": "key-27b",
+  "rows": [
+    "KEY-27"
+  ],
+  "fixture": [
+    "key-27b"
+  ],
+  "mode": "mp",
+  "params": {
+    "map": "multi/1v1_road:combat"
+  },
+  "overlap": false,
+  "prepare": [
+    {
+      "argv": [
+        "node",
+        "tools/place-entity/place-entity.js",
+        "{mods}/key-27b",
+        "--game",
+        "{game}",
+        "--mods",
+        "key-27b",
+        "--map",
+        "multi/1v1_road",
+        "--entity",
+        "trs_k27b",
+        "--pos",
+        "-220,-800"
+      ]
+    }
+  ],
+  "src": [
+    "(not part of this release)",
+    " (Resource not found)",
+    " (fatal)"
+  ],
+  "note": "Bare \"flag_ring.mdl\" in a def in another folder, no sibling model. Pass: log has \"Resource not found - ...flag_ring.mdl\". This run ENDS IN AN ENGINE EXCEPTION on purpose. [T] testrun may also report TESTRUN_ENGINE_EXCEPTION or TESTRUN_LOAD_TIMEOUT: read the VERDICT line for the log check. [T] the error could come earlier than the map, as descriptions load at start. If the map loads clean, the row is false: bare names find the base model.",
+  "steps": [
+    {
+      "wait": 5
+    }
+  ],
+  "verdict": [
+    {
+      "log": "Resource not found - [^\\n]*flag_ring\\.mdl",
+      "want": true
+    }
+  ],
+  "mods": [
+    "as64+",
+    "key-27b"
+  ],
+  "quarantine": "expected engine Exception in mp.core.start (File not found resource/entity/service/trs_k27b/flag_ring.mdl) aborts the load: no loaded event, TESTRUN_LOAD_TIMEOUT 300 s; the log check itself passes. Row confirmed by wave1c."
+}

@@ -1,0 +1,117 @@
+{
+ "form": "limclass/1",
+ "area": "TST3",
+ "rows": {
+  "TST-47": {
+   "chk": "never",
+   "class": "info",
+   "never": "workflow rule for test design",
+   "why": "kill test validity rule, workflow"
+  },
+  "TST-48": {
+   "chk": "never",
+   "class": "info",
+   "never": "game-run variance",
+   "why": "flaky control miss, test noise"
+  },
+  "TST-49": {
+   "chk": "never",
+   "class": "info",
+   "never": "runtime behaviour of AI",
+   "why": "reorder does not help; test workflow fact"
+  },
+  "TST-50": {
+   "chk": "never",
+   "class": "silent",
+   "never": "engine lacks field",
+   "why": "no mission field forces ammo; ignored silently"
+  },
+  "TST-51": {
+   "chk": "never",
+   "class": "info",
+   "never": "measured in game only",
+   "why": "AP vs soft car test result"
+  },
+  "TST-52": {
+   "chk": "never",
+   "class": "info",
+   "never": "game-run variance",
+   "why": "control flakiness under Valour, test noise"
+  },
+  "TST-53": {
+   "chk": "never",
+   "class": "silent",
+   "never": "armour outcome only in game",
+   "why": "heavies survive with no log line"
+  },
+  "TST-54": {
+   "chk": "never",
+   "class": "info",
+   "never": "game-run variance",
+   "why": "flip between runs; rerun advice"
+  },
+  "TST-55": {
+   "chk": "never",
+   "class": "info",
+   "never": "statistic only",
+   "why": "control pass rate stat"
+  },
+  "TST-56": {
+   "chk": "never",
+   "class": "info",
+   "never": "log/workflow fact",
+   "why": "how to count rounds; log limits"
+  },
+  "TST-57": {
+   "chk": "never",
+   "class": "info",
+   "never": "game-run variance",
+   "why": "NOKILL is a flip; rerun once"
+  },
+  "TST-58": {
+   "chk": "never",
+   "class": "silent",
+   "never": "cause needs game",
+   "why": "move mark missing for donor tank; reads as fault"
+  },
+  "TST-59": {
+   "chk": "never",
+   "class": "silent",
+   "never": "log output only seen in game",
+   "why": "no blast header; shots read 0 on donor gun"
+  },
+  "TST-60": {
+   "chk": "never",
+   "class": "info",
+   "never": "test design fact",
+   "why": "NOKILL says nothing about gun; test choice"
+  },
+  "TST-61": {
+   "chk": "todo",
+   "class": "silent",
+   "tool": "edrun-mindist",
+   "how": "pair dist against weapon preset range from set/stuff weapon",
+   "why": "past preset range, 0 shots no message"
+  },
+  "TST-62": {
+   "chk": "never",
+   "class": "info",
+   "never": "test design fact",
+   "why": "foe choice for light car test"
+  },
+  "TST-63": {
+   "chk": "todo",
+   "class": "silent",
+   "tool": "edrun-mindist",
+   "how": "pair move dy below 240 for medium hulls",
+   "why": "short move never marks moved; no message"
+  },
+  "TST-64": {
+   "chk": "never",
+   "class": "info",
+   "never": "workflow fact",
+   "why": "test split procedure"
+  }
+ },
+ "dead": []
+}

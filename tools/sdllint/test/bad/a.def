@@ -1,0 +1,14 @@
+{a1 # comment}
+{a2 foo-bar}
+{a3 foo.bar}
+{a4 .5}
+{a5 5f}
+{a6 0e5}
+{a7 -0x10}
+{a8 99999999999}
+{a9 "unclosed}
+{#a10 1}
+{a11 1))}
+{a12 (mod "bogus" 1)}
+{a13 (mod "mp" (mod "coop" 1))}
+{a14 %zz}

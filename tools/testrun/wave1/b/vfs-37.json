@@ -1,0 +1,44 @@
+{
+  "name": "vfs-37",
+  "rows": [
+    "VFS-37"
+  ],
+  "src": [
+    " (Mods loaded:)",
+    "(not part of this release)",
+    "(not part of this release)",
+    "(not part of this release)"
+  ],
+  "note": "Pass: s_mods lists mods, bare s_select errors, s_select with a path lists the repository (TYPE_DEBUG is captured by the pipe). [T] bare s_select error text: source gives \"incompatible types, must be string\".",
+  "steps": [
+    {
+      "wait": 1
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "s_mods",
+      "match": "Mods loaded:",
+      "want": true
+    },
+    {
+      "reply": "s_select",
+      "match": "^ERR ",
+      "want": true
+    },
+    {
+      "reply": "s_select \"/set/registry/\"",
+      "match": "resource_syncer.reg",
+      "want": true
+    }
+  ],
+  "mode": "menu",
+  "mods": [
+    "as64+"
+  ],
+  "params": {}
+}

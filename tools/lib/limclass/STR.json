@@ -1,0 +1,97 @@
+{
+ "form": "limclass/1",
+ "area": "STR",
+ "rows": {
+  "STR-01": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "advisory; vanilla ships 452, engine tolerates"
+  },
+  "STR-02": {
+   "chk": "built",
+   "class": "silent",
+   "why": "building footprint may be absent, no message"
+  },
+  "STR-03": {
+   "chk": "built",
+   "class": "silent",
+   "why": "volume link fails without message"
+  },
+  "STR-04": {
+   "chk": "built",
+   "class": "silent",
+   "why": "engine reaction unverified, no message"
+  },
+  "STR-05": {
+   "chk": "built",
+   "class": "silent",
+   "why": "part not placed; only a warning in log"
+  },
+  "STR-06": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unknown fortification key aborts entity read"
+  },
+  "STR-07": {
+   "chk": "built",
+   "class": "silent",
+   "why": "out-of-range skip index ignored"
+  },
+  "STR-08": {
+   "chk": "built",
+   "class": "silent",
+   "why": "fortification build broken without message"
+  },
+  "STR-09": {
+   "chk": "built",
+   "class": "crash",
+   "why": "33rd collider group name: fatal error with message at load"
+  },
+  "STR-10": {
+   "chk": "built",
+   "class": "silent",
+   "why": "missing view file gives no shape"
+  },
+  "STR-11": {
+   "chk": "built",
+   "class": "silent",
+   "why": "missing tear entity or bone spawns no piece"
+  },
+  "STR-12": {
+   "chk": "built",
+   "class": "silent",
+   "why": "def-level scale behaviour unverified"
+  },
+  "STR-13": {
+   "chk": "built",
+   "class": "info",
+   "why": "which armor macros have material variants"
+  }
+ },
+ "dead": [
+  {
+   "row": "STR-01",
+   "tool": "strlint",
+   "code": "WARN_STR_VOLUME_NO_SHAPE",
+   "fix": {
+    "code": "STR_VOLUME_NO_SHAPE"
+   }
+  },
+  {
+   "row": "STR-02",
+   "tool": "strlint",
+   "code": "WARN_STR_OBSTACLE_MISSING",
+   "fix": {
+    "code": "STR_OBSTACLE_MISSING"
+   }
+  },
+  {
+   "row": "STR-03",
+   "tool": "strlint",
+   "code": "WARN_STR_VOLUME_BONE",
+   "fix": {
+    "code": "STR_VOLUME_BONE"
+   }
+  }
+ ]
+}

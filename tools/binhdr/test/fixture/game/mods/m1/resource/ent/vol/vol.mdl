@@ -1,0 +1,12 @@
+{Skeleton
+ {bone "basis"
+ }
+}
+ {Volume "body"
+  {Box 1 1 1}
+  {Bone "ghost"}
+ }
+ {Volume "ok"
+  {Box 1 1 1}
+  {Bone "basis"}
+ }

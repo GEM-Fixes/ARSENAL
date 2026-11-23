@@ -1,0 +1,5 @@
+{Skeleton
+ {bone "basis"
+  {VolumeView "reach_missing.ply"}
+ }
+}

@@ -1,0 +1,9 @@
+bz_add --map map/multi/m1 --from combat --to battle_zones|WARN_MC_FLAGS_AUTOPLACED
+bz_strip --map map/multi/m2 --from battle_zones --to combat|
+cf_add --map map/multi/m1 --from combat --to captureflag|WARN_MC_FLAGS_AUTOPLACED
+frontline --map map/multi/m1 --from combat --to frontline|MC_NEEDS_MANUAL
+custom --map map/multi/m1 --from combat --to nosuchmode|MC_NO_MODE_SET MC_NEEDS_MANUAL
+nosrc --map map/multi/m1 --from frontline --to combat|MC_NO_SOURCE
+gohzone --map map/multi/m5 --from battle_zones --to nosuchmode|MC_NO_MODE_SET MC_NEEDS_MANUAL
+inc --map map/multi/m4 --from battle_zones --to combat --src fixture/goh|WARN_MC_INCLUDE_DROPPED
+cf_noclip --map map/multi/m2 --from battle_zones --to captureflag|MC_NO_CAPTURE_CLIPS WARN_MC_FLAGS_AUTOPLACED

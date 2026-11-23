@@ -1,0 +1,20 @@
+{
+  "form": "limmap/1",
+  "part": "chk-chk-def",
+  "codes": {
+    "BONE_LIMITS_ONE_NUMBER": { "tool": "defcheck", "sev": "crash", "lim": ["PORT-138"], "at": "tools/defcheck/defcheck.js:113", "class": "crash", "why": "one-number limits on revolute or prizmatic bone stops the whole load" },
+    "STUFF_FILE_EXT": { "tool": "defcheck", "sev": "crash", "lim": ["PORT-146"], "at": "tools/defcheck/defcheck.js:74", "class": "crash", "why": "set/stuff loads every file, a disabled .off copy still crashes" },
+    "DEF_BONE_NOT_IN_MDL": { "tool": "defcheck", "sev": "crash", "lim": ["PORT-147", "PORT-166"], "at": "tools/defcheck/defcheck.js:109", "class": "crash", "why": "def bone block for a bone the mdl lacks aborts the load" },
+    "LIGHT_EXTENDER_GOH_FORM": { "tool": "defcheck", "sev": "crash", "lim": ["PORT-171"], "at": "tools/defcheck/defcheck.js:91", "class": "crash", "why": "GoH preset light extender form is an unexpected token on as64" },
+    "LAMP_GLASS_BONE_MISSING": { "tool": "defcheck", "sev": "crash", "lim": ["PORT-186"], "at": "tools/defcheck/defcheck.js:121", "class": "crash", "why": "lamp without lamp_glassN bone crashes the game when the lamp breaks" }
+  },
+  "result": {
+    "PORT-138": { "state": "built", "code": "BONE_LIMITS_ONE_NUMBER" },
+    "PORT-146": { "state": "built", "code": "STUFF_FILE_EXT" },
+    "PORT-147": { "state": "built", "code": "DEF_BONE_NOT_IN_MDL" },
+    "PORT-153": { "state": "had", "code": "DEF_BONE_NOT_IN_MDL" },
+    "PORT-166": { "state": "built", "code": "DEF_BONE_NOT_IN_MDL" },
+    "PORT-171": { "state": "built", "code": "LIGHT_EXTENDER_GOH_FORM" },
+    "PORT-186": { "state": "built", "code": "LAMP_GLASS_BONE_MISSING" }
+  }
+}

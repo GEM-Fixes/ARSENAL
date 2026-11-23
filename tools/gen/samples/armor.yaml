@@ -1,0 +1,9 @@
+# Makes the vanilla Soviet T-34 (t34_0) tougher: front armor 120 on turret and body (the unit has two armor parts, turret and body).
+# Edit value: 4 numbers front side rear top (_ keeps one); or name a part first: "turret 120 _ _ _ body 90 _ _ _".
+# gen armor.yaml --target as64 --game <AS2 dir> --out <mods dir>/my_armor --no-stat   (add --plan first: writes nothing)
+name: my_armor
+title: My Armor
+ops:
+  - op: armor
+    entity: t34_0
+    value: "120 _ _ _"

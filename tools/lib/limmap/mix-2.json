@@ -1,0 +1,391 @@
+{
+ "form": "limmap/1",
+ "part": "mix-2",
+ "codes": {
+  "STR_MDL_MISSING": {
+   "tool": "covlint",
+   "sev": "crash",
+   "at": "tools/strlint/strlint.js:229",
+   "class": "crash",
+   "why": "missing Extension file is fatal at def read",
+   "lim": [
+    "ENG-32"
+   ]
+  },
+  "CRASH_FLAG_CLIPS": {
+   "tool": "doctor",
+   "sev": "crash",
+   "at": "tools/doctor/crashrules.js:84",
+   "class": "crash",
+   "why": "captureflag without clips crashes at start",
+   "lim": [
+    "MIS-62"
+   ]
+  },
+  "CRASH_OBSTACLE_NO_TABLE": {
+   "tool": "doctor",
+   "sev": "crash",
+   "at": "tools/doctor/crashrules.js:66",
+   "class": "review",
+   "why": "obstacle names unchecked, unknown one crashes on crush",
+   "lim": [
+    "STR-29"
+   ]
+  },
+  "CRASH_OBSTACLE_UNKNOWN": {
+   "tool": "doctor",
+   "sev": "crash",
+   "at": "tools/doctor/crashrules.js:65",
+   "class": "crash",
+   "why": "unknown obstacleID crashes when tank crushes",
+   "lim": [
+    "STR-29"
+   ]
+  },
+  "CRASH_TERRAIN_LAYERS": {
+   "tool": "doctor",
+   "sev": "crash",
+   "at": "tools/doctor/crashrules.js:75",
+   "class": "crash",
+   "why": "terrain material needs exactly 2 layers",
+   "lim": [
+    "MAP-29"
+   ]
+  },
+  "MOD_NOT_MOUNTED": {
+   "tool": "doctor",
+   "sev": "review",
+   "at": "tools/entityindex/index.js:51",
+   "class": "tool",
+   "why": "tool refuses a mod not in the active list",
+   "kind": "tool"
+  },
+  "PAK_UNREADABLE": {
+   "tool": "doctor",
+   "sev": "review",
+   "at": "tools/packer/packer.js:96",
+   "class": "tool",
+   "why": "packer could not read a pak",
+   "kind": "tool"
+  },
+  "REL_BIG_FILE": {
+   "tool": "doctor",
+   "sev": "review",
+   "at": "tools/doctor/release.js:88",
+   "class": "info",
+   "why": "size note on a release file",
+   "kind": "tool"
+  },
+  "REL_EMPTY_DIR": {
+   "tool": "doctor",
+   "sev": "review",
+   "at": "tools/doctor/release.js:89",
+   "class": "info",
+   "why": "empty folder in release tree",
+   "kind": "tool"
+  },
+  "REL_MODINFO_FINDINGS": {
+   "tool": "doctor",
+   "sev": "review",
+   "at": "tools/doctor/release.js:42",
+   "class": "tool",
+   "why": "pointer to modinfo run",
+   "kind": "tool"
+  },
+  "REL_NO_MOD_INFO": {
+   "tool": "doctor",
+   "sev": "review",
+   "at": "tools/doctor/release.js:38",
+   "class": "review",
+   "why": "folder without mod.info is not scanned as a mod",
+   "lim": [
+    "VFS-62"
+   ]
+  },
+  "REL_PAK_UNREADABLE": {
+   "tool": "doctor",
+   "sev": "review",
+   "at": "tools/doctor/release.js:61",
+   "class": "tool",
+   "why": "release check could not read a pak",
+   "kind": "tool"
+  },
+  "REL_TOTAL_SIZE": {
+   "tool": "doctor",
+   "sev": "review",
+   "at": "tools/doctor/release.js:87",
+   "class": "info",
+   "why": "file count and size summary",
+   "kind": "tool"
+  },
+  "DF_AIM": {
+   "tool": "donorfit",
+   "sev": "review",
+   "at": "tools/donorfit/donorfit.js:599",
+   "class": "silent",
+   "why": "no aim bone, unit never aims at foe",
+   "lim": [
+    "PORT-178",
+    "PORT-84"
+   ]
+  },
+  "DF_BONE_MISSING": {
+   "tool": "donorfit",
+   "sev": "review",
+   "at": "tools/donorfit/donorfit.js:465",
+   "class": "silent",
+   "why": "place bone absent: unit loads, never operatable",
+   "lim": [
+    "PORT-122"
+   ]
+  },
+  "DF_CREW_EXT": {
+   "tool": "donorfit",
+   "sev": "review",
+   "at": "tools/donorfit/donorfit.js:769",
+   "class": "silent",
+   "why": "extended crew macro door absent: never operatable",
+   "lim": [
+    "PORT-137"
+   ]
+  },
+  "DF_MATERIAL": {
+   "tool": "donorfit",
+   "sev": "review",
+   "at": "tools/donorfit/donorfit.js:667",
+   "class": "crash",
+   "why": "volume with no material source aborts load",
+   "lim": [
+    "PORT-151"
+   ]
+  },
+  "DF_PLAIN_BONE": {
+   "tool": "donorfit",
+   "sev": "review",
+   "at": "tools/donorfit/donorfit.js:416",
+   "class": "crash",
+   "why": "limits/speed on plain bone: unexpected token",
+   "lim": [
+    "FMT-05"
+   ]
+  },
+  "DF_STUFF": {
+   "tool": "donorfit",
+   "sev": "review",
+   "at": "tools/donorfit/donorfit.js:642",
+   "class": "crash",
+   "why": "weapon with no stuff crashes in SetItem",
+   "lim": [
+    "TST-97"
+   ]
+  },
+  "PAREN_STRAY": {
+   "tool": "donorfit",
+   "sev": "review",
+   "at": "tools/lib/sdlx.js:385",
+   "class": "silent",
+   "why": "stray ) silently dropped by reader",
+   "lim": [
+    "SDL-16"
+   ]
+  },
+  "DRIFT_KEY_UPSTREAM_ONLY": {
+   "tool": "drift",
+   "sev": "review",
+   "at": "tools/drift/drift.js:114",
+   "class": "info",
+   "why": "upstream changed, mod untouched: merge note",
+   "kind": "tool"
+  },
+  "DRIFT_OPAQUE_CHANGED": {
+   "tool": "drift",
+   "sev": "review",
+   "at": "tools/drift/drift.js:100",
+   "class": "info",
+   "why": "binary file changed, not diffable",
+   "kind": "tool"
+  },
+  "DRIFT_UNREADABLE": {
+   "tool": "drift",
+   "sev": "review",
+   "at": "tools/drift/drift.js:105",
+   "class": "tool",
+   "why": "drift could not read a file",
+   "kind": "tool"
+  },
+  "NO_STAMP": {
+   "tool": "drift",
+   "sev": "review",
+   "at": "tools/drift/drift.js:87",
+   "class": "tool",
+   "why": "release.json missing or unreadable",
+   "kind": "tool"
+  },
+  "STAMP_PLAN": {
+   "tool": "drift",
+   "sev": "review",
+   "at": "tools/drift/drift.js:66",
+   "class": "info",
+   "why": "stamp dry-run line",
+   "kind": "tool"
+  },
+  "WARN_DRIFT_KEY_BOTH": {
+   "tool": "drift",
+   "sev": "review",
+   "at": "tools/drift/drift.js:115",
+   "class": "review",
+   "why": "mod and upstream both changed key: merge by hand",
+   "kind": "tool"
+  },
+  "MODS_WIPED_VERSION": {
+   "tool": "entityindex",
+   "sev": "review",
+   "at": "tools/lib/vfs.js:40",
+   "class": "silent",
+   "why": "game version change empties the mod list",
+   "lim": [
+    "VFS-18"
+   ]
+  },
+  "MOD_VERSION": {
+   "tool": "entityindex",
+   "sev": "review",
+   "at": "tools/lib/vfs.js:284",
+   "class": "silent",
+   "why": "mod outside version range is skipped",
+   "lim": [
+    "VFS-19"
+   ]
+  },
+  "WARN_EXP_LOD_LINKED": {
+   "tool": "expcheck",
+   "sev": "cosmetic",
+   "at": "tools/expcheck/expcheck.js:142",
+   "class": "cosmetic",
+   "why": "exporter-only rule, engine reads any views",
+   "lim": [
+    "FMT-21"
+   ]
+  },
+  "WARN_EXP_VOL_CONVEX": {
+   "tool": "expcheck",
+   "sev": "cosmetic",
+   "at": "tools/expcheck/expcheck.js:160",
+   "class": "cosmetic",
+   "why": "exporter-only rule, non-convex vols ship in vanilla",
+   "lim": [
+    "FMT-20"
+   ]
+  },
+  "BLOCK_START": {
+   "tool": "fieldtypes",
+   "sev": "crash",
+   "at": "tools/fieldtypes/gen.js:34",
+   "class": "tool",
+   "why": "engine macro name scanned by generator, not a finding",
+   "kind": "tool"
+  },
+  "PERK_LEVEL": {
+   "tool": "humlint",
+   "sev": "review",
+   "at": "tools/keylint/rules.js:114",
+   "class": "silent",
+   "why": "unknown perk level warned, top level used",
+   "lim": [
+    "HUM-13"
+   ]
+  },
+  "LIST_END": {
+   "tool": "lib",
+   "sev": "crash",
+   "at": "tools/lib/sdlx.js:96",
+   "class": "tool",
+   "why": "lexer token kind, not a finding",
+   "kind": "tool"
+  },
+  "LIST_START": {
+   "tool": "lib",
+   "sev": "crash",
+   "at": "tools/lib/sdlx.js:95",
+   "class": "tool",
+   "why": "lexer token kind, not a finding",
+   "kind": "tool"
+  },
+  "MOD_DUP_FOLDER": {
+   "tool": "lib",
+   "sev": "review",
+   "at": "tools/lib/vfs.js:85",
+   "class": "silent",
+   "why": "second mod folder with same normalised name dropped",
+   "lim": [
+    "VFS-63"
+   ]
+  },
+  "MOD_START": {
+   "tool": "lib",
+   "sev": "crash",
+   "at": "tools/lib/sdlx.js:315",
+   "class": "tool",
+   "why": "lexer token kind, not a finding",
+   "kind": "tool"
+  },
+  "MOD_UNCLOSED": {
+   "tool": "lib",
+   "sev": "crash",
+   "at": "tools/lib/sdlx.js:376",
+   "class": "crash",
+   "why": "(mod) not closed before } or EOF",
+   "lim": [
+    "SDL-65"
+   ]
+  },
+  "NET_BAD_MARKER": {
+   "tool": "lib",
+   "sev": "crash",
+   "at": "tools/lib/mapnet.js:26",
+   "class": "crash",
+   "why": "map.net v2 MAP0/MAP1 marker missing",
+   "lim": [
+    "FMT-28"
+   ]
+  },
+  "NET_NO_GRID": {
+   "tool": "lib",
+   "sev": "crash",
+   "at": "tools/lib/mapnet.js:34",
+   "class": "crash",
+   "why": "map.net v2 GRID marker missing",
+   "lim": [
+    "FMT-28"
+   ]
+  },
+  "NET_TRUNCATED": {
+   "tool": "lib",
+   "sev": "crash",
+   "at": "tools/lib/mapnet.js:43",
+   "class": "crash",
+   "why": "map.net header runs past end of file",
+   "lim": [
+    "FMT-29"
+   ]
+  },
+  "PARAM_BAD": {
+   "tool": "lib",
+   "sev": "crash",
+   "at": "tools/lib/sdlx.js:198",
+   "class": "crash",
+   "why": "malformed macro parameter list is fatal",
+   "lim": [
+    "SDL-19"
+   ]
+  },
+  "PROFILE_BAD": {
+   "tool": "lib",
+   "sev": "review",
+   "at": "tools/lib/vfs.js:30",
+   "class": "tool",
+   "why": "profile options file unreadable to the tool",
+   "kind": "tool"
+  }
+ }
+}

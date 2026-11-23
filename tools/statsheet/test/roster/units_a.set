@@ -1,0 +1,4 @@
+{units
+	{"rifleman" {cost 10} {tags "inf"}}  ; Привет
+	{"mg" {cost 20} {tags "inf"}}
+}

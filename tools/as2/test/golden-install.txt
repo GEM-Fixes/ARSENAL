@@ -1,0 +1,120 @@
+## copy form
+$ ARSENAL install mymod --game game
+install: mymod -> game/mods/mymod (copy)
+installed mymod
+rc=0
+  mods/: hand keep mymod
+  marker: {"source":"<tmp>/mymod","link":false,"time":"<time>"}
+  files: .as2-installed mod.info resource/ resource/readme.txt
+## reinstall of our own copy is allowed
+$ ARSENAL install mymod --game game
+install: mymod -> game/mods/mymod (copy)
+installed mymod
+rc=0
+  marker: {"source":"<tmp>/mymod","link":false,"time":"<time>"}
+## uninstall: needs --yes
+$ ARSENAL uninstall mymod --game game
+would remove: game/mods/mymod (folder and contents)
+re-run with --yes to remove
+rc=1
+  mods/: hand keep mymod
+$ ARSENAL uninstall mymod --game game --yes
+removed: game/mods/mymod (folder and contents)
+removed mymod
+rc=0
+  mods/: hand keep
+## link form
+$ ARSENAL install mymod --game game --link
+install: mymod -> game/mods/mymod (junction)
+installed mymod
+rc=0
+  mods/: hand keep mymod
+  junction: true
+  marker in the source folder: false
+$ ARSENAL uninstall mymod --game game --yes
+removed: game/mods/mymod (junction only; target untouched)
+removed mymod
+rc=0
+  mods/: hand keep
+  source still there: true, marker left in source: false
+## refuse cases (as2.js and exe route)
+$ ARSENAL install nomod --game game
+error: nomod has no mod.info, so it is not a mod folder. Make one with: ARSENAL new <folder>
+rc=2
+  (same text through the exe route)
+$ ARSENAL install nosuch --game game
+error: usage: ARSENAL install <modFolder> [--name n] [--link] [--force] [--game G]
+rc=2
+  (same text through the exe route)
+$ ARSENAL install mymod --name hand --game game
+install: mymod -> game/mods/hand (copy)
+error: game/mods/hand exists and was not made by ARSENAL install, so it may hold your own work; refusing to replace it. Rename or remove it yourself, or install under another --name.
+rc=2
+  (same text through the exe route)
+  hand-made folder untouched: hand.txt mod.info
+$ ARSENAL uninstall hand --game game --yes
+error: game/mods/hand has no .as2-installed marker (not created by ARSENAL install); refusing
+rc=2
+  (same text through the exe route)
+$ ARSENAL uninstall keep --game game --yes
+error: game/mods/keep has no .as2-installed marker (not created by ARSENAL install); refusing
+rc=2
+  (same text through the exe route)
+$ ARSENAL uninstall ghost --game game --yes
+error: not installed: game/mods/ghost
+rc=2
+  (same text through the exe route)
+$ ARSENAL uninstall ../x --game game --yes
+error: bad mod name: ../x
+rc=2
+  (same text through the exe route)
+$ ARSENAL install game/mods/hand --game game --force
+install: game/mods/hand -> game/mods/hand (copy)
+already in the game's mods folder, nothing to copy: game/mods/hand
+rc=0
+  hand-made folder after the refusals: hand.txt mod.info
+$ ARSENAL install Cap_Mod --game game
+error: mod folder name "Cap_Mod" has capital letters; the game matches the mod list in lowercase. Use --name cap_mod
+rc=2
+  (same text through the exe route)
+$ ARSENAL install mymod --name two words --game game
+error: mod folder name "two words" has spaces; mod_set cannot list it. Use --name two_words
+rc=2
+  (same text through the exe route)
+$ ARSENAL install mymod --name a/b --game game
+error: bad mod name: a/b
+rc=2
+  (same text through the exe route)
+$ ARSENAL install mymod --game nosuch_game
+error: --game: not a folder: nosuch_game
+rc=2
+  (same text through the exe route)
+  missing game folder created: false
+$ ARSENAL install mymod --name inner --game game
+install: mymod -> game/mods/inner (copy)
+installed inner
+rc=0
+$ ARSENAL install game/mods/inner/sub --name inner --game game --force
+install: game/mods/inner/sub -> game/mods/inner (copy)
+error: refusing to install: source <tmp>/game/mods/inner/sub is inside the destination game/mods/inner (overwriting it would delete the source)
+rc=2
+  (same text through the exe route)
+  inner after the refusal: .as2-installed mod.info resource/ resource/readme.txt sub/ sub/mod.info
+$ ARSENAL install wrap --name x --game wrap/game
+install: wrap -> wrap/game/mods/x (copy)
+error: refusing to install: source <tmp>/wrap contains the destination wrap/game/mods/x (overwriting it would delete the source)
+rc=2
+  (same text through the exe route)
+  mods/ in wrap/game: (empty)
+$ ARSENAL uninstall inner --game game --yes
+removed: game/mods/inner (folder and contents)
+removed inner
+rc=0
+  mods/: hand keep
+## --force over a hand-made folder: refused, files kept (I-10)
+$ ARSENAL install mymod --name hand --game game --force
+install: mymod -> game/mods/hand (copy)
+error: game/mods/hand exists and was not made by ARSENAL install, so it may hold your own work; refusing to replace it (--force only replaces a folder ARSENAL installed). Rename or remove it yourself, or install under another --name.
+rc=2
+  marker: none
+  files: hand.txt mod.info

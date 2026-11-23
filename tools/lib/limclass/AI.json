@@ -1,0 +1,164 @@
+{
+  "form": "limclass/1",
+  "area": "AI",
+  "rows": {
+    "AI-01": {
+      "chk": "built",
+      "class": "silent",
+      "why": "contact in no group never attacked, no message",
+      "tool": "keylint",
+      "how": "select.set groups lacking a late catch-all class or in_range group"
+    },
+    "AI-02": {
+      "chk": "never",
+      "class": "review",
+      "why": "selector order depends on intent",
+      "never": "needs a person reading file order"
+    },
+    "AI-03": {
+      "chk": "never",
+      "class": "review",
+      "why": "ignore side effect on later groups depends on intent",
+      "never": "needs a person reading group logic"
+    },
+    "AI-04": {
+      "chk": "never",
+      "class": "silent",
+      "why": "tie order is runtime sort behaviour",
+      "never": "engine internals, runtime only"
+    },
+    "AI-05": {
+      "chk": "built",
+      "class": "silent",
+      "why": "no matching ammo rule means silent no-fire",
+      "tool": "keylint",
+      "how": "ammo.set with no catch-all or no rule for a class pairing"
+    },
+    "AI-06": {
+      "chk": "never",
+      "class": "silent",
+      "why": "engine design: one list for all weapons",
+      "never": "engine internals"
+    },
+    "AI-07": {
+      "chk": "never",
+      "class": "info",
+      "why": "fixed engine aim mode, nothing to hit",
+      "never": "engine fixed value"
+    },
+    "AI-08": {
+      "chk": "never",
+      "class": "silent",
+      "why": "script pacing slows MG bursts, no message",
+      "never": "runtime behaviour of vanilla script"
+    },
+    "AI-09": {
+      "chk": "never",
+      "class": "info",
+      "why": "behaviour differs by control mode, nothing to hit",
+      "never": "engine fact"
+    },
+    "AI-10": {
+      "chk": "never",
+      "class": "silent",
+      "why": "rule skipped for player shooters, no message",
+      "never": "runtime owner check"
+    },
+    "AI-11": {
+      "chk": "never",
+      "class": "info",
+      "why": "no artillery AI exists, fact",
+      "never": "engine capability fact"
+    },
+    "AI-12": {
+      "chk": "built",
+      "class": "silent",
+      "why": "unexported bot Lua call does nothing",
+      "tool": "keylint",
+      "how": "bot Lua calling API other than Spawn SayChat CaptureFlag and reads"
+    },
+    "AI-13": {
+      "chk": "built",
+      "class": "silent",
+      "why": "bailed crews not re-crewed, no message"
+    },
+    "AI-14": {
+      "chk": "never",
+      "class": "silent",
+      "why": "detect.set has no effect on AI spotting",
+      "never": "intent not visible in mod files"
+    },
+    "AI-15": {
+      "chk": "built",
+      "class": "silent",
+      "why": "bot data keys ignored, no message",
+      "tool": "keylint",
+      "how": "bot.data.lua sets period or AttackBaseTime"
+    },
+    "AI-16": {
+      "chk": "never",
+      "class": "silent",
+      "why": "control user overwritten at MP runtime only",
+      "never": "whether unit is MP-spawned not in data"
+    },
+    "AI-17": {
+      "chk": "never",
+      "class": "silent",
+      "why": "30% flee failure is runtime randomness",
+      "never": "engine internals"
+    },
+    "AI-18": {
+      "chk": "never",
+      "class": "review",
+      "why": "stance 0 sticks; fix depends on tuning intent",
+      "tool": "keylint",
+      "how": "stance 0 with retreatLimit below spread in brain data",
+      "never": "retreatLimit and spread are runtime sensor values, not data"
+    },
+    "AI-19": {
+      "chk": "built",
+      "class": "review",
+      "why": "row says silent, source logs ERROR_MSG; effect unsettled"
+    },
+    "AI-20": {
+      "chk": "never",
+      "class": "silent",
+      "why": "hatch gunners leave guns at threat ratio, no message",
+      "never": "runtime brain logic"
+    },
+    "AI-21": {
+      "chk": "never",
+      "class": "review",
+      "why": "cause untraced [T]",
+      "never": "needs the game"
+    },
+    "AI-22": {
+      "chk": "built",
+      "class": "silent",
+      "why": "later Subscribe dropped silently, bot never spawns",
+      "tool": "botrecipe",
+      "how": "bot.lua: Subscribe call textually before the require of bot.lua; not wrapped after require"
+    },
+    "AI-23": {
+      "chk": "built",
+      "class": "silent",
+      "why": "GoH-only selector type gives null selector"
+    },
+    "AI-24": {
+      "chk": "built",
+      "class": "silent",
+      "why": "unknown selector type: no auto target"
+    }
+  },
+  "dead": [
+    {
+      "row": "AI-13",
+      "tool": "probekit",
+      "code": "PROBEKIT_NO_SETTINGS",
+      "fix": {
+        "code": null,
+        "why": "removed: probekit retired"
+      }
+    }
+  ]
+}

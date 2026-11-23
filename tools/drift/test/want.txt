@@ -1,0 +1,7 @@
+release.json VANILLA_SAME
+resource/set/a.def VANILLA_CHANGED
+resource/set/a.def:2 WARN_DRIFT_KEY_BOTH
+resource/set/a.def:3 DRIFT_KEY_UPSTREAM_ONLY
+resource/set/c.def VANILLA_REMOVED
+resource/set/d.bin DRIFT_OPAQUE_CHANGED
+resource/set/d.bin VANILLA_CHANGED

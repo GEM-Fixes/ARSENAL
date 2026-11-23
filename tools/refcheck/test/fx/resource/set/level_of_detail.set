@@ -1,0 +1,4 @@
+{levelofdetail
+	{"human" {distance 300} {distance 800}}
+	{"bad" {distance 500} {distance 400}} ;@LOD_ORDER
+}

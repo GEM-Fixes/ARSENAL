@@ -1,0 +1,110 @@
+{
+ "robz.ialint": {
+  "total": 4,
+  "codes": {
+   "INT_KICK_NOOP": 2,
+   "WARN_TAG_ADD_BLOCK": 2
+  }
+ },
+ "robz.keylint": {
+  "total": 3,
+  "codes": {
+   "WARN_PARAM_PREFIX": 3
+  }
+ },
+ "robz.lnglint": {
+  "total": 0,
+  "codes": {}
+ },
+ "robz.milint": {
+  "total": 0,
+  "codes": {}
+ },
+ "robz.packer": {
+  "total": 755,
+  "codes": {
+   "WARN_TEXT_NOT_CRLF": 755
+  }
+ },
+ "robz.sdllint": {
+  "total": 6,
+  "codes": {
+   "INCLUDE_MISSING": 5,
+   "UNREPLACED_PARAM": 1
+  }
+ },
+ "robz.uilint": {
+  "total": 0,
+  "codes": {}
+ },
+ "van.binhdr": {
+  "total": 4,
+  "codes": {
+   "DDS_HEADER": 1,
+   "PLY_BAD_CHUNK": 3
+  }
+ },
+ "van.ialint": {
+  "total": 0,
+  "codes": {}
+ },
+ "van.keylint": {
+  "total": 13,
+  "codes": {
+   "AMMO_RULE_GAP": 1,
+   "WARN_PARAM_PREFIX": 12
+  }
+ },
+ "van.milint": {
+  "total": 1226,
+  "codes": {
+   "MIS_BALANCE_NO_CHARGE": 672,
+   "MIS_BOT_NO_FLAGS": 29,
+   "MIS_BUDGET_PARAM": 1,
+   "MI_COND_EXPR": 1,
+   "WARN_MIS_UNIT_LEVEL_OFF": 4,
+   "WARN_MI_ACTOR_STATE_ALL": 4,
+   "WARN_MI_EVENT_REF": 16,
+   "WARN_MI_MID_REF": 5,
+   "WARN_MI_NEAR_DISTANCE": 1,
+   "WARN_MI_POSE_AT_START": 31,
+   "WARN_MI_TASK_REF": 6,
+   "WARN_MI_TRIGGER_REF": 8,
+   "WARN_MI_VAR_REF": 177,
+   "WARN_MI_WAYPOINT_REF": 8,
+   "WARN_MI_ZONE_REF": 263
+  }
+ },
+ "van.modinfo": {
+  "total": 4,
+  "codes": {
+   "VER_RANGE": 2,
+   "WARN_NOT_MOD": 2
+  }
+ },
+ "van.refcheck": {
+  "total": 62,
+  "codes": {
+   "DISABLED_ON": 26,
+   "ENV_PRESET_MISSING": 4,
+   "REF_ANIM_MISSING": 8,
+   "REF_SOUND_MISSING": 5,
+   "REF_TEXTURE_MISSING": 19
+  }
+ },
+ "van.sdllint": {
+  "total": 5,
+  "codes": {
+   "UNREPLACED_PARAM": 1,
+   "WARN_PAREN_STRAY": 4
+  }
+ },
+ "van.uilint": {
+  "total": 0,
+  "codes": {}
+ },
+ "van.vfs": {
+  "total": 0,
+  "codes": {}
+ }
+}

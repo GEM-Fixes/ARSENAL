@@ -1,0 +1,5 @@
+; real defects in vanilla 3.262 data (verified): shown as info while the winning file is still the vanilla one. "<file>:<line> CODE"
+resource/entity/-vehicle/tank_medium/m19/m19.def:72 REF_ANIM_MISSING
+resource/entity/inventory/radio_station/radio_station.def:1 ENTITY_REDEFINITION
+resource/entity/landscape/stamp/shellhole/shellhole_big.def:1 ENTITY_REDEFINITION
+resource/entity/landscape/stamp/shellhole/shellhole_medium.def:1 ENTITY_REDEFINITION

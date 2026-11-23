@@ -1,0 +1,8 @@
+{tags
+	{"entity"
+		{"foo" "Fox <c(ff0000)>red</c> %s"}
+		{"bar" "Line\none \"q\""}
+	}
+	; comment
+	{"info" {"squad" {"s1" "Squad {0} x"}}}
+}

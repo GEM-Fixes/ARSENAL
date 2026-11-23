@@ -1,0 +1,430 @@
+{
+ "form": "limmap/1",
+ "part": "goh2as2-1",
+ "codes": {
+  "DDS_UNLOADABLE": {
+   "tool": "goh2as2",
+   "sev": "cosmetic",
+   "lim": [
+    "FMT-02"
+   ],
+   "at": "tools/goh2as2/texcheck.js:96",
+   "class": "cosmetic",
+   "why": "loader reads DXT1-5/32-bit only; others give Unknown DDS format"
+  },
+  "ERR_DEF_READER": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "SDL-01"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:616",
+   "class": "crash",
+   "why": "def failing the parse check is an SDL syntax error: fatal"
+  },
+  "ERR_DONOR_BONE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-166"
+   ],
+   "at": "tools/goh2as2/fitpass.js:489",
+   "class": "crash",
+   "why": "def bone block on a bone the mdl lacks is fatal"
+  },
+  "ERR_DONOR_BONE_MISSING": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-122"
+   ],
+   "at": "tools/goh2as2/fitpass.js:491",
+   "class": "silent",
+   "why": "weapon place names no mdl bone: unit never operatable"
+  },
+  "ERR_DONOR_FILE_MISSING": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-119"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1603",
+   "class": "crash",
+   "why": "file in neither output nor vanilla: resource not found at load"
+  },
+  "ERR_DONOR_LINKBONE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-122"
+   ],
+   "at": "tools/goh2as2/fitpass.js:495",
+   "class": "silent",
+   "why": "main gun LinkBone not in mdl: unit never operatable"
+  },
+  "ERR_DONOR_MUZZLE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-122"
+   ],
+   "at": "tools/goh2as2/fitpass.js:496",
+   "class": "silent",
+   "why": "foresight bone not in mdl: unit never operatable"
+  },
+  "ERR_DONOR_SEAT": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-159"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1617",
+   "class": "silent",
+   "why": "seat door/LinkBone missing leaves nobody able to drive"
+  },
+  "ERR_DONOR_WEAPON": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "TST-97",
+    "PORT-165"
+   ],
+   "at": "tools/goh2as2/fitpass.js:494",
+   "class": "crash",
+   "why": "weapon carried by no Stuff crashes SetItem"
+  },
+  "ERR_DONOR_WEAPON_CLASS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-198"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1434",
+   "class": "review",
+   "why": "weapon class change on a donor place; engine effect unseen"
+  },
+  "GOH_LACKS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-152"
+   ],
+   "at": "tools/goh2as2/texcheck.js:68",
+   "class": "silent",
+   "why": "GoH has no such texture either; unit draws as checker"
+  },
+  "GOH_TEXT_CONFLICT": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/unitname.js:180",
+   "class": "info",
+   "why": "count of differing GoH text across sources; later kept"
+  },
+  "LEFT_BEHIND": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-160"
+   ],
+   "at": "tools/goh2as2/texcheck.js:69",
+   "class": "silent",
+   "why": "GoH names the texture and has it; port lacks it: checker"
+  },
+  "MISSING_TEXTURE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-152"
+   ],
+   "at": "tools/goh2as2/texcheck.js:92",
+   "class": "silent",
+   "why": "mtl texture resolves nowhere: checker, no game.log line"
+  },
+  "PATHER_MAP": {
+   "tool": "goh2as2",
+   "sev": "silent",
+   "lim": [
+    "KEY-30"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:247",
+   "class": "crash",
+   "why": "unknown PatherID name errors out at load"
+  },
+  "PORTGAP_UNEXPLAINED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/goh2as2.js:1217",
+   "class": "review",
+   "why": "tool gap: GoH key path dropped by no recorded rule"
+  },
+  "PORT_AMBIGUOUS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/goh2as2.js:787",
+   "class": "info",
+   "why": "several GoH defs match the entity name"
+  },
+  "PORT_AMMO_FAMILY": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffnames.js:161",
+   "class": "crash",
+   "why": "filling naming foreign ammo gives null magazine crash",
+   "lim": [
+    "PORT-156"
+   ]
+  },
+  "PORT_BINARY_COPY": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "FMT-01",
+    "FMT-13"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1243",
+   "class": "review",
+   "why": "binary copied unconverted; format compat unproven"
+  },
+  "PORT_BREED_WRITTEN": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-125"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1587",
+   "class": "crash",
+   "why": "breed needs absolute veterancy include path"
+  },
+  "PORT_CRASH": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/goh2as2.js:1245",
+   "class": "tool",
+   "why": "tool threw while converting a file"
+  },
+  "PORT_CURVE_MAPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffnames.js:49",
+   "class": "crash",
+   "why": "GoH curve absent in as64 ballistics is fatal",
+   "lim": [
+    "DMG-29"
+   ]
+  },
+  "PORT_DDS_CONVERTED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-143"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1238",
+   "class": "cosmetic",
+   "why": "ATI2/BC5U normal map converted to loadable DDS"
+  },
+  "PORT_DONOR_CREW": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-129"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1286",
+   "class": "silent",
+   "why": "crew.ext doors and bones must exist in mdl"
+  },
+  "PORT_DONOR_DEF": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-129"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1505",
+   "class": "silent",
+   "why": "donor def rebuilt on vanilla def; places need mdl bones"
+  },
+  "PORT_DONOR_STUB_FOLLOWED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:819",
+   "class": "tool",
+   "why": "tool inlines the include to reach the Extension",
+   "kind": "tool"
+  },
+  "PORT_GOH_ORIGIN": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/goh2as2.js:1651",
+   "class": "info",
+   "why": "lists files made from GoH data; publish note"
+  },
+  "PORT_LIGHTMAP_MULTIPLY": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-24"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:352",
+   "class": "cosmetic",
+   "why": "lightmap key has no AS2 reader; renamed to diffuse1"
+  },
+  "PORT_MODINFO_EXISTS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/goh2as2.js:1654",
+   "class": "info",
+   "why": "mod.info present, left untouched"
+  },
+  "PORT_MTL_FALLBACK_WRITTEN": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-152"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1267",
+   "class": "silent",
+   "why": "stub material written so diffuse resolves; else checker"
+  },
+  "PORT_NOT_FOUND": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/goh2as2.js:786",
+   "class": "tool",
+   "why": "named unit or key not in GoH data"
+  },
+  "PORT_PLY_MAGIC": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "FMT-13"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1241",
+   "class": "crash",
+   "why": "ply magic not EPLY/BPLY: engine cannot create resource"
+  },
+  "PORT_PROPS_COPIED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-47"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1115",
+   "class": "crash",
+   "why": "GoH properties copied only where AS2 lacks the path"
+  },
+  "PORT_PROPS_SHADOWED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-47"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1116",
+   "class": "crash",
+   "why": "GoH properties written under goh/, never over AS2 path"
+  },
+  "PORT_STUB_WRITTEN": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-126"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1596",
+   "class": "crash",
+   "why": "stub for dangling include in GoH stuff_small"
+  },
+  "PORT_STUFF_KEEP_AS64": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/goh2as2.js:956",
+   "class": "info",
+   "why": "as64 already has the Stuff; GoH file not pulled"
+  },
+  "PORT_STUFF_PULLED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1025",
+   "class": "silent",
+   "why": "unscaled GoH stuff numbers kill slower in as64",
+   "lim": [
+    "PORT-199"
+   ]
+  },
+  "PORT_STUFF_TAGS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/goh2as2.js:1114",
+   "class": "info",
+   "why": "count of weapon/ammo/item tags kept, pulled, missing"
+  },
+  "PORT_STUFF_WRITTEN": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "TST-97"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1427",
+   "class": "crash",
+   "why": "a {weapon} with no weapon Stuff crashes SetItem"
+  },
+  "PORT_WEAPON_QUOTED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-165"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1198",
+   "class": "crash",
+   "why": "bare weapon name equal to an ammo file is found as ammo"
+  },
+  "SEAT_MAP": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-159"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1615",
+   "class": "info",
+   "why": "donor seat kept on alias bone in output mdl"
+  },
+  "SP_FILL": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/stuffport.js:266",
+   "class": "tool",
+   "why": "prefix string in a replace, not an emitted code",
+   "kind": "tool"
+  },
+  "SP_ITEM": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/stuffport.js:266",
+   "class": "tool",
+   "why": "prefix string in a replace, not an emitted code"
+  },
+  "SP_ITEM_KEEP": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/stuffport.js:352",
+   "class": "info",
+   "why": "item tags already exist in AS2; kept"
+  },
+  "SP_ITEM_MAP": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/stuffport.js:360",
+   "class": "info",
+   "why": "item tags mapped to an AS2 stuff name"
+  }
+ }
+}

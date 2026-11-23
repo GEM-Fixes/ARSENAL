@@ -1,0 +1,5 @@
+{
+  "name": "badgame",
+  "game": "nope",
+  "verdict": [{ "log": "Game started", "want": true }]
+}

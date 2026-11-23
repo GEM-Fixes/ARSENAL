@@ -1,0 +1,650 @@
+{
+ "generated": "2026-11-07",
+ "sources": {
+  "vanilla": {
+   "files": 138053,
+   "pakErrors": 0
+  },
+  "vanilla+rootpak": {
+   "files": 86,
+   "pakErrors": 0
+  },
+  "valour": {
+   "files": 160763,
+   "pakErrors": 0
+  },
+  "jaben": {
+   "files": 5767,
+   "pakErrors": 0
+  }
+ },
+ "ok": true,
+ "unmapped": [],
+ "rows": [
+  {
+   "id": "C01",
+   "ability": "Vehicles",
+   "now": "G",
+   "was": "G",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 1375,
+    "valour": 4252,
+    "jaben": 604
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C02",
+   "ability": "Guns and mortars",
+   "now": "F",
+   "was": "F",
+   "nowChanged": false,
+   "derived": false,
+   "files": {},
+   "sharedFiles": {
+    "vanilla": 1375,
+    "valour": 4252,
+    "jaben": 604
+   },
+   "hasData": true
+  },
+  {
+   "id": "C03",
+   "ability": "Infantry",
+   "now": "F",
+   "was": "F",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 360,
+    "valour": 1847,
+    "jaben": 428
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C04",
+   "ability": "Weapons, ammo, grenades, mines",
+   "now": "F",
+   "was": "F",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 871,
+    "valour": 2837,
+    "jaben": 574
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C05",
+   "ability": "Squads, prices, buy cards",
+   "now": "F",
+   "was": "F",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 34,
+    "valour": 130,
+    "jaben": 53
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C06",
+   "ability": "Crew, repair, tow, AI use of a unit",
+   "now": "N",
+   "was": "N",
+   "nowChanged": false,
+   "derived": true,
+   "files": {},
+   "sharedFiles": {
+    "vanilla": 1375,
+    "valour": 4252,
+    "jaben": 604
+   },
+   "hasData": true
+  },
+  {
+   "id": "C07",
+   "ability": "Fauna, service, jump entities",
+   "now": "R",
+   "was": "R",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 144,
+    "valour": 176,
+    "jaben": 4
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C08",
+   "ability": "Buildings, bridges, fences",
+   "now": "S",
+   "was": "S",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 7997,
+    "valour": 117,
+    "jaben": 59
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C09",
+   "ability": "Landscape objects, flora",
+   "now": "R",
+   "was": "R",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 1091,
+    "valour": 48,
+    "jaben": 17
+   },
+   "sharedFiles": {
+    "vanilla": 123,
+    "valour": 155,
+    "jaben": 63
+   },
+   "hasData": true
+  },
+  {
+   "id": "C10",
+   "ability": "Maps",
+   "now": "F",
+   "was": "F",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 2991,
+    "valour": 2880,
+    "jaben": 1135
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C11",
+   "ability": "Terrain edits",
+   "now": "N",
+   "was": "N",
+   "nowChanged": false,
+   "derived": false,
+   "files": {},
+   "sharedFiles": {
+    "vanilla": 2868,
+    "valour": 2725,
+    "jaben": 1072
+   },
+   "hasData": true
+  },
+  {
+   "id": "C12",
+   "ability": "Missions, triggers",
+   "now": "F",
+   "was": "F",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 218,
+    "valour": 547,
+    "jaben": 155
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C13",
+   "ability": "Bots",
+   "now": "F",
+   "was": "F",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 3,
+    "valour": 3
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C14",
+   "ability": "Interaction scripts",
+   "now": "S",
+   "was": "S",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 53,
+    "valour": 73,
+    "jaben": 20
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C15",
+   "ability": "Abilities",
+   "now": "R",
+   "was": "R",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 18,
+    "jaben": 10
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C16",
+   "ability": "Damage rules, targets",
+   "now": "S",
+   "was": "S",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 28,
+    "valour": 25,
+    "jaben": 9
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C17",
+   "ability": "Unit keys, stat edits, movement",
+   "now": "S",
+   "was": "S",
+   "nowChanged": false,
+   "derived": true,
+   "files": {},
+   "sharedFiles": {
+    "vanilla": 2150,
+    "valour": 7198,
+    "jaben": 1135
+   },
+   "hasData": true
+  },
+  {
+   "id": "C18",
+   "ability": "Class templates",
+   "now": "S",
+   "was": "S",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 79,
+    "valour": 50,
+    "jaben": 16
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C19",
+   "ability": "Vision",
+   "now": "R",
+   "was": "R",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 5,
+    "valour": 4,
+    "jaben": 6
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C20",
+   "ability": "Difficulty",
+   "now": "R",
+   "was": "R",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 6,
+    "valour": 1,
+    "jaben": 1
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C21",
+   "ability": "Environment, weather",
+   "now": "R",
+   "was": "R",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 113,
+    "valour": 9,
+    "jaben": 53
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C22",
+   "ability": "Engine registry",
+   "now": "R",
+   "was": "R",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 24,
+    "valour": 7,
+    "jaben": 8
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C23",
+   "ability": "Models and skins",
+   "now": "F",
+   "was": "F",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 100129,
+    "valour": 102613,
+    "jaben": 1858
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C24",
+   "ability": "Animation",
+   "now": "S",
+   "was": "S",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 3978,
+    "valour": 6480,
+    "jaben": 1
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C25",
+   "ability": "FX, particles",
+   "now": "S",
+   "was": "S",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 428,
+    "valour": 349,
+    "jaben": 71
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C26",
+   "ability": "Shaders",
+   "now": "N",
+   "was": "N",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 2374
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C27",
+   "ability": "Video",
+   "now": "N",
+   "was": "N",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 43
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C28",
+   "ability": "Sound effects",
+   "now": "S",
+   "was": "S",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 1493,
+    "valour": 3119,
+    "jaben": 46
+   },
+   "sharedFiles": {
+    "vanilla": 3570,
+    "valour": 4458,
+    "jaben": 244
+   },
+   "hasData": true
+  },
+  {
+   "id": "C29",
+   "ability": "Voices",
+   "now": "N",
+   "was": "N",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 3576,
+    "valour": 4459,
+    "jaben": 245
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C30",
+   "ability": "Music",
+   "now": "N",
+   "was": "N",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 13,
+    "valour": 3
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C31",
+   "ability": "Icons, unit art, armour schemes",
+   "now": "S",
+   "was": "S",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 9226,
+    "valour": 29598,
+    "jaben": 179
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C32",
+   "ability": "Menus, skin, fonts, cursors",
+   "now": "S",
+   "was": "S",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 1146,
+    "valour": 641,
+    "jaben": 4
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C33",
+   "ability": "Action buttons, panels",
+   "now": "S",
+   "was": "S",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 61,
+    "valour": 44,
+    "jaben": 12
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C34",
+   "ability": "Key bindings",
+   "now": "N",
+   "was": "N",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 7
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C35",
+   "ability": "Text, names, tips",
+   "now": "S",
+   "was": "S",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 9,
+    "vanilla+rootpak": 86,
+    "valour": 177,
+    "jaben": 78
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C36",
+   "ability": "Editor pages",
+   "now": "N",
+   "was": "N",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "vanilla": 28
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C37",
+   "ability": "Mount, override, load order, N.pat, own includes",
+   "now": "G",
+   "was": "G",
+   "nowChanged": false,
+   "derived": false,
+   "files": {
+    "valour": 105,
+    "jaben": 1
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C38",
+   "ability": "Upgrade an old mod",
+   "now": "G",
+   "was": "G",
+   "nowChanged": false,
+   "derived": true,
+   "files": {},
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C39",
+   "ability": "Port from GoH: units",
+   "now": "G",
+   "was": "G",
+   "nowChanged": false,
+   "derived": true,
+   "files": {},
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C40",
+   "ability": "Port from GoH: everything else",
+   "now": "N",
+   "was": "N",
+   "nowChanged": false,
+   "derived": true,
+   "files": {},
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C41",
+   "ability": "Check a mod before running",
+   "now": "S",
+   "was": "S",
+   "nowChanged": false,
+   "derived": true,
+   "files": {},
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C42",
+   "ability": "Multiplayer",
+   "now": "N",
+   "was": "N",
+   "nowChanged": false,
+   "derived": true,
+   "files": {
+    "vanilla": 132,
+    "valour": 168,
+    "jaben": 118
+   },
+   "sharedFiles": {},
+   "hasData": true
+  },
+  {
+   "id": "C43",
+   "ability": "Hand a mod on, guide per ability",
+   "now": "N",
+   "was": "S",
+   "nowChanged": true,
+   "derived": true,
+   "files": {
+    "valour": 1,
+    "jaben": 2
+   },
+   "sharedFiles": {},
+   "hasData": true
+  }
+ ]
+}

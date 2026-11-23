@@ -1,0 +1,5 @@
+;SDL
+{mission
+	(include "../bz_gone.inc")
+	(include "../inc_ok.inc")
+}

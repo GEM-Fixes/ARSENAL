@@ -1,0 +1,50 @@
+{
+ "form": "limclass/1",
+ "area": "TST6",
+ "rows": {
+  "TST-124": {
+   "chk": "never",
+   "class": "info",
+   "never": "test design fact",
+   "why": "unheld shooter fires before order; test design"
+  },
+  "TST-125": {
+   "chk": "never",
+   "class": "silent",
+   "never": "cause needs game",
+   "why": "some 76 mm guns fire few shots close; cause open"
+  },
+  "TST-126": {
+   "chk": "never",
+   "class": "info",
+   "never": "test reading rule",
+   "why": "truck foe fuel breaks first; count by crew"
+  },
+  "TST-127": {
+   "chk": "never",
+   "class": "info",
+   "never": "log fact",
+   "why": "log poll time not game time"
+  },
+  "TST-128": {
+   "chk": "todo",
+   "class": "silent",
+   "tool": "edrun-mindist",
+   "how": "cannon pair dist under 260 for vehicle gun",
+   "why": "close cannon fires few rounds under attack order"
+  },
+  "TST-129": {
+   "chk": "never",
+   "class": "silent",
+   "never": "engine behaviour",
+   "why": "fire_mode hold does not stop actor_fire"
+  },
+  "TST-130": {
+   "chk": "never",
+   "class": "info",
+   "never": "source fact",
+   "why": "cmdline flag source trace; no unknown-arg check"
+  }
+ },
+ "dead": []
+}

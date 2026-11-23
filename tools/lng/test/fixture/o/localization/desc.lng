@@ -1,0 +1,8 @@
+{tags
+	{"entity"
+		{"foo" "Renard <c(ff0000)>rouge</c> %s"}
+		{"bar" "Zwei\nZeilen \"x\""}
+	}
+	; comment
+	{"info" {"squad" {"s1" "Squad {0} x"}}}
+}

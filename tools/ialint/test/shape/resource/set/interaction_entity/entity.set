@@ -1,0 +1,4 @@
+{entities
+	(include "basic.inc")
+	(include "gear/crate.inc")
+}

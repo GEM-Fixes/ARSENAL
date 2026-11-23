@@ -1,0 +1,10 @@
+{Skeleton
+ {bone "basis"
+  {bone "plain"
+   {limits -5 20}
+  }
+  {bone "plain2"
+   {speed 3}
+  }
+ }
+}

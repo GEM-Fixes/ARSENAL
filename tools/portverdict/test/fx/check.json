@@ -1,0 +1,14 @@
+{
+ "mod": "mod",
+ "verdicts": {"as64": {"verdict": "LOADS_STATIC", "text": "stub"}},
+ "findings": [
+  {"tool": "keylint", "code": "WARN_PATHER_UNKNOWN", "n": 1, "sev": "silent", "samples": [{"file": "resource/entity/-vehicle/fx/tank_medium/pv_path/pv_path.def", "line": 2, "msg": "PatherID \"panzer4\" not a {Profile} of set/pather.set"}]},
+  {"tool": "sdllint", "code": "INCLUDE_MISSING", "n": 2, "sev": "review", "gated": true, "note": "nothing in the mod uses this unit", "samples": [
+   {"file": "resource/entity/-vehicle/fx/tank_medium/pv_inc/pv_inc.def", "line": 4, "msg": "include \"pv_absent.inc\" not found (resolved virtual:resource/entity/-vehicle/fx/tank_medium/pv_inc/pv_absent.inc)", "note": "nothing in the mod uses this unit"},
+   {"file": "resource/entity/-vehicle/fx/tank_medium/pv_txt/pv_txt.def", "line": 4, "msg": "include \"pv_listed.inc\" not found (resolved virtual:resource/entity/-vehicle/fx/tank_medium/pv_txt/pv_listed.inc)", "note": "nothing in the mod uses this unit"}]},
+  {"tool": "sdllint", "code": "BLOCK_UNCLOSED", "n": 1, "sev": "review", "gated": true, "note": "nothing in the mod uses this unit", "samples": [{"file": "resource/entity/-vehicle/fx/tank_medium/pv_syn/pv_syn.def", "line": 1, "msg": "block never closed", "note": "nothing in the mod uses this unit"}]},
+  {"tool": "refcheck", "code": "REF_WEAPON_UNKNOWN", "n": 1, "sev": "review", "gated": true, "note": "nothing in the mod uses this unit", "samples": [{"file": "resource/entity/-vehicle/fx/tank_medium/pv_weap/pv_weap.def", "line": 6, "msg": "no set/stuff file carries the tags \"pv_goh_75mm_l48\"", "note": "nothing in the mod uses this unit"}]},
+  {"tool": "refcheck", "code": "REF_AMMO_UNKNOWN", "n": 1, "sev": "review", "gated": true, "note": "nothing in the mod uses this unit", "samples": [{"file": "resource/entity/-vehicle/fx/tank_medium/pv_weap/pv_weap.def", "line": 6, "msg": "filling \"pv_goh_bullet_75 apcbc\": no set/stuff file carries all these tags", "note": "nothing in the mod uses this unit"}]}
+ ],
+ "errors": []
+}

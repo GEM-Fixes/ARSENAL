@@ -1,0 +1,1 @@
+fixture/prog.jpg: progressive JPEG not supported (re-save as baseline)

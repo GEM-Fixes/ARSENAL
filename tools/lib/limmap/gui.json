@@ -1,0 +1,258 @@
+{
+ "form": "limmap/1",
+ "part": "gui",
+ "codes": {
+  "BAD_FILEID": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "VFS-60"
+   ],
+   "at": "tools/modinfo/modinfo.js:109",
+   "class": "silent",
+   "why": "engine parses FileId unchecked; bad text gives no message"
+  },
+  "LOG_BENIGN": {
+   "tool": "gui",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/logtriage/logtriage.js:249",
+   "class": "info",
+   "why": "tool's own noise list of known harmless log lines"
+  },
+  "LOG_DUMP": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "LOG-10",
+    "LOG-14"
+   ],
+   "at": "tools/logtriage/logtriage.js:322",
+   "class": "info",
+   "why": "minidump and OOS folder listing; small files limits"
+  },
+  "LOG_LUA": {
+   "tool": "gui",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/logtriage/logtriage.js:224",
+   "class": "info",
+   "why": "echo of [LUA] log lines, no engine fact"
+  },
+  "LOG_NO_LOG": {
+   "tool": "gui",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/logtriage/logtriage.js:386",
+   "class": "tool",
+   "why": "input folder has no game.log"
+  },
+  "LOG_OOS": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "NET-04",
+    "LOG-13"
+   ],
+   "at": "tools/logtriage/logtriage.js:365",
+   "class": "desync",
+   "why": "OOS snapshot found; clients removed, no resync"
+  },
+  "LOG_OOS_VERSION": {
+   "tool": "gui",
+   "sev": "review",
+   "at": "tools/logtriage/logtriage.js:366",
+   "class": "desync",
+   "why": "players on different builds desync; no row states it",
+   "lim": [
+    "NET-13"
+   ]
+  },
+  "LOG_UNCLASSIFIED": {
+   "tool": "gui",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/logtriage/logtriage.js:242",
+   "class": "info",
+   "why": "tool does not know this message type"
+  },
+  "MAPCLONE_LOC_KEY": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "LOC-24"
+   ],
+   "at": "tools/map-clone/map-clone.js:155",
+   "class": "cosmetic",
+   "why": "lobby name key follows nested map path"
+  },
+  "MAPCLONE_NO_MAP": {
+   "tool": "gui",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/map-clone/map-clone.js:37",
+   "class": "tool",
+   "why": "bad --map argument or map not found"
+  },
+  "MIS_DIFF_ENTITY_ADDED": {
+   "tool": "gui",
+   "sev": "silent",
+   "kind": "tool",
+   "at": "tools/misdiff/misdiff.js:156",
+   "class": "info",
+   "why": "diff report between two mission files"
+  },
+  "MIS_DIFF_ENTITY_CHANGED": {
+   "tool": "gui",
+   "sev": "silent",
+   "kind": "tool",
+   "at": "tools/misdiff/misdiff.js:162",
+   "class": "info",
+   "why": "diff report between two mission files"
+  },
+  "MIS_DIFF_ENTITY_DEF_CHANGED": {
+   "tool": "gui",
+   "sev": "silent",
+   "kind": "tool",
+   "at": "tools/misdiff/misdiff.js:157",
+   "class": "info",
+   "why": "diff report between two mission files"
+  },
+  "MIS_DIFF_ENTITY_MOVED": {
+   "tool": "gui",
+   "sev": "silent",
+   "kind": "tool",
+   "at": "tools/misdiff/misdiff.js:161",
+   "class": "info",
+   "why": "diff report between two mission files"
+  },
+  "MIS_DIFF_ENTITY_REMOVED": {
+   "tool": "gui",
+   "sev": "silent",
+   "kind": "tool",
+   "at": "tools/misdiff/misdiff.js:150",
+   "class": "info",
+   "why": "diff report between two mission files"
+  },
+  "MPSYNC_SIZE_ONLY": {
+   "tool": "gui",
+   "sev": "silent",
+   "lim": [
+    "NET-01"
+   ],
+   "at": "tools/mpsync/mpsync.js:189",
+   "class": "desync",
+   "why": "same-size edit passes lobby CRC, desyncs in play"
+  },
+  "NOT_IN_MODS": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "VFS-61"
+   ],
+   "at": "tools/newmod/newmod.js:99",
+   "class": "silent",
+   "why": "engine scans only mods/; folder elsewhere not loaded"
+  },
+  "OVR_FILE_DELETED": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "VFS-22"
+   ],
+   "at": "tools/overdiff/overdiff.js:60",
+   "class": "silent",
+   "why": "mod.info Delete removes a lower-layer file"
+  },
+  "OVR_IDENTICAL": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "VFS-01"
+   ],
+   "at": "tools/overdiff/overdiff.js:64",
+   "class": "review",
+   "why": "whole-file override that changes nothing"
+  },
+  "OVR_KEY_ADDED": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "VFS-01"
+   ],
+   "at": "tools/overdiff/overdiff.js:74",
+   "class": "review",
+   "why": "replacement file differs; last Register wins whole"
+  },
+  "OVR_KEY_CHANGED": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "VFS-01"
+   ],
+   "at": "tools/overdiff/overdiff.js:72",
+   "class": "review",
+   "why": "replacement file differs; last Register wins whole"
+  },
+  "OVR_KEY_REMOVED": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "VFS-41"
+   ],
+   "at": "tools/overdiff/overdiff.js:71",
+   "class": "silent",
+   "why": "vanilla key absent from whole-file replacement vanishes"
+  },
+  "OVR_OPAQUE_REPLACED": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "VFS-01"
+   ],
+   "at": "tools/overdiff/overdiff.js:65",
+   "class": "review",
+   "why": "non-SDL file replaced whole, no merge"
+  },
+  "WARN_MPSYNC_SIZE_ONLY": {
+   "tool": "gui",
+   "sev": "silent",
+   "lim": [
+    "NET-01"
+   ],
+   "at": "tools/mpsync/mpsync.js:192",
+   "class": "desync",
+   "why": "summary of size-only synced files"
+  },
+  "WARN_NAME_FOLDER": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "VFS-12"
+   ],
+   "at": "tools/modinfo/modinfo.js:77",
+   "class": "cosmetic",
+   "why": "mod identity is folder name, not Name"
+  },
+  "WARN_NOT_MOD": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "VFS-62"
+   ],
+   "at": "tools/modinfo/modinfo.js:138",
+   "class": "silent",
+   "why": "folder without mod.info silently ignored"
+  },
+  "WARN_REQ_BUILTIN": {
+   "tool": "gui",
+   "sev": "review",
+   "lim": [
+    "VFS-47"
+   ],
+   "at": "tools/modinfo/modinfo.js:101",
+   "class": "info",
+   "why": "as64+ is built in, not looked up in mods/"
+  }
+ }
+}

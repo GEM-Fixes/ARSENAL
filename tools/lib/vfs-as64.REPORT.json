@@ -1,0 +1,27 @@
+{
+ "tool": "lib/vfs",
+ "files": [
+  "tools/lib/vfs.js",
+  "tools/lib/test/vfsas64.test.js",
+  "tools/lib/test/test.js"
+ ],
+ "tests": "PASS",
+ "real": [
+  {
+   "data": "vanilla (F: install, as64.exe present)",
+   "counts": {},
+   "ms": 345
+  }
+ ],
+ "indexLine": "vfs (lib) | build({exe:'as64'|'mowas_2'|auto (as64.exe present), plainVersion}) | as64 mounts: as64/core (shaders+as64 .lng, layer as64/core, after base, before mods, always) + built-in mod as64+ (<game>/as64/plus, only when listed, mounted first) + Classic/Enhanced filter (MOD_MODE; Enhanced iff list has as64+; modern = MinGameVersion>=3.301 compares plain version 3.301.N, min only); result v.exe, v.mode",
+ "buildsLine": "vfs: as64.exe installs: +10 entries on F: vanilla (74 as64/core files, 64 shaders), mowas_2 / no as64.exe output unchanged; MOD_MODE problem (error) for a mod of the wrong mode",
+ "specIssues": [],
+ "libGaps": [],
+ "tags": {},
+ "notes": "Cites; ,174-176. Golden: 0 deltas (counts only; new files not in finding counts). test-all first run showed SOME FAILED once, rerun ALL PASS (flaky, not isolated).",
+ "newRows": [
+  "VFS-NN | as64/core mount | as64.exe MountGame mounts as64/core/ (resource.pak, resource/, localization.pak, localization/ like any mod) right after game, patches=0, every mode, before mods; absent on mowas_2 | tools must not see shader/#as64.lng without exe=as64 | [V]  | chk vfs",
+  "VFS-NN | as64+ built-in mod | LoadMods loads as64/plus/ first with id forced to as64+; listed in options mods = Enhanced mode; stable_partition puts it before all player mods so they override it; a mods/ folder named as64+ is dropped | [V]  | chk vfs",
+  "VFS-NN | Classic/Enhanced filter | mod applies iff IsBuiltIn or IsModern()==enhanced; modern = MinGameVersion >= 3.301; modern version check = plain version >= min (no max), legacy = data version 3.262.N in [min,max]; checked before version/require | [V]  | chk vfs"
+ ]
+}

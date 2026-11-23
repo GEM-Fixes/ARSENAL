@@ -1,0 +1,171 @@
+{
+ "form": "limclass/1",
+ "area": "VFS",
+ "rows": {
+  "VFS-01": {
+   "chk": "built",
+   "class": "silent",
+   "why": "whole file replaced, other lines lost"
+  },
+  "VFS-02": {
+   "chk": "built",
+   "class": "silent",
+   "why": "case-only variants collide into one key"
+  },
+  "VFS-03": {
+   "chk": "built",
+   "class": "crash",
+   "why": "name over 4096 bytes is fatal"
+  },
+  "VFS-04": {
+   "chk": "built",
+   "class": "silent",
+   "why": "long zip names truncated"
+  },
+  "VFS-05": {
+   "chk": "built",
+   "class": "crash",
+   "why": "bad name characters rejected at mount"
+  },
+  "VFS-06": {
+   "chk": "built",
+   "class": "silent",
+   "why": "loose .txt etc never indexed, invisible"
+  },
+  "VFS-07": {
+   "chk": "built",
+   "class": "silent",
+   "why": "skipped files are not mounted"
+  },
+  "VFS-08": {
+   "chk": "built",
+   "class": "silent",
+   "why": "loose vs pak winner depends on scan order"
+  },
+  "VFS-09": {
+   "chk": "never",
+   "class": "info",
+   "why": "pak read cost, slow mount only",
+   "never": "performance fact, no mod-file mistake"
+  },
+  "VFS-10": {
+   "chk": "never",
+   "class": "info",
+   "why": "pak is plain zip, workflow fact",
+   "never": "workflow fact, nothing to hit"
+  },
+  "VFS-11": {
+   "chk": "never",
+   "class": "info",
+   "why": "zip index cache is memory only",
+   "never": "engine internals"
+  },
+  "VFS-12": {
+   "chk": "built",
+   "class": "silent",
+   "why": "mod name case mismatch drops the mod"
+  },
+  "VFS-13": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unknown mod folder skipped, only a log line"
+  },
+  "VFS-14": {
+   "chk": "built",
+   "class": "silent",
+   "why": ":ver above patch count silently drops mod"
+  },
+  "VFS-15": {
+   "chk": "built",
+   "class": "review",
+   "why": "order of independent mods not guaranteed",
+   "tool": "conflicts",
+   "how": "two mods in list replace same file with no Require ordering between them"
+  },
+  "VFS-16": {
+   "chk": "built",
+   "class": "crash",
+   "why": "dependency cycle drops whole mod list"
+  },
+  "VFS-17": {
+   "chk": "built",
+   "class": "silent",
+   "why": "Require missing name skips the mod"
+  },
+  "VFS-18": {
+   "chk": "never",
+   "class": "silent",
+   "why": "game version change empties {mods}",
+   "never": "user profile state after an update, not mod files"
+  },
+  "VFS-19": {
+   "chk": "built",
+   "class": "silent",
+   "why": "empty or old version range makes mod unsupported"
+  },
+  "VFS-20": {
+   "chk": "built",
+   "class": "silent",
+   "why": "mod.info typos silent"
+  },
+  "VFS-21": {
+   "chk": "built",
+   "class": "silent",
+   "why": "Delete without resource/ matches nothing"
+  },
+  "VFS-22": {
+   "chk": "built",
+   "class": "silent",
+   "why": "mod.info Delete cannot remove mod own files"
+  },
+  "VFS-23": {
+   "chk": "built",
+   "class": "crash",
+   "why": "remap missing source is fatal"
+  },
+  "VFS-24": {
+   "chk": "built",
+   "class": "crash",
+   "why": "pat without matching patch doc is fatal"
+  },
+  "VFS-25": {
+   "chk": "built",
+   "class": "silent",
+   "why": "loose .patch in root never read"
+  },
+  "VFS-26": {
+   "chk": "built",
+   "class": "silent",
+   "why": "other root files ignored"
+  },
+  "VFS-27": {
+   "chk": "built",
+   "class": "silent",
+   "why": "replaced .lng loses keys, no fill"
+  },
+  "VFS-28": {
+   "chk": "never",
+   "class": "info",
+   "why": "Apply wipes and remounts, slow only",
+   "never": "workflow and speed fact"
+  },
+  "VFS-29": {
+   "chk": "built",
+   "class": "desync",
+   "why": "MP keys must match across players"
+  },
+  "VFS-30": {
+   "chk": "never",
+   "class": "info",
+   "why": "-no_mods is a safe-mode switch",
+   "never": "launch option, nothing to hit"
+  },
+  "VFS-31": {
+   "chk": "never",
+   "class": "silent",
+   "why": "local edits to subscribed mod overwritten",
+   "never": "Steam copy behaviour at runtime, not mod files"
+  }
+ },
+ "dead": []
+}

@@ -1,0 +1,1 @@
+	{TurnTime 6}

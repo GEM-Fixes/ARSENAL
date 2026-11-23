@@ -1,0 +1,386 @@
+{
+ "form": "limmap/1",
+ "part": "mix-5",
+ "codes": {
+  "PATCH_COPIED": {
+   "tool": "patch-entity",
+   "sev": "review",
+   "lim": [
+    "VFS-01"
+   ],
+   "at": "tools/patch-entity/patch-entity.js:164",
+   "class": "info",
+   "why": "override copy of whole file made"
+  },
+  "PATCH_DRY_RUN": {
+   "tool": "patch-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/patch-entity/patch-entity.js:183",
+   "class": "tool",
+   "why": "dry run flag, nothing written"
+  },
+  "PATCH_FULL_COPY": {
+   "tool": "patch-entity",
+   "sev": "review",
+   "lim": [
+    "VFS-41"
+   ],
+   "at": "tools/patch-entity/patch-entity.js:165",
+   "class": "silent",
+   "why": "whole-file shadow drops later vanilla updates"
+  },
+  "PATCH_NO_CHANGE": {
+   "tool": "patch-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/patch-entity/patch-entity.js:172",
+   "class": "tool",
+   "why": "edit produced identical bytes"
+  },
+  "PATCH_NO_FILE": {
+   "tool": "patch-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/patch-entity/patch-entity.js:151",
+   "class": "tool",
+   "why": "target entity file not found"
+  },
+  "PATCH_OVERDIFF_SKIPPED": {
+   "tool": "patch-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/patch-entity/patch-entity.js:193",
+   "class": "tool",
+   "why": "overdiff helper failed"
+  },
+  "PATCH_REFUSED": {
+   "tool": "patch-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/patch-entity/patch-entity.js:180",
+   "class": "tool",
+   "why": "edit would add a lint error; not written"
+  },
+  "PATCH_WROTE": {
+   "tool": "patch-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/patch-entity/patch-entity.js:186",
+   "class": "tool",
+   "why": "file written message"
+  },
+  "WARN_PATCH_LINT_NEW": {
+   "tool": "patch-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/patch-entity/patch-entity.js:179",
+   "class": "tool",
+   "why": "edit adds a new lint warning"
+  },
+  "ARITH_BAD": {
+   "tool": "portdiff",
+   "sev": "crash",
+   "lim": [
+    "SDL-66"
+   ],
+   "at": "tools/lib/sdlx.js:331",
+   "class": "crash",
+   "why": "non-number arithmetic operand is fatal"
+  },
+  "INT_RANGE": {
+   "tool": "portdiff",
+   "sev": "silent",
+   "lim": [
+    "SDL-07"
+   ],
+   "at": "tools/lib/sdlx.js:142",
+   "class": "silent",
+   "why": "int32 overflow wraps silently"
+  },
+  "WARN_PORT_KEY_AS2_ONLY": {
+   "tool": "portdiff",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/portdiff/portdiff.js:166",
+   "class": "tool",
+   "why": "GoH/AS2 key tally difference hint"
+  },
+  "WARN_PORT_SHAPE_DIFF": {
+   "tool": "portdiff",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/portdiff/portdiff.js:167",
+   "class": "tool",
+   "why": "GoH/AS2 value shape tally difference hint"
+  },
+  "WARN_PORT_STRUCT_DIFF": {
+   "tool": "portdiff",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/portdiff/portdiff.js:168",
+   "class": "tool",
+   "why": "GoH/AS2 block structure tally difference hint"
+  },
+  "PARAM_UNBALANCED": {
+   "tool": "sdllint",
+   "sev": "review",
+   "lim": [
+    "SDL-19"
+   ],
+   "at": "tools/lib/sdlx.js:225",
+   "class": "silent",
+   "why": "macro param value ends at first close paren"
+  },
+  "SDLLINT_PAKS_READ": {
+   "tool": "sdllint",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/sdllint/sdllint.js:109",
+   "class": "tool",
+   "why": "GoH paks read directly count"
+  },
+  "SDL_DEF_NOT_ENTITY": {
+   "tool": "sdllint",
+   "sev": "review",
+   "lim": [
+    "VFS-65"
+   ],
+   "at": "tools/sdllint/sdllint.js:190",
+   "class": "silent",
+   "why": "def outside entity folder never loaded"
+  },
+  "SDL_GOH_DISABLED_TAG": {
+   "tool": "sdllint",
+   "sev": "review",
+   "lim": [
+    "SDL-11"
+   ],
+   "at": "tools/sdllint/sdllint.js:210",
+   "class": "info",
+   "why": "disabled block in GoH file"
+  },
+  "SDL_GOH_INT64": {
+   "tool": "sdllint",
+   "sev": "review",
+   "lim": [
+    "SDL-07"
+   ],
+   "at": "tools/sdllint/sdllint.js:36",
+   "class": "info",
+   "why": "GoH 64-bit id literal"
+  },
+  "SDL_GOH_MOD_NAME": {
+   "tool": "sdllint",
+   "sev": "review",
+   "lim": [
+    "SDL-25"
+   ],
+   "at": "tools/sdllint/sdllint.js:33",
+   "class": "info",
+   "why": "GoH mod names outside AS2 set"
+  },
+  "SDL_GOH_PERCENT": {
+   "tool": "sdllint",
+   "sev": "review",
+   "lim": [
+    "SDL-21"
+   ],
+   "at": "tools/sdllint/sdllint.js:34",
+   "class": "info",
+   "why": "bare percent is GoH value unit"
+  },
+  "SDL_GOH_REG_TEMPLATE": {
+   "tool": "sdllint",
+   "sev": "review",
+   "lim": [
+    "SDL-21"
+   ],
+   "at": "tools/sdllint/sdllint.js:35",
+   "class": "info",
+   "why": "GoH registry template parameter name"
+  },
+  "SDL_MTL_UNREFERENCED": {
+   "tool": "sdllint",
+   "sev": "review",
+   "lim": [
+    "FMT-30"
+   ],
+   "at": "tools/sdllint/sdllint.js:191",
+   "class": "cosmetic",
+   "why": "unreferenced OBJ mtl is never read"
+  },
+  "WARN_SDLLINT_PAKS_UNREAD": {
+   "tool": "sdllint",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/sdllint/sdllint.js:111",
+   "class": "tool",
+   "why": "mod paks not read by this run"
+  },
+  "STR_OBSTACLE_MISSING": {
+   "tool": "strlint",
+   "sev": "silent",
+   "lim": [
+    "STR-02"
+   ],
+   "at": "tools/strlint/strlint.js:287",
+   "class": "silent",
+   "why": "building obstacle without mdl Obb2"
+  },
+  "STR_TEAR_BONE": {
+   "tool": "strlint",
+   "sev": "silent",
+   "lim": [
+    "STR-11"
+   ],
+   "at": "tools/strlint/strlint.js:192",
+   "class": "silent",
+   "why": "skeleton bone never torn by script"
+  },
+  "STR_VOLUME_BONE": {
+   "tool": "strlint",
+   "sev": "silent",
+   "lim": [
+    "STR-03"
+   ],
+   "at": "tools/strlint/strlint.js:263",
+   "class": "silent",
+   "why": "volume bone absent from skeleton"
+  },
+  "STR_VOLUME_NO_SHAPE": {
+   "tool": "strlint",
+   "sev": "silent",
+   "lim": [
+    "STR-01"
+   ],
+   "at": "tools/strlint/strlint.js:249",
+   "class": "silent",
+   "why": "def volume has no mdl shape"
+  },
+  "KEYS_PROFILE_OVERRIDE": {
+   "tool": "uilint",
+   "sev": "silent",
+   "lim": [
+    "UI-13"
+   ],
+   "at": "tools/uilint/uilint.js:164",
+   "class": "silent",
+   "why": "user profile keys.set overrides mod defaults"
+  },
+  "MOUSE_MIDDLE": {
+   "tool": "uilint",
+   "sev": "review",
+   "lim": [
+    "UI-12"
+   ],
+   "at": "tools/uilint/uilint.js:170",
+   "class": "silent",
+   "why": "MOUSE_MIDDLE not in key table"
+  },
+  "WARN_FONT_MAIN10_MISSING": {
+   "tool": "uilint",
+   "sev": "crash",
+   "lim": [
+    "UI-16"
+   ],
+   "at": "tools/uilint/uilint.js:215",
+   "class": "crash",
+   "why": "font main size 10 mandatory"
+  },
+  "WARN_UPGRADE_ENCODING_GUESS": {
+   "tool": "upgrade",
+   "sev": "review",
+   "lim": [
+    "PORT-15"
+   ],
+   "at": "tools/upgrade/lib/write.js:146",
+   "class": "review",
+   "why": "cp1251 guess on Latin-1 text"
+  },
+  "WARN_UPGRADE_INCLUDE_ARMY": {
+   "tool": "upgrade",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/upgrade/lib/write.js:141",
+   "class": "tool",
+   "why": "include path army not derivable"
+  },
+  "WARN_UPGRADE_LNG_DUP_KEY": {
+   "tool": "upgrade",
+   "sev": "review",
+   "lim": [
+    "LOC-04"
+   ],
+   "at": "tools/upgrade/lib/write.js:161",
+   "class": "review",
+   "why": "repeated lng key kept once"
+  },
+  "WARN_UPGRADE_LNG_NO_KEYS": {
+   "tool": "upgrade",
+   "sev": "review",
+   "lim": [
+    "LOC-05"
+   ],
+   "at": "tools/upgrade/lib/write.js:123",
+   "class": "review",
+   "why": "lng root not tags: no keys read"
+  },
+  "WARN_UPGRADE_NOT_CP1251": {
+   "tool": "upgrade",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/upgrade/lib/write.js:151",
+   "class": "tool",
+   "why": "tool's own UTF-8 to cp1251 loss; no engine fact behind it"
+  },
+  "WARN_UPGRADE_POT_KEY_CLASH": {
+   "tool": "upgrade",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/upgrade/lib/write.js:129",
+   "class": "tool",
+   "why": "pot key both text and block, dropped"
+  },
+  "WARN_UPGRADE_SAME_NAME_TWO_CONTAINERS": {
+   "tool": "upgrade",
+   "sev": "review",
+   "lim": [
+    "VFS-01"
+   ],
+   "at": "tools/upgrade/lib/write.js:92",
+   "class": "review",
+   "why": "last in mount order wins whole file"
+  },
+  "BLOCK_END": {
+   "tool": "wouldload",
+   "sev": "crash",
+   "lim": [
+    "SDL-01"
+   ],
+   "at": "tools/wouldload/classes.js:18",
+   "class": "crash",
+   "why": "block terminator error fatal at load"
+  },
+  "MOD_ROOT_IGNORED": {
+   "tool": "wouldload",
+   "sev": "review",
+   "lim": [
+    "VFS-26"
+   ],
+   "at": "tools/lib/vfs.js:341",
+   "class": "silent",
+   "why": "mod root file is not mounted"
+  },
+  "PAK_BAD": {
+   "tool": "wouldload",
+   "sev": "review",
+   "lim": [
+    "VFS-66"
+   ],
+   "at": "tools/lib/vfs.js:134",
+   "class": "crash",
+   "why": "unopenable pak is a fatal error at mount"
+  }
+ }
+}

@@ -1,0 +1,179 @@
+{
+ "form": "limclass/1",
+ "area": "VIS",
+ "rows": {
+  "VIS-01": {
+   "chk": "built",
+   "class": "crash",
+   "why": "duplicate vision name double-releases in shipping build"
+  },
+  "VIS-02": {
+   "chk": "built",
+   "class": "silent",
+   "why": "rules sibling order decides, no message",
+   "tool": "refcheck",
+   "how": "vision rules where earlier sibling always holds and shadows later sibling"
+  },
+  "VIS-03": {
+   "chk": "built",
+   "class": "crash",
+   "why": "duplicate/unknown term prop is hard error"
+  },
+  "VIS-04": {
+   "chk": "never",
+   "class": "silent",
+   "why": "bias above radius ignores signal, no message",
+   "never": "depends on runtime unit values"
+  },
+  "VIS-05": {
+   "chk": "never",
+   "class": "silent",
+   "why": "detect.set no effect with fog off",
+   "never": "depends on player video option at runtime"
+  },
+  "VIS-06": {
+   "chk": "never",
+   "class": "info",
+   "why": "fog option is player setting, not mod-settable",
+   "never": "player option, nothing in mod files"
+  },
+  "VIS-07": {
+   "chk": "built",
+   "class": "silent",
+   "why": "night_vision 1 presets skip night penalty",
+   "tool": "refcheck",
+   "how": "vision presets with night_vision 1 when mod expects night penalty; list them"
+  },
+  "VIS-08": {
+   "chk": "built",
+   "class": "silent",
+   "why": "missing sound plays nothing"
+  },
+  "VIS-09": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unknown Tag falls to GROUP_OTHER"
+  },
+  "VIS-10": {
+   "chk": "never",
+   "class": "silent",
+   "why": "overlapping loud sounds culled",
+   "never": "runtime channel budget"
+  },
+  "VIS-11": {
+   "chk": "never",
+   "class": "info",
+   "why": "sound engine not data-moddable",
+   "never": "engine fact, nothing to hit"
+  },
+  "VIS-12": {
+   "chk": "built",
+   "class": "silent",
+   "why": "second environment call dropped, missing preset no-op",
+   "tool": "refcheck",
+   "how": "environment command names a preset file missing from the stack"
+  },
+  "VIS-13": {
+   "chk": "never",
+   "class": "info",
+   "why": "no clock, presets fixed time",
+   "never": "design fact about the engine"
+  },
+  "VIS-14": {
+   "chk": "built",
+   "class": "silent",
+   "why": "block without enable stays off"
+  },
+  "VIS-15": {
+   "chk": "never",
+   "class": "silent",
+   "why": "spawned units keep spawn-time rain state",
+   "never": "runtime state at script run"
+  },
+  "VIS-16": {
+   "chk": "never",
+   "class": "info",
+   "why": "wind feeds water and particles only",
+   "never": "engine fact, nothing to hit"
+  },
+  "VIS-17": {
+   "chk": "never",
+   "class": "silent",
+   "why": "excess particles not created, no message",
+   "never": "runtime count limit"
+  },
+  "VIS-18": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unknown action is fatal ERROR_MSG"
+  },
+  "VIS-19": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unlisted ground FX rejected with error"
+  },
+  "VIS-20": {
+   "chk": "built",
+   "class": "crash",
+   "why": "LOD distance order or empty class errors"
+  },
+  "VIS-21": {
+   "chk": "never",
+   "class": "silent",
+   "why": "no shake unless cam_shake set",
+   "never": "console variable, not mod data"
+  },
+  "VIS-22": {
+   "chk": "never",
+   "class": "info",
+   "why": "third_person tree not moddable",
+   "never": "engine fact, nothing in mod files"
+  },
+  "VIS-23": {
+   "chk": "never",
+   "class": "info",
+   "why": "camera follows bone orientation, how it works",
+   "never": "engine behaviour description"
+  },
+  "VIS-24": {
+   "chk": "built",
+   "class": "crash",
+   "why": "second vision mode errors at load"
+  },
+  "VIS-25": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unknown sensor vision name fatal"
+  },
+  "VIS-26": {
+   "chk": "built",
+   "class": "silent",
+   "why": "ported GoH sound priorities outrank vanilla",
+   "tool": "refcheck",
+   "how": "sound.set loudness priority above 40 in a mod sound.set"
+  },
+  "VIS-27": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unknown loudness name reads freed memory",
+   "tool": "refcheck",
+   "how": "mod sound.set lacks `default` loudness row or names used by other files"
+  },
+  "VIS-28": {
+   "chk": "built",
+   "class": "silent",
+   "why": "vehicle leaves no wheel traces"
+  },
+  "VIS-29": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "missing fx texture draws as checker, no log"
+  },
+  "VIS-30": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "specular texture missing: line dropped, shine lost"
+  }
+ },
+ "dead": []
+}

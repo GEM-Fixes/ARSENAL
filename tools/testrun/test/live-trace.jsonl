@@ -1,0 +1,12 @@
+{"t":17,"dir":"in","raw":"{\"type\":\"event\",\"event\":\"hello\",\"instance\":0,\"pid\":11780,\"version\":\"3.301.1x64\",\"protocol\":2}"}
+{"t":17,"dir":"out","raw":"{\"id\":1,\"cmd\":\"pipe_events all\"}"}
+{"t":9889,"dir":"in","raw":"{\"type\":\"reply\",\"id\":1,\"ok\":true,\"error\":\"\",\"output\":[\"events all\"]}"}
+{"t":9889,"dir":"out","raw":"{\"id\":2,\"cmd\":\"mp_lan\"}"}
+{"t":10279,"dir":"in","raw":"{\"type\":\"event\",\"event\":\"stage\",\"stage\":\"eLobbyLanStage\",\"section\":\"mp_lobbylan\",\"state\":\"starting\"}"}
+{"t":10279,"dir":"in","raw":"{\"type\":\"reply\",\"id\":2,\"ok\":true,\"error\":\"\",\"output\":[]}"}
+{"t":10279,"dir":"out","raw":"{\"id\":3,\"cmd\":\"mp_host 1v1_road 2\"}"}
+{"t":10298,"dir":"in","raw":"{\"type\":\"reply\",\"id\":3,\"ok\":false,\"error\":\"not in the LAN lobby: in a session or on the way to one\",\"output\":[]}"}
+{"t":10298,"dir":"out","raw":"{\"id\":4,\"cmd\":\"q\"}"}
+{"t":10563,"dir":"in","raw":"{\"type\":\"event\",\"event\":\"stage\",\"stage\":\"eLobbyLanStage\",\"section\":\"mp_lobbylan\",\"state\":\"active\"}"}
+{"t":10574,"dir":"in","raw":"{\"type\":\"event\",\"event\":\"stage\",\"stage\":\"eLobbyLanStage\",\"section\":\"mp_lobbylan\",\"state\":\"destroyed\"}"}
+{"t":10802,"dir":"in","raw":"{\"type\":\"reply\",\"id\":4,\"ok\":true,\"error\":\"\",\"output\":[]}"}

@@ -1,0 +1,23 @@
+{keys
+	{"common/dismiss_squad"
+		{value KEY_K}
+	}
+	{"common/center_active"
+		{value "SHIFT + KEY_X0"}
+	}
+	{"common/prev_unit"
+		{value MOUSE_MIDDLE}
+	}
+	{"actions/burst"
+		{value KEY_B}
+	}
+	{"actions/move"
+		{value KEY_M}
+	}
+	{"test/new_thing"
+		{value KEY_N}
+	}
+	{"groups/assign_1"
+		{value "CTRL + MOUSE2"}
+	}
+}

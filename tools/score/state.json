@@ -1,0 +1,172 @@
+{
+  "_note": "Coordinator edits only. Seeded 2026-11-06 Scores, Tags [I] = my reading, check on edit.",
+  "B": {
+    "_note": "reps = the 27 less kv8s (sheet Q48). Exact 27 list is not written in one file; this is rebuild-4's armed vehicle and gun stems minus kv8s, minus mortars with no vanilla weapon (60 mm, 107 mm, m1mortar), minus harley (unarmed, no fire-out) = 26 [I]. Infantry reps are not in it [I]. Edit the list to change the set.",
+    "reps": [
+      "105mm_lefh18m",
+      "120mm_wz1878",
+      "128mm_pak44",
+      "15cm_43m",
+      "8cm_bofors_29m",
+      "cckw_m33",
+      "fiat626_breda",
+      "m18_superhellcat",
+      "m4a1e8_fr",
+      "obice_7513",
+      "p2640",
+      "pz4f_hun",
+      "su57",
+      "tiger1e_early",
+      "type5_chi-ri",
+      "type97_shinhoto_120mm",
+      "uk-75_mm_m1a1",
+      "uk-aec_mk3",
+      "uk-matilda_mkii_cs",
+      "uk-mkvic",
+      "uk-qf17pdr",
+      "uk-staghound",
+      "uk-universal_carrierqf6",
+      "us-m2a1_lt",
+      "us-m4a3_76",
+      "us-m8_grayhound_2"
+    ],
+    "wrongGun": [
+      "cckw_m33",
+      "uk-universal_carrierqf6",
+      "us-m2a1_lt",
+      "us-harley-2wheels",
+      "15cm_43m",
+      "us-60_mm_m2",
+      "uk-107mm_mk_ii"
+    ],
+    "wrongGunSource": " 'weapon vs rep' column, marked no [V rebuild-4, I that it still holds]; reassess-8 line 39 adds us-60 and 15cm killing with the wrong gun [V]"
+  },
+  "C": {
+    "_note": "status: pass | fail | first-look | none. Seeded section 2 [V at that date]. SPEED-B2: each step also takes run (run folder or session id), evidence (path:line of the log or report that shows it), date (YYYY-MM-DD), by (session id); a chain run fills them and sets status.",
+    "steps": {
+      "unit": {
+        "status": "first-look",
+        "fact": "tool-built units pass in game (score B); no chain run end to end",
+        "run": null,
+        "evidence": null,
+        "date": null,
+        "by": null
+      },
+      "map": {
+        "status": "pass",
+        "fact": "[I] cloned GoH map loads and hosts chaint_zones; needs b9o_t in the stack; 212 can't spawn entity lines remain",
+        "run": "../run/CHAIN-G",
+        "evidence": "(not part of this release)",
+        "date": "2026-11-09",
+        "by": "CHAIN-G"
+      },
+      "mission": {
+        "status": "pass",
+        "fact": "[I] chaint_zones runs, flags captured, team b 87 VP",
+        "run": "../run/CHAIN-G",
+        "evidence": "(not part of this release)",
+        "date": "2026-11-09",
+        "by": "CHAIN-G"
+      },
+      "bot": {
+        "status": "fail",
+        "fact": "eng bot never bought us-m4a3_76 (priority 1000, bot.data.lua:80); card cost 350 suspected [I]",
+        "run": "../run/CHAIN-G",
+        "evidence": "../run/CHAIN-G/g4.game.log:1801-2052",
+        "date": "2026-11-09",
+        "by": "CHAIN-G"
+      },
+      "text": {
+        "status": "first-look",
+        "fact": "not shown; probe never opened a screen that reads it",
+        "run": null,
+        "evidence": null,
+        "date": null,
+        "by": null
+      },
+      "model": {
+        "status": "first-look",
+        "fact": "Blender mesh into game once (AST-3), AST-4 never run",
+        "run": null,
+        "evidence": null,
+        "date": null,
+        "by": null
+      }
+    }
+  },
+  "D": {
+    "_note": "status: pass | fail | open. chainsProven line 126 and line 79. SPEED-B2: each check also takes run, evidence, date, by (same meaning as C); the door run fills them and sets status.",
+    "chainsProven": [
+      "Valour upgrade",
+      "class test",
+      "GoH port"
+    ],
+    "checks": [
+      {
+        "name": "clean folder works from QUICKSTART alone",
+        "status": "open",
+        "run": null,
+        "evidence": null,
+        "date": null,
+        "by": null
+      },
+      {
+        "name": "public as64_ed.exe included",
+        "status": "open",
+        "run": null,
+        "evidence": null,
+        "date": null,
+        "by": null
+      },
+      {
+        "name": "standalone GUI included",
+        "status": "open",
+        "run": null,
+        "evidence": null,
+        "date": null,
+        "by": null
+      }
+    ]
+  },
+  "Complete": {
+    "_note": "SPEED-B2: ## Complete items the board cannot compute from E, C, D. status: pass | fail | open (MP also met = on the user's word, counts done). T-SCORE 2026-11-09: items T (board row T), D, C (6 of 6), port exam (portExam), MP, M5, M6 (C 6 of 6 plus M6.match).",
+    "M5": {
+      "status": "pass",
+      "n": 49,
+      "of": 59,
+      "bar": 48,
+      "set": "C39T",
+      "note": "mixed builds (Steam 11-02 + as64(3)); one-build count C39C pending [V]",
+      "run": "../run/C39T",
+      "evidence": "(not part of this release)",
+      "date": "2026-11-09",
+      "by": "C39T"
+    },
+    "M6": {
+      "match": {
+        "status": "open",
+        "evidence": null,
+        "date": null,
+        "by": null
+      }
+    },
+    "MP": {
+      "status": "met",
+      "note": "met on the user's word; MB-R13 4 of 5 units over LAN, 0 desync",
+      "units": 4,
+      "run": "MB-R13",
+      "evidence": " 2026-11-09",
+      "date": "2026-11-09",
+      "by": "T-SCORE"
+    },
+    "portExam": {
+      "status": "open",
+      "n": null,
+      "of": null,
+      "run": null,
+      "evidence": null,
+      "date": null,
+      "by": null
+    }
+  }
+}

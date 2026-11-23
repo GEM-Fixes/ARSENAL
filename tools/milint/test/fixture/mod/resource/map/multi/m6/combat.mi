@@ -1,0 +1,69 @@
+;SDL
+{mission
+	{Entity "map_point" 0x1
+		{Position 0 0}
+		{Extender "map_point" {name a1} {team a} {order 0} {visor SpawnPoint}}
+		{MID 1}
+	}
+	{Entity "map_point" 0x1
+		{Position 0 0}
+		{Extender "map_point" {name b1} {team b} {order 0} {visor SpawnPoint}}
+		{MID 2}
+	}
+	{Entity "map_point" 0x3
+		{Position 0 0}
+		{Extender "map_point" {name b2} {team b} {order 1} {visor SpawnPoint}}
+		{MID 2}
+	}
+	{Link 0x1 {0x3 "ok"}}
+	{Link 0x1 {0x77 "map entity"}}
+	{Entity "welding" 0x5
+	}
+	{Link 0x1 {0x5 "empty entity"}}
+	{Link 0x1 {0x99 "nowhere"}}
+	{Helpers
+		{event "ev1"}
+		{zone "circle" {Name "z1"} {Radius 5}}
+		{tasks {"task1" {desc "d"}}}
+		{triggers
+			{"t_ok"
+				{condition
+					{terms
+						{"1.event" {id "ev1"}}
+						{"2.entities" {selector {mids 1 40} {zone "z1"}} {count {op "=="} {value 1}}}
+					}
+					{expression "1 & !2"}
+				}
+				{actions
+					{"entity_state" {selector {tag x}} {inactive off}}
+					{if {condition {type difficulty} {level easy}} {"event" {event "ev1"}} {delay {time 1}}}
+				}
+			}
+			{"t_bad"
+				{trigger_flag 1}
+				{Autoreset}
+				{condition
+					{terms
+						{"1.no_such_term" {id "ev1"}}
+						{"2.event" {id "nope"}}
+					}
+					{expression "1 and 2"}
+				}
+				{actions
+					{"explode_everything" {selector {tag x}}}
+					{"entity_state" {selector {tag x}} {Inactive off}}
+					{"entity_state" {selector {tag x}} {inactiv off}}
+					{"event" {event "ev_missing"}}
+					{"trigger" {name "t_missing"}}
+					{"entity_state" {selector {zone "z_missing"}} {inactive on}}
+					{"entity_state" {selector {mids 1 55}} {inactive on}}
+					{"task" {name "task_missing"} {state done}}
+					{"camera_follow_bone" {entity 0x1} {bone "basis"} {apply}}
+					{"actor_state" {selector {player "3"}} {fire_mode hold}}
+					{"actor_state" {selector {player "3"} {type human}} {fire_mode hold}}
+					{if {condition {type difficulty} {level easy}} {"explode_inside" {selector {tag x}}}}
+				}
+			}
+		}
+	}
+}

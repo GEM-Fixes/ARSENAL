@@ -1,0 +1,13 @@
+{
+  "name": "release",
+  "desc": "QUICKSTART 5: build gate (strict), packer plan, doctor --release, drift stamp+check, mp-load scenario",
+  "steps": [
+    { "tool": "newmod", "argv": ["$MOD", "--name", "E2E Release", "--game", "$GAME", "$TARGETOPT"] },
+    { "tool": "build", "argv": ["$MOD", "--game", "$GAME", "--strict", "$EXEOPT"], "exit": [0, 1], "match": "\\S" },
+    { "tool": "packer", "argv": ["$MOD", "--dry"], "exit": [0, 1] },
+    { "tool": "doctor", "argv": ["$MOD", "--game", "$GAME", "--release", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "drift", "argv": ["stamp", "$MOD", "--game", "$GAME", "$EXEOPT"] },
+    { "tool": "drift", "argv": ["check", "$MOD", "--game", "$GAME", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "testrun", "argv": ["--scenario", "tools/testrun/scenarios/mp-load.json", "--exe", "$GAME/$EXEFILE", "--mods", "$MODNAME"], "match": "VERDICT PASS", "reject": "VERDICT FAIL" }
+  ]
+}

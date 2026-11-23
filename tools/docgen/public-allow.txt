@@ -1,0 +1,104 @@
+# public-allow: names a modder can see that the public scan flags by mistake. One name per line; '#' starts a comment.
+# A name here is never a hit in the public scan (docgen, guide/build-pdf.js books, the release zip): not as an engine name
+# (the game denylist, shape rules), not under the stricter wording rules (tools/docgen/pub.js STRICT). The scrub keeps it too.
+# Add a name only with proof of where a modder meets it (the console, game.log, a game data file, the bot Lua API, ARSENAL's own
+# messages). Group names by that place, with the reason on the group's comment line. The documentation agents report candidates;
+# the coordinator fills this file.
+
+# environment variable that ARSENAL's own messages name (the tools find the game folder through it)
+AS2_GAME
+
+# lines the game writes to game.log (a modder greps the log for them)
+GameThreadStart
+GameThreadStop
+
+# console commands (typed in the game console)
+g_component
+
+# functions and tables the game offers to bot Lua scripts (stock script/multiplayer/bot.lua calls them; GoH: its stock Lua)
+BotCommands
+CaptureFlag
+EnemyHasTanks
+IsSquadExists
+SetQuantTimer
+KillQuantTimer
+SetTimer
+KillTimer
+SayChat
+OnGameStart
+CanSpawn
+IsCooperative
+
+# text the game writes to game.log
+SpawnUnit
+
+# keys written in game data files (.def, .mi, .set, .ebm, stuff files) that a modder reads and writes
+PrepareCursor
+SpawnedInFog
+LinearPath
+ChassisManager
+NoGroupMesh
+UseInstancing
+NotifyOwner
+ParticleInit
+AsyncStart
+LookAround
+LookAt
+HoldPosition
+
+# mission command written in .mi files
+linker
+
+# colour values written in game data (0xAARRGGBB), not addresses
+0xffE10000
+0xff004BE1
+0xff000000
+
+# file extensions the game skips in a mod folder (., ., .)
+
+# console commands and variables of the game (typed in the game console; the lower-case forms are link anchors)
+s_mods
+s_select
+s_shotType
+s_maxMediaChannels
+s_mediaDisabled
+g_airAltitude
+g_autoLockTarget
+g_blockedSpeedRatio
+g_bulletMissDistance
+g_bulletOvermatchMax
+g_bulletOvermatchMin
+g_bulletSlopeMax
+g_burnCount
+g_crushSlowTime
+g_crushSpeedRatio
+g_damageReportTime
+g_damageSpeed
+g_defuse
+g_enablePlaceEnteringInMP
+g_enablePlaceEnteringInSP
+g_energyperblastwave
+g_energyperhealth
+g_energyperprojective
+g_maxAirborneAltitude
+g_maxAltitude
+g_maxRecruitCount
+g_maximumRicochets
+g_mediumWaterDepth
+g_minAccStrength
+g_mineP
+g_mineT
+g_pathHeuristic
+g_pnetGridSize
+g_pushedMassScale
+g_revealTimeHuman
+g_revealTimeVehicle
+g_shallowWaterDepth
+g_strafeDirection
+g_underWaterAltitude
+g_zeroingDstRadius
+g_zeroingSrcRadius
+
+# console variables of Gates of Hell (typed in its console)
+
+# lower-case forms of the console names above (link anchors made from headings)

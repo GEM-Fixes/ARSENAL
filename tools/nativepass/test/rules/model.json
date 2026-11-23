@@ -1,0 +1,6 @@
+[
+{"name":"decalview flag and preturn added","class":"tank_medium","def":"{game_entity\n\t{DecalView \"selected\"\n\t\t{visible 0}\n\t\t{Sprite \"a.ebm\"\n\t\t\t{light 1}\n\t\t}\n\t}\n}\n","expect":"{game_entity\n\t{DecalView \"selected\"\n\t\t{visible 0}\n\t\t{Sprite \"a.ebm\"\n\t\t\t{light 1}\n\t\t\t{preturn 90}\n\t\t}\n\t\t{nogetshadows}\n\t}\n}\n"},
+{"name":"already present stays","class":"tank_heavy","def":"{game_entity\n\t{DecalView \"selected\"\n\t\t{NoGetShadows}\n\t\t{Sprite \"a.ebm\"\n\t\t\t{PreTurn 90}\n\t\t}\n\t}\n}\n","expect":"{game_entity\n\t{DecalView \"selected\"\n\t\t{NoGetShadows}\n\t\t{Sprite \"a.ebm\"\n\t\t\t{PreTurn 90}\n\t\t}\n\t}\n}\n"},
+{"name":"btr untouched","class":"btr","def":"{game_entity\n\t{DecalView \"selected\"\n\t\t{Sprite \"a.ebm\"\n\t\t\t{light 1}\n\t\t}\n\t}\n}\n","expect":"{game_entity\n\t{DecalView \"selected\"\n\t\t{Sprite \"a.ebm\"\n\t\t\t{light 1}\n\t\t}\n\t}\n}\n"},
+{"name":"nogroupmesh and skeleton bone kept","class":"cannon","def":"{game_entity\n\t{NoGroupMesh 1}\n\t{Skeleton\n\t\t{bone \"body\"\n\t\t\t{position 0 0 1}\n\t\t}\n\t}\n}\n","expect":"{game_entity\n\t{NoGroupMesh 1}\n\t{Skeleton\n\t\t{bone \"body\"\n\t\t\t{position 0 0 1}\n\t\t}\n\t}\n}\n"}
+]

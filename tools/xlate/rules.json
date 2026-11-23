@@ -1,0 +1,14 @@
+[
+ {"re": "(^|/)(caststeel)(/|$)", "cat": "baked", "reason": "cast plate resists less than rolled; the key's own number (about 0.81 in the sample) would multiply thickness. Held at 1 until the armour test: the cut doubles with the class factor [I, T]"},
+ {"re": "(^|/)(highhardness)(/|$)", "cat": "dropped", "reason": "hard plate, brittle against big calibre; no factor published and no mowas2 key. Listed per unit (user: material grades follow flaws) [I]"},
+ {"re": "(^|/)(quality|no_flaw|small_flaw|medium_flaw|large_flaw|[a-z_]*_flaw)(/|$)", "cat": "dropped", "reason": "production flaw grade; not translated for now, listed per unit (user 2026-11-06)"},
+ {"re": "(^|/)(flag_vaultable|obstacleid|vault[a-z_]*|pather(_set)?)(/|$)", "cat": "dropped", "reason": "vaulting ignored for now (user); engine rebuild later. Listed per unit"},
+ {"re": "(^|/)(recoil|recoil_zoom|vehicle_recoil|additive|dyncmppersistent|mark_for_persistence|restore_volume_states|no_mouse_hint|omask)(/|$)", "cat": "dropped", "reason": "no mowas2 feature (sway, flinch layer, Conquest persistence, hint hiding) [I]"},
+ {"re": "(^|/)(armor_damage_modifier|blastwave_modifier|hp_broken)$", "cat": "dropped", "reason": "damage scale and broken-state level have no reader; part_health maps hp to the area durability instead, which already scales damage [I, T]"},
+ {"re": "^entity/perks/component/health$", "cat": "translated", "reason": "block holding hp; value goes to armor/setting/durability, see part_health"},
+ {"re": "^entity/perks(/|$)", "cat": "dropped", "reason": "vehicle perks (component table) has no mowas2 reader other than via part_health; on a human breed perks are abilities and are read [I]"},
+ {"re": "(^|/)(repairorder)$", "cat": "dropped", "reason": "order in which crews repair parts; no reader [I]"},
+ {"re": "^entity/bone/speed2$", "cat": "translated", "reason": "deg/s; mowas2 bone speed = deg_s / 2865 (porting/mobility). Unit-converted, class factor not applied [I]"},
+ {"re": "^entity/volume/thickness(/|$)", "cat": "translated", "reason": "per-face plate thickness; armor_* keys carry the per-class predictor"},
+ {"re": "^entity/armor/setting/(thickness|threshold)(/|$)", "cat": "translated", "reason": "area values written into armor/setting from the translated plates (threshold: koef kept as a multiplier of thickness, it is the same form in the reader)"}
+]

@@ -1,0 +1,4 @@
+{weapon_bullet
+	{tag "weapon build_in gun"}
+	{foresight "Foresight1"}
+}

@@ -1,0 +1,5 @@
+{keys
+	{"common/dismiss_squad"
+		{value KEY_K}
+	}
+}

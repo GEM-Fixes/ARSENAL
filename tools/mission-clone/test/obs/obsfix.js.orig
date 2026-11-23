@@ -1,0 +1,15 @@
+// CHAIN-N3 (copy of chain-n2 obsfix.js): vanilla obstacles.reg + small_building_vaultable / unbreakable_vaultable (copies of small_building / unbreakable).
+// b9o_t (GoH-ported objects) names these GoH obstacles; AS2 lacks them, FindObstacleId gives 0xff,
+// GetObstacleDesc(0xff) reads past g_obstacleDescs and  dies at .
+// Writes only G/mods/chainn3_t/resource/set/registry/obstacles.reg (cp1251 text, CRLF kept from vanilla).
+const fs = require('fs'), path = require('path');
+const M = '<game folder>/mods/chainn3_t/resource/set/registry/obstacles.reg';
+const t = fs.readFileSync('run/chain-n2/obstacles.vanilla.reg', 'latin1');
+const block = name => { const m = new RegExp('\\t\\{' + name + '\\r\\n[\\s\\S]*?\\r\\n    \\}\\r\\n').exec(t); if (!m) throw new Error('no block ' + name); return m[0]; };
+// r2 crashed again: b9o_t also names construction_vaultable (properties/construction_vaultable.inc, 37 defs) and post; added after r2, not run in game
+const add = block('small_building').replace('{small_building', '{small_building_vaultable') + block('unbreakable').replace('{unbreakable', '{unbreakable_vaultable')
+  + block('construction').replace('{construction', '{construction_vaultable') + block('tree').replace('{tree', '{post');
+const anchor = block('small_building');
+fs.mkdirSync(path.dirname(M), { recursive: true });
+fs.writeFileSync(M, t.replace(anchor, anchor + add), 'latin1');
+console.log('wrote', M, (t.length + add.length) + ' bytes');

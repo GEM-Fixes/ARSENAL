@@ -1,0 +1,120 @@
+{
+ "form": "limclass/1",
+ "area": "PORT9",
+ "rows": {
+  "PORT-190": {
+   "chk": "built",
+   "class": "info",
+   "why": "key census, nothing to hit"
+  },
+  "PORT-191": {
+   "chk": "built",
+   "class": "desync",
+   "why": "GoH interaction_entity needs sync after random"
+  },
+  "PORT-192": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unknown vision names, approximate ranges"
+  },
+  "PORT-193": {
+   "chk": "built",
+   "class": "info",
+   "why": "native or dead paths, no action"
+  },
+  "PORT-194": {
+   "chk": "built",
+   "class": "silent",
+   "why": "difficulty keys only partly map"
+  },
+  "PORT-195": {
+   "chk": "built",
+   "class": "silent",
+   "why": "GoH particle in batching list, no sprite view"
+  },
+  "PORT-196": {
+   "chk": "never",
+   "class": "info",
+   "why": "test results for towed gun basis",
+   "never": "single runs, runtime result"
+  },
+  "PORT-197": {
+   "chk": "built",
+   "class": "silent",
+   "why": "wrong muzzle speed scale, no message",
+   "tool": "goh2as2",
+   "how": "literal {speed N} from GoH not scaled 0.667; m/s define misuse"
+  },
+  "PORT-198": {
+   "chk": "built",
+   "class": "review",
+   "why": "weapon class change on a donor place; engine effect unseen"
+  },
+  "PORT-199": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unscaled GoH stuff numbers kill slower in as64"
+  },
+  "PORT-200": {
+   "chk": "built",
+   "class": "review",
+   "why": "HE-first load may not kill armour"
+  },
+  "PORT-201": {
+   "chk": "built",
+   "class": "silent",
+   "why": "GoH limits wider than donor gave no kills"
+  },
+  "PORT-202": {
+   "chk": "built",
+   "class": "silent",
+   "why": "no good vanilla mortar donor: gun class swapped"
+  },
+  "PORT-203": {
+   "chk": "built",
+   "class": "crash",
+   "why": "stuff entity with no def fails at spawn"
+  },
+  "PORT-204": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "no tail entity in as64"
+  },
+  "PORT-205": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "flying-model view absent in as64"
+  },
+  "PORT-206": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "trace view texture absent in as64"
+  },
+  "PORT-207": {
+   "chk": "built",
+   "class": "silent",
+   "why": "fill item unmapped, gun finds no ammo"
+  },
+  "PORT-208": {
+   "chk": "built",
+   "class": "review",
+   "why": "single version bound; as64 handling unstated [I]"
+  },
+  "PORT-209": {
+   "chk": "built",
+   "class": "review",
+   "why": "GoH tags key shape is inferred only"
+  }
+ },
+ "dead": [
+  {
+   "row": "PORT-195",
+   "tool": "portfix",
+   "code": "MERGED_TABLE",
+   "fix": {
+    "code": null,
+    "why": "never built as a check: MERGED_TABLE is a merge progress line"
+   }
+  }
+ ]
+}

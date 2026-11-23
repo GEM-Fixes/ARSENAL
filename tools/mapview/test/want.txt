@@ -1,0 +1,27 @@
+fixture: 8x8 cells of 10 units, v2, layer type -> 4x2
+.=..
+T..~
+  .  ground (75%)
+  =  road (13%)
+  ~  water (13%)
+  T  entities x1 e.g. tank_a
+fixture: WARN_MAPVIEW_ENT_OUTSIDE 1 of 2 entities fall outside the grid (units/offset/flip assumption [T], MAP-16)
+1 findings
+-- height
+fixture: 8x8 cells of 10 units, v2, layer height -> 4x2
+2222
+7777
+legend: 0..9 = height 0..77, ' ' = no ground
+0 findings
+-- material
+fixture/map.net: 8x8 cells of 10 units, v2, layer material -> 2x1
+..
+0 findings
+-- bad
+fixture/bad.net: MAPVIEW_NET_TRUNCATED header runs past end of file (read of 4 bytes at 40 runs past end 40)
+1 findings
+-- svg
+8
+-- args
+mapview: MAPVIEW_BAD_ARGS --layer must be type|material|height
+1 findings

@@ -1,0 +1,7 @@
+;SDL
+{map
+	{Entity "bush" 0x77
+		{Position 1 2}
+		{MID 40}
+	}
+}

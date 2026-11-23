@@ -1,0 +1,1 @@
+{"name":"q3","mode":"mp","map":"mp_test","sameLaunch":true,"verdict":[{"reply":"echo three","match":"^NOPE$"}]}

@@ -1,0 +1,57 @@
+203 mods
+[00:00:22] Localization key redefinition: interface/ok in /interface/text/#editor.lng (/interface/text/#editor.lng, 123)
+Build: 2026.11.05 17:54 - 0x5EEB1B6E
+Product: Men of War: Assault Squad 2 - v3.301.1x64 - standard
+Commit: 19c1ea0b6
+Repository: 144062 resources
+[00:00:40] Entity redefinition: radio_station (eentityraw.cpp, 157) @ [main_loop]
+[00:00:40] Entity redefinition: shellhole_big (eentityraw.cpp, 157) @ [main_loop]
+[00:00:40] Entity redefinition: shellhole_medium (eentityraw.cpp, 157) @ [main_loop]
+[00:00:41] 'use_blend_tex' is not supported (/set/interaction_entity/entity.set/construction/parts.inc, 83)
+Phase Loading... took 8368.14ms.
+Phase Loading multiplayer resources... took 23346.2ms.
+Phase Starting game... took 0.0021ms.
+[00:01:05] MediaManager: can't open MSS media stream for file "/music/main_theme.mp3" (edevicemedia.cpp, 88) @ [main_loop]
+control> mod_set as64+ b9o_t chaint_t
+[00:01:09] Mission '/map/multi/chaint_barrikady/ammunition.mi' is skipped - game type(ammunition) is undefined (mp_card_map.cpp, 269) @ [main_loop]
+[00:01:09] Join: accepted
+Starting "multi/chaint_barrikady:chaint_zones"
+[00:01:19] Media file "/sound/mission/multi/chaint_barrikady/story" not found (edevicemedia.cpp, 467) @ [main_loop]
+[00:01:20] Automatic MIP generation not supported. Bitmap: '/texture/fx/explosion/exp_sled' (/texture/fx/explosion/exp_sled.ebm, 3)
+[00:01:20] unknown terrain_pp type - snow (/entity/service/land/land, 13)
+[00:01:21] Undeclared place "p_lamp" (/map/multi/chaint_barrikady/map, 553)
+[00:01:21] Undeclared place "p_l" (/map/multi/chaint_barrikady/map, 643)
+[00:01:21] Undeclared place "p_c" (/map/multi/chaint_barrikady/map, 714)
+[00:01:21] Undeclared place "p_r" (/map/multi/chaint_barrikady/map, 797)
+[00:01:21] Unknown props : "destructable" (/entity/construction/_road_work/electrical_posts/standard_wood_rural/standard_wood_rural.def, 20)
+[00:01:24] can't spawn entity wagon1a (/map/multi/chaint_barrikady/map, 3223)
+[00:01:27] SetSkeleton() failed: entity 'hedgehog_x' (/map/multi/chaint_barrikady/map, 6232)
+[00:01:37] Undeclared place "driver1" (/map/multi/chaint_barrikady/map, 37683)
+[00:01:50] Undeclared place "ammo" (/map/multi/chaint_barrikady/chaint_zones.mi, 5)
+[00:01:50] Extender "fortification" not found (/map/multi/chaint_barrikady/chaint_zones.mi, 24)
+[00:01:50] Link failed: no entity to link 9000 (/map/multi/chaint_barrikady/chaint_zones.mi, 617)
+[00:01:50] Can't apply environment preset "goh/multi/2v2_barrikadiy/var1", using defaults
+[00:01:50] /entity/service/flag/flag_00.dds: Cannot load texture with DXT compression into common texture. Please resave DDS file without DXT compression. (ebitmapimagedds.cpp, 349) @ [render_material_load]
+[00:01:52] Heightmap not patched with roadway_border_straight{0x6032}, outside area (evisibilityheightmap.cpp, 1310) @ [main_loop]
+[00:01:54] unknown sound file 'fire/loops/medium' (edevicesoundmanager.cpp, 434) @ [main_loop]
+[00:02:40] Using bump material on non-bump geometry. Bump disabled. (/entity/-vehicle/btr/sdkfz251_1/sdkfz251_1.def/sdkfz251_d.mdl, 448)
+[00:02:47] /texture/common/checker_cube.dds: No MIP levels! (ebitmapimagedds.cpp, 409) @ [render_material_load]
+GameThreadStart
+[00:03:05] Media file "/music/rus_ambient_lvl1.wav" not found (edevicemedia.cpp, 467) @ [quant]
+[00:03:07] Unknown var functor players:composition (ehelpervar.cpp, 204) @ [quant]
+  human[11:mp/eng/squadleader] u:mp/eng/squadleader cp:2.5 cw:1.5 score:1 chrg:0
+  human[12:mp/eng/rifle] u:mp/eng/rifle cp:2.5 cw:1 score:0.5 chrg:0
+  human[19:mp/eng/smg] u:mp/eng/smg cp:2.5 cw:1 score:0.75 chrg:0
+  human[20:mp/eng/mgun] u:mp/eng/mgun cp:4 cw:1 score:2 chrg:0
+  human[21:mp/eng/squadleader2] u:mp/eng/squadleader2 cp:2.5 cw:1.5 score:1 chrg:0
+  human[22:mp/eng/rifle2] u:mp/eng/rifle2 cp:2.5 cw:1 score:0.5 chrg:0
+  human[25:mp/eng/smg2] u:mp/eng/smg2 cp:2.5 cw:1 score:0.75 chrg:0
+[00:04:38] Media file "/music/action_theme_2.wav" not found (edevicemedia.cpp, 467) @ [quant]
+  human[29:mp/eng/bazooker] u:mp/eng/bazooker cp:3 cw:1 score:2 chrg:0
+  human[30:mp/eng/bazooker2] u:mp/eng/bazooker2 cp:3 cw:1 score:2 chrg:0
+  human[31:mp/eng/sturmovik6] u:mp/eng/sturmovik6 cp:3.75 cw:5 score:2.15 chrg:0
+  human[32:mp/eng/sturmovik6b] u:mp/eng/sturmovik6b cp:3.75 cw:5 score:2.15 chrg:0
+[00:07:58] Media file "/music/intro_glushkovo.wav" not found (edevicemedia.cpp, 467) @ [quant]
+[00:08:22] Media file "/music/intro_vyazma.wav" not found (edevicemedia.cpp, 467) @ [quant]
+  human[35:mp/eng/tankman] u:mp/eng/tankman cp:2 cw:0.25 score:0.25 chrg:0
+  human[38:mp/eng/tankman2] u:mp/eng/tankman2 cp:2 cw:0.5 score:0.5 chrg:0

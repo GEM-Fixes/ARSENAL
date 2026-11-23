@@ -1,0 +1,47 @@
+{
+  "_note": "Score A sources (SCOREA). One entry per exam draw, oldest first; the last exam is the headline A. Paths are relative to the run root (default ../run beside src). base = the exam's own result cells.csv: the unit list, class, MISS, unarmed, moved, crash list and diffuse gate come from it. Each stage is one run of some of the draw's pairs: dirs are walked one level for game folders matching game (and not skip); a game folder's report.rescore.json (KILLPROOF rescore) is read before its report.json. at = newest report.json mtime unless set. mode order = an attack-order run that may stand as a unit's newest run; any other mode (freefire, probe, spawn) is printed but never picked. exam: true marks the draw's exam stage (the exam-only line); default the first order stage.",
+  "exams": [
+    {
+      "id": "VOL-2", "report": "(not part of this release)", "units": "vol2/units.json", "base": "vol2/result/cells.csv",
+      "crashed": "vol2/result/crashed.json", "diffuse": "vol2/result/missing-diffuse.txt",
+      "stages": [
+        { "id": "VOL-2 smoke", "dirs": ["sessions/w80/VOL-2A1", "sessions/w80/VOL-2B1", "sessions/w80/VOL-2C1"], "game": "^[a-z]*-?(r\\d+|m)-g\\d+", "mode": "order" },
+        { "id": "VOL-2 exam", "dirs": ["sessions/w80/VOL-2A", "sessions/w80/VOL-2B", "sessions/w80/VOL-2C"], "game": "^[a-z]*-?(r\\d+|m)-g\\d+", "mode": "order", "exam": true }
+      ]
+    },
+    {
+      "id": "VOL-3", "report": "(not part of this release)", "units": "vol3/units.json", "base": "vol3r/result/cells.csv",
+      "crashed": "vol3r/result/crashed.json", "diffuse": "vol3/result/missing-diffuse.txt",
+      "stages": [
+        { "id": "VOL-3 exam", "dirs": ["sessions/w91/VOL-3S"], "game": "^[a-z]-(r\\d+|m)-g\\d+", "mode": "order" }
+      ]
+    },
+    {
+      "id": "VOL-4", "report": "(not part of this release)", "units": "vol4/units.json", "base": "vol4r/result/cells.csv",
+      "crashed": "vol4r/result/crashed.json", "diffuse": "vol4/result/missing-diffuse.txt",
+      "stages": [
+        { "id": "VOL-4 exam", "dirs": ["sessions/w97/VOL-4S", "sessions/w97/VOL-4B", "sessions/w97/VOL-4C"], "game": "^[a-z]-(r\\d+|m)-g\\d+", "mode": "order" },
+        { "id": "VOL-5F probes", "dirs": ["sessions/w98/VOL-5F"], "game": ".", "mode": "probe", "note": "hold/settle probes on a few VOL-4 pairs, not a rerun of the exam" },
+        { "id": "EDCTL rifle", "report": "(not part of this release)", "dirs": ["edctl/rifle"], "game": "^[a-z]+-", "mode": "order", "note": "vol4 rifle-foe rows rerun with dbg_health" }
+      ]
+    },
+    {
+      "id": "VOL-n", "report": "(not part of this release)", "units": "voln/units.json", "base": "voln/result/cells.csv",
+      "crashed": "voln/result/crashed.json", "diffuse": "voln/result/missing-diffuse.txt",
+      "stages": [
+        { "id": "VOL-nE exam", "dirs": ["sessions/w101/VOL-nS", "sessions/w102/VOL-nA", "sessions/w102/VOL-nB"], "game": "^[abc]-", "mode": "order" },
+        { "id": "VOL-nH", "report": "(not part of this release)", "dirs": ["sessions/w104/VOL-nH1", "sessions/w104/VOL-nH2"], "game": ".", "mode": "order" },
+        { "id": "VOL-nX", "report": "(not part of this release)", "dirs": ["sessions/w105/VOL-nX1", "sessions/w105/VOL-nX2", "sessions/w105/VOL-nX3"], "game": ".", "mode": "order" },
+        { "id": "VOL-nK", "report": "(not part of this release)", "dirs": ["sessions/w106/VOL-nK1", "sessions/w106/VOL-nK2", "sessions/w106/VOL-nK3"], "game": ".", "mode": "order" },
+        { "id": "VOL-n300", "report": "(not part of this release)", "dirs": ["vol-n300/VOL-n300"], "game": ".", "mode": "order" },
+        { "id": "VOL-n150", "report": "(not part of this release)", "dirs": ["vol-n150/VOL-n150"], "game": ".", "skip": "crash|stale", "mode": "order" },
+        { "id": "VOL-FF cap", "report": "(not part of this release)", "dirs": ["vol-ff/VOL-ff"], "game": "^cap-g", "mode": "order", "note": "--kill-cap none" },
+        { "id": "VOL-FF free fire", "report": "(not part of this release)", "dirs": ["vol-ff/VOL-ff"], "game": "^ffp?-g", "mode": "freefire", "note": "free fire, a second look; never picked" },
+        { "id": "VOL-FF sweep", "report": "(not part of this release)", "dirs": ["vol-ff/VOL-ff"], "game": "^sw-", "mode": "spawn", "note": "spawn-only sweep units" },
+        { "id": "VOL-FX both-fail", "report": "(not part of this release)", "dirs": ["vol-fx/VOL-fx"], "game": "^g\\d", "mode": "order" },
+        { "id": "VOL-FX probes", "report": "(not part of this release)", "dirs": ["vol-fx/VOL-fx"], "game": "^(c\\d|p\\d)", "mode": "probe" },
+        { "id": "VOLHP", "report": "(not part of this release)", "dirs": ["vol-hp/VOL-hp"], "game": "^a-hp-g", "skip": "crash|stale", "mode": "order", "note": "vol-n150 pairs rerun with dbg_health" }
+      ]
+    }
+  ]
+}

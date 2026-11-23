@@ -1,0 +1,30 @@
+{
+  "game": "goh",
+  "title": "Call to Arms - Gates of Hell: Ostfront",
+  "facts": {
+    "exe.main": { "v": "binaries/x64/call_to_arms.exe", "src": ["(not part of this release)"], "tag": "V" },
+    "exe.editor": { "v": "binaries/x64/call_to_arms_ed.exe", "src": ["(not part of this release)"], "tag": "V" },
+    "exe.pe_version": { "v": "1.0.6.7-aaa36ed4d", "src": ["(not part of this release)"], "tag": "V" },
+    "version.data": { "v": "1.067", "src": ["(not part of this release)", "PORT-43"], "tag": "V" },
+    "modinfo.range_rule": { "v": "Min/MaxGameVersion must hold the exe data version (1.x scale); AS2 3.x versions refused", "src": ["PORT-43", "PORT-46"], "tag": "V" },
+    "modinfo.range_value": { "v": "range holding 1.067", "src": ["PORT-46"], "tag": "V" },
+    "pak.form": { "v": "zip", "src": ["PORT-34"], "tag": "V" },
+    "pak.entry_root": { "v": "directory of the pak's virtual name + entry name", "src": ["PORT-34"], "tag": "V" },
+    "text.string_encoding": { "v": "UTF-8", "src": ["PORT-15"], "tag": "I" },
+    "loc.format": { "v": "pot", "src": ["PORT-42"], "tag": "V" },
+    "loc.mod_folder": { "v": "localizations", "src": ["PORT-42"], "tag": "V" },
+    "ui.layout": { "v": "/interface/layout/*.xml", "src": ["PORT-41"], "tag": "I" },
+    "entity.vehicle_path": { "v": "entity/-vehicle/<nation>/<class>/", "src": ["PORT-93", "(not part of this release)"], "tag": "V" },
+    "map.terrain_layers": { "v": ".materials", "src": ["PORT-44"], "tag": "V" },
+    "user.dir": { "v": "%LOCALAPPDATA%/digitalmindsoft/gates of hell/ when Documents is under OneDrive or with -useLocalDataFolder, else <Documents>/My Games/Gates of Hell/", "src": ["LOG-22"], "tag": "V" },
+    "user.shared_with_mowas_2": { "v": false, "src": ["LOG-22"], "tag": "I" },
+    "log.file": { "v": "log/game.log", "src": ["LOG-22"], "tag": "V" },
+    "feature.mode_check": { "v": false, "src": ["PORT-50"], "tag": "V" },
+    "feature.silent_crash": { "v": true, "src": ["PORT-49"], "tag": "V" },
+    "feature.editor_game_runs_mission": { "v": false, "src": ["(not part of this release)"], "tag": "V" },
+    "feature.call_synced": { "v": true, "src": ["PORT-29"], "tag": "V" },
+    "feature.dynamic_campaign": { "v": true, "src": ["PORT-33"], "tag": "V" },
+    "feature.helmet_pattern": { "v": false, "src": ["PORT-38"], "tag": "V" },
+    "feature.bad_mod_warnings": { "v": true, "src": ["LOG-21"], "tag": "V" }
+  }
+}

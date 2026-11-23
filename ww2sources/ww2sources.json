@@ -1,0 +1,51 @@
+{
+ "what": "WW2 sources for the ARSENAL Historical sources category",
+ "docs": 1882,
+ "pages": 278563,
+ "tables": [
+  "doc_cat",
+  "doc_dupe",
+  "docs",
+  "figures",
+  "local_pdf",
+  "mentions",
+  "page_lang",
+  "page_meta",
+  "pages",
+  "pages_config",
+  "pages_content",
+  "pages_data",
+  "pages_docsize",
+  "pages_idx",
+  "sqlite_stat1",
+  "vocab"
+ ],
+ "dropped": [
+  "local_pdf (all rows)"
+ ],
+ "blanked": [],
+ "files": [
+  {
+   "name": "ww2-source-index.csv",
+   "bytes": 476094
+  },
+  {
+   "name": "search-terms.json",
+   "bytes": 46587
+  },
+  {
+   "name": "aliases.json",
+   "bytes": 2588
+  },
+  {
+   "name": "weapon-names.json",
+   "bytes": 71524
+  },
+  {
+   "name": "index.sqlite",
+   "bytes": 975241216
+  }
+ ],
+ "sqliteSha256": "46f1965f4fc9c7fb6bc31d5231e1e48cf8ddf9427373974f861b1f3ce66ee697",
+ "checked": true
+}

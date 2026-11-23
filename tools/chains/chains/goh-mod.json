@@ -1,0 +1,12 @@
+{
+  "name": "goh-mod",
+  "desc": "GoH target: new GoH mod (outside the GoH install), check for GoH, text keys to a TSV, packer plan; no run step (GoH has no control pipe",
+  "games": ["goh"],
+  "needs": ["GOH"],
+  "steps": [
+    { "tool": "newmod", "argv": ["$MOD", "--name", "E2E GoH", "--target", "goh", "--game", "$GOH"] },
+    { "tool": "check", "argv": ["$MOD", "--exe", "goh", "--target", "goh", "--goh", "$GOH", "--fast", "-q"], "exit": [0, 1], "timeout": 3600, "note": "static only: wouldload + the cheap linters for GoH" },
+    { "tool": "lng", "argv": ["extract", "$MOD", "--out", "$SCRATCH/goh-mod.tsv"], "exit": [0, 1], "note": "GoH text is .pot under localizations/<lang>/interface/text (GHLOC-01)" },
+    { "tool": "packer", "argv": ["$MOD", "--dry"], "exit": [0, 1] }
+  ]
+}

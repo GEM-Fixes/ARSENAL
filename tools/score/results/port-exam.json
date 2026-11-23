@@ -1,0 +1,15 @@
+{
+ "form": "score-result/1",
+ "item": "portExam",
+ "_note": "Written by hand (T-BOARD 2026-11-09) from the source report; score.js reads it for Complete item 4 ( ## Complete). Met = run once + every unit has a gap list + spawn N of N + SANITY cells shown; the cell % is a listed result, a value below 70% does not make it open.",
+ "source": "(not part of this release)",
+ "run": "G-PORT6",
+ "date": "2026-11-09",
+ "by": "G-PORT6",
+ "rule": "frozen: 3 pairs per cell, pass = port kills 2 of 3 or at least its vanilla twin in the same game; void game (control fails) rerun once",
+ "units": 20,
+ "games": { "valid": 40, "void": 2, "voidRerunValid": 2, "crash": 0 },
+ "gapLists": { "n": 20, "of": 20, "where": "mods/t_port_6/gaps/<unit>.gaps.json (goh2as2 output, game folder G)", "evidence": "T-BOARD Glob: 20 *.gaps.json, one per exam unit [V]" },
+ "spawn": { "n": 20, "of": 20, "evidence": " table, spawn column (edrun shooterready/foeready marks)" },
+ "sanity": { "cells": { "n": 24, "of": 40 }, "out": { "n": 13, "of": 20 }, "in": { "n": 11, "of": 20 }, "unitsBoth": { "n": 8, "of": 20 }, "byTwinOnly": 5, "bar": 70, "evidence": " ## Totals vs 70%; ../run/waves/w24/G-PORT6/agg.json (40 rows, 24 pass)" }
+}

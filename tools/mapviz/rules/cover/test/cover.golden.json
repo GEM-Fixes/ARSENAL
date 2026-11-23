@@ -1,0 +1,16 @@
+{
+ "as2": {
+  "band": "01376f00ffa137738700a903e689e308fd01e9f9",
+  "lip": "57e7ef873ac086e3a8e4cf6c92a3d5c99252661c",
+  "conceal": "4fdb119498a95248e4c19e7d31e3ecddd6c98c59",
+  "points": "4d11696b71af6025b96754811541d4896ce7406e",
+  "edges": "cfa55643e21c8b95b05d997d4e2f732c63580acf"
+ },
+ "goh": {
+  "band": "4803bf701acb64ff891d5f25416557be6e64c011",
+  "lip": "6fecd5769c727e137b7580ae3b1823b06ee6f9d9",
+  "conceal": "cbaee2465fd24d3a1981e1fb7f41fd7b27042ff7",
+  "points": "b437ca68fc2a869a4eadc8e02a799f1fa2b30165",
+  "edges": "cfa55643e21c8b95b05d997d4e2f732c63580acf"
+ }
+}

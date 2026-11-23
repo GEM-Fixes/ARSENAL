@@ -1,0 +1,1271 @@
+{
+ "thing": "map",
+ "files": [
+  "POST /api/x/maps/clone",
+  "POST /api/x/maps/place",
+  "POST /api/x/maps/check",
+  "GET /api/x/maps/list",
+  "GET /api/x/maps/picture",
+  "gen ops map-clone place",
+  "tools/map-clone",
+  "tools/place-entity",
+  "tools/mapgen",
+  "tools/mapview",
+  "tools/milint",
+  "resource/map/multi/<map>/map",
+  "map.net",
+  "map.ply",
+  "mtlN.mtl",
+  "map.grs",
+  "map.info",
+  "<mode>.info",
+  "<mode>.mi",
+  "remap.set",
+  "preview.dds",
+  "preview_small.dds",
+  "minimap.dds",
+  "header.*",
+  "localization/mission/multi/<map>.lng"
+ ],
+ "groups": [
+  {
+   "id": "pick",
+   "name": "Which map to copy"
+  },
+  {
+   "id": "copy",
+   "name": "The copy: name, lobby name, mode, bots"
+  },
+  {
+   "id": "place",
+   "name": "Put objects on the map"
+  },
+  {
+   "id": "bounds",
+   "name": "Map border and camera (map file)"
+  },
+  {
+   "id": "terrain",
+   "name": "Ground (terrain files)"
+  },
+  {
+   "id": "info",
+   "name": "Players and map settings (map.info)"
+  },
+  {
+   "id": "points",
+   "name": "Start points and flags"
+  },
+  {
+   "id": "picture",
+   "name": "Pictures"
+  },
+  {
+   "id": "make",
+   "name": "A new map from a height picture"
+  },
+  {
+   "id": "check",
+   "name": "Check"
+  },
+  {
+   "id": "test",
+   "name": "Test in a match"
+  }
+ ],
+ "vars": [
+  {
+   "key": "pick.map",
+   "where": "maps/clone body.map; gen map-clone.map (alias from); map-clone --map",
+   "type": "ref",
+   "plain": "The map you copy, picked from the list of multiplayer maps.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "75 maps under map/multi (2v2_*, 4v4_*, 8v8_* ...)"
+    ]
+   },
+   "group": "pick",
+   "ref": "map key map/multi/<folder>",
+   "tool": "POST /api/x/maps/clone",
+   "limit": "MAP-01",
+   "tag": "V"
+  },
+  {
+   "key": "pick.from_mods",
+   "where": "maps/clone body.from; maps/picture ?from; gen map-clone.mods; map-clone --mods",
+   "type": "list",
+   "plain": "The mods the source map lives in, when it is not a game map.",
+   "unit": "",
+   "vanilla": null,
+   "group": "pick",
+   "ref": "mod folder names under <game>/mods",
+   "tool": "POST /api/x/maps/clone",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "pick.filter_players",
+   "where": "Maps page list filter \"Players\" (client only)",
+   "type": "number",
+   "plain": "Show only maps for this many players.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     16
+    ]
+   },
+   "group": "pick",
+   "ref": null,
+   "tool": "GET /api/x/maps/list",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "pick.filter_mode",
+   "where": "Maps page list filter \"Game mode\" (client only)",
+   "type": "choice",
+   "plain": "Show only maps that have this game mode.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "combat",
+     "battle_zones",
+     "battle_zones_8x8",
+     "captureflag",
+     "frontline"
+    ]
+   },
+   "group": "pick",
+   "ref": null,
+   "tool": "GET /api/x/maps/list",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "pick.refresh",
+   "where": "maps/list ?refresh=1",
+   "type": "bool",
+   "plain": "Read the map list again instead of the saved list (after adding mods).",
+   "unit": "",
+   "vanilla": null,
+   "group": "pick",
+   "ref": null,
+   "tool": "GET /api/x/maps/list",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "copy.mod",
+   "where": "maps/clone body.mod; map-clone --out",
+   "type": "path",
+   "plain": "Your mod folder the copy goes into.",
+   "unit": "",
+   "vanilla": null,
+   "group": "copy",
+   "ref": "mod folder",
+   "tool": "POST /api/x/maps/clone",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "copy.name",
+   "where": "maps/clone body.name; gen map-clone.name (alias as); map-clone --name",
+   "type": "text",
+   "plain": "The new map name; letters, digits and _ only, it becomes the folder name.",
+   "unit": "",
+   "vanilla": {
+    "re": "^[A-Za-z0-9_]{1,40}$"
+   },
+   "group": "copy",
+   "ref": null,
+   "tool": "POST /api/x/maps/clone",
+   "limit": "MAP-01",
+   "tag": "V"
+  },
+  {
+   "key": "copy.folder",
+   "where": "maps/clone: new key = parent folder of the source + name",
+   "type": "path",
+   "plain": "Where the new map sits: next to the source, map/multi/<name> (or its sub-folder).",
+   "unit": "",
+   "vanilla": null,
+   "group": "copy",
+   "ref": "map/multi/<sub>/<name>",
+   "tool": "POST /api/x/maps/clone",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "copy.title",
+   "where": "maps/clone body.title -> lng-add mission/<rel>.lng key mission/<rel>/name",
+   "type": "text",
+   "plain": "The map name players see in the lobby.",
+   "unit": "",
+   "vanilla": {
+    "max": 120
+   },
+   "group": "copy",
+   "ref": null,
+   "tool": "POST /api/x/maps/clone",
+   "limit": "LOC-24",
+   "tag": "V"
+  },
+  {
+   "key": "copy.target",
+   "where": "maps/clone body.target; map-clone --target",
+   "type": "choice",
+   "plain": "Which game the copy is for.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "as64",
+     "mowas2"
+    ]
+   },
+   "group": "copy",
+   "ref": null,
+   "tool": "POST /api/x/maps/clone",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "copy.mode",
+   "where": "maps/clone body.mode; map-clone --only-mode or mission-clone --from/--to",
+   "type": "choice",
+   "plain": "Keep the game modes the map has, or make it one mode.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "keep",
+     "combat",
+     "battle_zones",
+     "captureflag"
+    ]
+   },
+   "group": "copy",
+   "ref": null,
+   "tool": "POST /api/x/maps/clone",
+   "limit": "MIS-62",
+   "tag": "V"
+  },
+  {
+   "key": "copy.bots",
+   "where": "maps/clone body.bots -> {enableBots} in the mod copy of set/multiplayer/games/<mode>.set",
+   "type": "bool",
+   "plain": "Allow bots on this mode (switches it on for every map of that mode while the mod is on).",
+   "unit": "",
+   "vanilla": null,
+   "group": "copy",
+   "ref": null,
+   "tool": "POST /api/x/maps/clone",
+   "limit": "MIS-65",
+   "tag": "V"
+  },
+  {
+   "key": "copy.write",
+   "where": "maps/clone body.write (false = plan)",
+   "type": "bool",
+   "plain": "Preview the copy first, then write it.",
+   "unit": "",
+   "vanilla": null,
+   "group": "copy",
+   "ref": null,
+   "tool": "POST /api/x/maps/clone",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "copy.no_mission",
+   "where": "map-clone --no-mission",
+   "type": "bool",
+   "plain": "Copy the terrain without its mode files.",
+   "unit": "",
+   "vanilla": null,
+   "group": "copy",
+   "ref": null,
+   "tool": "map-clone CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "copy.game_version",
+   "where": "map-clone --game-version min[,max] (mod.info range)",
+   "type": "text",
+   "plain": "The game version range written into a new mod.info.",
+   "unit": "",
+   "vanilla": null,
+   "group": "copy",
+   "ref": null,
+   "tool": "map-clone CLI",
+   "limit": "VFS-19",
+   "tag": "V"
+  },
+  {
+   "key": "copy.no_modinfo",
+   "where": "map-clone --no-modinfo",
+   "type": "bool",
+   "plain": "Do not write a mod.info when the mod has none.",
+   "unit": "",
+   "vanilla": null,
+   "group": "copy",
+   "ref": null,
+   "tool": "map-clone CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "place.map",
+   "where": "maps/place body.map; place-entity --map; gen place.map",
+   "type": "ref",
+   "plain": "The map to put the object on.",
+   "unit": "",
+   "vanilla": null,
+   "group": "place",
+   "ref": "map key",
+   "tool": "POST /api/x/maps/place",
+   "limit": "VFS-29",
+   "tag": "V"
+  },
+  {
+   "key": "place.entity",
+   "where": "maps/place body.entity; place-entity --entity; gen place.entity",
+   "type": "ref",
+   "plain": "The object to place (its definition name, without .def).",
+   "unit": "",
+   "vanilla": {
+    "re": "^[A-Za-z0-9_.\\-/]{1,80}$"
+   },
+   "group": "place",
+   "ref": "entity def",
+   "tool": "POST /api/x/maps/place",
+   "limit": "MAP-26",
+   "tag": "V"
+  },
+  {
+   "key": "place.x",
+   "where": "maps/place body.x (metres, x20) -> {Position x ..}",
+   "type": "number",
+   "plain": "East-west position.",
+   "unit": "m",
+   "vanilla": null,
+   "group": "place",
+   "ref": null,
+   "tool": "POST /api/x/maps/place",
+   "limit": "MAP-16",
+   "tag": "V"
+  },
+  {
+   "key": "place.y",
+   "where": "maps/place body.y (metres, x20) -> {Position .. y}",
+   "type": "number",
+   "plain": "North-south position.",
+   "unit": "m",
+   "vanilla": null,
+   "group": "place",
+   "ref": null,
+   "tool": "POST /api/x/maps/place",
+   "limit": "MAP-25",
+   "tag": "V"
+  },
+  {
+   "key": "place.z",
+   "where": "maps/place body.z (optional) -> 3rd Position number",
+   "type": "number",
+   "plain": "Fixed height; leave empty to sit on the ground.",
+   "unit": "m",
+   "vanilla": null,
+   "group": "place",
+   "ref": null,
+   "tool": "POST /api/x/maps/place",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "place.dir",
+   "where": "maps/place body.dir -> {xform zl <deg>}",
+   "type": "number",
+   "plain": "Turn of the object.",
+   "unit": "deg",
+   "vanilla": {
+    "min": -180,
+    "max": 360
+   },
+   "group": "place",
+   "ref": null,
+   "tool": "POST /api/x/maps/place",
+   "limit": "MAP-15",
+   "tag": "V"
+  },
+  {
+   "key": "place.scale",
+   "where": "place-entity --scale; gen place.scale -> {xform scale f}",
+   "type": "number",
+   "plain": "Size factor of the object.",
+   "unit": "",
+   "vanilla": null,
+   "group": "place",
+   "ref": null,
+   "tool": "gen place",
+   "limit": "MAP-15",
+   "tag": "V"
+  },
+  {
+   "key": "place.tex",
+   "where": "place-entity --tex; gen place.tex -> {TexMod \"x\"}",
+   "type": "text",
+   "plain": "Texture variant of this one object (winter, summer ...).",
+   "unit": "",
+   "vanilla": null,
+   "group": "place",
+   "ref": null,
+   "tool": "gen place",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "place.mods",
+   "where": "place-entity --mods",
+   "type": "list",
+   "plain": "Mods the map comes from when it is not in your mod or the game.",
+   "unit": "",
+   "vanilla": null,
+   "group": "place",
+   "ref": null,
+   "tool": "place-entity CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "place.uid",
+   "where": "place-entity: smallest free uid above the map file max, < 0x8000",
+   "type": "number",
+   "plain": "The object id; the tool picks a free one.",
+   "unit": "",
+   "vanilla": {
+    "max": 32767
+   },
+   "group": "place",
+   "ref": null,
+   "tool": "POST /api/x/maps/place",
+   "limit": "MAP-24",
+   "tag": "V"
+  },
+  {
+   "key": "place.items",
+   "where": "gen place.items[] {map, entity, pos, dir, scale, tex}",
+   "type": "list",
+   "plain": "Several objects placed in one go.",
+   "unit": "",
+   "vanilla": null,
+   "group": "place",
+   "ref": null,
+   "tool": "gen place",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "place.write",
+   "where": "maps/place body.write (false = dry run)",
+   "type": "bool",
+   "plain": "Preview the placement, then write it.",
+   "unit": "",
+   "vanilla": null,
+   "group": "place",
+   "ref": null,
+   "tool": "POST /api/x/maps/place",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "place.remove",
+   "where": "map file {Entity ..} block removed or moved",
+   "type": "ref",
+   "plain": "Remove or move an object already on the map.",
+   "unit": "",
+   "vanilla": null,
+   "group": "place",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "file.map.land",
+   "where": "map {Land {Position 0 0}}",
+   "type": "text",
+   "plain": "The terrain entity; always at 0 0.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "Position 0 0 (75/75)"
+    ]
+   },
+   "group": "bounds",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "file.map.clips.auto.world",
+   "where": "map {Clips {\"[auto]\" {world x0 y0 x1 y1}}}",
+   "type": "list",
+   "plain": "The playable map border.",
+   "unit": "map units",
+   "vanilla": null,
+   "group": "bounds",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-12",
+   "tag": "V"
+  },
+  {
+   "key": "file.map.clips.auto.camera",
+   "where": "map {Clips {\"[auto]\" {camera x0 y0 x1 y1}}}",
+   "type": "list",
+   "plain": "How far the camera may go.",
+   "unit": "map units",
+   "vanilla": null,
+   "group": "bounds",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-12",
+   "tag": "V"
+  },
+  {
+   "key": "file.map.clips.auto.pather",
+   "where": "map {Clips {\"[auto]\" {pather x0 y0 x1 y1}}}",
+   "type": "list",
+   "plain": "The area where units can find paths.",
+   "unit": "map units",
+   "vanilla": null,
+   "group": "bounds",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-12",
+   "tag": "I"
+  },
+  {
+   "key": "file.map.clips.auto.distance",
+   "where": "map {Clips {\"[auto]\" {distance a b}}}",
+   "type": "list",
+   "plain": "Camera zoom range.",
+   "unit": "",
+   "vanilla": null,
+   "group": "bounds",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-12",
+   "tag": "V"
+  },
+  {
+   "key": "file.map.clips.auto.viewangle",
+   "where": "map {Clips {\"[auto]\" {viewAngle a b}}}",
+   "type": "list",
+   "plain": "Camera tilt range.",
+   "unit": "deg",
+   "vanilla": null,
+   "group": "bounds",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-12",
+   "tag": "V"
+  },
+  {
+   "key": "file.map.clips.captureflag",
+   "where": "map {Clips {\"captureflaga\" ..} {\"captureflagb\" ..}}",
+   "type": "list",
+   "plain": "The two start areas a captureflag game needs (24 of 75 vanilla maps have them).",
+   "unit": "",
+   "vanilla": null,
+   "group": "bounds",
+   "ref": null,
+   "tool": "misgen CLI",
+   "limit": "MIS-62",
+   "tag": "V"
+  },
+  {
+   "key": "file.map.clips.named",
+   "where": "map {Clips {\"frontline0a\" ..} {\"players1\" ..}}",
+   "type": "list",
+   "plain": "Extra named areas a mission switches to with set_clip (frontline, players).",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "frontline0a..frontline2b (6 maps)",
+     "players1..players3 (6 maps)"
+    ]
+   },
+   "group": "bounds",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "file.map.ocean",
+   "where": "map {Ocean ..}",
+   "type": "text",
+   "plain": "Water on the map (2 vanilla maps).",
+   "unit": "",
+   "vanilla": null,
+   "group": "bounds",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "file.map.links_tags_helpers",
+   "where": "map {Link} {LinkTrailer} {Tags} {Helpers {edifice}}",
+   "type": "text",
+   "plain": "Links, tags and buildings of placed objects; the map editor writes them.",
+   "unit": "",
+   "vanilla": null,
+   "group": "bounds",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "terrain.net.heights",
+   "where": "map.net cells: signed 16-bit height",
+   "type": "file",
+   "plain": "The ground heights.",
+   "unit": "map units",
+   "vanilla": null,
+   "group": "terrain",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-08",
+   "tag": "V"
+  },
+  {
+   "key": "terrain.net.type",
+   "where": "map.net cells: ground type byte",
+   "type": "choice",
+   "plain": "What units can cross on each cell.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "undefined",
+     "ground",
+     "no_pass",
+     "shallow_water",
+     "water",
+     "deep_water",
+     "swamp",
+     "road",
+     "no_pass_human"
+    ]
+   },
+   "group": "terrain",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-19",
+   "tag": "V"
+  },
+  {
+   "key": "terrain.net.material",
+   "where": "map.net cells: material byte (9+ = terrains.set order)",
+   "type": "choice",
+   "plain": "Footsteps, impacts and physics of each cell.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "undefined",
+     "ground",
+     "air",
+     "underwater",
+     "shallow_water",
+     "water",
+     "deep_water",
+     "bridge",
+     "bridge_wood",
+     "road",
+     "country_road",
+     "rock",
+     "ice",
+     "swamp",
+     "sand",
+     "puddle",
+     "mud",
+     "snow",
+     "grass"
+    ]
+   },
+   "group": "terrain",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-04",
+   "tag": "V"
+  },
+  {
+   "key": "terrain.ply",
+   "where": "map.ply",
+   "type": "file",
+   "plain": "The ground mesh that is drawn; must match the heights.",
+   "unit": "",
+   "vanilla": null,
+   "group": "terrain",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-30",
+   "tag": "V"
+  },
+  {
+   "key": "terrain.mtl",
+   "where": "mtlN.mtl (2 {layer} each) or .materials",
+   "type": "file",
+   "plain": "Ground textures, one material per mesh part.",
+   "unit": "",
+   "vanilla": null,
+   "group": "terrain",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-29",
+   "tag": "V"
+  },
+  {
+   "key": "terrain.grass",
+   "where": "map.grs",
+   "type": "file",
+   "plain": "Grass (optional).",
+   "unit": "",
+   "vanilla": null,
+   "group": "terrain",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "terrain.remap",
+   "where": "remap.set {item_remap {\"from\" \"to\"}}",
+   "type": "list",
+   "plain": "Per-map swap of item tags.",
+   "unit": "",
+   "vanilla": null,
+   "group": "terrain",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "terrain.editor",
+   "where": "game map editor save: map, map.ply, map.net, map.grs, .materials, <mode>.mi",
+   "type": "file",
+   "plain": "Change the ground or place things by sight in the game's own editor, then copy the saved files into the mod.",
+   "unit": "",
+   "vanilla": null,
+   "group": "terrain",
+   "ref": null,
+   "tool": "Maps page \"Use the game's own editor\" steps (hand-off)",
+   "limit": "MAP-17",
+   "tag": "V"
+  },
+  {
+   "key": "info.maxplayers",
+   "where": "map.info {game {maxPlayers n}}",
+   "type": "number",
+   "plain": "How many players the map takes.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     16
+    ]
+   },
+   "group": "info",
+   "ref": null,
+   "tool": "mapgen --slots (new maps only)",
+   "limit": "MAP-02",
+   "tag": "V"
+  },
+  {
+   "key": "info.minplayers",
+   "where": "map.info {game {minPlayers n}}",
+   "type": "number",
+   "plain": "Fewest players to start.",
+   "unit": "",
+   "vanilla": {
+    "min": 1,
+    "max": 16
+   },
+   "group": "info",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-02",
+   "tag": "V"
+  },
+  {
+   "key": "info.texmod",
+   "where": "map.info {game {texMod n}}",
+   "type": "choice",
+   "plain": "Texture season of the map.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     0,
+     1,
+     2,
+     "d"
+    ]
+   },
+   "group": "info",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "info.ranked",
+   "where": "map.info {game {ranked {enabled} {minPlayers n} {maxPlayers n}}}",
+   "type": "list",
+   "plain": "Ranked match player counts.",
+   "unit": "",
+   "vanilla": {
+    "min": 2,
+    "max": 16
+   },
+   "group": "info",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-11",
+   "tag": "V"
+  },
+  {
+   "key": "info.ranked_flat",
+   "where": "map.info {rankedMinPlayers} {rankedMaxPlayers} (about 30 vanilla files)",
+   "type": "number",
+   "plain": "Old flat ranked keys; the 64-bit game skips them.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     2,
+     4,
+     6,
+     8
+    ]
+   },
+   "group": "info",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-11",
+   "tag": "V"
+  },
+  {
+   "key": "info.other_card_keys",
+   "where": "map.info {game {<any game card key>}}",
+   "type": "text",
+   "plain": "Any game-mode setting overridden for this map.",
+   "unit": "",
+   "vanilla": null,
+   "group": "info",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-02",
+   "tag": "I"
+  },
+  {
+   "key": "info.mode.maxplayers",
+   "where": "<mode>.info {game {maxPlayers n}}",
+   "type": "number",
+   "plain": "Player count for one mode on this map.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     6,
+     16
+    ]
+   },
+   "group": "info",
+   "ref": null,
+   "tool": null,
+   "limit": "MIS-69",
+   "tag": "V"
+  },
+  {
+   "key": "info.mode.parameters",
+   "where": "<mode>.info {game {parameters \"k=v;..\"}}",
+   "type": "text",
+   "plain": "Mode rules for this map (times, flag capture).",
+   "unit": "",
+   "vanilla": null,
+   "group": "info",
+   "ref": null,
+   "tool": "misgen CLI (captureflag only)",
+   "limit": "MIS-69",
+   "tag": "V"
+  },
+  {
+   "key": "info.mode.texmod",
+   "where": "<mode>.info {game {texMod n}}",
+   "type": "choice",
+   "plain": "Texture season for one mode.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     1,
+     2,
+     "d"
+    ]
+   },
+   "group": "info",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "points.spawns",
+   "where": "<mode>.mi {Entity \"map_point\" .. {Extender \"map_point\" {team a|b} {order n} {visor SpawnPoint}}}",
+   "type": "list",
+   "plain": "Start points of each team; count them against the player count.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "1143 spawn points over 165 vanilla .mi"
+    ]
+   },
+   "group": "points",
+   "ref": null,
+   "tool": "misgen CLI (captureflag); mapgen --slots (new map)",
+   "limit": "MAP-23",
+   "tag": "V"
+  },
+  {
+   "key": "points.flags",
+   "where": "<mode>.mi {Entity \"flag_point_N\" .. {zoneA m} {zoneB m}}",
+   "type": "list",
+   "plain": "Capture flags (battle_zones: usually players + 1).",
+   "unit": "m",
+   "vanilla": {
+    "min": 7.5,
+    "max": 45
+   },
+   "group": "points",
+   "ref": null,
+   "tool": "maps/clone mode battle_zones (mission-clone)",
+   "limit": "MAP-34",
+   "tag": "V"
+  },
+  {
+   "key": "picture.terrain_view",
+   "where": "maps/picture (mapview --svg --width 70)",
+   "type": "file",
+   "plain": "The drawn terrain shown on the Maps page.",
+   "unit": "",
+   "vanilla": null,
+   "group": "picture",
+   "ref": null,
+   "tool": "GET /api/x/maps/picture",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "picture.layer",
+   "where": "mapview --layer type|material|height, --entities",
+   "type": "choice",
+   "plain": "Which layer the terrain drawing shows.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "type",
+     "material",
+     "height"
+    ]
+   },
+   "group": "picture",
+   "ref": null,
+   "tool": "mapview CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "picture.preview",
+   "where": "map folder preview.dds",
+   "type": "file",
+   "plain": "The picture of the map in the lobby.",
+   "unit": "",
+   "vanilla": null,
+   "group": "picture",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "picture.preview_small",
+   "where": "map folder preview_small.dds",
+   "type": "file",
+   "plain": "Small lobby picture.",
+   "unit": "",
+   "vanilla": null,
+   "group": "picture",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "picture.minimap",
+   "where": "map folder minimap.dds",
+   "type": "file",
+   "plain": "The minimap in a match (grey without it).",
+   "unit": "",
+   "vanilla": null,
+   "group": "picture",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "picture.header",
+   "where": "map folder header.*",
+   "type": "file",
+   "plain": "Lobby header image (falls back to the preview).",
+   "unit": "",
+   "vanilla": null,
+   "group": "picture",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "make.height",
+   "where": "mapgen --height <h.pgm|h.raw>",
+   "type": "file",
+   "plain": "A greyscale height picture for a brand new map.",
+   "unit": "",
+   "vanilla": null,
+   "group": "make",
+   "ref": null,
+   "tool": "mapgen CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "make.layers",
+   "where": "mapgen --layers <dir>/<ground>.pgm (sand mud rock road no_pass)",
+   "type": "file",
+   "plain": "Painted masks for ground kinds.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "grass",
+     "sand",
+     "mud",
+     "rock",
+     "road",
+     "no_pass"
+    ]
+   },
+   "group": "make",
+   "ref": null,
+   "tool": "mapgen CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "make.size",
+   "where": "mapgen --size WxH",
+   "type": "text",
+   "plain": "Map size in cells.",
+   "unit": "cells",
+   "vanilla": null,
+   "group": "make",
+   "ref": null,
+   "tool": "mapgen CLI",
+   "limit": "MAP-08",
+   "tag": "V"
+  },
+  {
+   "key": "make.zmin",
+   "where": "mapgen --zmin",
+   "type": "number",
+   "plain": "Lowest ground height.",
+   "unit": "map units",
+   "vanilla": {
+    "values": [
+     0
+    ]
+   },
+   "group": "make",
+   "ref": null,
+   "tool": "mapgen CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "make.zmax",
+   "where": "mapgen --zmax",
+   "type": "number",
+   "plain": "Highest ground height.",
+   "unit": "map units",
+   "vanilla": {
+    "values": [
+     300
+    ]
+   },
+   "group": "make",
+   "ref": null,
+   "tool": "mapgen CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "make.raw_size",
+   "where": "mapgen --raw-size WxH",
+   "type": "text",
+   "plain": "Size of a .raw height file.",
+   "unit": "",
+   "vanilla": null,
+   "group": "make",
+   "ref": null,
+   "tool": "mapgen CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "make.clone",
+   "where": "mapgen --clone <stock map folder>",
+   "type": "path",
+   "plain": "A stock map whose mission keys the new map borrows.",
+   "unit": "",
+   "vanilla": null,
+   "group": "make",
+   "ref": null,
+   "tool": "mapgen CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "make.slots",
+   "where": "mapgen --slots N -> map.info maxPlayers, N/2 spawns a team",
+   "type": "number",
+   "plain": "Players on the new map.",
+   "unit": "",
+   "vanilla": {
+    "min": 2,
+    "max": 16
+   },
+   "group": "make",
+   "ref": null,
+   "tool": "mapgen CLI",
+   "limit": "MAP-02",
+   "tag": "V"
+  },
+  {
+   "key": "make.name",
+   "where": "mapgen --name",
+   "type": "text",
+   "plain": "Name of the new map.",
+   "unit": "",
+   "vanilla": null,
+   "group": "make",
+   "ref": null,
+   "tool": "mapgen CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "make.force",
+   "where": "mapgen --force",
+   "type": "bool",
+   "plain": "Overwrite a map of that name in the mod.",
+   "unit": "",
+   "vanilla": null,
+   "group": "make",
+   "ref": null,
+   "tool": "mapgen CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "check.mod",
+   "where": "maps/check body.mod (milint)",
+   "type": "path",
+   "plain": "Check the maps of the mod for mistakes the game trips over.",
+   "unit": "",
+   "vanilla": null,
+   "group": "check",
+   "ref": null,
+   "tool": "POST /api/x/maps/check",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "test.map",
+   "where": "play --map multi/<name>:<mode>",
+   "type": "text",
+   "plain": "The map and mode a test match starts on.",
+   "unit": "",
+   "vanilla": null,
+   "group": "test",
+   "ref": null,
+   "tool": "play",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "test.inst",
+   "where": "play --inst",
+   "type": "number",
+   "plain": "Which test copy of the game runs it.",
+   "unit": "",
+   "vanilla": {
+    "min": 1,
+    "max": 9
+   },
+   "group": "test",
+   "ref": null,
+   "tool": "play",
+   "limit": "NET-20",
+   "tag": "V"
+  },
+  {
+   "key": "test.dry",
+   "where": "play --dry",
+   "type": "bool",
+   "plain": "Show the steps without starting the game.",
+   "unit": "",
+   "vanilla": null,
+   "group": "test",
+   "ref": null,
+   "tool": "play",
+   "limit": null,
+   "tag": "V"
+  }
+ ],
+ "gaps": [
+  "info.maxplayers/minplayers/texmod/ranked on a copied map: no tool step; add gen op map-info {map, set{maxPlayers..}} writing map.info through patch-entity file:<key> rows",
+  "info.mode.*: no tool outside misgen captureflag; same gen op map-info with a mode: field writing <mode>.info",
+  "place.scale, place.tex, place.mods: in place-entity and gen place, missing in POST /api/x/maps/place; add body.scale, body.tex, body.mods to placeRoute",
+  "place.remove (remove or move a placed object): no tool; add place-entity --remove <uid> / --move <uid> --pos and gen place.remove",
+  "file.map.clips.* (border, camera, pather, zoom, tilt) of a copy: no tool; add gen op map-clip {map, clip, world|camera|pather|distance|viewAngle} (misgen already writes clip blocks)",
+  "points.spawns and points.flags for combat and battle_zones: only misgen (captureflag) and mission-clone flag autoplace; add misgen modes combat/battle_zones (spawns per team, flags with zone) and a GUI form",
+  "picture.preview/preview_small/minimap/header: no tool writes map DDS pictures; add an /art/icon-png style route map-picture {map, png, kind} that converts PNG to DDS into the map folder (minimap from mapview render)",
+  "picture.layer and mapview --entities: CLI only; add ?layer=&entities=1 to GET /api/x/maps/picture",
+  "make.* (mapgen): CLI only; add POST /api/x/maps/generate wrapping mapgen with the height/layers upload (task upload staging)",
+  "copy.no_mission, copy.game_version, copy.no_modinfo: map-clone flags not passed by maps/clone; add body fields (low value)",
+  "terrain.net/ply/mtl/grass/remap edits: no tool (editor hand-off only); keep as hand-off card, add remap.set rows to a gen set op file:<key> example",
+  "file.map.links_tags_helpers, file.map.ocean: editor only; hand-off"
+ ]
+}

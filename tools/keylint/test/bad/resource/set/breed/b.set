@@ -1,0 +1,7 @@
+{breed
+ {skin "worker"}
+ {perks
+  {"health" "100%"}
+  {"health" "275%"}
+ }
+}

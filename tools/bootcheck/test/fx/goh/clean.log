@@ -1,0 +1,21 @@
+[00:00:00] Steam Application ID: 400750
+[00:00:00] Scanning mods in x:/fixture/mods/
+[00:00:01] Found 2 available mods
+[00:00:01] Mount package x:/fixture/resource/gamelogic.pak with 8969 entries
+[00:00:03] CMD: "X:/fixture/binaries/x64/call_to_arms.exe"
+[00:00:06] !!! WARNING: Skipping broken shader cache file //shader_cache/dx11.0/45c9.hso (eRenderShader.cpp:84) @ [main_loop]
+[00:00:09] Build: 2026.09.23 14:05 - x64 - fixture - 0x0
+[00:00:09] Product: CALL TO ARMS - GATES OF HELL - v1.067.0 - standard x64
+[00:00:19] Mod: applying mods
+[00:00:19] Mod: disable mod other_mod
+[00:00:19] Mod: applying new mods
+[00:00:19] Mod: activate mod fixmod
+[00:00:32] Phase <c(cec7c3)f(roboto_mono)>Loading... took 14012.7ms.
+[00:00:33] GUI: Show page page_main with mods [ 5 unique]
+[00:00:51] Starting "multi/2v2_fixture:battle_zones" , difficulty=multiplayer)
+[00:02:51] /texture/common/service/selection_circle.dds: No MIP levels! (/entity/service/selection_circle/selection_circle.def, 3)
+[00:03:12] GameThreadStart
+[00:03:30] [LUA] DBG: SpawnUnit single_rifle(fin) player#2
+[00:03:30] !!! No valid ev.actor in eGenericCombatGame::HandleStatsEvent
+[00:03:30] dbg: player#2 spawned single_rifle(fin) with cost 10. budget 221.007->211.007. totalAdd: 1.00732, totalSpent: 10
+[00:03:31] dbg: player#3 spawned squad_pzgren_late_off(ger) with cost 134. budget 222.36->88.3603. totalAdd: 2.36028, totalSpent: 134

@@ -1,0 +1,4 @@
+{Skeleton
+	{bone "b" {VolumeView "a2.ply"}} ;@REF_WRONG_FOLDER
+	{bone "c" {VolumeView "/a2.ply"}}
+}

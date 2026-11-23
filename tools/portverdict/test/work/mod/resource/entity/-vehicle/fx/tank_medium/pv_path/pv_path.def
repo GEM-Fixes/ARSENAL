@@ -1,0 +1,4 @@
+{game_entity
+	{patherId "panzer4"}
+	{mass 30000}
+}

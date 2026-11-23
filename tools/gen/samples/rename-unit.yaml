@@ -1,0 +1,9 @@
+# Gives the vanilla Soviet ZiS-2 gun a new display name in the purchase panel and tooltips (text only, no stats change).
+# Edit two values: the unit inside key (desc/entity/<unit>) and text (the new name).
+# as2 gen rename-unit.yaml --target mowas2 --game <AS2 dir> --out <mods dir>/my_rename --no-stat   (add --plan first: writes nothing)
+name: my_rename
+title: My Rename
+ops:
+  - op: text
+    key: desc/entity/zis2
+    text: Anti-Tank Gun Mk Two

@@ -1,0 +1,8 @@
+; mod-defined pather profiles (PatherID "airdrop" is valid when the winning pather.set defines it)
+{pathers
+{Profile "human"}
+{Profile "tank"}
+{Profile "airborne"}
+{Profile "airdrop"}
+{Profile "water"}
+}

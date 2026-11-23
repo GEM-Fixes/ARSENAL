@@ -1,0 +1,6 @@
+{Mod
+	{Name "My Rename"}
+	{Desc "My Rename"}
+	{MinGameVersion "3.262.0"}
+	{MaxGameVersion "3.262.1"}
+}

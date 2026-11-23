@@ -1,0 +1,12 @@
+# Adds a new army (fin) copied from the Soviet one: its own id, lobby name, flag picture and an empty vehicle list, in the axis alliance.
+# Edit: tag (new army id), title (lobby name), like (army copied), icon_like (flag copied), alliance (axis or allies).
+# gen army.yaml --target as64 --game <AS2 dir> --out <mods dir>/my_army --no-stat   (add --plan first: writes nothing)
+name: my_army
+title: My Army
+ops:
+  - op: army
+    tag: fin
+    like: rus
+    title: Finland
+    icon_like: rus
+    alliance: axis

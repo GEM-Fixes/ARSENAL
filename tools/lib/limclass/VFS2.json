@@ -1,0 +1,180 @@
+{
+ "form": "limclass/1",
+ "area": "VFS2",
+ "rows": {
+  "VFS-32": {
+   "chk": "built",
+   "class": "review",
+   "why": "whole folder uploaded incl. stray files"
+  },
+  "VFS-33": {
+   "chk": "built",
+   "class": "silent",
+   "why": "map mod/ overlays active mods during match"
+  },
+  "VFS-34": {
+   "chk": "never",
+   "class": "info",
+   "why": "DLC paks mounted regardless, ownership gates UI",
+   "never": "engine fact about base game"
+  },
+  "VFS-35": {
+   "chk": "built",
+   "class": "crash",
+   "why": "deleted base file later fatal on Open",
+   "tool": "vfs",
+   "how": "mod.info Delete or patch delete naming a file other data still opens, not optional"
+  },
+  "VFS-36": {
+   "chk": "never",
+   "class": "info",
+   "why": "resource count is only a checksum figure",
+   "never": "log fact, nothing to hit"
+  },
+  "VFS-37": {
+   "chk": "built",
+   "class": "silent",
+   "why": "bare s_select errors on as64, only pipe form works"
+  },
+  "VFS-38": {
+   "chk": "built",
+   "class": "silent",
+   "why": "N.pat after gap never mounted"
+  },
+  "VFS-39": {
+   "chk": "built",
+   "class": "silent",
+   "why": "entry over 4 GB size truncated"
+  },
+  "VFS-40": {
+   "chk": "built",
+   "class": "silent",
+   "why": "bad CRC loads but breaks Extract callers"
+  },
+  "VFS-41": {
+   "chk": "built",
+   "class": "silent",
+   "why": "replacing SDL file drops others entries"
+  },
+  "VFS-42": {
+   "chk": "built",
+   "class": "silent",
+   "why": "roster clone shadows other mods edits"
+  },
+  "VFS-43": {
+   "chk": "built",
+   "class": "silent",
+   "why": "later mod wins, earlier edits lost"
+  },
+  "VFS-44": {
+   "chk": "built",
+   "class": "silent",
+   "why": "trimming keys in whole-file copy deletes them"
+  },
+  "VFS-45": {
+   "chk": "built",
+   "class": "silent",
+   "why": "dup of VFS-43"
+  },
+  "VFS-46": {
+   "chk": "built",
+   "class": "info",
+   "why": "as64/core mount is a fact for tools"
+  },
+  "VFS-47": {
+   "chk": "built",
+   "class": "silent",
+   "why": "player mods always override as64+ files"
+  },
+  "VFS-48": {
+   "chk": "built",
+   "class": "silent",
+   "why": "mismatched mode mod silently off or crash"
+  },
+  "VFS-49": {
+   "chk": "built",
+   "class": "crash",
+   "why": "stray quote in mod.info stops the game starting"
+  },
+  "VFS-50": {
+   "chk": "built",
+   "class": "info",
+   "why": "mode names in Require are not folders, test mods only"
+  },
+  "VFS-51": {
+   "chk": "built",
+   "class": "silent",
+   "why": "hand edits in mods/ copy never load"
+  },
+  "VFS-52": {
+   "chk": "built",
+   "class": "silent",
+   "why": "editing hardlinked pak changes both copies"
+  },
+  "VFS-53": {
+   "chk": "built",
+   "class": "silent",
+   "why": "item id in mod list gives MOD_UNKNOWN",
+   "tool": "vfs",
+   "how": "mod list line is a numeric Workshop id instead of normalized title"
+  },
+  "VFS-54": {
+   "chk": "built",
+   "class": "silent",
+   "why": "mixed classic and Enhanced mods drop one",
+   "tool": "vfs",
+   "how": "mod list mixes modern and legacy mods; flag MOD_MODE for the minority"
+  },
+  "VFS-55": {
+   "chk": "built",
+   "class": "silent",
+   "why": "same path loose and in nested pak: scan order picks"
+  },
+  "VFS-56": {
+   "chk": "never",
+   "class": "silent",
+   "why": "shader cache reused across stacks, no log",
+   "never": "runtime cache state, outside mod files"
+  },
+  "VFS-57": {
+   "chk": "built",
+   "class": "crash",
+   "why": "partial shader set logs errors and breaks material",
+   "tool": "vfs",
+   "how": "mod shader folder holds partial set: some .hlsl/.inc without the full include family"
+  },
+  "VFS-58": {
+   "chk": "built",
+   "class": "silent",
+   "why": "loading video at wrong path never read",
+   "tool": "vfs",
+   "how": "video/mission/*.avi not inside a mission location folder named start tactical strategic"
+  },
+  "VFS-59": {
+   "chk": "built",
+   "class": "crash",
+   "why": "refused version mod crashes before fonts load",
+   "tool": "modinfo",
+   "how": "mod.info version range unsupported by as64 build; warn crash on listing"
+  }
+ },
+ "dead": [
+  {
+   "row": "VFS-37",
+   "tool": "cvarcheck",
+   "code": "CVAR_ABSENT",
+   "fix": {
+    "code": null,
+    "why": "cvarcheck retired, moved to _retired"
+   }
+  },
+  {
+   "row": "VFS-47",
+   "tool": "modswitch",
+   "code": "MOD_NOT_INSTALLED",
+   "fix": {
+    "code": "MOD_NOT_INSTALLED"
+   }
+  }
+ ]
+}

@@ -1,0 +1,10 @@
+{game_entity
+(include "/properties/tank.ext")
+{props "medium"}
+{item "ammo bullet30 he" 1}
+{item "ammo bullet30 ap" 1}
+{item "ammo bullet30 t" 1}
+{item "ammo bullet30 zz" 1}
+{item "ammo bullet30 m" 1}
+{item "ammo bullet30 k" 1}
+}

@@ -1,0 +1,382 @@
+{
+ "form": "limmap/1",
+ "part": "mix-4",
+ "codes": {
+  "MIS_DIFF_BLOCK_REMOVED": {
+   "tool": "misdiff",
+   "sev": "silent",
+   "kind": "tool",
+   "at": "tools/misdiff/misdiff.js:177",
+   "class": "tool",
+   "why": "reports a top block present in a, absent in b"
+  },
+  "MIS_DIFF_HELPER_CHANGED": {
+   "tool": "misdiff",
+   "sev": "silent",
+   "kind": "tool",
+   "at": "tools/misdiff/misdiff.js:191",
+   "class": "tool",
+   "why": "reports a Helpers kind differing between the two inputs"
+  },
+  "MIS_DIFF_MAPINFO_CHANGED": {
+   "tool": "misdiff",
+   "sev": "silent",
+   "kind": "tool",
+   "at": "tools/misdiff/misdiff.js:239",
+   "class": "tool",
+   "why": "reports a map.info key differing between inputs"
+  },
+  "MIS_DIFF_MODE_ADDED": {
+   "tool": "misdiff",
+   "sev": "silent",
+   "kind": "tool",
+   "at": "tools/misdiff/misdiff.js:230",
+   "class": "tool",
+   "why": "reports a mode file only in b"
+  },
+  "MIS_DIFF_MODE_REMOVED": {
+   "tool": "misdiff",
+   "sev": "silent",
+   "kind": "tool",
+   "at": "tools/misdiff/misdiff.js:229",
+   "class": "tool",
+   "why": "reports a mode file only in a"
+  },
+  "MIS_DIFF_SPAWN_COUNT": {
+   "tool": "misdiff",
+   "sev": "silent",
+   "kind": "tool",
+   "at": "tools/misdiff/misdiff.js:169",
+   "class": "tool",
+   "why": "reports spawn point counts differing between inputs"
+  },
+  "WARN_MISDIFF_REMOVED_REFERENCED": {
+   "tool": "misdiff",
+   "sev": "silent",
+   "lim": [
+    "MIS-30"
+   ],
+   "at": "tools/misdiff/misdiff.js:201",
+   "class": "review",
+   "why": "dangling Link/selector/helper ref after removal; vanilla ships such refs"
+  },
+  "WARN_MISDIFF_UID_COLLISION": {
+   "tool": "misdiff",
+   "sev": "silent",
+   "lim": [
+    "MAP-24"
+   ],
+   "at": "tools/misdiff/misdiff.js:146",
+   "class": "silent",
+   "why": "entity uid must be unique across map and mode files"
+  },
+  "WARN_ESCAPE": {
+   "tool": "modinfo",
+   "sev": "review",
+   "lim": [
+    "SDL-09"
+   ],
+   "at": "tools/lib/sdl.js:31",
+   "class": "cosmetic",
+   "why": "unknown \\x escape stays literal"
+  },
+  "WARN_GOH_OPEN_BOUND": {
+   "tool": "modinfo",
+   "sev": "review",
+   "lim": [
+    "PORT-208"
+   ],
+   "at": "tools/modinfo/modinfo.js:88",
+   "class": "review",
+   "why": "single version bound; as64 handling unstated [I]"
+  },
+  "WARN_GOH_TAGS": {
+   "tool": "modinfo",
+   "sev": "review",
+   "lim": [
+    "PORT-209"
+   ],
+   "at": "tools/modinfo/modinfo.js:56",
+   "class": "review",
+   "why": "GoH tags key shape is inferred only"
+  },
+  "MOVE_REF_MISSING_ON_TARGET": {
+   "tool": "modmove",
+   "sev": "review",
+   "lim": [
+    "VFS-64"
+   ],
+   "at": "tools/modmove/lib/static.js:364",
+   "class": "review",
+   "why": "missing resource on the target install"
+  },
+  "PORT_EXT_GOH_ONLY": {
+   "tool": "modmove",
+   "sev": "review",
+   "lim": [
+    "PORT-31"
+   ],
+   "at": "tools/modmove/lib/static.js:204",
+   "class": "review",
+   "why": "GoH-only file kinds have no AS2 loader"
+  },
+  "SDL_FRAGMENT_MACRO": {
+   "tool": "modmove",
+   "sev": "review",
+   "lim": [
+    "PORT-52"
+   ],
+   "at": "tools/modmove/lib/static.js:314",
+   "class": "crash",
+   "why": "undefined macro is fatal at boot unless parent loads"
+  },
+  "WARN_MOVE_ENTITY_MISSING_ON_TARGET": {
+   "tool": "modmove",
+   "sev": "review",
+   "lim": [
+    "ENG-38"
+   ],
+   "at": "tools/modmove/lib/static.js:368",
+   "class": "review",
+   "why": "name-only match, entity absent on target"
+  },
+  "WARN_PORT_PARSE_FAIL": {
+   "tool": "modmove",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/modmove/lib/static.js:209",
+   "class": "tool",
+   "why": "tool's parser failed on an input file"
+  },
+  "MPSYNC_MASKS_DIFF": {
+   "tool": "mpsync",
+   "sev": "silent",
+   "lim": [
+    "KEY-24"
+   ],
+   "at": "tools/mpsync/mpsync.js:116",
+   "class": "info",
+   "why": "sync mask file differs between the two installs"
+  },
+  "MPSYNC_ONLY_IN_A": {
+   "tool": "mpsync",
+   "sev": "silent",
+   "lim": [
+    "NET-01"
+   ],
+   "at": "tools/mpsync/mpsync.js:123",
+   "class": "desync",
+   "why": "synced file on one side only breaks lobby CRC"
+  },
+  "MPSYNC_ONLY_IN_B": {
+   "tool": "mpsync",
+   "sev": "silent",
+   "lim": [
+    "NET-01"
+   ],
+   "at": "tools/mpsync/mpsync.js:123",
+   "class": "desync",
+   "why": "synced file on one side only breaks lobby CRC"
+  },
+  "MPSYNC_TREES": {
+   "tool": "mpsync",
+   "sev": "silent",
+   "lim": [
+    "NET-13"
+   ],
+   "at": "tools/mpsync/mpsync.js:134",
+   "class": "info",
+   "why": "folder CRCs and build must match for lobby"
+  },
+  "BODY_CHANGED": {
+   "tool": "newbuild",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/newbuild/newbuild.js:169",
+   "class": "tool",
+   "why": "cite drift status counted from srcdrift output"
+  },
+  "FN_GONE": {
+   "tool": "newbuild",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/newbuild/newbuild.js:169",
+   "class": "tool",
+   "why": "cite drift status counted from srcdrift output"
+  },
+  "LINE_GONE": {
+   "tool": "newbuild",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/newbuild/newbuild.js:169",
+   "class": "tool",
+   "why": "cite drift status counted from srcdrift output"
+  },
+  "LINE_OOB": {
+   "tool": "newbuild",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/newbuild/newbuild.js:169",
+   "class": "tool",
+   "why": "cite drift status counted from srcdrift output"
+  },
+  "DEP_NOT_INSTALLED": {
+   "tool": "newmod",
+   "sev": "review",
+   "lim": [
+    "VFS-17"
+   ],
+   "at": "tools/newmod/newmod.js:98",
+   "class": "silent",
+   "why": "missing Require gives a warning and the mod is skipped"
+  },
+  "WARN_PARENT_MADE": {
+   "tool": "newmod",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/newmod/newmod.js:86",
+   "class": "tool",
+   "why": "tool creates missing parent folders of target path"
+  },
+  "OVR_UNREADABLE": {
+   "tool": "overdiff",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/overdiff/overdiff.js:63",
+   "class": "tool",
+   "why": "tool could not read or parse a file"
+  },
+  "LOOSE_COPIED": {
+   "tool": "packer",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/packer/packer.js:144",
+   "class": "tool",
+   "why": "tool copied a loose file to the out folder"
+  },
+  "MOD_DELETE": {
+   "tool": "packer",
+   "sev": "review",
+   "lim": [
+    "VFS-22"
+   ],
+   "at": "tools/packer/packer.js:90",
+   "class": "info",
+   "why": "mod.info Delete runs before mod files mount"
+  },
+  "NO_RESOURCE_DIR": {
+   "tool": "packer",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/packer/packer.js:85",
+   "class": "tool",
+   "why": "input mod has no resource folder"
+  },
+  "PACK_GOH_ORIGIN": {
+   "tool": "packer",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/packer/gohguard.js:45",
+   "class": "tool",
+   "why": "repo policy: GoH assets never shipped, ledger check"
+  },
+  "PACK_GOH_RENAMED": {
+   "tool": "packer",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/packer/gohguard.js:58",
+   "class": "tool",
+   "why": "repo policy: GoH bytes under another name"
+  },
+  "PACK_PRIVATE": {
+   "tool": "packer",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/packer/gohguard.js:36",
+   "class": "tool",
+   "why": "repo policy: PRIVATE pak never published"
+  },
+  "PACK_REFUSED": {
+   "tool": "packer",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/packer/packer.js:169",
+   "class": "tool",
+   "why": "tool refused to write the pak"
+  },
+  "WARN_LOOSE_SHADOWS_PAK": {
+   "tool": "packer",
+   "sev": "review",
+   "lim": [
+    "VFS-08"
+   ],
+   "at": "tools/packer/packer.js:112",
+   "class": "silent",
+   "why": "loose vs pak tie decided by scan order"
+  },
+  "WARN_PACK_DUP_NAME": {
+   "tool": "packer",
+   "sev": "review",
+   "lim": [
+    "VFS-02"
+   ],
+   "at": "tools/packer/packer.js:110",
+   "class": "silent",
+   "why": "names lowercased; case variants collide into one key"
+  },
+  "WARN_PACK_PRIVATE": {
+   "tool": "packer",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/packer/packer.js:181",
+   "class": "tool",
+   "why": "repo policy: --allow-private local-only pak"
+  },
+  "WARN_STR_NOT_UTF8": {
+   "tool": "packer",
+   "sev": "silent",
+   "lim": [
+    "PORT-15"
+   ],
+   "at": "tools/packer/packer.js:71",
+   "class": "cosmetic",
+   "why": "cp1251 string parses clean, shows U+FFFD"
+  },
+  "WARN_TEXT_BOM": {
+   "tool": "packer",
+   "sev": "review",
+   "lim": [
+    "SDL-12"
+   ],
+   "at": "tools/packer/packer.js:68",
+   "class": "crash",
+   "why": "UTF-16/32 BOM is fatal to the SDL reader"
+  },
+  "WARN_TEXT_NONASCII_IDENT": {
+   "tool": "packer",
+   "sev": "review",
+   "lim": [
+    "PORT-15"
+   ],
+   "at": "tools/packer/packer.js:72",
+   "class": "crash",
+   "why": "non-ASCII identifier bytes invalid in the SDL parser"
+  },
+  "PATCH_AMBIGUOUS": {
+   "tool": "patch-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/patch-entity/patch-entity.js:71",
+   "class": "tool",
+   "why": "edit path matches several blocks or defs"
+  },
+  "PATCH_BAD_ARGS": {
+   "tool": "patch-entity",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/patch-entity/patch-entity.js:137",
+   "class": "tool",
+   "why": "bad command-line arguments or edit path"
+  }
+ }
+}

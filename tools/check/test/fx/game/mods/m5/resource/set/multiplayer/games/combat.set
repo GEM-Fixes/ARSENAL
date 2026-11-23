@@ -1,0 +1,7 @@
+;SDL
+{game
+	{teamSettings
+		{minTeamPlayers 2}
+	}
+	{own 1}
+}

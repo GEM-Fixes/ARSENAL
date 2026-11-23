@@ -1,0 +1,52 @@
+{
+  "name": "bot2",
+  "rows": [],
+  "mode": "menu",
+  "params": {
+    "map": "multi/chain_map:chain_mode",
+    "botSlot": "1",
+    "foeSlot": "2",
+    "army": "ger",
+    "unit": "panzer4j"
+  },
+  "src": [
+    " (mp_slot <n> <difficulty>: AI in an open slot; the mode .set needs {enableBots}, limit TST-03)",
+    " (bot buy prints DBG: SpawnUnit <card>)",
+    " (mp_userUnits lists bought units)"
+  ],
+  "note": "G-CHAIN4: chain_mode is {armySelectionMode alliance} (armyMode 3): mp_set team.X.army has no field there, mp_army <army> [BOT] picks the host's and the AI's own army (; the AI is named BOT). T-CHAINFIX: host + one bot, both on {army},so the bot buys from the [\"{army}\"] list of bot.data.lua (botrecipe --buy-first puts {unit} there). Give the mod with --mods as64+,<mod>; the mode .set must hold {enableBots} (mission-clone --with-mode writes it). Hold 240 s after load, then look for DBG: SpawnUnit {unit}. Bot slot id: mp_slots output, override --param botSlot=N.",
+  "steps": [
+    { "cmd": "mp_lan" },
+    { "wait_stage": true },
+    { "cmd": "mp_host {map} 2" },
+    { "wait_stage": true },
+    { "cmd": "mp_settings" },
+    { "cmd": "mp_set settings.enableSpectators 1" },
+    { "cmd": "mp_team spectator" },
+    { "cmd": "mp_slot {botSlot} normal" },
+    { "cmd": "mp_army {army} BOT" },
+    { "cmd": "mp_slot {foeSlot} normal" },
+    { "cmd": "mp_slots" },
+    { "cmd": "mp_status" },
+    { "cmd": "mp_ready" },
+    { "cmd": "mp_start" },
+    { "wait": "loaded", "timeout": 300 },
+    { "wait": 55 },
+    { "cmd": "mp_state" },
+    { "cmd": "mp_userUnits" },
+    { "wait": 55 },
+    { "cmd": "mp_state" },
+    { "cmd": "mp_userUnits" },
+    { "wait": 55 },
+    { "cmd": "mp_state" },
+    { "cmd": "mp_userUnits" },
+    { "wait": 55 },
+    { "cmd": "mp_state" },
+    { "cmd": "mp_userUnits" }
+  ],
+  "verdict": [
+    { "log": "\\*{5,} Exception \\*{5,}", "want": false },
+    { "log": "SpawnUnit {unit}" },
+    { "log": "Spawning Unit Not found - {unit}", "want": false }
+  ]
+}

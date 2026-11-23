@@ -1,0 +1,6 @@
+;SDL
+{mission
+	{Entity "map_point" 0x8000
+		{Position 1 2}
+	}
+}

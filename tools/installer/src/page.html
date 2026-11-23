@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ARSENAL Setup</title>
+<style>
+:root { --bg:#f4f3ee; --card:#ffffff; --ink:#1d2320; --soft:#5b655f; --line:#d9d7cd; --accent:#4a5d3a; --accent-ink:#ffffff; --bad:#a03a2c; --good:#3d6b35; }
+@media (prefers-color-scheme: dark) { :root { --bg:#171a18; --card:#212623; --ink:#e9ece6; --soft:#a3ada5; --line:#39413b; --accent:#8fae76; --accent-ink:#14180f; --bad:#e08a7b; --good:#9fcc8f; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+main { max-width:680px; margin:0 auto; padding:32px 16px 48px; }
+h1 { font-size:28px; margin:0 0 4px; letter-spacing:.02em; }
+.sub { color:var(--soft); margin:0 0 24px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px; margin-bottom:16px; }
+h2 { font-size:15px; text-transform:uppercase; letter-spacing:.06em; color:var(--soft); margin:0 0 12px; }
+dl { margin:0; display:grid; grid-template-columns:max-content 1fr; gap:6px 16px; }
+dt { color:var(--soft); } dd { margin:0; overflow-wrap:anywhere; }
+label.tick { display:flex; gap:12px; align-items:flex-start; padding:8px 0; cursor:pointer; }
+label.tick input { width:20px; height:20px; margin:2px 0 0; accent-color:var(--accent); flex:none; }
+label.tick small { display:block; color:var(--soft); }
+label.tick.off { cursor:default; color:var(--soft); }
+button { font:inherit; font-weight:600; padding:12px 28px; border-radius:8px; border:0; background:var(--accent); color:var(--accent-ink); cursor:pointer; }
+button:disabled { opacity:.5; cursor:default; }
+button:focus-visible, input:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+pre { margin:0; white-space:pre-wrap; overflow-wrap:anywhere; font:13px/1.55 ui-monospace, Consolas, Menlo, monospace; max-height:360px; overflow:auto; }
+.bar { height:8px; background:var(--line); border-radius:4px; overflow:hidden; margin:8px 0 4px; }
+.bar i { display:block; height:100%; width:0; background:var(--accent); transition:width .2s; }
+.bar.busy i { width:35%; animation:slide 1.2s infinite ease-in-out; }
+@keyframes slide { 0% { margin-left:-35%; } 100% { margin-left:100%; } }
+@media (prefers-reduced-motion: reduce) { .bar.busy i { animation:none; width:100%; opacity:.5; } }
+.plabel { color:var(--soft); font-size:14px; min-height:21px; }
+.end { font-weight:600; margin:0 0 12px; } .end.bad { color:var(--bad); } .end.good { color:var(--good); }
+[hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<main>
+<h1>ARSENAL Setup</h1>
+<p class="sub" id="sub">Reading this computer&hellip;</p>
+
+<section class="card" id="ask" hidden>
+  <h2>What will be set up</h2>
+  <dl>
+    <dt>ARSENAL</dt><dd id="i-dir"></dd>
+    <dt>Node.js</dt><dd id="i-node"></dd>
+    <dt>Historical index</dt><dd id="i-hist"></dd>
+  </dl>
+</section>
+
+<section class="card" id="opts" hidden>
+  <h2>Options</h2>
+  <label class="tick"><input type="checkbox" id="o-desktop" checked><span>Put an ARSENAL icon on the Desktop</span></label>
+  <label class="tick"><input type="checkbox" id="o-start" checked><span>Start ARSENAL when the install finishes</span></label>
+  <label class="tick"><input type="checkbox" id="o-autostart"><span>Start ARSENAL when I sign in<small>Its window opens in the web browser at every sign-in.</small></span></label>
+  <label class="tick" id="l-hist"><input type="checkbox" id="o-hist"><span>Download the historical index<small id="s-hist"></small></span></label>
+  <p style="margin:16px 0 0"><button id="go">Install</button></p>
+</section>
+
+<section class="card" id="run" hidden>
+  <h2 id="run-h">Installing</h2>
+  <p class="end" id="end" hidden></p>
+  <div id="pwrap"><div class="bar busy" id="bar"><i></i></div><div class="plabel" id="plabel"></div></div>
+  <pre id="log" aria-live="polite"></pre>
+  <p style="margin:16px 0 0" id="closep" hidden><button id="close">Close setup</button></p>
+</section>
+</main>
+<script>
+(function () {
+  var t = new URLSearchParams(location.search).get('t'), $ = function (id) { return document.getElementById(id); };
+  var filled = false, closed = false, lastLen = -1;
+  function mb(n) { return n >= 1073741824 ? (n / 1073741824).toFixed(1) + ' GB' : Math.round(n / 1048576) + ' MB'; }
+  function fill(i) {
+    filled = true;
+    $('sub').textContent = 'Version ' + i.version + ' for ' + i.system;
+    $('i-dir').textContent = 'Installed for you only, in ' + i.dir;
+    $('i-node').textContent = i.nodeFound ? 'Version ' + i.nodeVersion + ' is already on this computer. Nothing to install.'
+      : (i.nodeOld ? 'Version ' + i.nodeOld + ' is too old. ' : '') + 'Version ' + i.nodePin + ' is downloaded from nodejs.org, checked, and installed for the whole computer. The system asks for an administrator once.';
+    if (i.historical) {
+      $('i-hist').textContent = 'Not inside this installer. Tick the box below to download it now' + (i.historicalBytes ? ' (' + mb(i.historicalBytes) + ')' : '') + '.';
+      $('s-hist').textContent = 'A large download. It can also be fetched later.';
+    } else {
+      $('i-hist').textContent = 'Not inside this installer, and no download link is set yet.';
+      $('o-hist').disabled = true; $('l-hist').className = 'tick off';
+      $('s-hist').textContent = 'Not available for download yet.';
+    }
+  }
+  function show(s) {
+    if (!filled) fill(s.info);
+    var ask = s.phase === 'ask';
+    $('ask').hidden = !ask; $('opts').hidden = !ask; $('run').hidden = ask;
+    if (ask) return;
+    if (s.lines.length !== lastLen) { lastLen = s.lines.length; $('log').textContent = s.lines.join('\n'); $('log').scrollTop = $('log').scrollHeight; }
+    var p = s.progress, running = s.phase === 'run';
+    $('pwrap').hidden = !running;
+    if (running) {
+      $('plabel').textContent = p.label ? p.label + (p.total > 0 ? ': ' + mb(p.got) + ' of ' + mb(p.total) : (p.got > 0 ? ': ' + mb(p.got) : '')) : 'Working';
+      var known = p.total > 0;
+      $('bar').className = known ? 'bar' : 'bar busy';
+      $('bar').firstChild.style.width = known ? Math.min(100, 100 * p.got / p.total) + '%' : '';
+    } else {
+      var bad = s.phase === 'fail', e = $('end');
+      $('run-h').textContent = bad ? 'Not installed' : 'Installed';
+      e.hidden = false; e.className = 'end ' + (bad || s.problems ? 'bad' : 'good');
+      e.textContent = bad ? 'The install stopped. The last line below says why.'
+        : s.problems ? 'ARSENAL is installed, but ' + s.problems + ' step' + (s.problems > 1 ? 's' : '') + ' did not work. See the lines marked "no" below.'
+        : 'ARSENAL is installed.';
+      $('closep').hidden = false;
+    }
+  }
+  function poll() {
+    if (closed) return;
+    fetch('/state?t=' + t).then(function (r) { return r.json(); }).then(show).catch(function () {
+      if (!closed) $('sub').textContent = 'ARSENAL Setup is no longer running. You can close this tab.';
+    }).then(function () { setTimeout(poll, 600); });
+  }
+  $('go').onclick = function () {
+    $('go').disabled = true;
+    fetch('/install?t=' + t, { method: 'POST', body: JSON.stringify({ desktop: $('o-desktop').checked, start: $('o-start').checked, autostart: $('o-autostart').checked, historical: $('o-hist').checked }) });
+  };
+  $('close').onclick = function () {
+    closed = true;
+    fetch('/close?t=' + t, { method: 'POST' }).catch(function () {}).then(function () {
+      $('closep').hidden = true; $('sub').textContent = 'Setup is closed. You can close this tab.';
+      window.close();
+    });
+  };
+  poll();
+})();
+</script>
+</body>
+</html>

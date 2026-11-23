@@ -1,0 +1,27 @@
+{"form":"limmap/1","part":"chk-chk-ref","codes":{
+"WARN_BREED_PERCENT_HIGH":{"tool":"refcheck","sev":"crash","lim":["TST-116"],"at":"tools/refcheck/refcheck.js:408","class":"crash","why":"breed health percent above 1000, 90000 was fatal at start"},
+"TERRAIN_EFFECT_UNKNOWN":{"tool":"refcheck","sev":"crash","lim":["INT-25"],"at":"tools/refcheck/refcheck.js:419","class":"crash","why":"terrains.set effect name has no block in effects.set"},
+"CARD_VEHICLE_MISSING":{"tool":"refcheck","sev":"crash","lim":["MIS-50"],"at":"tools/refcheck/refcheck.js:438","class":"crash","why":"crewed card vehicle names no mounted entity, crash on buy"},
+"SOUND_LOUDNESS_MISSING":{"tool":"refcheck","sev":"crash","lim":["VIS-27"],"at":"tools/refcheck/refcheck.js:503","class":"crash","why":"mod sound.set lacks default or a loudness name in use"},
+"WARN_BOARDER_BASE_UNKNOWN":{"tool":"refcheck","sev":"silent","lim":["ENG-33"],"at":"tools/refcheck/refcheck.js:457","class":"silent","why":"boarder base animation is not a sequence of the entity model"},
+"VISION_RULE_SHADOWED":{"tool":"refcheck","sev":"silent","lim":["VIS-02"],"at":"tools/refcheck/refcheck.js:469","class":"silent","why":"later vision rule sibling tests same property, earlier always wins"},
+"WARN_NIGHT_NO_PENALTY":{"tool":"refcheck","sev":"silent","lim":["VIS-07"],"at":"tools/refcheck/refcheck.js:478","class":"silent","why":"mod night preset with night_vision 1 has no sight penalty"},
+"ENV_PRESET_MISSING":{"tool":"refcheck","sev":"silent","lim":["VIS-12"],"at":"tools/refcheck/refcheck.js:485","class":"silent","why":"map or command environment preset has no set/environment file"},
+"WARN_SOUND_PRIORITY_HIGH":{"tool":"refcheck","sev":"silent","lim":["VIS-26"],"at":"tools/refcheck/refcheck.js:498","class":"silent","why":"mod sound.set loudness priority above as64 top of 40"}
+},"result":{
+"INT-25":{"state":"built","code":"TERRAIN_EFFECT_UNKNOWN"},
+"MIS-50":{"state":"built","code":"CARD_VEHICLE_MISSING"},
+"PORT-121":{"state":"had","code":"REF_WEAPON_UNKNOWN"},
+"PORT-125":{"state":"built","code":"INCLUDE_MISSING"},
+"TST-97":{"state":"had","code":"REF_WEAPON_UNKNOWN"},
+"TST-99":{"state":"built","code":"INCLUDE_MISSING"},
+"TST-108":{"state":"built","code":"INCLUDE_MISSING"},
+"TST-116":{"state":"built","code":"WARN_BREED_PERCENT_HIGH"},
+"VIS-27":{"state":"built","code":"SOUND_LOUDNESS_MISSING"},
+"ENG-33":{"state":"built","code":"WARN_BOARDER_BASE_UNKNOWN"},
+"VIS-02":{"state":"built","code":"VISION_RULE_SHADOWED"},
+"VIS-07":{"state":"built","code":"WARN_NIGHT_NO_PENALTY"},
+"VIS-12":{"state":"built","code":"ENV_PRESET_MISSING"},
+"VIS-26":{"state":"built","code":"WARN_SOUND_PRIORITY_HIGH"},
+"TST-66":{"state":"had","code":"ENTITY_REDEFINITION"}
+}}

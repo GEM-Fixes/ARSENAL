@@ -1,0 +1,28 @@
+{
+  "name": "mp-load",
+  "rows": [
+    "TST-21",
+    "TST-23"
+  ],
+  "mode": "mp",
+  "mods": [],
+  "params": {
+    "map": "multi/1v1_road:combat"
+  },
+  "note": "smoke for --matrix --maps: the map hosts, the mission loads, the game stage is active, no engine exception. params.map is the default; --map/--maps override.",
+  "steps": [
+    {
+      "cmd": "mp_status",
+      "expect": "game stage:active"
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    }
+  ],
+  "src": [
+    " (mp_status)"
+  ]
+}

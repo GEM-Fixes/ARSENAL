@@ -1,0 +1,12 @@
+# Gives a cloned T-34 (my_t34) the engine and track sounds of the vanilla t34_0: its own block in set/interaction_entity/tank.inc is copied under the new id.
+# Edit two values: entity (the new unit, made by the clone op above it) and like (the unit whose sounds it gets).
+# gen iblock.yaml --target as64 --game <AS2 dir> --out <mods dir>/my_iblock --no-stat   (add --plan first: writes nothing, lists every changed line)
+name: my_iblock
+title: My Iblock
+ops:
+  - op: clone
+    entity: t34_0
+    as: my_t34
+  - op: iblock
+    entity: my_t34
+    like: t34_0

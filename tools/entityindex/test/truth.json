@@ -1,0 +1,16 @@
+{
+  "a": {
+    "inherits": ["resource/properties/p.ext"],
+    "extenders": ["inventory"],
+    "model": "resource/entity/a.mdl",
+    "refs": [
+      ["anim", "anm_p", "resource/properties/p.ext", 1],
+      ["model", "a.mdl", "resource/entity/a.def", 3],
+      ["item", "ammo x", "resource/entity/a.def", 4],
+      ["weapon", "w1", "resource/entity/a.def", 5],
+      ["ammo", "ammo x", "resource/entity/a.def", 5]
+    ]
+  },
+  "b": { "inherits": [], "extenders": ["enumerator"], "model": "resource/entity/a.mdl" },
+  "modelRefs": [["ply", "m.ply", "resource/entity/a.mdl", 1]]
+}

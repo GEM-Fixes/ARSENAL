@@ -1,0 +1,42 @@
+{
+  "name": "int-19",
+  "rows": [
+    "INT-19"
+  ],
+  "src": [
+    "(not part of this release)",
+    " (name = value)"
+  ],
+  "note": "Pass: dbg_ vars read over the pipe with their source defaults. Default 0 on dbg_volumes, dbg_signal. Retail 3.262 not covered.",
+  "steps": [
+    {
+      "wait": 1
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "dbg_pathSearchLimit",
+      "match": "^dbg_pathSearchLimit = 60\\b",
+      "want": true
+    },
+    {
+      "reply": "dbg_volumes",
+      "match": "^dbg_volumes = 0\\b",
+      "want": true
+    },
+    {
+      "reply": "dbg_signal",
+      "match": "^dbg_signal = 0\\b",
+      "want": true
+    }
+  ],
+  "mode": "menu",
+  "mods": [
+    "as64+"
+  ],
+  "params": {}
+}

@@ -1,0 +1,20 @@
+{panel_control
+	{attack
+		{position 0 0}
+	}
+	{attack_melee
+		{position 0 0}
+	}
+	{nosuchthing}
+	{move
+		{position 1 0}
+		{condition "human" "bogus"}
+	}
+	{emit
+		{position 5 0}
+	}
+	{gc_cp_browse_special}
+	{burst
+		{position 2 0}
+	}
+}

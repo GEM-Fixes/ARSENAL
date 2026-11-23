@@ -1,0 +1,66 @@
+{
+  "about": "Bots part 'targets': every key and shape this part reads or writes, with its trust tag. GoH: the same forms as the AS2 base.",
+  "files": {
+    "set/target/select.set": { "src": "", "tag": "V", "note": "{selectors (include \"x.inc\")...}: selectors pushed in read order, the FIRST one that fits a unit wins (FindTargetSelector). Read only here." },
+    "set/target/*.inc": { "src": "", "tag": "V", "note": "{selector {type \"x\"} | {unit \"tags\" [\"weapon tags\"]} {group ...}...}" },
+    "set/target/ammo.set": { "src": "", "tag": "V", "note": "{select_ammo {<class> [in_bush|in_cover] {\"ammo tags\" {option value}...}...}...}; the first rule of a block gets the highest priority, a catch-all with priority -1 (do not fire) closes each block" }
+  },
+  "selector": {
+    "type":   { "src": "", "tag": "V", "write": false },
+    "unit":   { "src": "", "tag": "V", "write": false, "note": "unit tags of the shooter and tags of the weapon it holds" },
+    "group":  { "src": "", "tag": "V", "write": "move up/down, add, remove", "note": "groups run in order; each takes its matches out of the pool; a target no group takes is never attacked" },
+    "select": { "src": "", "tag": "V", "write": "{select {class X} [{in_range N}]}", "note": "several selects in a group = OR; terms inside one select = AND" },
+    "ignore": { "src": "", "tag": "V", "write": false, "note": "removes the target for this AND every later group" },
+    "sort":   { "src": "", "tag": "V", "write": false }
+  },
+  "terms": {
+    "class":        { "src": "", "tag": "V", "write": true },
+    "entity":       { "src": "", "tag": "V", "write": false },
+    "weapon":       { "src": "", "tag": "V", "write": false },
+    "attacking":    { "src": "", "tag": "V", "write": false },
+    "threating":    { "src": "", "tag": "V", "write": false, "note": "spelled so by the engine" },
+    "invisible":    { "src": "", "tag": "V", "write": false },
+    "out_of_range": { "src": "", "tag": "V", "write": false },
+    "in_range":     { "src": "", "tag": "V", "write": true, "unit": "metres in the file (the game multiplies by 20, MIS-36); shown and written as metres, no conversion" },
+    "not":          { "src": "", "tag": "V", "write": false },
+    "time_to_aim":  { "src": "", "tag": "V", "write": false },
+    "distance":     { "src": "", "tag": "V", "write": false }
+  },
+  "ammo": {
+    "in_bush":               { "src": "", "tag": "V", "write": false },
+    "in_cover":              { "src": "", "tag": "V", "write": false },
+    "rule":                  { "src": "", "tag": "V", "write": "move up/down, add {\"tags\"}, remove", "note": "tags must all be on the ammo (Contains); first match wins" },
+    "enable_for_ai":         { "src": "", "tag": "V", "write": "{enable_for_ai 0} or the option removed (default on)" },
+    "enable_for_user":       { "src": "", "tag": "V", "write": "{enable_for_user 0} or the option removed" },
+    "enable_for_human_user": { "src": "", "tag": "V", "write": "{enable_for_human_user 0} or the option removed" },
+    "disable":               { "src": "", "tag": "V", "write": false },
+    "ground":                { "src": "", "tag": "V", "write": false },
+    "volume":                { "src": "", "tag": "V", "write": false, "note": "the rule counts only while a part with that volume tag is undamaged" },
+    "check_grenade":         { "src": "", "tag": "V", "write": false },
+    "ready_for_shot":        { "src": "", "tag": "V", "write": false },
+    "charging":              { "src": "", "tag": "V", "write": false }
+  },
+  "presets": {
+    "mgTank":    { "file": "ammo.set", "does": "adds {\"bullet\"} (GoH: {\"small_arms\"}, the tag its human rules use) as the LAST rule of each tank class block that has none", "src": "", "tag": "I", "check": "[T] LAN test-mode match: an AI tank's MG and AI riflemen fire at an enemy tank" },
+    "mgTankOff": { "file": "ammo.set", "does": "removes the bullet rules (GoH: small_arms) from each tank class block: machine guns and rifles stop firing at tanks (the stock AS2 form)", "src": "", "tag": "I", "check": "[T] an AI tank MG and AI riflemen no longer fire at an enemy tank" },
+    "rocketInf": { "file": "ammo.set", "does": "removes {enable_for_user 0} from the rocket launcher rules of the human blocks", "src": "", "tag": "V", "check": "[T] a player-owned launcher fires at infantry by itself" },
+    "farTanks":  { "file": "launcher list (unit human ap / rocketlauncher / at_rifle)", "does": "adds a last group {select {class tank}} per tank class when every group of the list has a select (no group takes the rest)", "src": "", "tag": "I", "check": "[T] an AI launcher soldier engages a tank beyond the old last range" },
+    "closeInf":  { "file": "tank list (type tank, tank_light/medium/heavy)", "does": "adds a first group {select {class human} {in_range 30}} so close infantry rank before tanks", "src": "", "tag": "T", "check": "[T] an AI tank's MG fires at infantry within 30 m while an enemy tank is in sight; the cannon may also take that infantry" }
+  },
+  "symptoms": {
+    "mgtank":      { "lever": "ammo.set: no bullet rule in the tank blocks", "src": " row 2; AI-05", "card": "ammo", "pick": "tank", "preset": "mgTank", "blk": "bots.targets.ammo.presets" },
+    "mgwaste":     { "lever": "ammo.set: a bullet rule in the tank blocks (a mod added it; stock AS2 has none)", "src": "the other direction of mgtank", "card": "ammo", "pick": "tank", "rule": "@bullet", "preset": "mgTankOff", "blk": "bots.targets.ammo.presets" },
+    "tankmg":      { "lever": "tank list: the order of its groups", "src": " row 3; one list per actor", "card": "sel", "pick": "tank", "preset": "closeInf", "blk": "bots.targets.sel.presets" },
+    "rocketinf":   { "lever": "ammo.set: the rocket launcher rules of the human blocks", "src": " row 4", "card": "ammo", "pick": "human", "rule": "rocketlauncher", "preset": "rocketInf", "blk": "bots.targets.ammo.presets" },
+    "fartanks":    { "lever": "launcher list: no last group without a range", "src": " row 5", "card": "sel", "pick": "launcher", "preset": "farTanks", "blk": "bots.targets.sel.presets" },
+    "noretreat":   { "lever": "properties/human.ext brain: retreat_ratio, no_retreat, advance_ratio, move_radius", "src": " row 6", "blk": "bots.brain.courage.k.retreat-ratio" },
+    "circle":      { "lever": "ammo.set: rules with {volume ...} first in the tank block", "src": " row 7; AI-21 [T] cause untraced", "card": "ammo", "pick": "tank", "opt": "volume", "blk": "bots.targets.ammo.rules" },
+    "spotall":     { "lever": "properties/human.ext Sensor: RecognizeTime (and InformRange)", "src": "", "blk": "bots.brain.seeing.k.recognize-time" },
+    "spotfar":     { "lever": "set/vision: radius of the vision_* presets x the radius multiplier", "src": "", "blk": "bots.brain.seeing.k.sight-human", "gohBlk": "bots.brain.seeing.sight" },
+    "blind":       { "lever": "set/vision: radius of the vision_* presets x the radius multiplier; RecognizeTime", "src": "", "blk": "bots.brain.seeing.k.sight-human", "gohBlk": "bots.brain.seeing.sight" },
+    "spotnone":    { "lever": "set/vision: sight range (vehicles are seen at it x 1.1 to 2.4); set/detect.set only keeps a seen unit shown", "src": "", "blk": "bots.brain.seeing.k.sight-human", "gohBlk": "bots.brain.seeing.sight" },
+    "artyslow":    { "lever": "no artillery wind-up key; AimingTolerance and RelaxationTime of the gun can be changed", "src": " row 10; PrepareTime read only for tags sniper and prepare", "blk": "bots.brain.guns.g.aiming-tolerance" },
+    "waves":       { "lever": "script/multiplayer/bot.data.lua and bots_generic.inc (what and how much bots buy)", "src": " row 11", "blk": "bots.recipes", "gohBlk": "diff", "grp": "b", "link": true },
+    "mgburst":     { "lever": "a mod interaction_entity/vehicle.inc: burst_stop_mgun unless the tag full_auto_mode", "src": " row 1; forced pause", "blk": "bots.brain.guns.g.burst" }
+  }
+}

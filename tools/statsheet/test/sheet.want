@@ -1,0 +1,15 @@
+## weapons (3)
+
+| weapon | ammo | range | recharge | damage | threshold | pen table (dist:mm) |
+|---|---|---|---|---|---|---|
+| g1 | (default) | 100/120 | 6 | 100 |  | 10m:100 50m:90 100m:0 |
+| g1 | ap | 5/6 | 6 | 100 |  | 10m:90 100m:0 |
+| g1 | fg | 100/120 | 6 | 100 |  | 10m:100 50m:20 |
+
+## armor (2)
+
+| entity | source | area | front/side/rear/top mm | volumes | matched volumes |
+|---|---|---|---|---|---|
+| bad | mod | turret | 50/30/30/10 | turret* | turret1 |
+| bad | mod | body | 50/30/20/22 | body* | body1 |
+

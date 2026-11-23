@@ -1,0 +1,3 @@
+[lint/keylint]
+resource/entity/k/k.def:2: WARN_UNKNOWN_KEY unknown key "masss" in def block "game_entity"; did you mean "mass"? (engine skips unknown keys silently) (SDL-34)
+1 findings (0 errors, 1 warnings); BUILD FAILED (pack skipped)

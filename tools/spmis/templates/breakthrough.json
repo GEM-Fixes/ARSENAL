@@ -1,0 +1,33 @@
+{
+  "name": "spmis_breakthrough",
+  "campaign": "spmis_examples",
+  "campaignTitle": "Generated missions",
+  "title": "Breakthrough",
+  "briefing": "Punch through the enemy line and reach the road junction beyond it before the enemy closes the gap. You have fifteen minutes.",
+  "date": "July 1944",
+  "place": "Normandy",
+  "map": "map/single/01_usa-skirmish/01_usa-overlord",
+  "player": {
+    "army": "usa",
+    "start": "flag_playerbase",
+    "units": [
+      { "name": "leader", "def": "mp/usa/squadleader2", "count": 1, "at": "start" },
+      { "name": "assault", "def": "mp/usa/smg", "count": 6, "at": "start" },
+      { "name": "riflemen", "def": "mp/usa/rifle", "count": 4, "at": "start" }
+    ]
+  },
+  "enemy": {
+    "army": "ger",
+    "defenders": [
+      { "name": "west", "def": "mp/ger/rifle", "count": 4, "at": "flag_a01" },
+      { "name": "east", "def": "mp/ger/rifle", "count": 4, "at": "flag_a03" }
+    ],
+    "patrols": [
+      { "name": "line_patrol", "def": "mp/ger/smg", "count": 3, "route": ["flag_a01", "flag_a02", "flag_a03"] }
+    ]
+  },
+  "objectives": [
+    { "id": "reach_junction", "type": "reach", "zone": "flag_b02", "text": "Reach the road junction" }
+  ],
+  "lose": { "allDead": true, "unit": "leader", "minutes": 15 }
+}

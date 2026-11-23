@@ -1,0 +1,30 @@
+{
+  "name": "mp-maps",
+  "rows": [
+    "TST-21"
+  ],
+  "mode": "menu",
+  "mods": [],
+  "steps": [
+    {
+      "cmd": "mp_lan"
+    },
+    {
+      "wait_stage": true
+    },
+    {
+      "cmd": "mp_maps",
+      "expect": "."
+    }
+  ],
+  "verdict": [
+    {
+      "log": "Exception \\*{5}",
+      "want": false
+    }
+  ],
+  "src": [
+    " (mp_maps)"
+  ],
+  "note": "mp_lan then mp_maps lists the maps mp_host takes; wait_stage covers TST-21 (next cmd valid only once stage is active)."
+}

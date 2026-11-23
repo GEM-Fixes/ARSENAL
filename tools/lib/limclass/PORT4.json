@@ -1,0 +1,140 @@
+{
+ "form": "limclass/1",
+ "area": "PORT4",
+ "rows": {
+  "PORT-66": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal Block terminator"
+  },
+  "PORT-67": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal Multiply definition"
+  },
+  "PORT-68": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal unexpected token"
+  },
+  "PORT-69": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal unknown condition term"
+  },
+  "PORT-70": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal grid cell size mismatch"
+  },
+  "PORT-71": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal unexpected token"
+  },
+  "PORT-72": {
+   "chk": "built",
+   "class": "crash",
+   "why": "allocation failure about 1.5 min into load",
+   "tool": "mapport",
+   "how": "map.grs with VER-, SEED header or 5-byte patch records"
+  },
+  "PORT-73": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal unexpected token in scene load",
+   "tool": "mapport",
+   "how": "Haze, GlobalTexture, AreaDisableEditor, Health keys in map files"
+  },
+  "PORT-74": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal on model load"
+  },
+  "PORT-75": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal Unknown material"
+  },
+  "PORT-76": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal Block terminator"
+  },
+  "PORT-77": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal Block terminator"
+  },
+  "PORT-78": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal Block terminator"
+  },
+  "PORT-79": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal Block terminator in map load"
+  },
+  "PORT-80": {
+   "chk": "built",
+   "class": "crash",
+   "why": "access violation on spawn"
+  },
+  "PORT-81": {
+   "chk": "built",
+   "class": "crash",
+   "why": "GoH UI data crashes boot",
+   "tool": "modmove",
+   "how": "GoH interface folder inside a mod or layer for as64"
+  },
+  "PORT-82": {
+   "chk": "never",
+   "class": "silent",
+   "why": "no crash but data loss",
+   "never": "which families lost is a run outcome"
+  },
+  "PORT-83": {
+   "chk": "built",
+   "class": "crash",
+   "why": "stack overflow at preload"
+  },
+  "PORT-84": {
+   "chk": "built",
+   "class": "silent",
+   "why": "no fire, no log line",
+   "tool": "donorfit",
+   "how": "weapon aim bone default foresight absent from mdl bones"
+  },
+  "PORT-85": {
+   "chk": "built",
+   "class": "silent",
+   "why": "helmet/body patterns not read",
+   "tool": "goh2as2",
+   "how": "heavy_headgear, light_headgear patterns and GoH body item form in set files"
+  },
+  "PORT-86": {
+   "chk": "built",
+   "class": "crash",
+   "why": "boot fatal unexpected token"
+  }
+ },
+ "dead": [
+  {
+   "row": "PORT-66",
+   "tool": "portfix",
+   "code": "WARN_SHAPE_WORD",
+   "fix": {
+    "code": "WARN_SHAPE_WORD"
+   }
+  },
+  {
+   "row": "PORT-86",
+   "tool": "portfix",
+   "code": "WARN_MACRO_UNDEFINED",
+   "fix": {
+    "code": "WARN_MACRO_UNDEFINED"
+   }
+  }
+ ]
+}

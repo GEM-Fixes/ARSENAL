@@ -1,0 +1,563 @@
+{
+  "file": "properties/human.ext",
+  "note": "Settings of properties/human.ext the engine reads, for every soldier on foot. where: 'prop' = {brain {Properties {key v}}}, 'const' = {brain {const \"key\" v}}, 'sensor' = {Sensor {key v}}. kind: num | pair (two numbers) | switch. as2 / goh: the reader (src path:line, or the gohweb row for GoH, which has no source here) and the tag; null = not offered in that game. Texts: lang keys bots.brain.k.<id>.n (name) and .e (effect).",
+  "items": [
+    {
+      "id": "retreat-ratio",
+      "card": "courage",
+      "where": "prop",
+      "key": "retreat_ratio",
+      "kind": "num",
+      "min": 0,
+      "max": 20,
+      "step": 0.1,
+      "def": "2",
+      "unit": "",
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "V",
+        "src": "MIS-68,"
+      },
+      "goh": {
+        "reader": "GHAI-02",
+        "tag": "V",
+        "src": "GHAI-02 (GoH stock 4)"
+      }
+    },
+    {
+      "id": "advance-ratio",
+      "card": "courage",
+      "where": "prop",
+      "key": "advance_ratio",
+      "kind": "num",
+      "min": 0,
+      "max": 20,
+      "step": 0.1,
+      "def": "2",
+      "unit": "",
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes; one bot game showed no change (MIS-68)"
+      },
+      "goh": {
+        "reader": "GHAI-02",
+        "tag": "V",
+        "src": "GHAI-02 (GoH stock 0.5)"
+      }
+    },
+    {
+      "id": "no-retreat",
+      "card": "courage",
+      "where": "prop",
+      "key": "no_retreat",
+      "kind": "switch",
+      "def": "off",
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes"
+      },
+      "goh": {
+        "reader": "GoH notes",
+        "tag": "I",
+        "src": "GoH notes"
+      }
+    },
+    {
+      "id": "no-advance",
+      "card": "courage",
+      "where": "prop",
+      "key": "no_advance",
+      "kind": "switch",
+      "def": "off",
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes"
+      },
+      "goh": {
+        "reader": "GoH notes",
+        "tag": "I",
+        "src": "GoH notes"
+      },
+      "more": true
+    },
+    {
+      "id": "move-radius",
+      "card": "courage",
+      "where": "prop",
+      "key": "move_radius",
+      "kind": "num",
+      "min": 0,
+      "max": 500,
+      "step": 1,
+      "def": "7",
+      "unit": "m",
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes, ai/mp-bot"
+      },
+      "goh": null
+    },
+    {
+      "id": "fight-distance",
+      "card": "courage",
+      "where": "const",
+      "key": "fight/distance",
+      "kind": "num",
+      "min": 0,
+      "max": 20,
+      "step": 0.1,
+      "def": "none",
+      "unit": "m",
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes"
+      },
+      "goh": null,
+      "more": true
+    },
+    {
+      "id": "detect-grenades",
+      "card": "courage",
+      "where": "const",
+      "key": "bomb/detect_grenades",
+      "kind": "num",
+      "min": 0,
+      "max": 50,
+      "step": 0.5,
+      "def": "5",
+      "unit": "m",
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes"
+      },
+      "goh": null,
+      "more": true
+    },
+    {
+      "id": "detect-explosives",
+      "card": "courage",
+      "where": "const",
+      "key": "bomb/detect_explosives",
+      "kind": "num",
+      "min": 0,
+      "max": 50,
+      "step": 0.5,
+      "def": "7",
+      "unit": "m",
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes"
+      },
+      "goh": null,
+      "more": true
+    },
+    {
+      "id": "danger-run",
+      "card": "courage",
+      "where": "const",
+      "key": "bomb/danger_zone_run",
+      "kind": "num",
+      "min": 0,
+      "max": 30,
+      "step": 0.5,
+      "def": "3",
+      "unit": "m",
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes"
+      },
+      "goh": null,
+      "more": true
+    },
+    {
+      "id": "danger-jump",
+      "card": "courage",
+      "where": "const",
+      "key": "bomb/danger_zone_jump",
+      "kind": "num",
+      "min": 0,
+      "max": 30,
+      "step": 0.5,
+      "def": "4",
+      "unit": "m",
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes"
+      },
+      "goh": null,
+      "more": true
+    },
+    {
+      "id": "danger-hide",
+      "card": "courage",
+      "where": "const",
+      "key": "bomb/danger_zone_hide",
+      "kind": "num",
+      "min": 0,
+      "max": 30,
+      "step": 0.5,
+      "def": "6",
+      "unit": "m",
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes"
+      },
+      "goh": null,
+      "more": true
+    },
+    {
+      "id": "danger-zone",
+      "card": "courage",
+      "where": "const",
+      "key": "bomb/danger_zone",
+      "kind": "num",
+      "min": 0,
+      "max": 30,
+      "step": 0.5,
+      "def": "4",
+      "unit": "m",
+      "as2": null,
+      "goh": {
+        "reader": "GHAI-78",
+        "tag": "I",
+        "src": "GHAI-78 (GoH stock 7)"
+      },
+      "more": true
+    },
+    {
+      "id": "recognize-time",
+      "card": "seeing",
+      "where": "sensor",
+      "key": "RecognizeTime",
+      "kind": "num",
+      "min": 0.01,
+      "max": 30,
+      "step": 0.01,
+      "def": "2",
+      "unit": "s",
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "V",
+        "src": "notes"
+      },
+      "goh": {
+        "reader": "GHHUM-70",
+        "tag": "V",
+        "src": "GHHUM-70"
+      }
+    },
+    {
+      "id": "min-recognize-time",
+      "card": "seeing",
+      "where": "sensor",
+      "key": "MinRecognizeTime",
+      "kind": "num",
+      "min": 0,
+      "max": 30,
+      "step": 0.01,
+      "def": "0",
+      "unit": "s",
+      "as2": null,
+      "goh": {
+        "reader": "GHHUM-70",
+        "tag": "V",
+        "src": "GHAI-73, GHHUM-70"
+      },
+      "more": true
+    },
+    {
+      "id": "inform-range",
+      "card": "seeing",
+      "where": "sensor",
+      "key": "InformRange",
+      "kind": "pair",
+      "min": 0,
+      "max": 1000,
+      "step": 1,
+      "def": "20 20",
+      "unit": "m",
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes"
+      },
+      "goh": null
+    },
+    {
+      "id": "attack-zone",
+      "card": "seeing",
+      "where": "sensor",
+      "key": "AttackZone",
+      "kind": "num",
+      "min": 0,
+      "max": 500,
+      "step": 0.5,
+      "def": "5",
+      "unit": "m",
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes"
+      },
+      "goh": null,
+      "more": true
+    },
+    {
+      "id": "threat-zone",
+      "card": "seeing",
+      "where": "sensor",
+      "key": "ThreatZone",
+      "kind": "num",
+      "min": 0,
+      "max": 1000,
+      "step": 1,
+      "def": "15",
+      "unit": "m",
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes"
+      },
+      "goh": {
+        "reader": "GHAI-74",
+        "tag": "I",
+        "src": "GHAI-74"
+      },
+      "more": true
+    },
+    {
+      "id": "remember-time",
+      "card": "seeing",
+      "where": "sensor",
+      "key": "RememberTime",
+      "kind": "num",
+      "min": 0,
+      "max": 3600,
+      "step": 1,
+      "def": "120",
+      "unit": "s",
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes"
+      },
+      "goh": {
+        "reader": "GHAI-75",
+        "tag": "V",
+        "src": "GHAI-75"
+      }
+    }
+  ],
+  "guns": [
+    {
+      "id": "aiming-tolerance",
+      "key": "AimingTolerance",
+      "reader": "",
+      "tag": "I",
+      "def": "10"
+    },
+    {
+      "id": "relaxation-time",
+      "key": "RelaxationTime",
+      "reader": "",
+      "tag": "I",
+      "def": "0"
+    },
+    {
+      "id": "spread-tolerance",
+      "key": "SpreadTolerance",
+      "reader": "",
+      "tag": "I",
+      "def": "0"
+    },
+    {
+      "id": "burst",
+      "key": "burst",
+      "reader": "",
+      "tag": "V",
+      "def": ""
+    },
+    {
+      "id": "prepare-time",
+      "key": "PrepareTime",
+      "reader": "",
+      "tag": "I",
+      "def": "0"
+    }
+  ],
+  "leftOut": [
+    {
+      "id": "fix-inventory",
+      "key": "fix_inventory",
+      "reader": "",
+      "tag": "V"
+    },
+    {
+      "id": "modes",
+      "key": "control, fire_mode, move_mode, move_speed, ai_move",
+      "reader": "",
+      "tag": "V"
+    },
+    {
+      "id": "visor",
+      "key": "Visor, OperatableRequired, UnmaskProfile",
+      "reader": "",
+      "tag": "I",
+      "file": "properties/human.ext"
+    }
+  ],
+  "sight": [
+    {
+      "id": "sight-human",
+      "card": "seeing",
+      "preset": "vision_human",
+      "key": "(define \"vision_human\" (\"radius\" r(N)))",
+      "keyX": true,
+      "kind": "num",
+      "min": 5,
+      "max": 500,
+      "step": 0.5,
+      "def": "none",
+      "unit": "m",
+      "more": false,
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes, keys/sensor"
+      },
+      "goh": null
+    },
+    {
+      "id": "sight-crew",
+      "card": "seeing",
+      "preset": "vision_humancrew",
+      "key": "(define \"vision_humancrew\" (\"radius\" r(N)))",
+      "keyX": true,
+      "kind": "num",
+      "min": 5,
+      "max": 500,
+      "step": 0.5,
+      "def": "none",
+      "unit": "m",
+      "more": true,
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes, keys/sensor"
+      },
+      "goh": null
+    },
+    {
+      "id": "sight-optic",
+      "card": "seeing",
+      "preset": "vision_optic",
+      "key": "(define \"vision_optic\" (\"radius\" r(N)))",
+      "keyX": true,
+      "kind": "num",
+      "min": 5,
+      "max": 500,
+      "step": 0.5,
+      "def": "none",
+      "unit": "m",
+      "more": true,
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes, keys/sensor"
+      },
+      "goh": null
+    },
+    {
+      "id": "sight-gunner",
+      "card": "seeing",
+      "preset": "vision_gunner",
+      "key": "(define \"vision_gunner\" (\"radius\" r(N)))",
+      "keyX": true,
+      "kind": "num",
+      "min": 5,
+      "max": 500,
+      "step": 0.5,
+      "def": "none",
+      "unit": "m",
+      "more": true,
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes, keys/sensor"
+      },
+      "goh": null
+    },
+    {
+      "id": "sight-turret",
+      "card": "seeing",
+      "preset": "vision_turret",
+      "key": "(define \"vision_turret\" (\"radius\" r(N)))",
+      "keyX": true,
+      "kind": "num",
+      "min": 5,
+      "max": 500,
+      "step": 0.5,
+      "def": "none",
+      "unit": "m",
+      "more": true,
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes, keys/sensor"
+      },
+      "goh": null
+    },
+    {
+      "id": "sight-all",
+      "card": "seeing",
+      "preset": null,
+      "key": "(define \"radius\" {radius (* N %r)})",
+      "kind": "mult",
+      "min": 0.1,
+      "max": 5,
+      "step": 0.05,
+      "def": "none",
+      "unit": "",
+      "more": true,
+      "as2": {
+        "reader": "",
+        "use": "",
+        "tag": "I",
+        "src": "notes, keys/sensor"
+      },
+      "goh": null
+    }
+  ],
+  "sightNote": "Sight range: set/vision/vision.set (the radius macro, a multiplier) and vision_generic.inc (the r(N) of each vision_* preset); shown in metres = r x multiplier. AS2 forms only (sight.js); GoH has another form."
+}

@@ -1,0 +1,5 @@
+; file:line CODE -- GoH vanilla findings shown as info under --exe goh. Built from the vanilla run strlint --vfs --exe goh (3 findings, 9739 files).
+; obstacleID "none" in three GoH service defs: "none" is in no GoH obstacles.reg; whether the GoH reader treats "none" as no obstacle is not read [T]
+resource/entity/service/-multiplayer/fortification/fortification_1.def:3 STR_OBSTACLE_NAME_MISSING
+resource/entity/service/-multiplayer/fortification/fortification_base.def:3 STR_OBSTACLE_NAME_MISSING
+resource/entity/service/fortification/foxhole_fortification/foxhole_fortification.def:24 STR_OBSTACLE_NAME_MISSING

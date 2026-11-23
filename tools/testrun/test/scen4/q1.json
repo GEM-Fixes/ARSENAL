@@ -1,0 +1,1 @@
+{"name":"q1","mode":"mp","map":"mp_test","sameLaunch":true,"steps":[{"cmd":"echo one"}],"verdict":[{"reply":"echo one","match":"^one$"},{"event":"loaded"}]}

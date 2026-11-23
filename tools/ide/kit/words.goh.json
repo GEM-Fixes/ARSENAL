@@ -1,0 +1,1224 @@
+{
+ "src": {
+  "events": "tools/ialint/ialint.js EVENTS minus inflammation_time; plus the GoH-only reactions bullet_hit_effect, pierce_effect (GHINT-15) and destroy (GHINT-17)",
+  "terrainEvents": "set/interaction_terrain/effects (hit, detonate; bullet never fires)",
+  "conditions": " REGISTER_CONDITION",
+  "actions": "tools/fxlint/actions.json actions",
+  "containers": "tools/fxlint/actions.json containers without if, delay, delay_ex; plus tear",
+  "valueBlocks": "blocks that hold values, not actions",
+  "ctxOfEvent": "design Appendix B",
+  "ctxOfCond": "design Appendix B",
+  "ctxOfAct": "the pieces' watch-outs (volume, part or the other unit)",
+  "terrains": "GoH set/interaction_terrain/terrains.set block names",
+  "ables": "engine ability names plus exploded, collect",
+  "places": "tools/ialint/ialint.js VANILLA_PLACES",
+  "helperEvents": "GoH set/interaction_entity/** (define) bodies, events of the helpers they call included",
+  "hidden": "kit pieces with a block word in the AS2 interaction files and in none of the GoH ones [I]"
+ },
+ "events": [
+  "accelerate",
+  "animation_end",
+  "blast",
+  "blast_hit",
+  "blow",
+  "board",
+  "brake",
+  "break",
+  "break_armor",
+  "break_armor_again",
+  "bullet_hit",
+  "bullet_hit_effect",
+  "contact",
+  "crew",
+  "destroy",
+  "engine",
+  "fire",
+  "ground_hit",
+  "grounded",
+  "ik",
+  "move",
+  "movement_mode_changed",
+  "operatable",
+  "overlap",
+  "pierce",
+  "pierce_effect",
+  "repair",
+  "spawn",
+  "swim",
+  "terrain_fx",
+  "terrain_pp",
+  "turn"
+ ],
+ "terrainEvents": [
+  "hit",
+  "detonate",
+  "bullet"
+ ],
+ "conditions": [
+  "able",
+  "air",
+  "altitude",
+  "boarding",
+  "bone",
+  "broken",
+  "burned",
+  "can_crush",
+  "chassis",
+  "component",
+  "contact_velocity",
+  "crew_in_place",
+  "dead",
+  "destroyed",
+  "difficulty",
+  "effector",
+  "effector_velocity",
+  "explosive_amount",
+  "fallen",
+  "false",
+  "flora_regenerate",
+  "fogged",
+  "has_place",
+  "hit_side",
+  "impregnable",
+  "inactive",
+  "kill_flags",
+  "linked",
+  "lying",
+  "material",
+  "min_energy",
+  "min_mass",
+  "min_speed",
+  "mine_effector",
+  "mined",
+  "move_backward",
+  "move_forward",
+  "name",
+  "operatable",
+  "personage",
+  "place",
+  "rain",
+  "rand",
+  "senseless",
+  "simulating",
+  "stuff",
+  "stuff_activated",
+  "stuff_filled",
+  "sunlight",
+  "swimming",
+  "tagged",
+  "terrain_fx",
+  "terrain_pp",
+  "tex_mod",
+  "true",
+  "turn_left",
+  "turn_right",
+  "under_water",
+  "user_control",
+  "user_squad",
+  "velocity",
+  "volume",
+  "volume_armored",
+  "volume_bone_level",
+  "water_level",
+  "work"
+ ],
+ "actions": [
+  "able",
+  "add_view",
+  "ani_play",
+  "ani_stop",
+  "ani_wind",
+  "animate_place",
+  "area",
+  "attack_load",
+  "attack_save",
+  "auto_operatable",
+  "blastwave",
+  "bone",
+  "break_window_in_hole",
+  "bullet_detonate",
+  "burn",
+  "call",
+  "change_obstacle",
+  "chassis_work",
+  "clear_inventory",
+  "component",
+  "components",
+  "con",
+  "constrain_velocity",
+  "crew_emit",
+  "crew_enable",
+  "crew_throw_off",
+  "damage_report",
+  "delay",
+  "delay_effect",
+  "delay_ex",
+  "delete",
+  "depend_on_wind",
+  "die",
+  "drop_orders",
+  "explode_inventory",
+  "explosive",
+  "fall_down",
+  "fire",
+  "for_each_link",
+  "for_each_volume",
+  "get_off",
+  "gravity",
+  "health_damage_blast",
+  "health_damage_blow",
+  "health_damage_count",
+  "health_damage_crush",
+  "health_damage_pierce",
+  "hide",
+  "if",
+  "ik_enable",
+  "impulse",
+  "inactive",
+  "inherited",
+  "kick_entity_manager",
+  "kill_crew",
+  "kill_delay",
+  "kill_flags",
+  "knockdown",
+  "land",
+  "link_grenade_to_nearest_human",
+  "link_sound",
+  "log",
+  "movement_limit",
+  "movement_type",
+  "mtl_enable_skin",
+  "physics_work",
+  "pillar_fall",
+  "pillar_up",
+  "play_sound",
+  "player",
+  "rail_break",
+  "rail_switch",
+  "reset_manual_control",
+  "rtfunc",
+  "scale",
+  "set",
+  "set_heater",
+  "set_skeleton",
+  "signal",
+  "smoke",
+  "spawn",
+  "spawn_human",
+  "start_sound",
+  "stat_notify",
+  "stop_sound",
+  "stuff_detonate",
+  "stunned",
+  "tags",
+  "take_off",
+  "talk",
+  "tear",
+  "tex_mod",
+  "tex_morph",
+  "throw_off",
+  "throw_on_ground",
+  "unlink_trailer",
+  "update_shadow",
+  "update_visibility_patch",
+  "use_blend_tex",
+  "use_local_light",
+  "view",
+  "volume",
+  "volumes",
+  "weapon_work",
+  "with_effector",
+  "with_linked_entity"
+ ],
+ "containers": [
+  "for_each_link",
+  "for_each_volume",
+  "spawn",
+  "spawn_human",
+  "take_off",
+  "tear",
+  "with_effector",
+  "with_linked_entity"
+ ],
+ "valueBlocks": [
+  "effects",
+  "explode_inventory",
+  "health_damage_blast",
+  "health_damage_blow",
+  "health_damage_count",
+  "health_damage_crush",
+  "health_damage_pierce",
+  "table"
+ ],
+ "ctxOfEvent": {
+  "spawn": [],
+  "board": [
+   "instigator",
+   "sender"
+  ],
+  "bullet_hit": [
+   "bullet",
+   "volume",
+   "part",
+   "instigator",
+   "value",
+   "source"
+  ],
+  "pierce": [
+   "bullet",
+   "volume",
+   "part",
+   "instigator",
+   "value",
+   "source"
+  ],
+  "blast_hit": [
+   "volume",
+   "part",
+   "value",
+   "source"
+  ],
+  "blast": [
+   "volume",
+   "part",
+   "value",
+   "source"
+  ],
+  "break_armor": [
+   "bullet",
+   "volume",
+   "part",
+   "instigator",
+   "value",
+   "sender",
+   "source"
+  ],
+  "break_armor_again": [
+   "bullet",
+   "volume",
+   "part",
+   "instigator",
+   "value",
+   "sender",
+   "source"
+  ],
+  "contact": [
+   "volume",
+   "part",
+   "instigator",
+   "value"
+  ],
+  "ground_hit": [
+   "volume",
+   "part",
+   "value",
+   "sender"
+  ],
+  "break": [
+   "part"
+  ],
+  "repair": [
+   "part"
+  ],
+  "fire": [
+   "value",
+   "sender"
+  ],
+  "blow": [
+   "instigator",
+   "value",
+   "sender"
+  ],
+  "move": [
+   "value"
+  ],
+  "turn": [
+   "value"
+  ],
+  "movement_mode_changed": [
+   "sender"
+  ],
+  "animation_end": [
+   "sender"
+  ],
+  "ik": [
+   "sender"
+  ],
+  "overlap": [
+   "instigator"
+  ],
+  "operatable": [],
+  "accelerate": [],
+  "brake": [],
+  "engine": [],
+  "swim": [],
+  "grounded": [],
+  "terrain_pp": [],
+  "terrain_fx": []
+ },
+ "ctxOfCond": {
+  "stuff": [
+   "source"
+  ],
+  "volume": [
+   "volume"
+  ],
+  "material": [
+   "volume"
+  ],
+  "volume_bone_level": [
+   "volume"
+  ],
+  "volume_armored": [
+   "volume"
+  ],
+  "component": [
+   "part",
+   "volume"
+  ],
+  "min_energy": [
+   "value"
+  ],
+  "min_speed": [
+   "value"
+  ],
+  "contact_velocity": [
+   "value"
+  ],
+  "move_forward": [
+   "value"
+  ],
+  "move_backward": [
+   "value"
+  ],
+  "turn_left": [
+   "value"
+  ],
+  "turn_right": [
+   "value"
+  ],
+  "effector": [
+   "instigator"
+  ],
+  "effector_velocity": [
+   "instigator"
+  ],
+  "mine_effector": [
+   "instigator"
+  ],
+  "can_crush": [
+   "instigator"
+  ],
+  "name": [
+   "sender"
+  ],
+  "hit_side": [
+   "bullet"
+  ]
+ },
+ "ctxOfAct": {
+  "volume": [
+   "volume"
+  ],
+  "component": [
+   "part",
+   "volume"
+  ],
+  "for_each_volume": [
+   "volume",
+   "part"
+  ],
+  "tear from_volume": [
+   "volume",
+   "part"
+  ],
+  "blastwave position": [
+   "volume",
+   "part"
+  ],
+  "with_effector": [
+   "instigator"
+  ]
+ },
+ "terrains": [
+  "ground",
+  "road",
+  "country_road",
+  "rock",
+  "ice",
+  "swamp",
+  "sand",
+  "shallow_water",
+  "water",
+  "deep_water",
+  "underwater",
+  "air",
+  "puddle",
+  "mud",
+  "bridge",
+  "bridge_wood",
+  "bridge_steel",
+  "bridge_snow",
+  "snow",
+  "grass"
+ ],
+ "ables": [
+  "ally_crew",
+  "ammo_out_indicator",
+  "any_crew",
+  "crew",
+  "fight",
+  "minimap",
+  "neutral",
+  "personage",
+  "recruit",
+  "repair",
+  "repaired",
+  "select",
+  "talk",
+  "unmask",
+  "burning",
+  "emit_crew_on_injure",
+  "emit_on_attack",
+  "emit_on_mandie",
+  "emit_passangers_on_enemy",
+  "sinking",
+  "exploded",
+  "collect"
+ ],
+ "places": [
+  "charge",
+  "flamer1",
+  "flamer2",
+  "flamer3",
+  "flamer4",
+  "flamer5",
+  "gun",
+  "gun2",
+  "hand_right",
+  "mgun",
+  "mgun1",
+  "mgun2",
+  "mgun3",
+  "mgun_linked1",
+  "mgun_linked2",
+  "mgun_linked3",
+  "mgun_linked4",
+  "mgun_own1",
+  "mgun_own2",
+  "mgun_own3",
+  "mgun_own4",
+  "zenite"
+ ],
+ "helperEvents": {
+  "+tag-": [],
+  "2x1_barrage": [
+   "spawn"
+  ],
+  "2x2_barrage": [
+   "spawn"
+  ],
+  "2x3_barrage": [
+   "spawn"
+  ],
+  "3x3_barrage": [
+   "\"start",
+   "spawn"
+  ],
+  "4x2_barrage": [
+   "spawn"
+  ],
+  "4x3_barrage": [
+   "spawn"
+  ],
+  "8x2_barrage": [
+   "spawn"
+  ],
+  "Autocannon_s1": [],
+  "Autocannon_s1_MultiBarrel": [],
+  "Autocannon_s1_Rapid": [],
+  "Autocannon_s2": [],
+  "Automatic": [],
+  "Automatic_Weapon": [],
+  "Automatic_Weapon_Space": [],
+  "Bren": [],
+  "Browning_303_x8": [],
+  "Cannon_105to130mm": [],
+  "Cannon_105to130mm_LV": [],
+  "Cannon_150to210mm": [],
+  "Cannon_280mm+": [],
+  "Cannon_37to40mm": [],
+  "Cannon_45to47mm": [],
+  "Cannon_50to57mm": [],
+  "Cannon_50to57mm_HV": [],
+  "Cannon_75to76mm": [],
+  "Cannon_75to76mm_HV": [],
+  "Cannon_75to76mm_LV": [],
+  "Cannon_85to100mm": [],
+  "Cannon_85to100mm_HV": [],
+  "Cannon_Breech": [],
+  "DS39": [],
+  "DShK38": [],
+  "DShK38_int": [],
+  "DT": [],
+  "KP31": [],
+  "Kfz70_sound": [
+   "\"add_movement_sound"
+  ],
+  "LS26": [],
+  "M1919A4": [],
+  "M2HB": [],
+  "M33_DualMount": [],
+  "M45_QuadMount": [],
+  "MAC31": [],
+  "MG08": [],
+  "MG13": [],
+  "MG131": [],
+  "MG15": [],
+  "MG151_15_Drilling": [],
+  "MG17": [],
+  "MG34": [],
+  "MG42": [],
+  "Mortar_12cm": [],
+  "Mortar_5-6cm": [],
+  "Mortar_8cm": [],
+  "PM1910_30": [],
+  "PM1910_30_MG1": [],
+  "SG43": [],
+  "Vickers": [],
+  "Vickers_50": [],
+  "Vickers_GO": [],
+  "ZB37": [],
+  "ZB37_QuadMount": [],
+  "ZPU_1931_4M": [],
+  "aec_mkII_sound": [
+   "\"add_movement_sound"
+  ],
+  "aec_mkI_sound": [
+   "\"add_movement_sound"
+  ],
+  "ammunition_loads": [
+   "\"ammunition_loads"
+  ],
+  "animal_health": [],
+  "animation_sound": [
+   "animation_event %0"
+  ],
+  "at_grenade_blast": [],
+  "at_grenade_pierce": [],
+  "at_mine_blast": [],
+  "at_weapon_icon": [
+   "\"link",
+   "\"show",
+   "spawn"
+  ],
+  "ba_sound": [
+   "\"add_movement_sound"
+  ],
+  "barrage_delay": [],
+  "bedford_sound": [
+   "\"add_movement_sound"
+  ],
+  "bf109_sound": [
+   "\"add_movement_sound"
+  ],
+  "bf110_sound": [
+   "\"add_movement_sound"
+  ],
+  "bm13_fire": [],
+  "body_break_fx": [],
+  "bound": [
+   "\"bound"
+  ],
+  "break_window": [],
+  "bt_sound": [
+   "\"add_movement_sound"
+  ],
+  "burn_bone_fx": [],
+  "burn_damage": [],
+  "burn_from_volume": [],
+  "burn_part": [
+   "\"burn_%0_start",
+   "\"burn_%0_stop"
+  ],
+  "burn_start": [],
+  "burn_volume": [],
+  "burn_volume_fx": [],
+  "c47_sound": [
+   "\"add_movement_sound"
+  ],
+  "cannon_big": [
+   "\"add_movement_sound",
+   "spawn"
+  ],
+  "cannon_sandbag": [],
+  "cannon_skis": [
+   "\"add_movement_sound",
+   "spawn"
+  ],
+  "cannon_small": [
+   "\"add_movement_sound",
+   "spawn"
+  ],
+  "cckw_sound": [
+   "\"add_movement_sound"
+  ],
+  "challenger_sound": [
+   "\"add_movement_sound"
+  ],
+  "char_b1_sound": [
+   "\"add_movement_sound"
+  ],
+  "check_wheel": [],
+  "check_wheel_x2": [],
+  "churchill_sound": [
+   "\"add_movement_sound"
+  ],
+  "component_break": [],
+  "component_restore": [],
+  "con_mortar_barrage": [
+   "spawn"
+  ],
+  "contact_part": [],
+  "cookoff_rand_explosion": [],
+  "crew_ani": [],
+  "crew_ani_delay": [],
+  "crew_ani_event": [
+   "%event %call"
+  ],
+  "crew_ani_loop": [],
+  "crew_ani_play": [],
+  "crew_ani_play_delay": [],
+  "crew_ani_stop": [],
+  "crew_ani_wind": [],
+  "cromwell_sound": [
+   "\"add_movement_sound"
+  ],
+  "cruiser_mk1_sound": [
+   "\"add_movement_sound"
+  ],
+  "cruiser_mk3_sound": [
+   "\"add_movement_sound"
+  ],
+  "crusader_aa_mk1_sound": [
+   "\"add_movement_sound"
+  ],
+  "crusader_sound": [
+   "\"add_movement_sound"
+  ],
+  "cut_big_part": [],
+  "cut_big_piece": [],
+  "cut_part": [],
+  "cut_part_delete": [],
+  "cut_piece": [],
+  "cut_pieces": [],
+  "cut_shield_part": [],
+  "cut_stone": [],
+  "cut_subpiece": [],
+  "cut_subpieces": [],
+  "cut_wall": [],
+  "daimler_sound": [
+   "\"add_movement_sound"
+  ],
+  "damage_process_blast": [],
+  "damage_process_pierce": [],
+  "delayed_change_model": [],
+  "door": [
+   "\"close%0",
+   "\"close_fast%0",
+   "\"open%0",
+   "\"open_fast%0",
+   "\"update_area%0"
+  ],
+  "double_shot": [],
+  "drop": [
+   "ground_hit %override"
+  ],
+  "drop_human": [],
+  "ejectsmoke_fx": [
+   "spawn"
+  ],
+  "engine_startup_timer": [],
+  "explosive_readout": [],
+  "ferdinand_sound": [
+   "\"add_movement_sound"
+  ],
+  "fi156_sound": [
+   "\"add_movement_sound"
+  ],
+  "fire_barrel": [],
+  "fire_barrel_mg": [],
+  "fire_start": [],
+  "flail_fx": [],
+  "flame_fx": [
+   "\"end_burst",
+   "\"fire",
+   "\"link_human",
+   "\"start_burst",
+   "\"unlink_human",
+   "spawn"
+  ],
+  "flame_weapon": [
+   "fire %0"
+  ],
+  "flame_weapon_1x_shot": [
+   "fire %0"
+  ],
+  "flash_fx": [
+   "spawn"
+  ],
+  "float_volume": [],
+  "foliage": [],
+  "friendly_destroy": [],
+  "fuel_big_pierce": [],
+  "fuel_explosion": [],
+  "fx_base": [],
+  "fx_dust": [],
+  "fx_sand": [],
+  "fx_service_entity": [
+   "spawn"
+  ],
+  "fx_snow": [],
+  "gaz_sound": [
+   "\"add_movement_sound"
+  ],
+  "glider_sound": [
+   "\"add_movement_sound"
+  ],
+  "handle_ik": [
+   "ik begin basis",
+   "ik begin gun_rot",
+   "ik begin turret",
+   "ik end basis",
+   "ik end gun_rot",
+   "ik end turret"
+  ],
+  "hanomag_sound": [
+   "\"add_movement_sound"
+  ],
+  "heavy_contact": [],
+  "heavy_contact_fx": [],
+  "hide_wheel": [],
+  "hide_wheel_spawn": [],
+  "holster_fx": [
+   "spawn"
+  ],
+  "hull_death_fx": [],
+  "human_health": [],
+  "humber_sound": [
+   "\"add_movement_sound"
+  ],
+  "hurricane_sound": [
+   "\"add_movement_sound"
+  ],
+  "ik_rotate": [
+   "ik begin %gun_rot",
+   "ik begin %turret",
+   "ik end %gun_rot",
+   "ik end %turret"
+  ],
+  "il2_sound": [
+   "\"add_movement_sound"
+  ],
+  "imp": [],
+  "impluse_process_blast": [],
+  "is_sound": [
+   "\"add_movement_sound"
+  ],
+  "kettenkrad_sound": [
+   "\"add_movement_sound"
+  ],
+  "kfz13_sound": [
+   "\"add_movement_sound"
+  ],
+  "kill_crew": [
+   "\"kill_%0"
+  ],
+  "kill_crewman": [
+   "\"kill_%0"
+  ],
+  "killzone_dummy": [
+   "spawn"
+  ],
+  "knock_out": [],
+  "kubel_sound": [
+   "\"add_movement_sound"
+  ],
+  "kv_sound": [
+   "\"add_movement_sound"
+  ],
+  "last_barrage_delay": [],
+  "light_mk_sound": [
+   "\"add_movement_sound"
+  ],
+  "link_flash": [],
+  "m10_gmc_sound": [
+   "\"add_movement_sound"
+  ],
+  "m22_locust_sound": [
+   "\"add_movement_sound"
+  ],
+  "m24_chaffee_sound": [
+   "\"add_movement_sound"
+  ],
+  "m26_pershing_sound": [
+   "\"add_movement_sound"
+  ],
+  "m3_halftrack_sound": [
+   "\"add_movement_sound"
+  ],
+  "m3_lee_sound": [
+   "\"add_movement_sound"
+  ],
+  "m3_stuart_sound": [
+   "\"add_movement_sound"
+  ],
+  "m4_105_sound": [
+   "\"add_movement_sound"
+  ],
+  "m4_ford_v8_sound": [
+   "\"add_movement_sound"
+  ],
+  "m4_radial_sound": [
+   "\"add_movement_sound"
+  ],
+  "m4_sherman_sound": [
+   "\"add_movement_sound"
+  ],
+  "m4a2_sherman_sound": [
+   "\"add_movement_sound"
+  ],
+  "m4a3_105_sound": [
+   "\"add_movement_sound"
+  ],
+  "m4a3_sherman_sound": [
+   "\"add_movement_sound"
+  ],
+  "m4a4_sherman_sound": [
+   "\"add_movement_sound"
+  ],
+  "m5a1_stuart_sound": [
+   "\"add_movement_sound"
+  ],
+  "m8_greyhound_sound": [
+   "\"add_movement_sound"
+  ],
+  "magazine": [
+   "\"magazine_delay %override"
+  ],
+  "matilda_mk1_sound": [
+   "\"add_movement_sound"
+  ],
+  "matilda_mk2_sound": [
+   "\"add_movement_sound"
+  ],
+  "morris_car_sound": [
+   "\"add_movement_sound"
+  ],
+  "morris_sound": [
+   "\"add_movement_sound"
+  ],
+  "mortar_fall": [
+   "spawn"
+  ],
+  "multi_barrel_loop": [
+   "\"init_gun",
+   "fire %weapon"
+  ],
+  "multi_gun_rotate": [
+   "ik begin %0",
+   "ik end %0"
+  ],
+  "multi_turret_rotate": [
+   "ik begin %0",
+   "ik end %0"
+  ],
+  "multi_turret_work": [],
+  "nebelwerfer_fire": [],
+  "nkl_sound": [
+   "\"add_movement_sound"
+  ],
+  "no_shell_eject_delay": [],
+  "offmap": [
+   "spawn"
+  ],
+  "on_fire_auto": [
+   "fire %0"
+  ],
+  "on_fire_gun": [
+   "fire %0"
+  ],
+  "on_fire_hmg": [
+   "fire %0"
+  ],
+  "on_fire_mgun": [
+   "fire %0"
+  ],
+  "opel_maultier_sound": [
+   "\"add_movement_sound"
+  ],
+  "opel_sound": [
+   "\"add_movement_sound"
+  ],
+  "p47_sound": [
+   "\"add_movement_sound"
+  ],
+  "panhard_sound": [
+   "\"add_movement_sound"
+  ],
+  "places": [],
+  "play_leg_sound": [],
+  "play_move_sound": [],
+  "play_trace": [],
+  "po2_sound": [
+   "\"add_movement_sound"
+  ],
+  "process_hit": [],
+  "prop_blast": [],
+  "prop_destroy": [],
+  "prop_spin": [],
+  "prop_still": [],
+  "pz1_sound": [
+   "\"add_movement_sound"
+  ],
+  "pz2_sound": [
+   "\"add_movement_sound"
+  ],
+  "pz38_sound": [
+   "\"add_movement_sound"
+  ],
+  "pz3_sound": [
+   "\"add_movement_sound"
+  ],
+  "pz4_sound": [
+   "\"add_movement_sound"
+  ],
+  "pz5_sound": [
+   "\"add_movement_sound"
+  ],
+  "pz6_sound": [
+   "\"add_movement_sound"
+  ],
+  "pz6b_sound": [
+   "\"add_movement_sound"
+  ],
+  "pzb2_sound": [
+   "\"add_movement_sound"
+  ],
+  "r12_sound": [
+   "\"add_movement_sound"
+  ],
+  "rand_anim": [],
+  "rand_cut": [],
+  "rand_cut_else": [],
+  "rand_cut_else_3": [],
+  "rand_shields": [],
+  "rand_start": [],
+  "random_animation": [],
+  "random_animation_end": [
+   "animation_end animation%0"
+  ],
+  "randomized_shield": [],
+  "reload_gun": [],
+  "reload_time": [],
+  "rnd_art_bomb": [],
+  "rocket_weapon": [
+   "engine off",
+   "engine on"
+  ],
+  "s60_sound": [
+   "\"add_movement_sound"
+  ],
+  "sdkfz222_sound": [
+   "\"add_movement_sound"
+  ],
+  "sdkfz232_sound": [
+   "\"add_movement_sound"
+  ],
+  "sdkfz234_sound": [
+   "\"add_movement_sound"
+  ],
+  "sdkfz302_sound": [
+   "\"add_movement_sound",
+   "\"add_overlay_sound"
+  ],
+  "sdkfz303_sound": [
+   "\"add_movement_sound",
+   "\"add_overlay_sound"
+  ],
+  "select_idle_empty_or_gun": [],
+  "select_idle_stand_2hands": [],
+  "set_crown_visible": [],
+  "shed_shield_part": [],
+  "shell_eject_delay": [],
+  "shell_eject_delay_auto": [],
+  "shell_fx": [
+   "spawn"
+  ],
+  "shellhole_show_with_delay": [
+   "spawn"
+  ],
+  "show_wheel": [],
+  "sink_sequence": [],
+  "sink_volume": [],
+  "smoke_barrage": [
+   "spawn"
+  ],
+  "smoke_shot": [],
+  "smoke_time": [
+   "\"activate"
+  ],
+  "snow_fx": [],
+  "somua_s35_sound": [
+   "\"add_movement_sound"
+  ],
+  "sound_fx": [
+   "spawn"
+  ],
+  "spawn_shell": [
+   "\"spawn_shell%0"
+  ],
+  "spawn_volume": [],
+  "staghound_sound": [
+   "\"add_movement_sound"
+  ],
+  "start_shooter_flash": [
+   "fire mgun_own%0"
+  ],
+  "std_mortar_barrage": [
+   "spawn"
+  ],
+  "stir": [],
+  "stop_smoke_fx": [],
+  "stop_trace_engine": [],
+  "studebaker_sound": [
+   "\"add_movement_sound"
+  ],
+  "su85_sound": [
+   "\"add_movement_sound"
+  ],
+  "t26_sound": [
+   "\"add_movement_sound"
+  ],
+  "t27_sound": [
+   "\"add_movement_sound"
+  ],
+  "t28_sound": [
+   "\"add_movement_sound"
+  ],
+  "t34_85_45_sound": [
+   "\"add_movement_sound"
+  ],
+  "t34_sound": [
+   "\"add_movement_sound"
+  ],
+  "t70_sound": [
+   "\"add_movement_sound"
+  ],
+  "tear_marine_part": [],
+  "tear_wheel": [],
+  "terrain_fx": [
+   "terrain_fx %0 enter",
+   "terrain_fx %0 leave"
+  ],
+  "terrain_fx2": [],
+  "terrain_fx_dog": [
+   "terrain_fx %0 enter",
+   "terrain_fx %0 leave"
+  ],
+  "terrain_fx_flail": [
+   "terrain_fx %0 enter"
+  ],
+  "terrain_fx_human": [
+   "terrain_fx %terrain enter",
+   "terrain_fx %terrain leave"
+  ],
+  "tetrarch_sound": [
+   "\"add_movement_sound"
+  ],
+  "throw_garrison": [],
+  "throwing_weapon": [
+   "\"drop_item",
+   "contact"
+  ],
+  "tractor_sound": [
+   "\"add_movement_sound"
+  ],
+  "try_break_window": [],
+  "try_get_off": [],
+  "turret_break_effects": [],
+  "turret_torn": [
+   "\"tear_turret"
+  ],
+  "universal2_sound": [
+   "\"add_movement_sound"
+  ],
+  "universal_carrier_sound": [
+   "\"add_movement_sound"
+  ],
+  "update_area": [],
+  "update_hatch": [],
+  "update_hatch_event": [
+   "%event"
+  ],
+  "update_position": [],
+  "update_position_event": [
+   "%event"
+  ],
+  "update_turret": [],
+  "valentine_sound": [
+   "\"add_movement_sound"
+  ],
+  "wc51_sound": [
+   "\"add_movement_sound"
+  ],
+  "weapon_shoot_event": [
+   "\"fire_%0_event"
+  ],
+  "willys_mb_sound": [
+   "\"add_movement_sound"
+  ],
+  "yag10_sound": [
+   "\"add_movement_sound"
+  ],
+  "yak1_sound": [
+   "\"add_movement_sound"
+  ],
+  "zis5_sound": [
+   "\"add_movement_sound"
+  ]
+ },
+ "game": "goh",
+ "hidden": {
+  "n.idea.melee.helmet": [
+   "take_off"
+  ],
+  "n.idea.hard.landing": [
+   "take_off"
+  ],
+  "b.act.stunned": [
+   "stunned"
+  ],
+  "b.act.health_damage_crush": [
+   "health_damage_crush"
+  ],
+  "b.act.get_off": [
+   "get_off"
+  ],
+  "b.act.take_off": [
+   "take_off"
+  ],
+  "b.combo.crew_stunned": [
+   "stunned"
+  ],
+  "b.combo.abandon": [
+   "player"
+  ],
+  "b.act.player": [
+   "player"
+  ],
+  "b.act.con": [
+   "con"
+  ]
+ }
+}

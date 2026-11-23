@@ -1,0 +1,10 @@
+{tags
+	{"entity" {"ok" "Окей"}}
+	{"entity" {"own" "Own"}}
+	{"entity"
+		{"two" "Two \"q\""}
+	}
+	{"weapon"
+		{"rifle1" "Rifle"}
+	}
+}

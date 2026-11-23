@@ -1,0 +1,6 @@
+;SDL
+{mission
+	{Entity "flag_point_1" 0xc000
+		{Position 1 2}
+	}
+}

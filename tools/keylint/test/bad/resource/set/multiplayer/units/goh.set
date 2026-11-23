@@ -1,0 +1,5 @@
+{units
+ {"u1" {cp 1} {score 1} {cost 1} {cost_ap 5}
+  {research_stage 2}}
+ {"u2" {cp 1} {score 1} {cost 1}}
+}

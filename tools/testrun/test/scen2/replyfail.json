@@ -1,0 +1,6 @@
+{"name":"reply-bad","mode":"mp","map":"mp_test","verdict":[
+{"reply":"echo hello","match":"zzz"},
+{"reply":"mp_state","path":"sides.1.unitsAlive","op":">","value":3},
+{"reply":"mp_state","path":"sides.9.unitsAlive","op":">","value":0},
+{"event":"session_failed","want":true},
+{"event":"loaded","want":false}]}

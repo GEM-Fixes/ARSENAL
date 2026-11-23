@@ -1,0 +1,14 @@
+{
+ "form": "score-result/1",
+ "item": "D",
+ "_note": "Written by hand (T-BOARD 2026-11-09) from the source report; replaces the state.json D checks on the board. Complete item 2 needs every check pass.",
+ "source": "(not part of this release)",
+ "run": "G-DOOR",
+ "date": "2026-11-09",
+ "by": "G-DOOR",
+ "checks": [
+  { "name": "scripted door", "what": "unzipped ARSENAL.exe, no node on PATH: game, new, check, play --dry, install, GUI headless, uninstall; empty mod BOOT PASS on instance 2", "status": "pass", "test": "tools/dist/test/door.js", "evidence": " ## Steps (door.js pre 9 PASS, post 3 PASS)" },
+  { "name": "fresh Windows user", "what": "a new Windows account (no node, no Steam history) works from START-HERE alone", "status": "open", "who": "user", "evidence": " ## Only the user can do" },
+  { "name": "GUI look", "what": "ARSENAL-gui.exe looked at in a window, with a screenshot", "status": "open", "who": "user", "evidence": " ## Only the user can do" }
+ ]
+}

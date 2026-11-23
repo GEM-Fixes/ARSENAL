@@ -1,0 +1,4 @@
+{material bump
+	{diffuse "tex1"}
+	{bump "$/model/shared"}
+}

@@ -1,0 +1,4 @@
+# GoH bot purchases in goh/clean.log ("dbg: player#N spawned <unit>(<nation>)"); fixmod_tank never bought
+single_rifle
+squad_pzgren_late_off
+fixmod_tank

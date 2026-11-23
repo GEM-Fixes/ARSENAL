@@ -1,0 +1,21 @@
+{game_entity ;@VISION_MODE_MULTI
+	{Extension "nomodel.mdl"} ;@REF_MODEL_MISSING
+	{extender "vision_mode" {night}}
+	{extender "vision_mode" {thermal}}
+	{extender "inventory" {box {item "nothing" 1}}} ;@REF_ITEM_UNKNOWN
+	{Weaponry {place "gun" {weapon "nogun"}}} ;@REF_WEAPON_UNKNOWN
+	{Weaponry {place "gun2" {weapon "rifle1" filling "ammo nobullet" 1}}} ;@REF_AMMO_UNKNOWN
+	{boarder {anm "driver" {forward {begin "no_anim"}}}} ;@REF_ANIM_MISSING
+	{sensor {visor "main" {vision "novis"}}} ;@REF_VISION_UNKNOWN
+	{Chassis
+		{Locomotion {TurnTime 3}}
+		{speed {Slow 5} {Normal 9} {Fast 20}}
+		{Locomotion {TurnTime 3}} ;@SPEED_BEFORE_LOCO
+	}
+	{Chassis "foot"
+		{Run {Slow 8} {Normal 15}} ;@FOOT_ROW_MISSING
+		{Strafe {Forth 1} {Left 1} {Right 1} {Back 1} {Forth 2} {Left 2} {Right 2}} ;@STRAFE_MAX
+	}
+	{extender "nosuch" {x 1}} ;@EXTENDER_UNKNOWN
+	{##on {call "x"}} ;@DISABLED_ON
+}

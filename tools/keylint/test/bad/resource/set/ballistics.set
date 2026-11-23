@@ -1,0 +1,4 @@
+{ballistics
+ {damping {0 1} {1 1}}
+ {curve "linear" {0 1} {1 1}}
+}

@@ -1,0 +1,39 @@
+{
+  "name": "map-11",
+  "rows": [
+    "MAP-11"
+  ],
+  "mode": "menu",
+  "fixture": [
+    "map-11"
+  ],
+  "mods": [
+    "as64+",
+    "map-11"
+  ],
+  "params": {},
+  "src": [
+    " (ranked reader, row cite)",
+    " (mp_steam: Internet menu)",
+    " (ranked comes from the game card)"
+  ],
+  "manual": "Internet (Steam) lobby only; ranked is not visible over the LAN pipe. With mod map-11 (flat rankedMinPlayers/rankedMaxPlayers in 1v1_road map.info) vs without: open Multiplayer > Internet > Host game, pick 1v1_road, see whether the Ranked option/checkbox is offered. Offered only with mod = retail/3.262 reads the flat form.",
+  "steps": [
+    {
+      "cmd": "mp_lan"
+    },
+    {
+      "wait_stage": true
+    },
+    {
+      "cmd": "mp_maps"
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    }
+  ],
+  "note": "mp_maps needs a lobby: mp_lan + stage active first (live 2026-11-03 bare mp_maps failed; mp_steam then timed out waiting for a stage). Ranked option is Internet-only: manual check. mp_steam after mp_lan fails (multiplayer runs already): the automated part stops at mp_maps in the LAN lobby."
+}

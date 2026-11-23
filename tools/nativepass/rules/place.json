@@ -1,0 +1,3 @@
+{"form":"nativerules/1","rules":[
+{"id":"place-01","key":"entity/placer/place/openforcrush","class":["tank_heavy"],"act":"set","when":"absent","value":0,"why":"every vanilla tank_heavy def carries openforcrush on a crew place; the GoH port has it switched off (its crew macros hold ';{openForCrush}' as a comment), so no seat is open for crush. '{openforcrush 0}' reads as false, which is the seat default, so the key is added with no change to crush behaviour","src":"reader  (seat->openForCrush = reader.ReadBool(); keyword line 92); a number 0 reads false: ; default false:  (flagBits(0)) and; use  and; key presence vanilla 25 of 25 tank_heavy, 52 of 60 tank_medium (value 0 seen in tank_medium); : properties/goh/tank_crew.ext:23,42 (commented out)","tag":"V"}
+]}

@@ -1,0 +1,5 @@
+# edrun game log names pairs, not entities: <pair>/<foe|shooter>. di_stag foe (uk-staghound) never got ready.
+ctlpz/shooter
+ctlpz/foe
+di_stag/shooter
+di_stag/foe

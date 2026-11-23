@@ -1,0 +1,23 @@
+{
+  "_note": "One entry per row of 'Capabilities and their tests' (T-SCORE 2026-11-09). test = repo test (run.sh, or a .js run by node) or a list of them, null when none exists yet. src = the tool's main source whose sha marks a result stale, one per test (default tools/<dir>/<dir>.js beside each test). report = report.json glob under ../run/ for the game kinds (BOOT, SPAWN), written by bootcheck in wave 3; null today. ttest.js runs the tests, score.js row T reads ../run/tests/last.json.",
+  "caps": [
+    { "id": "new", "cap": "new mod", "cmd": "new", "kind": "GOLD", "test": "tools/newmod/test/run.sh" },
+    { "id": "gen", "cap": "make content", "cmd": "gen", "kind": "GOLD, VAN, BOOT, SPAWN", "test": "tools/gen/test/run.sh", "report": null },
+    { "id": "check", "cap": "check", "cmd": "check", "kind": "SEED, VAN", "test": "tools/check/test/run.sh" },
+    { "id": "fix", "cap": "fix", "cmd": "fix", "kind": "GOLD, RT", "test": "tools/fix/test/run.sh" },
+    { "id": "upgrade", "cap": "upgrade", "cmd": "upgrade", "kind": "GOLD, BOOT", "test": "tools/upgrade/test/run.sh", "report": null },
+    { "id": "install", "cap": "install", "cmd": "install, uninstall", "kind": "GOLD", "test": "tools/as2/test/run.sh", "src": "tools/as2/flow.js" },
+    { "id": "play", "cap": "play", "cmd": "play", "kind": "BOOT", "test": "tools/as2/test/run.sh", "src": "tools/as2/flow.js", "report": null, "_testNote": "T-BOARD: the play --dry form (play-dry, play-inplace golden); the real play BOOT is not in a repo test [T]" },
+    { "id": "maps", "cap": "maps", "cmd": "maps (list, view, clone, mode)", "kind": "GOLD, BOOT", "test": ["tools/map-clone/test/run.sh", "tools/mapview/test/run.sh", "tools/mission-clone/test/run.sh"], "src": ["tools/map-clone/map-clone.js", "tools/mapview/mapview.js", "tools/mission-clone/mission-clone.js"], "report": null, "_testNote": "T-BOARD: clone, view, mode GOLD tests; BOOT of a cloned map is not in a repo test [T]" },
+    { "id": "stat-edit", "cap": "stat edit", "cmd": "patch-entity", "kind": "GOLD, RT", "test": "tools/patch-entity/test/run.sh" },
+    { "id": "new-unit", "cap": "new unit", "cmd": "clone-entity", "kind": "GOLD, SPAWN", "test": "tools/clone-entity/test/run.sh", "report": null },
+    { "id": "text", "cap": "text", "cmd": "lng", "kind": "RT", "test": "tools/lng/test/run.sh" },
+    { "id": "goh-port", "cap": "GoH port", "cmd": "goh2as2", "kind": "GOLD, SEED, SPAWN, SANITY", "test": "tools/goh2as2/test/run.sh", "report": null },
+    { "id": "goh-map", "cap": "GoH map", "cmd": "mapport", "kind": "GOLD, BOOT", "test": "tools/mapport/test/run.sh", "report": null },
+    { "id": "sdl", "cap": "SDL files", "cmd": "lib sdl + sdlwrite", "kind": "RT", "test": "tools/lib/test/sdlwrite.test.js", "src": "tools/lib/sdlwrite.js" },
+    { "id": "ship", "cap": "ship", "cmd": "packer, dist", "kind": "GOLD, RT", "test": ["tools/packer/test/run.sh", "tools/dist/test/run.sh"], "src": ["tools/packer/packer.js", "tools/dist/sea.js"] },
+    { "id": "gui", "cap": "GUI", "cmd": "ARSENAL-gui", "kind": "GOLD", "test": "tools/gui/test/run.sh" },
+    { "id": "help", "cap": "help", "cmd": "every front-door tool", "kind": "helpcheck", "test": "tools/helpcheck/test/run.sh", "src": "tools/helpcheck/test/test.js" },
+    { "id": "docs", "cap": "docs", "cmd": "START-HERE, guide", "kind": "GOLD", "test": "tools/dist/test/docrun.js", "src": "tools/START-HERE.md", "_testNote": "T-BOARD: every ARSENAL command in START-HERE + guide front door, run on the unzipped release (GOLD docrun.golden.txt)" }
+  ]
+}

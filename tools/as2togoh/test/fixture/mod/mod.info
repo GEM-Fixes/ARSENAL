@@ -1,0 +1,5 @@
+{mod
+  {name "t"}
+  {minGameVersion "3.301"}
+  {maxGameVersion "3.999"}
+}

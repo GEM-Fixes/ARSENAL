@@ -1,0 +1,4 @@
+{game_entity
+  (include "/properties/tank_as2.ext")
+  {extension "pz4.mdl"}
+}

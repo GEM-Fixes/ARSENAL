@@ -1,0 +1,1065 @@
+{
+ "thing": "ammo",
+ "files": [
+  "resource/set/stuff/shell/<family>.<type>.ammo (+ shell/ap.pattern, fg.pattern, apcr.pattern, shell/.presets)",
+  "resource/set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo (+ bazooka/rpg_ammo.pattern)",
+  "weapon files: {parameters \"<ammo tags>\" ..} blocks (piercing, range, speed per round)",
+  "resource/entity/inventory/-ammo/<entity>/ (round model, flight model, skin)",
+  "resource/texture/fx/trace* (tracers)",
+  "resource/set/target/ammo.set (AI ammo choice)",
+  "resource/set/interaction_terrain/effects/*.inc and set/interaction_entity/tank/*.inc (effects and damage scripts by tag)",
+  "vehicle defs {extender \"inventory\" {box}} and {weaponry {place {weapon .. filling}}}; breeds {inventory {item}}",
+  "resource/interface/text/desc.lng (desc/ammo/<tags>)"
+ ],
+ "groups": [
+  {
+   "id": "id",
+   "name": "What it is and what it copies"
+  },
+  {
+   "id": "model",
+   "name": "Model and flight look"
+  },
+  {
+   "id": "pierce",
+   "name": "Piercing by range (in the weapon file)"
+  },
+  {
+   "id": "flight",
+   "name": "Flight, range, reload with this round (in the weapon file)"
+  },
+  {
+   "id": "damage",
+   "name": "Damage"
+  },
+  {
+   "id": "blast",
+   "name": "Blast and fire"
+  },
+  {
+   "id": "fuse",
+   "name": "Fuse"
+  },
+  {
+   "id": "effects",
+   "name": "Tracer, trail and hit effects"
+  },
+  {
+   "id": "sound",
+   "name": "Sound"
+  },
+  {
+   "id": "inventory",
+   "name": "Inventory"
+  },
+  {
+   "id": "ui",
+   "name": "Cursor"
+  },
+  {
+   "id": "ai",
+   "name": "Computer use"
+  },
+  {
+   "id": "carry",
+   "name": "Who carries it"
+  },
+  {
+   "id": "text",
+   "name": "Name text"
+  }
+ ],
+ "vars": [
+  {
+   "key": "ammo.id",
+   "where": "file name <family>.<type>.ammo",
+   "type": "text",
+   "plain": "Name of the round; its tags come from the file name split on dots (bullet75.ap.ammo -> bullet75 ap).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "bullet75.ap",
+     "bullet75.fg",
+     "bullet75.apcr",
+     "flaer"
+    ]
+   },
+   "count": 125,
+   "group": "id",
+   "ref": null,
+   "tool": "gen clone (stuff + tags)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.family",
+   "where": "first part of the file name (bulletNN, ammo rifle ...)",
+   "type": "text",
+   "plain": "The shell family a weapon loads with filling; a bulletNN name also gives the weapon its calibre.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "bullet37",
+     "bullet75",
+     "bullet88",
+     "rifle",
+     "pistol",
+     "mgun"
+    ]
+   },
+   "count": 81,
+   "group": "id",
+   "ref": "weapon filling",
+   "tool": "gen clone tags",
+   "limit": "KEY-10",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.type",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: root word",
+   "type": "choice",
+   "plain": "The engine kind: bullet (a round) or item.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "bullet",
+     "from"
+    ]
+   },
+   "count": 38,
+   "group": "id",
+   "ref": null,
+   "tool": "gen clone (inherits it)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.from",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {from \"pattern x\"}",
+   "type": "ref",
+   "plain": "The round or pattern this one copies (pattern ap, pattern fg, pattern apcr ...).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "pattern ap",
+     "pattern fg",
+     "pattern apcr",
+     "ammo pistol"
+    ]
+   },
+   "count": 91,
+   "group": "id",
+   "ref": "stuff pattern",
+   "tool": "gen clone stuff",
+   "limit": "KEY-19",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.tag.kind",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {tag} class word",
+   "type": "choice",
+   "plain": "Kind of round (ap, apcr, fg high explosive, sm smoke, cumulative HEAT); picks the weapon's parameters block and the computer's ammo choice.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "ap",
+     "apcr",
+     "fg",
+     "sm",
+     "cumulative",
+     "bomb"
+    ]
+   },
+   "count": 123,
+   "group": "id",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/tag, op add)",
+   "limit": "DMG-01",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.tag.size",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {tag} size_<x>",
+   "type": "choice",
+   "plain": "Size word that picks the hit and explosion effects and sounds on the ground.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "size_minimum",
+     "size_small",
+     "size_medium",
+     "size_big",
+     "size_maximum"
+    ]
+   },
+   "count": 80,
+   "group": "effects",
+   "ref": "set/interaction_terrain/effects/*.inc",
+   "tool": "gen set (entity file:<stuff key>, path <root>/tag, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.tag.shell_class",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {tag} shell_<x>",
+   "type": "choice",
+   "plain": "Class word the vehicle damage scripts read (how badly a hit hurts crew and parts).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "shell_minimum",
+     "shell_small",
+     "shell_medium",
+     "shell_big",
+     "shell_verybig",
+     "shell_maximum"
+    ]
+   },
+   "count": 56,
+   "group": "damage",
+   "ref": "set/interaction_entity/tank/*.inc",
+   "tool": "gen set (entity file:<stuff key>, path <root>/tag, op add)",
+   "limit": "DMG-27",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.tag.flags",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {tag} other words",
+   "type": "list",
+   "plain": "Other words: big, pierce (scripts react to piercing), no_ricochet, stackable, dropboxed, itemin2hands.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "big",
+     "pierce",
+     "no_ricochet",
+     "stackable",
+     "dropboxed",
+     "itemin2hands",
+     "small"
+    ]
+   },
+   "count": 123,
+   "group": "id",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/tag, op add)",
+   "limit": "DMG-09",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.mass",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {mass}",
+   "type": "number",
+   "plain": "Weight of one round.",
+   "unit": "kg",
+   "vanilla": {
+    "min": 0.013,
+    "max": 1500
+   },
+   "count": 111,
+   "group": "id",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/mass, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.desc",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {desc}",
+   "type": "text",
+   "plain": "Optional text key for the name instead of the one made from the tags.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "desc/ammo/flaergun ammo",
+     "Flare gun ammo",
+     "desc/ammo/smg"
+    ]
+   },
+   "count": 3,
+   "group": "text",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/desc, op add)",
+   "limit": "LOC-15",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.entity",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {entity}",
+   "type": "ref",
+   "plain": "Model of the round when it lies in inventory or on the ground.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "ap_20mm_zenite",
+     "mortar_shell",
+     "bazooka_ammo",
+     "air_bomb1",
+     "katusha_ammo",
+     "shell_ap_122",
+     "shell_apcr_122",
+     "shell_apcr_88"
+    ]
+   },
+   "count": 125,
+   "group": "model",
+   "ref": "entity def under entity/inventory/-ammo",
+   "tool": "gen set (entity file:<stuff key>, path <root>/entity, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.model.def",
+   "where": "entity/inventory/-ammo/<e>/<e>.{def,mdl,ply,mtl,dds}",
+   "type": "file",
+   "plain": "The round's model files and skin.",
+   "unit": null,
+   "vanilla": null,
+   "count": 60,
+   "group": "model",
+   "ref": "entity def + model",
+   "tool": "gen clone (entity + as, copy_assets) / /art/copy",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "ammo.view",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {view \"entity\"}",
+   "type": "ref",
+   "plain": "Model drawn while the round flies (rockets, grenades); shells use the weapon's bullet_view.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "bazooka_ammo",
+     "katusha_ammo",
+     "flaergun_ammo",
+     "flaermow_ammo",
+     "em_mk3_ammo",
+     "type2at_ammo",
+     "m18_ammo",
+     "panzerfaust_ammo"
+    ]
+   },
+   "count": 29,
+   "group": "model",
+   "ref": "entity",
+   "tool": "gen set (entity file:<stuff key>, path <root>/view, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.view.tail",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {view \"e\" {tail \"entity\" \"bone\"}}",
+   "type": "list",
+   "plain": "Smoke or flame trail fixed to a bone of the flying model.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "rocket_smoke tail",
+     "rocket_smoke_norm tail",
+     "bazooka_tail tail",
+     "pfaust_tail tail",
+     "grenade_tail tail",
+     "rocket_smoke_st tail",
+     "signal_rocket tail"
+    ]
+   },
+   "count": 26,
+   "group": "effects",
+   "ref": "fx entity + bone",
+   "tool": "gen set (entity file:<stuff key>, path <root>/view/tail, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.trace.view",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {trace {view \"texture\" ..}} or (\"ap\"|\"apcr\" args k)",
+   "type": "ref",
+   "plain": "Tracer picture drawn behind the round.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "/texture/fx/trace",
+     "/texture/fx/trace2",
+     "/texture/fx/trace4",
+     "/texture/fx/trace_zenite1",
+     "/texture/fx/trace_zenite2",
+     "/texture/fx/trace3",
+     "/texture/fx/trace_shotgun",
+     "/texture/fx/trace_apcr"
+    ]
+   },
+   "count": 62,
+   "group": "effects",
+   "ref": "texture /texture/fx/trace*",
+   "tool": "gen set (entity file:<stuff key>, path <root>/trace/view, op add)",
+   "limit": "KEY-02",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.trace.light",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {trace {view .. {Light}}}",
+   "type": "number",
+   "plain": "Brightness of the tracer.",
+   "unit": null,
+   "vanilla": {
+    "min": 0,
+    "max": 8
+   },
+   "count": 18,
+   "group": "effects",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/trace/view/Light, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.trace.scale",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {trace {view .. {ScaleY} {ScaleX}}}",
+   "type": "list",
+   "plain": "Thickness of the tracer.",
+   "unit": null,
+   "vanilla": {
+    "min": 0,
+    "max": 0.4
+   },
+   "count": 19,
+   "group": "effects",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/trace/view/ScaleY, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.trace.length",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {trace {length}}",
+   "type": "number",
+   "plain": "Length of the tracer; the presets take it from the args number.",
+   "unit": "m",
+   "vanilla": {
+    "min": 0,
+    "max": 8
+   },
+   "count": 19,
+   "group": "effects",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/trace/length, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.preset_args",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: (\"ap\"|\"apcr\"|\"fg\"|\"fg_medium\"|\"fg_heavy\" args k)",
+   "type": "number",
+   "plain": "One number that sizes the preset: tracer length for AP, blast strength and radius for HE.",
+   "unit": null,
+   "vanilla": {
+    "min": 0.1,
+    "max": 10,
+    "common": [
+     0.78,
+     3.5
+    ]
+   },
+   "count": 67,
+   "group": "damage",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.detonationthickness",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {detonationThickness}",
+   "type": "number",
+   "plain": "Fuse: a plate at least this thick stops the round and sets it off (HE 2, rockets 1); never when left out.",
+   "unit": "mm",
+   "vanilla": {
+    "min": 1,
+    "max": 2
+   },
+   "count": 25,
+   "group": "fuse",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/detonationThickness, op add)",
+   "limit": "DMG-11",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.applyprojectile",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {applyProjectile}",
+   "type": "bool",
+   "plain": "An exploding round also deals its piercing hit.",
+   "unit": null,
+   "vanilla": null,
+   "count": 17,
+   "group": "fuse",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/applyProjectile, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.cumulative",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {cumulative}",
+   "type": "number",
+   "plain": "HEAT: how far the jet reaches past the point of impact.",
+   "unit": "m",
+   "vanilla": {
+    "min": 0.7,
+    "max": 0.7
+   },
+   "count": 1,
+   "group": "damage",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/cumulative, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.damage.blastwave.energy",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {damage [add] blastwave {energy}}",
+   "type": "number",
+   "plain": "Strength of a blast layer.",
+   "unit": null,
+   "vanilla": {
+    "min": 0.2,
+    "max": 150
+   },
+   "count": 54,
+   "group": "blast",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/damage/energy, op add) (first layer only)",
+   "limit": "KEY-02",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.damage.blastwave.area",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {damage [add] blastwave {area inner outer}}",
+   "type": "list",
+   "plain": "Full strength inside the first radius, falling to nothing at the second.",
+   "unit": "m",
+   "vanilla": {
+    "min": 0.2,
+    "max": 30
+   },
+   "count": 54,
+   "group": "blast",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/damage/area, op add)",
+   "limit": "GPL-01",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.damage.blastwave.add",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {damage add blastwave ..}",
+   "type": "bool",
+   "plain": "Adds another blast layer; without add the first inherited layer is replaced.",
+   "unit": null,
+   "vanilla": null,
+   "count": 26,
+   "group": "blast",
+   "ref": null,
+   "tool": null,
+   "limit": "KEY-17",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.damage.fire.radius",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {damage fire {radius}}",
+   "type": "number",
+   "plain": "Radius set on fire.",
+   "unit": "m",
+   "vanilla": {
+    "min": 5,
+    "max": 20
+   },
+   "count": 6,
+   "group": "blast",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/damage/radius, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.damage.fire.heating",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {damage fire {heating}}",
+   "type": "number",
+   "plain": "How hot the fire is.",
+   "unit": null,
+   "vanilla": {
+    "min": 0.8,
+    "max": 4
+   },
+   "count": 6,
+   "group": "blast",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/damage/heating, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.damage.fire.time",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {damage fire {time}}",
+   "type": "number",
+   "plain": "How long it burns.",
+   "unit": "s",
+   "vanilla": {
+    "min": 3,
+    "max": 5
+   },
+   "count": 6,
+   "group": "blast",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/damage/time, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.damage.fire.follow",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {damage fire {follow uid}}",
+   "type": "number",
+   "plain": "Fire follows an object. Not used by vanilla rounds.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "blast",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "ammo.damage.flash",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {damage flash {radius near far} {duration near far}}",
+   "type": "list",
+   "plain": "A blinding flash. No vanilla item uses it.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "blast",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "ammo.damage.cumulative",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {damage cumulative {damage mm} {distance m}}",
+   "type": "list",
+   "plain": "A shaped charge as a second invisible shot (vanilla: anti-tank grenades only).",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "damage",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "ammo.possibledamageradius",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {possibleDamageRadius}",
+   "type": "number",
+   "plain": "Radius the computer's soldiers try to stay out of; it does not change damage.",
+   "unit": "m",
+   "vanilla": {
+    "min": 4,
+    "max": 4
+   },
+   "count": 1,
+   "group": "blast",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/possibleDamageRadius, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.inventory.size",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {inventory {size w h}}",
+   "type": "list",
+   "plain": "Inventory cells one round (or stack) takes.",
+   "unit": "cells",
+   "vanilla": {
+    "min": 0,
+    "max": 8
+   },
+   "count": 114,
+   "group": "inventory",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/size, op add)",
+   "limit": "HUM-23",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.inventory.weight",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {inventory {weight}}",
+   "type": "number",
+   "plain": "Inventory weight.",
+   "unit": null,
+   "vanilla": {
+    "min": 1,
+    "max": 1000
+   },
+   "count": 52,
+   "group": "inventory",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/weight, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.inventory.block",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {inventory {block n}}",
+   "type": "number",
+   "plain": "How many rounds make one inventory block (small-arms ammo).",
+   "unit": null,
+   "vanilla": {
+    "min": 5,
+    "max": 100
+   },
+   "count": 12,
+   "group": "inventory",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/block, op add)",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "ammo.inventory.fsm",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {inventory {fsm}}",
+   "type": "choice",
+   "plain": "How a soldier carries it (stuff = in both hands, belt).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "stuff",
+     "belt"
+    ]
+   },
+   "count": 13,
+   "group": "inventory",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/fsm, op add)",
+   "limit": "HUM-26",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.inventory.noview",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {inventory {noView}}",
+   "type": "bool",
+   "plain": "Not shown in the inventory.",
+   "unit": null,
+   "vanilla": null,
+   "count": 8,
+   "group": "inventory",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/noView, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.inventory.link_bone",
+   "where": "ammo file set/stuff/shell/<family>.<type>.ammo, set/stuff/{ammo,bazooka,reactive,bombing}/<name>.ammo, or its pattern/presets: {inventory {link_bone}}",
+   "type": "text",
+   "plain": "Body bone it hangs on.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "gun_back"
+    ]
+   },
+   "count": 1,
+   "group": "inventory",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/link_bone, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.weapon.projectiledamagetable",
+   "where": "weapon file {parameters \"<ammo tags>\" {..}} {projectileDamageTable {dist mm} ..}",
+   "type": "list",
+   "plain": "Piercing of this round by distance; lives in the weapon file, not the ammo file.",
+   "unit": "m, mm",
+   "vanilla": null,
+   "count": 50,
+   "group": "pierce",
+   "ref": "weapon",
+   "tool": "gen gun pen (apcr follows the ratio) / gen set (entity file:<stuff key>, path <root>/parameters/projectileDamageTable, op add)",
+   "limit": "KEY-09",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.weapon.projectiledamage",
+   "where": "weapon file {parameters \"<ammo tags>\" {..}} {projectileDamage}",
+   "type": "number",
+   "plain": "Muzzle piercing of this round when no table is given.",
+   "unit": "mm",
+   "vanilla": null,
+   "count": 0,
+   "group": "pierce",
+   "ref": "weapon",
+   "tool": "gen set (entity file:<stuff key>, path <root>/parameters/projectileDamage, op add)",
+   "limit": "KEY-09",
+   "tag": "I"
+  },
+  {
+   "key": "ammo.weapon.healthdamage",
+   "where": "weapon file {parameters \"<ammo tags>\" {..}} {healthDamage}",
+   "type": "number",
+   "plain": "Damage of this round to soldiers.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "damage",
+   "ref": "weapon",
+   "tool": "gen set (entity file:<stuff key>, path <root>/parameters/healthDamage, op add)",
+   "limit": "KEY-09",
+   "tag": "I"
+  },
+  {
+   "key": "ammo.weapon.range",
+   "where": "weapon file {parameters \"<ammo tags>\" {..}} {range a b}",
+   "type": "list",
+   "plain": "Range with this round (HE and APCR shoot shorter in vanilla presets).",
+   "unit": "m",
+   "vanilla": {
+    "min": 70,
+    "max": 180
+   },
+   "count": 11,
+   "group": "flight",
+   "ref": "weapon",
+   "tool": "gen set (entity file:<stuff key>, path <root>/parameters/range, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.weapon.speed",
+   "where": "weapon file {parameters \"<ammo tags>\" {..}} {speed}",
+   "type": "number",
+   "plain": "Muzzle speed with this round.",
+   "unit": "game units",
+   "vanilla": null,
+   "count": 0,
+   "group": "flight",
+   "ref": "weapon",
+   "tool": "gen set (entity file:<stuff key>, path <root>/parameters/speed, op add)",
+   "limit": "KEY-09",
+   "tag": "I"
+  },
+  {
+   "key": "ammo.weapon.gravity",
+   "where": "weapon file {parameters \"<ammo tags>\" {..}} {gravity}",
+   "type": "number",
+   "plain": "Drop of this round in flight.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "flight",
+   "ref": "weapon",
+   "tool": "gen set (entity file:<stuff key>, path <root>/parameters/gravity, op add)",
+   "limit": "KEY-09",
+   "tag": "I"
+  },
+  {
+   "key": "ammo.weapon.rechargetime",
+   "where": "weapon file {parameters \"<ammo tags>\" {..}} {rechargeTime}",
+   "type": "number",
+   "plain": "Reload time with this round.",
+   "unit": "s",
+   "vanilla": null,
+   "count": 0,
+   "group": "flight",
+   "ref": "weapon",
+   "tool": "gen set (entity file:<stuff key>, path <root>/parameters/rechargeTime, op add)",
+   "limit": "KEY-09",
+   "tag": "I"
+  },
+  {
+   "key": "ammo.weapon.spreading",
+   "where": "weapon file {parameters \"<ammo tags>\" {..}} {spreading ..}",
+   "type": "list",
+   "plain": "Spread with this round (vanilla cannon presets widen it for HE and APCR).",
+   "unit": null,
+   "vanilla": null,
+   "count": 13,
+   "group": "flight",
+   "ref": "weapon",
+   "tool": "gen set (entity file:<stuff key>, path <root>/parameters/spreading, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.weapon.curve",
+   "where": "weapon file {parameters \"<ammo tags>\" {..}} {curve}",
+   "type": "ref",
+   "plain": "Energy-by-distance curve for this round.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "pierce",
+   "ref": "ballistics curve",
+   "tool": "gen set (entity file:<stuff key>, path <root>/parameters/curve, op add)",
+   "limit": "DMG-29",
+   "tag": "I"
+  },
+  {
+   "key": "ammo.weapon.cursor",
+   "where": "weapon file {parameters \"<ammo tags>\" {..}} {cursor} {cursorReloading}",
+   "type": "ref",
+   "plain": "Cursor shown when this round is loaded.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "cannon_on_apcr",
+     "cannon_on_fg",
+     "cannon_on_sm"
+    ]
+   },
+   "count": 3,
+   "group": "ui",
+   "ref": "cursor",
+   "tool": "gen set (entity file:<stuff key>, path <root>/parameters/cursor, op add)",
+   "limit": "UI-21",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.weapon.bullet_view",
+   "where": "weapon file {parameters \"<ammo tags>\" {..}} {bullet_view}",
+   "type": "ref",
+   "plain": "Flying look of this round from this weapon.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "model",
+   "ref": "entity",
+   "tool": "gen set (entity file:<stuff key>, path <root>/parameters/bullet_view, op add)",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "ammo.weapon.tracefreq",
+   "where": "weapon file {parameters \"<ammo tags>\" {..}} {TraceFreq}",
+   "type": "number",
+   "plain": "Tracer frequency with this round.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "effects",
+   "ref": "weapon",
+   "tool": "gen set (entity file:<stuff key>, path <root>/parameters/TraceFreq, op add)",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "ammo.ai.rule",
+   "where": "set/target/ammo.set rules matched by ammo tags",
+   "type": "list",
+   "plain": "Which targets the computer fires this round at; a round no rule names is never chosen.",
+   "unit": null,
+   "vanilla": null,
+   "count": 1,
+   "group": "ai",
+   "ref": "set/target/ammo.set",
+   "tool": null,
+   "limit": "AI-05",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.fx.hit",
+   "where": "set/interaction_terrain/effects/*.inc, picked by tags shell size_<x> fg",
+   "type": "text",
+   "plain": "Hit and explosion effects on the ground, chosen from the size and kind tags (no own key).",
+   "unit": null,
+   "vanilla": null,
+   "count": 5,
+   "group": "effects",
+   "ref": "interaction terrain effects",
+   "tool": "gen set (entity file:<stuff key>, path <root>/tag, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.sound.hit",
+   "where": "interaction effects by tag -> sound/detonation/...",
+   "type": "text",
+   "plain": "Explosion and hit sound, chosen from the tags like the effects.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "sound",
+   "ref": "sound",
+   "tool": "gen set (entity file:<stuff key>, path <root>/tag, op add)",
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "ammo.carry.vehicle_box",
+   "where": "vehicle def {extender \"inventory\" {box {item \"ammo <family> <type>\" n}}}",
+   "type": "list",
+   "plain": "How many of this round a vehicle stores.",
+   "unit": null,
+   "vanilla": null,
+   "count": 301,
+   "group": "carry",
+   "ref": null,
+   "tool": "gen weapon (swaps family) / gen set",
+   "limit": "HUM-23",
+   "tag": "V"
+  },
+  {
+   "key": "ammo.carry.first_load",
+   "where": "vehicle {weaponry {place {weapon \"gun\" filling \"ammo <family> <type>\" 1}}}",
+   "type": "text",
+   "plain": "Round loaded in the gun at start.",
+   "unit": null,
+   "vanilla": null,
+   "count": 255,
+   "group": "carry",
+   "ref": null,
+   "tool": "gen weapon",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "ammo.carry.breed_item",
+   "where": "breed {inventory {item \"ammo tags\" n}}",
+   "type": "list",
+   "plain": "Rounds a soldier carries.",
+   "unit": null,
+   "vanilla": null,
+   "count": 281,
+   "group": "carry",
+   "ref": null,
+   "tool": "gen breed set (+inventory/item)",
+   "limit": "HUM-20",
+   "tag": "I"
+  },
+  {
+   "key": "ammo.text.name",
+   "where": "desc.lng desc/ammo/<tags> (or mod #file.lng)",
+   "type": "text",
+   "plain": "Name of the round in the game; key made from its tags minus grenade pattern ammo weapon.",
+   "unit": null,
+   "vanilla": null,
+   "count": 1,
+   "group": "text",
+   "ref": "localization",
+   "tool": "gen clone name / gen text",
+   "limit": "LOC-15",
+   "tag": "V"
+  }
+ ],
+ "gaps": [
+  "no op makes a new round from a like round with its numbers -> op shell (name family.type, like, preset args, blast layers [{energy, area}], detonation, tracer {texture, length}, tags size/shell class)",
+  "preset arg (\"ap\"|\"fg\"|\"fg_heavy\" args k) cannot be edited by gen set (macro call) -> op shell field args, like gen armor edits armor_* args",
+  "second and later blast layers ({damage add blastwave}) cannot be addressed by gen set paths -> op shell field blast: list of layers written whole",
+  "per-round weapon values (range, speed, recharge, spreading in {parameters \"tags\"}) only by raw gen set -> op gun field params",
+  "AI ammo rules (set/target/ammo.set) for a new kind tag: no op -> op ammorule (tag, like tag) copying the rows of an existing kind",
+  "round model / flight model / trail: no op clones an -ammo inventory entity and re-points it -> op stuffmodel (shared with gun)",
+  "vehicle box counts and soldier ammo lines -> op box / op kit (shared with gun)",
+  "hit/explosion sound per tag is chosen in interaction effects: needs an in-game test to map tag -> sound [T]"
+ ]
+}

@@ -1,0 +1,14 @@
+{game_entity
+ {brain "human" {State "idle"} {Const "a" 1.0}
+  {Propertes {fire_mode hold}}
+  {Properties {fire_mode hold} {no_retreat}
+   {advanse_ratio 2}
+   {ai_move {mode x}
+    {enable_onn 1}}}}
+ {sensor {RecognizeTime 1} {ThreatZone 5} {RememberTime 3} {InformRange 1 2}
+  {AttackZon 7}
+  {visor "v" {bone "head"}
+   {vison "x"}}}
+ {brain "vehicle" {LookAround true} {Const "g" {Const "n" 2}} {HoldFire} {Extension "x"}}
+ {placer {place "p" {turnoff {sensor {whatever 1}}}}}
+}

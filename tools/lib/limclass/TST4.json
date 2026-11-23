@@ -1,0 +1,223 @@
+{
+ "form": "limclass/1",
+ "area": "TST4",
+ "rows": {
+  "TST-65": {
+   "chk": "never",
+   "class": "silent",
+   "never": "shell flight needs game",
+   "why": "mortar kill from infantry foe unreal; no message"
+  },
+  "TST-66": {
+   "chk": "built",
+   "class": "cosmetic",
+   "tool": "refcheck",
+   "how": "two defs sharing one entity name across mounted mod folders",
+   "why": "twin defs log redefinition, no error"
+  },
+  "TST-67": {
+   "chk": "never",
+   "class": "silent",
+   "never": "runtime spawn state",
+   "why": "NOORDER ambiguous; test cannot tell cause"
+  },
+  "TST-68": {
+   "chk": "never",
+   "class": "silent",
+   "never": "runtime ordering only",
+   "why": "4-crew mortar NOORDER in some games"
+  },
+  "TST-69": {
+   "chk": "never",
+   "class": "cosmetic",
+   "never": "edrun log behaviour",
+   "why": "0 hits logged for infantry kill; log gap"
+  },
+  "TST-70": {
+   "chk": "todo",
+   "class": "silent",
+   "tool": "edrun-pack",
+   "how": "pair unit move_mode free without edrun free:true setting",
+   "why": "free move_mode drives at foe, shells miss"
+  },
+  "TST-71": {
+   "chk": "todo",
+   "class": "silent",
+   "tool": "edrun-mindist",
+   "how": "pair dist under about 300 for gun on tank",
+   "why": "tank too close fires 0 shots, no message"
+  },
+  "TST-72": {
+   "chk": "never",
+   "class": "info",
+   "never": "engine internals",
+   "why": "dbg_piercing has no reader; no impact log"
+  },
+  "TST-73": {
+   "chk": "todo",
+   "class": "silent",
+   "tool": "edrun-mindist",
+   "how": "pair dist under muzzle reach + foe half length + 10",
+   "why": "gun cannot aim closer than minimum; no shot, no message"
+  },
+  "TST-74": {
+   "chk": "todo",
+   "class": "silent",
+   "tool": "edrun-mindist",
+   "how": "pair dist below minimum for guns with depression 1-3",
+   "why": "low-depression gun needs big distance; no shot"
+  },
+  "TST-75": {
+   "chk": "never",
+   "class": "info",
+   "never": "log fact, nothing to hit",
+   "why": "duplicate lng key log proves read"
+  },
+  "TST-76": {
+   "chk": "never",
+   "class": "silent",
+   "never": "engine silence",
+   "why": "malformed camera.reg logs nothing"
+  },
+  "TST-77": {
+   "chk": "never",
+   "class": "silent",
+   "never": "profile in user instance",
+   "why": "mod keys.set ignored when local profile exists"
+  },
+  "TST-78": {
+   "chk": "never",
+   "class": "silent",
+   "never": "engine does not report",
+   "why": "unknown keys in these files log nothing"
+  },
+  "TST-79": {
+   "chk": "never",
+   "class": "silent",
+   "never": "log absence only",
+   "why": "no redefinition line for new def; proves nothing"
+  },
+  "TST-80": {
+   "chk": "built",
+   "class": "silent",
+   "tool": "keylint",
+   "how": "armor_ macro with args other than 1, 2 or 4 in def",
+   "why": "armour macro arg counts misread by readers"
+  },
+  "TST-81": {
+   "chk": "never",
+   "class": "info",
+   "never": "measured in game",
+   "why": "mortar kill delay vs distance; test design"
+  },
+  "TST-82": {
+   "chk": "never",
+   "class": "info",
+   "never": "test fact",
+   "why": "placed mortars take fire order without deploy"
+  },
+  "TST-83": {
+   "chk": "built",
+   "class": "silent",
+   "tool": "fxlint",
+   "how": "weapon place foresight not under its link bone in mdl/def",
+   "why": "two weapons share an aim chain via fallback bone"
+  },
+  "TST-84": {
+   "chk": "never",
+   "class": "info",
+   "never": "tool-reader fact",
+   "why": "armour reader must use part area"
+  },
+  "TST-85": {
+   "chk": "built",
+   "class": "crash",
+   "tool": "milint",
+   "how": "{Player n} block on building, flora or prop def in .mi",
+   "why": "Player on static def in .mi: load crash"
+  },
+  "TST-86": {
+   "chk": "never",
+   "class": "info",
+   "never": "workflow fact",
+   "why": "write mod.info before clone-entity"
+  },
+  "TST-87": {
+   "chk": "built",
+   "class": "silent",
+   "tool": "doctor",
+   "how": "mod-root set/ or entity/ folders outside resource/",
+   "why": "root set/ or entity/ folder never mounted"
+  },
+  "TST-88": {
+   "chk": "never",
+   "class": "info",
+   "never": "tool fact",
+   "why": "ed_reloadInteractions works over pipe"
+  },
+  "TST-89": {
+   "chk": "never",
+   "class": "silent",
+   "never": "runtime crew state",
+   "why": "1-crew vehicle foe never moveable; NOORDER"
+  },
+  "TST-90": {
+   "chk": "never",
+   "class": "silent",
+   "never": "Blender add-on, not mod files",
+   "why": "Blender export drops anm show/hide events"
+  },
+  "TST-91": {
+   "chk": "never",
+   "class": "review",
+   "never": "engine acceptance needs game",
+   "why": "bumped FRMN version; engine acceptance unknown"
+  },
+  "TST-92": {
+   "chk": "never",
+   "class": "info",
+   "never": "game-run variance",
+   "why": "vanilla pair flips; statistic"
+  },
+  "TST-93": {
+   "chk": "never",
+   "class": "info",
+   "never": "log reading rule",
+   "why": "shots null/0 says nothing; read with hits"
+  },
+  "TST-94": {
+   "chk": "built",
+   "class": "silent",
+   "tool": "doctor",
+   "how": "units/common.set, gameType.set or gameClass.set in mod lacking stock includes",
+   "why": "mod common.set replaces stock unit list whole"
+  },
+  "TST-95": {
+   "chk": "built",
+   "class": "silent",
+   "tool": "doctor",
+   "how": "armies/<name>.set army ids 6..99 used with rank above level 1",
+   "why": "new army id over 5 has unknown rank lookup"
+  },
+  "TST-96": {
+   "chk": "never",
+   "class": "info",
+   "never": "tool option fact",
+   "why": "goh2as2 default max-files cap; pass larger"
+  },
+  "TST-97": {
+   "chk": "built",
+   "class": "crash",
+   "tool": "refcheck",
+   "how": "{props} material or {weapon} Stuff reference unresolved in built def",
+   "why": "unresolved {props} or {weapon} stuff aborts load"
+  },
+  "TST-98": {
+   "chk": "never",
+   "class": "silent",
+   "never": "cause unproven, game only",
+   "why": "fast firers beside control lose it"
+  }
+ },
+ "dead": []
+}

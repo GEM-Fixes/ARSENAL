@@ -1,0 +1,164 @@
+{
+ "form": "limclass/1",
+ "area": "TST",
+ "rows": {
+  "TST-01": {
+   "chk": "built",
+   "class": "info",
+   "why": "menu click workflow fact"
+  },
+  "TST-02": {
+   "chk": "never",
+   "class": "info",
+   "why": "log does not name mods; workflow fact",
+   "never": "workflow fact"
+  },
+  "TST-03": {
+   "chk": "built",
+   "class": "info",
+   "why": "LAN lobby bot limitation; workflow fact"
+  },
+  "TST-04": {
+   "chk": "never",
+   "class": "info",
+   "why": "lobby preset coverage fact",
+   "never": "workflow fact"
+  },
+  "TST-05": {
+   "chk": "built",
+   "class": "info",
+   "why": "dup of MIS-12 console fact"
+  },
+  "TST-06": {
+   "chk": "never",
+   "class": "info",
+   "why": "keyboard focus workflow fact",
+   "never": "workflow fact"
+  },
+  "TST-07": {
+   "chk": "never",
+   "class": "info",
+   "why": "subagent keyboard limitation",
+   "never": "workflow fact"
+  },
+  "TST-08": {
+   "chk": "never",
+   "class": "info",
+   "why": "click before ring does nothing; test technique",
+   "never": "in-game test technique"
+  },
+  "TST-09": {
+   "chk": "never",
+   "class": "info",
+   "why": "camera control workflow fact",
+   "never": "workflow fact"
+  },
+  "TST-10": {
+   "chk": "never",
+   "class": "info",
+   "why": "measurement unreliable in direct control",
+   "never": "in-game test technique"
+  },
+  "TST-11": {
+   "chk": "never",
+   "class": "silent",
+   "why": "stale loose file overrides pak silently",
+   "never": "depends on the install on disk, not mod files"
+  },
+  "TST-12": {
+   "chk": "never",
+   "class": "info",
+   "why": "editor tool encoding workflow fact",
+   "never": "editing tool behaviour"
+  },
+  "TST-13": {
+   "chk": "built",
+   "class": "silent",
+   "why": "renamed mod folder silently dropped from mods"
+  },
+  "TST-14": {
+   "chk": "never",
+   "class": "info",
+   "why": "friendly fire default; test hint",
+   "never": "in-game test fact"
+  },
+  "TST-15": {
+   "chk": "never",
+   "class": "info",
+   "why": "backup practice",
+   "never": "workflow fact"
+  },
+  "TST-16": {
+   "chk": "built",
+   "class": "info",
+   "why": "quit over pipe behaviour"
+  },
+  "TST-17": {
+   "chk": "built",
+   "class": "info",
+   "why": "pipe only with -control"
+  },
+  "TST-18": {
+   "chk": "built",
+   "class": "info",
+   "why": "pipe client cap; refuses a second run"
+  },
+  "TST-19": {
+   "chk": "todo",
+   "class": "silent",
+   "why": "flag ignored silently on mowas_2.exe",
+   "tool": "testrun",
+   "how": "scenario targets mowas_2.exe but passes as64-only flags -nosound -control -instance"
+  }
+ },
+ "dead": [
+  {
+   "row": "TST-03",
+   "tool": "testrun",
+   "code": "TESTRUN_NOTE",
+   "fix": {
+    "code": "TESTRUN_NOTE"
+   }
+  },
+  {
+   "row": "TST-05",
+   "tool": "testrun",
+   "code": "TESTRUN_NO_PIPE",
+   "fix": {
+    "code": "TESTRUN_NO_PIPE"
+   }
+  },
+  {
+   "row": "TST-13",
+   "tool": "testrun",
+   "code": "TESTRUN_CMD_FAIL",
+   "fix": {
+    "code": "TESTRUN_CMD_FAIL"
+   }
+  },
+  {
+   "row": "TST-16",
+   "tool": "testrun",
+   "code": "WARN_TESTRUN_QUIT",
+   "fix": {
+    "code": "WARN_TESTRUN_QUIT"
+   }
+  },
+  {
+   "row": "TST-17",
+   "tool": "testrun",
+   "code": "TESTRUN_NO_PIPE",
+   "fix": {
+    "code": "TESTRUN_NO_PIPE"
+   }
+  },
+  {
+   "row": "TST-18",
+   "tool": "testrun",
+   "code": "TESTRUN_RUNNING",
+   "fix": {
+    "code": "TESTRUN_RUNNING"
+   }
+  }
+ ]
+}

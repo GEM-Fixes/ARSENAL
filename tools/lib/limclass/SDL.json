@@ -1,0 +1,43 @@
+{
+ "form": "limclass/1",
+ "area": "SDL",
+ "rows": {
+  "SDL-01": {"chk":"built","class":"crash","why":"ERROR_MSG is fatal, load aborts"},
+  "SDL-02": {"chk":"built","class":"crash","why":"# is a lex error"},
+  "SDL-03": {"chk":"never","class":"info","why":"lexer fact, = ignored","never":"harmless lexer fact"},
+  "SDL-04": {"chk":"built","class":"silent","why":"tokens split, key misread"},
+  "SDL-05": {"chk":"built","class":"silent","why":"numbers split into tokens"},
+  "SDL-06": {"chk":"built","class":"silent","why":"0e5 lexes as 0 plus ident"},
+  "SDL-07": {"chk":"built","class":"silent","why":"out-of-range int wraps silently"},
+  "SDL-08": {"chk":"built","class":"crash","why":"newline in string is INVALID, fatal"},
+  "SDL-09": {"chk":"built","class":"silent","why":"\\\\n double-decoded, wrong text","tool":"sdllint","how":"string literals containing backslash-backslash-n sequences"},
+  "SDL-10": {"chk":"built","class":"silent","why":"tag swallows name, block misread"},
+  "SDL-11": {"chk":"built","class":"silent","why":"{## block not removed in DDA files","tool":"sdllint","how":"{## disabled blocks inside multiplayer.set or breed.set DDA files"},
+  "SDL-12": {"chk":"built","class":"crash","why":"UTF-16/32 BOM is fatal"},
+  "SDL-13": {"chk":"built","class":"crash","why":"invalid bytes outside strings break lexing"},
+  "SDL-14": {"chk":"never","class":"info","why":"parser design fact","never":"parser internals, fragile only in special code"},
+  "SDL-15": {"chk":"never","class":"silent","why":"token overwrite may re-lex fields wrongly","never":"parser internals, effect untested"},
+  "SDL-16": {"chk":"built","class":"silent","why":"stray ) dropped, nesting hidden"},
+  "SDL-17": {"chk":"built","class":"crash","why":"define not found in sibling file"},
+  "SDL-18": {"chk":"built","class":"silent","why":"case mismatch gives define not found or unknown","tool":"sdllint","how":"macro used with case differing from its define name"},
+  "SDL-19": {"chk":"built","class":"crash","why":"'(' required fatal on param space"},
+  "SDL-20": {"chk":"never","class":"silent","why":"textual substitution changes wrong text","tool":"sdllint","how":"macro param names where one prefixes another, or %x inside strings","never": "vanilla uses prefixed params and %x in strings on purpose"},
+  "SDL-21": {"chk":"built","class":"silent","why":"unreplaced %x gives unexpected token or unknown key"},
+  "SDL-22": {"chk":"built","class":"silent","why":"ARGS read as param name"},
+  "SDL-23": {"chk":"built","class":"hang","why":"no depth guard, process dies on recursion"},
+  "SDL-24": {"chk":"built","class":"crash","why":"Nested mods not supported"},
+  "SDL-25": {"chk":"built","class":"crash","why":"unknown mod name fails at parse"},
+  "SDL-26": {"chk":"built","class":"crash","why":"Integer expected! on int field"},
+  "SDL-27": {"chk":"never","class":"cosmetic","why":"6-digit rounding of text value","never":"runtime rounding, text consumers only"},
+  "SDL-28": {"chk":"built","class":"silent","why":"division by zero gives inf","tool":"sdllint","how":"arithmetic with literal zero divisor"},
+  "SDL-29": {"chk":"built","class":"crash","why":"Integer expected! fatal"},
+  "SDL-30": {"chk":"built","class":"crash","why":".0 literal on int field fatal"},
+  "SDL-31": {"chk":"built","class":"crash","why":"Number expected! fatal"},
+  "SDL-32": {"chk":"built","class":"silent","why":"no/off read as true, only a warning"},
+  "SDL-33": {"chk":"built","class":"silent","why":"wrong-case key silently ignored"}
+ },
+ "dead": [
+  {"row":"SDL-31","tool":"keylint","code":"WARN_FLOAT_GOT_NONNUM","fix":{"code":"FLOAT_GOT_NONNUM"}},
+  {"row":"SDL-32","tool":"keylint","code":"WARN_BOOL_NO_IS_TRUE","fix":{"code":"BOOL_NO_IS_TRUE"}}
+ ]
+}

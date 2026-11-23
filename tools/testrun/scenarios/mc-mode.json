@@ -1,0 +1,48 @@
+{
+  "name": "mc-mode",
+  "rows": [
+    "MIS-24"
+  ],
+  "mode": "mp",
+  "fixture": [
+    "mc-mode"
+  ],
+  "mods": [
+    "as64+",
+    "mc-mode"
+  ],
+  "params": {
+    "map": "multi/1v1_road:wmtest"
+  },
+  "src": [
+    " (LoadFolder: card only if <mode> is a known game card)",
+    " (the game)",
+    " (mp_maps)"
+  ],
+  "note": "fixture = mission-clone --map map/multi/1v1_road --from combat --to wmtest --with-mode wmtest --from-mode combat --title \"WM Test\". Decided: mode card from the mod .set ({class combat}) registers (mp_maps lists the card, no 'game type(wmtest) is undefined'), the session hosts and the mission loads. By eye: lobby mode name shows \"WM Test\" (lng key mp/game/wmtest); bots play.",
+  "steps": [
+    {
+      "cmd": "mp_maps wmtest",
+      "expect": "multi/1v1_road:wmtest wmtest"
+    },
+    {
+      "cmd": "mp_status",
+      "expect": "."
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "log": "game type\\(wmtest\\) is undefined",
+      "want": false
+    },
+    {
+      "reply": "mp_maps wmtest",
+      "match": "multi/1v1_road:wmtest wmtest",
+      "want": true
+    }
+  ]
+}

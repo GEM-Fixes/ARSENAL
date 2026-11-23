@@ -1,0 +1,25 @@
+{
+  "name": "tst16-quit",
+  "rows": [
+    "TST-16"
+  ],
+  "mode": "menu",
+  "mods": [],
+  "steps": [
+    {
+      "cmd": "q"
+    }
+  ],
+  "verdict": [
+    {
+      "exit": true,
+      "within": 20,
+      "row": "TST-16"
+    }
+  ],
+  "src": [
+    " (q -> EVENT_QUIT)",
+    " (pipe runs any console command)"
+  ],
+  "note": "reviewed: q step then process-exit verdict within 20 s is the right decider; auto q is skipped because the step already sent it."
+}

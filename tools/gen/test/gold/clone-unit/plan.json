@@ -1,0 +1,198 @@
+{
+ "tool": "gen",
+ "name": "my_clone",
+ "target": "mowas2",
+ "plan": true,
+ "verdict": "plan only, nothing written",
+ "ops": {
+  "total": 2,
+  "applied": 3,
+  "list": [
+   {
+    "i": 0,
+    "op": "clone",
+    "status": "ok",
+    "findings": 0
+   },
+   {
+    "i": 1,
+    "op": "roster",
+    "status": "ok",
+    "findings": 0
+   },
+   {
+    "i": "x",
+    "op": "clone",
+    "status": "ok",
+    "findings": 0
+   }
+  ]
+ },
+ "files": [
+  "localization/#clone_entity.lng",
+  "resource/entity/-vehicle/tank_light/my_bt7a/my_bt7a.def",
+  "resource/entity/-vehicle/tank_light/my_bt7a_x/my_bt7a_x.def",
+  "resource/set/multiplayer/units/vehicles_rus.set"
+ ],
+ "skipped": [],
+ "errors": [],
+ "info": [
+  {
+   "file": "<out>",
+   "line": 0,
+   "code": "GAME_NO_MODS",
+   "msg": "no mods/ under <game>",
+   "severity": "note"
+  },
+  {
+   "file": "resource/entity/-vehicle/tank_light/my_bt7a/my_bt7a.def",
+   "line": 0,
+   "code": "CLONE_MODEL_REF",
+   "msg": "model/mtl stay in the base folder, referenced by rooted path (a relative Extension resolves only next to the def, KEY-27 live); --copy-assets for self-contained",
+   "severity": "note"
+  },
+  {
+   "file": "resource/set/multiplayer/units/vehicles_rus.set",
+   "line": 2,
+   "code": "ROSTER_LINE",
+   "msg": "base card: add {\"my_bt7a\"\t(\"v\" c(0) t(all medium) s(rus) n1(2) n2(1) g(e1) sc(16.00) b(v4) cw(0) cp(15)) {level 4} {cost 120}}",
+   "severity": "note"
+  },
+  {
+   "file": "resource/entity/-vehicle/tank_light/my_bt7a/my_bt7a.def",
+   "line": 0,
+   "code": "CLONE_MP_SYNC",
+   "msg": "entity/ and set/ files are CRC-compared in MP: all players need the same mod (VFS-29)",
+   "severity": "note"
+  },
+  {
+   "file": "clone my_bt7a",
+   "line": 0,
+   "code": "GEN_PLAN_WRITE",
+   "msg": "resource/entity/-vehicle/tank_light/my_bt7a/my_bt7a.def (new file): 3 line(s)",
+   "severity": "note"
+  },
+  {
+   "file": "clone my_bt7a",
+   "line": 0,
+   "code": "GEN_PLAN_WRITE",
+   "msg": "resource/entity/-vehicle/tank_light/my_bt7a/my_bt7a.def +1: {game_entity",
+   "severity": "note"
+  },
+  {
+   "file": "clone my_bt7a",
+   "line": 0,
+   "code": "GEN_PLAN_WRITE",
+   "msg": "resource/entity/-vehicle/tank_light/my_bt7a/my_bt7a.def +2: \t{hp 60}",
+   "severity": "note"
+  },
+  {
+   "file": "clone my_bt7a",
+   "line": 0,
+   "code": "GEN_PLAN_WRITE",
+   "msg": "resource/entity/-vehicle/tank_light/my_bt7a/my_bt7a.def +3: }",
+   "severity": "note"
+  },
+  {
+   "file": "clone my_bt7a",
+   "line": 0,
+   "code": "GEN_PLAN_WRITE",
+   "msg": "localization/#clone_entity.lng (new file): 3 line(s)",
+   "severity": "note"
+  },
+  {
+   "file": "clone my_bt7a",
+   "line": 0,
+   "code": "GEN_PLAN_WRITE",
+   "msg": "localization/#clone_entity.lng +1: {tags",
+   "severity": "note"
+  },
+  {
+   "file": "clone my_bt7a",
+   "line": 0,
+   "code": "GEN_PLAN_WRITE",
+   "msg": "localization/#clone_entity.lng +2:   {\"desc\" {\"entity\" {\"my_bt7a\" \"My BT-7A\"}}}",
+   "severity": "note"
+  },
+  {
+   "file": "clone my_bt7a",
+   "line": 0,
+   "code": "GEN_PLAN_WRITE",
+   "msg": "localization/#clone_entity.lng +3: }",
+   "severity": "note"
+  },
+  {
+   "file": "resource/set/multiplayer/units/vehicles_rus.set",
+   "line": 0,
+   "code": "GEN_ROSTER_CHAIN",
+   "msg": "resource/set/multiplayer/units/vehicles_rus.set <- resource/set/multiplayer/main.set (include chain root; the engine entry that loads the root is [I])",
+   "severity": "note"
+  },
+  {
+   "file": "resource/set/multiplayer/units/vehicles_rus.set",
+   "line": 0,
+   "code": "GEN_ROSTER_REPLACES",
+   "msg": "resource/set/multiplayer/units/vehicles_rus.set: the mod copy replaces the whole base file (other mods' edits of it are shadowed)",
+   "severity": "note"
+  },
+  {
+   "file": "roster my_bt7a",
+   "line": 0,
+   "code": "GEN_VEHICLE_NO_BOTS",
+   "msg": "vehicle my_bt7a: bots buy only units in resource/script/multiplayer/bot.data.lua Purchases; bots do not buy bt7a(rus) either; set bots: true (or a priority) to add it next to bt7a(rus)",
+   "severity": "note"
+  },
+  {
+   "file": "resource/entity/-vehicle/tank_light/my_bt7a_x/my_bt7a_x.def",
+   "line": 0,
+   "code": "CLONE_MODEL_REF",
+   "msg": "model/mtl stay in the base folder, referenced by rooted path (a relative Extension resolves only next to the def, KEY-27 live); --copy-assets for self-contained",
+   "severity": "note"
+  },
+  {
+   "file": "resource/entity/-vehicle/tank_light/my_bt7a_x/my_bt7a_x.def",
+   "line": 0,
+   "code": "CLONE_MP_SYNC",
+   "msg": "entity/ and set/ files are CRC-compared in MP: all players need the same mod (VFS-29)",
+   "severity": "note"
+  },
+  {
+   "file": "clone my_bt7a_x",
+   "line": 0,
+   "code": "GEN_PLAN_WRITE",
+   "msg": "resource/entity/-vehicle/tank_light/my_bt7a_x/my_bt7a_x.def (new file): 3 line(s)",
+   "severity": "note"
+  },
+  {
+   "file": "clone my_bt7a_x",
+   "line": 0,
+   "code": "GEN_PLAN_WRITE",
+   "msg": "resource/entity/-vehicle/tank_light/my_bt7a_x/my_bt7a_x.def +1: {game_entity",
+   "severity": "note"
+  },
+  {
+   "file": "clone my_bt7a_x",
+   "line": 0,
+   "code": "GEN_PLAN_WRITE",
+   "msg": "resource/entity/-vehicle/tank_light/my_bt7a_x/my_bt7a_x.def +2: \t{hp 1}",
+   "severity": "note"
+  },
+  {
+   "file": "clone my_bt7a_x",
+   "line": 0,
+   "code": "GEN_PLAN_WRITE",
+   "msg": "resource/entity/-vehicle/tank_light/my_bt7a_x/my_bt7a_x.def +3: }",
+   "severity": "note"
+  },
+  {
+   "file": "clone my_bt7a_x",
+   "line": 0,
+   "code": "GEN_WRECK_AUTOCLONE",
+   "msg": "bt7a_x -> my_bt7a_x: the base unit has a destroyed-vehicle wreck, cloned too so the dead my_bt7a leaves a wreck (add wreck: false to the clone op to skip it) [T]",
+   "severity": "note"
+  }
+ ],
+ "counts": {},
+ "gate": null,
+ "stat": null
+}

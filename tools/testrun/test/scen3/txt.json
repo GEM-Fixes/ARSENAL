@@ -1,0 +1,1 @@
+{"name":"txt","fixture":["txtfx"],"prepare":[{"argv":["node","x.js","--out","{mods}/txtfx/note.txt"]}],"verdict":[{"log":"a"}]}

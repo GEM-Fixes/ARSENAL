@@ -1,0 +1,4 @@
+{patch
+	{id 1}
+	{delete "at/key23.cfg"}
+}

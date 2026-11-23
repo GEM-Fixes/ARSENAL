@@ -1,0 +1,5 @@
+fixture/
+*.txt
+!golden.dry.txt
+bk.json
+q.json

@@ -1,0 +1,15 @@
+mod.info:3: WARN_AS2TOGOH_VERSION
+mod.info:4: WARN_AS2TOGOH_VERSION
+resource/entity/-inventory/weapon/small_arms/smg/mp40/mp40.def:2: WARN_AS2TOGOH_WEAPON_INCLUDE
+resource/entity/-inventory/weapon/small_arms/smg/mp40/mp40.mdl:2: WARN_AS2TOGOH_FORESIGHT
+resource/set/stuff/smg/mp40: WARN_AS2TOGOH_WEAPON_SET
+resource/set/stuff/rifle/k98: WARN_AS2TOGOH_WEAPON_SET
+resource/set/stuff/rifle/k98:2: WARN_AS2TOGOH_FORESIGHT_UNLINKED
+resource/set/stuff/pistol/p38: WARN_AS2TOGOH_WEAPON_SET
+resource/set/stuff/head/m40:1: WARN_AS2TOGOH_HEAD_PATTERN
+resource/set/stuff/head/fieldcap:1: WARN_AS2TOGOH_HEAD_PATTERN
+resource/set/stuff/head/odd:1: WARN_AS2TOGOH_HEAD_UNKNOWN
+resource/set/stuff/body/coat: WARN_AS2TOGOH_BODY_SET
+resource/entity/-inventory/equipment/body/coat/coat.def:1: WARN_AS2TOGOH_BODY_ROOT
+resource/entity/-vehicle/ger/tank_medium/pz4/pz4.def:3: WARN_AS2TOGOH_VEHICLE_DONOR
+resource/entity/-vehicle/ger/car/kubel/kubel.def:2: WARN_AS2TOGOH_VEHICLE_DEF

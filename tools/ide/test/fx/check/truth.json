@@ -1,0 +1,20 @@
+{
+  "note": "one defect per line; line and col are 1-based, a tab counts as one character",
+  "files": {
+    "mod/resource/set/syn.set": [
+      { "line": 3, "col": 9, "len": 2, "code": "WARN_ESCAPE", "why": "unknown escape \\q (tab at col 1)" },
+      { "line": 4, "col": 10, "len": 1, "code": "BLOCK_END_STRAY", "why": "second } has no open block" },
+      { "line": 5, "col": 6, "len": 3, "code": "TAG_SWALLOWS", "why": "{#x swallows the block name" },
+      { "line": 6, "col": 6, "len": 5, "code": "STR_NEWLINE", "why": "string not closed" },
+      { "line": 9, "col": 1, "len": 1, "code": "BLOCK_UNCLOSED", "why": "outer block never closed" }
+    ],
+    "mod/resource/map/single/t/t.mi": [
+      { "line": 6, "col": 7, "len": 13, "code": "MI_CMD_UNKNOWN", "why": "no such command" }
+    ]
+  },
+  "game": {
+    "mod/resource/set/breed/zz.set": [
+      { "line": 3, "col": 3, "len": 5, "code": "UNKNOWN_KEY", "why": "iconn is no breed key" }
+    ]
+  }
+}

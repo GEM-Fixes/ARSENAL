@@ -1,0 +1,123 @@
+{
+ "form": "limclass/1",
+ "area": "GPL",
+ "rows": {
+  "GPL-01": {
+   "chk": "never",
+   "class": "silent",
+   "why": "no blast without able blast, no message",
+   "tool": "keylint",
+   "how": "volume lacking able blast in defs hit by blast shells",
+   "never": "95% of vanilla defs lack able blast; shell hits are runtime"
+  },
+  "GPL-02": {
+   "chk": "never",
+   "class": "info",
+   "why": "engine timing fact, nothing to hit",
+   "never": "engine blast timing, runtime only"
+  },
+  "GPL-03": {
+   "chk": "built",
+   "class": "silent",
+   "why": "no penetration past range+5, no message",
+   "tool": "statsheet",
+   "how": "penetration preset last point versus weapon range+5"
+  },
+  "GPL-04": {
+   "chk": "built",
+   "class": "silent",
+   "why": "plates ignored, no message"
+  },
+  "GPL-05": {
+   "chk": "never",
+   "class": "review",
+   "why": "99999 may be deliberate",
+   "never": "depends on modder intent"
+  },
+  "GPL-06": {
+   "chk": "built",
+   "class": "crash",
+   "why": "flag overflow errors at load"
+  },
+  "GPL-07": {
+   "chk": "built",
+   "class": "silent",
+   "why": "delay rerun loses context silently",
+   "tool": "ialint",
+   "how": "{delay} handler body reading bullet/volume or expecting stacking"
+  },
+  "GPL-08": {
+   "chk": "built",
+   "class": "silent",
+   "why": "typo key skipped, no error"
+  },
+  "GPL-09": {
+   "chk": "built",
+   "class": "silent",
+   "why": "wrong separator drops entries"
+  },
+  "GPL-10": {
+   "chk": "never",
+   "class": "info",
+   "why": "runtime purchase counting fact",
+   "never": "runtime multiplayer counting"
+  },
+  "GPL-11": {
+   "chk": "built",
+   "class": "crash",
+   "why": "define not found fatal"
+  },
+  "GPL-12": {
+   "chk": "never",
+   "class": "review",
+   "why": "script asymmetry, source shows none",
+   "never": "script-data asymmetry, intent-dependent"
+  },
+  "GPL-13": {
+   "chk": "built",
+   "class": "silent",
+   "why": "undefined level gives top level silently"
+  },
+  "GPL-14": {
+   "chk": "never",
+   "class": "review",
+   "why": "script data, tune both",
+   "never": "ladders are script data, tuning judgement"
+  },
+  "GPL-15": {
+   "chk": "built",
+   "class": "silent",
+   "why": "missing sound warns, plays nothing"
+  },
+  "GPL-16": {
+   "chk": "never",
+   "class": "silent",
+   "why": "AI cannot use, no message",
+   "never": "script/UI rule, runtime only"
+  },
+  "GPL-17": {
+   "chk": "never",
+   "class": "silent",
+   "why": "towed gun just does not fire",
+   "never": "runtime state, no static signal"
+  }
+ },
+ "dead": [
+  {
+   "row": "GPL-04",
+   "tool": "statsheet",
+   "code": "ARMOR_VOLUME_SHADOWED",
+   "fix": {
+    "code": "ARMOR_VOLUME_SHADOWED"
+   }
+  },
+  {
+   "row": "GPL-13",
+   "tool": "statsheet",
+   "code": "PERK_LEVEL_UNDEFINED",
+   "fix": {
+    "code": "PERK_LEVEL_UNDEFINED"
+   }
+  }
+ ]
+}

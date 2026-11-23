@@ -1,0 +1,1 @@
+[{"name":"material kept","class":"tank_medium","def":"(entity\n\t{volume \"shieldw1\"\n\t\t{material \"wood\"}\n\t}\n)\n","expect":"(entity\n\t{volume \"shieldw1\"\n\t\t{material \"wood\"}\n\t}\n)\n"}]

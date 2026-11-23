@@ -1,0 +1,5 @@
+[{"name":"smokescreen kept","class":"tank_medium","def":"(entity\n\t{extender \"smokescreen\"\n\t\t{cooldown 30}\n\t}\n)\n","expect":"(entity\n\t{extender \"smokescreen\"\n\t\t{cooldown 30}\n\t}\n)\n"},
+{"name":"cannon trailing kept","class":"cannon","def":"(entity\n\t{extender \"cannon\"\n\t\t{trailing\n\t\t\t{workers 2}\n\t\t}\n\t}\n)\n","expect":"(entity\n\t{extender \"cannon\"\n\t\t{trailing\n\t\t\t{workers 2}\n\t\t}\n\t}\n)\n"},
+{"name":"shield off kept","class":"cannon","def":"(entity\n\t{extender \"shield\"\n\t\t{off}\n\t}\n)\n","expect":"(entity\n\t{extender \"shield\"\n\t\t{off}\n\t}\n)\n"},
+{"name":"gunner and restoreiktime kept","class":"tank_medium","def":"(entity\n\t{weaponry\n\t\t{restoreiktime 4}\n\t\t{place\n\t\t\t{gunner \"gunner\"}\n\t\t}\n\t}\n)\n","expect":"(entity\n\t{weaponry\n\t\t{restoreiktime 4}\n\t\t{place\n\t\t\t{gunner \"gunner\"}\n\t\t}\n\t}\n)\n"}
+]

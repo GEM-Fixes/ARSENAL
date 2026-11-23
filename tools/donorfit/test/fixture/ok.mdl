@@ -1,0 +1,25 @@
+; invented mdl for donorfit test
+{skeleton
+	{bone "basis"
+		{bone "body"
+			{bone revolute "turret"
+				{bone revolute "mgun_rot"
+					{bone "foresight1"}
+				}
+				{bone "mgun2"}
+				{bone "visor1"}
+			}
+			{bone "seat01"}
+			{bone "emit0"}
+			{bone "emit1"}
+			{bone "emit2"}
+		}
+	}
+}
+{volume "body1"
+	{thickness 10}
+}
+{volume "turret1"
+	{thickness 10}
+	{Bone "turret"}
+}

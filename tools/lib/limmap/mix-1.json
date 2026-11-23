@@ -1,0 +1,404 @@
+{
+ "form": "limmap/1",
+ "part": "mix-1",
+ "codes": {
+  "ANM_BAD_HEADER": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-01",
+    "FMT-08"
+   ],
+   "at": "tools/binhdr/misc.js:14",
+   "class": "crash",
+   "why": "Expect EANM/FRMS/BMAP fails; bone cap 255"
+  },
+  "ANM_FRAME_INDEX": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-24"
+   ],
+   "at": "tools/binhdr/misc.js:34",
+   "class": "crash",
+   "why": "BeginFrame rejects index outside FRMS count"
+  },
+  "PLY_NO_GEOMETRY": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-01"
+   ],
+   "at": "tools/binhdr/ply.js:119",
+   "class": "crash",
+   "why": "MESH parts without VERT: chunk desync symptom"
+  },
+  "VOL_BAD_MAGIC": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-25"
+   ],
+   "at": "tools/binhdr/misc.js:81",
+   "class": "cosmetic",
+   "why": "engine skips magic bytes unchecked"
+  },
+  "VOL_INDEX_RANGE": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-26"
+   ],
+   "at": "tools/binhdr/misc.js:89",
+   "class": "crash",
+   "why": "unchecked vertex index; effect not run"
+  },
+  "VOL_TRUNCATED": {
+   "tool": "binhdr",
+   "sev": "crash",
+   "lim": [
+    "FMT-27"
+   ],
+   "at": "tools/binhdr/misc.js:101",
+   "class": "crash",
+   "why": "read past end of stream; outcome unread"
+  },
+  "BOT_ARMY_MISSING": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "lim": [
+    "MIS-09"
+   ],
+   "at": "tools/botrecipe/botcheck.js:72",
+   "class": "silent",
+   "why": "army absent from stage Units buys nothing"
+  },
+  "BOT_ARMY_UNKNOWN": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "lim": [
+    "MIS-77"
+   ],
+   "at": "tools/botrecipe/botcheck.js:74",
+   "class": "silent",
+   "why": "list no bot reads; bot.lua unread"
+  },
+  "BOT_DUP_KEY": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "lim": [
+    "MIS-78"
+   ],
+   "at": "tools/botrecipe/botcheck.js:30",
+   "class": "silent",
+   "why": "Lua keeps last assignment; earlier value lost"
+  },
+  "BOT_ENTRIES": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/botrecipe/botcheck.js:94",
+   "class": "info",
+   "why": "summary count of stages and entries checked"
+  },
+  "BOT_ENTRY_CLASS": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "lim": [
+    "MIS-79"
+   ],
+   "at": "tools/botrecipe/botcheck.js:87",
+   "class": "silent",
+   "why": "nil class never matched; bot.lua unread"
+  },
+  "BOT_ENTRY_KEY": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "lim": [
+    "MIS-80"
+   ],
+   "at": "tools/botrecipe/botcheck.js:81",
+   "class": "silent",
+   "why": "missing or ignored entry key; bot.lua unread"
+  },
+  "BOT_ENTRY_SHAPE": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "lim": [
+    "MIS-81"
+   ],
+   "at": "tools/botrecipe/botcheck.js:79",
+   "class": "silent",
+   "why": "wrong table shape; Lua error is logged only"
+  },
+  "BOT_ENTRY_TYPE": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "lim": [
+    "MIS-81"
+   ],
+   "at": "tools/botrecipe/botcheck.js:84",
+   "class": "silent",
+   "why": "wrong value type; bot.lua unread"
+  },
+  "BOT_KEY_EXTRA": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "lim": [
+    "MIS-82"
+   ],
+   "at": "tools/botrecipe/botcheck.js:35",
+   "class": "silent",
+   "why": "dead global; bot.lua unread"
+  },
+  "BOT_KEY_MISSING": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "lim": [
+    "MIS-81"
+   ],
+   "at": "tools/botrecipe/botcheck.js:32",
+   "class": "silent",
+   "why": "nil read in bot.lua; error only logged"
+  },
+  "BOT_KEY_TYPE": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "lim": [
+    "MIS-81"
+   ],
+   "at": "tools/botrecipe/botcheck.js:33",
+   "class": "silent",
+   "why": "type mismatch; bot.lua unread"
+  },
+  "BOT_LUA_PARSE": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/botrecipe/botcheck.js:26",
+   "class": "tool",
+   "why": "tool Lua-subset parser cannot read the file"
+  },
+  "BOT_LUA_UNSUPPORTED": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/botrecipe/botcheck.js:26",
+   "class": "tool",
+   "why": "file uses Lua the tool does not evaluate"
+  },
+  "BOT_NO_STAY_STAGE": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "lim": [
+    "MIS-83"
+   ],
+   "at": "tools/botrecipe/botcheck.js:93",
+   "class": "silent",
+   "why": "bot stops buying after last stage; bot.lua unread"
+  },
+  "BOT_STAGE_COUNT": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/botrecipe/botcheck.js:59",
+   "class": "info",
+   "why": "stage count differs from stock; no fact behind it"
+  },
+  "BOT_STAGE_KEY": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "lim": [
+    "MIS-82"
+   ],
+   "at": "tools/botrecipe/botcheck.js:65",
+   "class": "silent",
+   "why": "dead stage key; bot.lua unread"
+  },
+  "BOT_STAGE_SHAPE": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "lim": [
+    "MIS-84"
+   ],
+   "at": "tools/botrecipe/botcheck.js:58",
+   "class": "silent",
+   "why": "stage shape bot.lua walks; unread this session"
+  },
+  "BOT_UNIT_NO_CARD": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "lim": [
+    "MIS-32"
+   ],
+   "at": "tools/botrecipe/botcheck.js:89",
+   "class": "silent",
+   "why": "unit without card: Spawn not found, never bought"
+  },
+  "BOT_VANILLA_UNREAD": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/botrecipe/botcheck.js:25",
+   "class": "tool",
+   "why": "stock bot.data.lua could not be parsed"
+  },
+  "NO_VANILLA": {
+   "tool": "botrecipe",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/botrecipe/botrecipe.js:196",
+   "class": "tool",
+   "why": "no stock file given to compare with"
+  },
+  "BUILD_FAIL": {
+   "tool": "build",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/build/workspace.js:66",
+   "class": "tool",
+   "why": "a build stage subprocess exited nonzero (emits BUILD_FAILED)"
+  },
+  "DEAD_KEY": {
+   "tool": "check",
+   "sev": "silent",
+   "lim": [
+    "KEY-25"
+   ],
+   "at": "tools/keylint/rules.js:129",
+   "class": "silent",
+   "why": "key registered but not read; many KEY rows"
+  },
+  "MOD_MOD": {
+   "tool": "check",
+   "sev": "review",
+   "lim": [
+    "VFS-01"
+   ],
+   "at": "tools/conflicts/conflicts.js:149",
+   "class": "silent",
+   "why": "row kind label; last register wins whole file"
+  },
+  "PREFLIGHT_PATCH_UNMOUNTED": {
+   "tool": "check",
+   "sev": "review",
+   "lim": [
+    "VFS-26"
+   ],
+   "at": "tools/check/preflight.js:77",
+   "class": "silent",
+   "why": "mod root files outside mounted set ignored"
+  },
+  "PREFLIGHT_STEM_TWO_CLASSES": {
+   "tool": "check",
+   "sev": "review",
+   "lim": [
+    "SDL-60"
+   ],
+   "at": "tools/check/stackchecks.js:134",
+   "class": "crash",
+   "why": "one stem under two root classes"
+  },
+  "PREFLIGHT_WEAPON_FILLED_NO_FILLING": {
+   "tool": "check",
+   "sev": "review",
+   "lim": [
+    "SDL-59"
+   ],
+   "at": "tools/check/stackchecks.js:114",
+   "class": "crash",
+   "why": "filled weapon without filling: GetMagazine crash"
+  },
+  "SDL_DISABLED_TAG": {
+   "tool": "check",
+   "sev": "review",
+   "lim": [
+    "SDL-11"
+   ],
+   "at": "tools/sdllint/sdllint.js:210",
+   "class": "info",
+   "why": "{## disables the block; info only"
+  },
+  "CLEAN_REPARSE": {
+   "tool": "conflicts",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/conflicts/conflicts.js:175",
+   "class": "tool",
+   "why": "cleaned copy parse check differs from original"
+  },
+  "CONFLICT_FILE_OVERRIDES": {
+   "tool": "conflicts",
+   "sev": "silent",
+   "kind": "tool",
+   "at": "tools/conflicts/conflicts.js:146",
+   "class": "info",
+   "why": "truncated-listing count line"
+  },
+  "CONFLICT_FILE_SHADOW": {
+   "tool": "conflicts",
+   "sev": "silent",
+   "lim": [
+    "VFS-41"
+   ],
+   "at": "tools/conflicts/conflicts.js:147",
+   "class": "silent",
+   "why": "whole-file replace drops earlier mod entries"
+  },
+  "CONFLICT_KEY_OVERRIDDEN": {
+   "tool": "conflicts",
+   "sev": "silent",
+   "lim": [
+    "VFS-01"
+   ],
+   "at": "tools/conflicts/conflicts.js:151",
+   "class": "silent",
+   "why": "later mod value wins; earlier lost"
+  },
+  "CONFLICT_UNREADABLE": {
+   "tool": "conflicts",
+   "sev": "silent",
+   "kind": "tool",
+   "at": "tools/conflicts/conflicts.js:72",
+   "class": "tool",
+   "why": "tool could not read or parse a file"
+  },
+  "ITM_CLEANED": {
+   "tool": "conflicts",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/conflicts/conflicts.js:181",
+   "class": "info",
+   "why": "clean-copy summary and omitted-file notes"
+  },
+  "WARN_CONFLICT_FILE_KEYS": {
+   "tool": "conflicts",
+   "sev": "silent",
+   "kind": "tool",
+   "at": "tools/conflicts/conflicts.js:145",
+   "class": "info",
+   "why": "truncated-listing count line"
+  },
+  "WARN_CONFLICT_MOD_MOD": {
+   "tool": "conflicts",
+   "sev": "silent",
+   "lim": [
+    "VFS-01",
+    "VFS-15"
+   ],
+   "at": "tools/conflicts/conflicts.js:133",
+   "class": "silent",
+   "why": "two mods set key differently; last wins"
+  },
+  "FLOAT_GOT_NONNUM": {
+   "tool": "covlint",
+   "sev": "silent",
+   "lim": [
+    "SDL-31"
+   ],
+   "at": "tools/keylint/keylint.js:220",
+   "class": "crash",
+   "why": "non-number in float field: Number expected fatal"
+  }
+ }
+}

@@ -1,0 +1,52 @@
+{
+  "name": "sdl-33",
+  "rows": [
+    "SDL-33"
+  ],
+  "fixture": [
+    "sdl-33"
+  ],
+  "params": {
+    "map": "multi/1v1_road:combat"
+  },
+  "src": [
+    " (Field scoreFinal)",
+    "(not part of this release)",
+    " (strcmp)"
+  ],
+  "note": "combat.set writes {scorefinal 777} in the wrong case. Pass: mp_settings shows scoreFinal with a value other than 777, so the key was skipped. Only meaningful with the control sdl-33c. [T] mp_settings value text.",
+  "steps": [
+    {
+      "cmd": "mp_lan"
+    },
+    {
+      "wait_stage": true
+    },
+    {
+      "cmd": "mp_host {map} 2"
+    },
+    {
+      "wait_stage": true
+    },
+    {
+      "cmd": "mp_settings",
+      "expect": "scoreFinal"
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "mp_settings",
+      "match": "scoreFinal[^\\n]*value=(?!777\\b)\\S",
+      "want": true
+    }
+  ],
+  "mode": "menu",
+  "mods": [
+    "as64+",
+    "sdl-33"
+  ]
+}

@@ -1,0 +1,15 @@
+# Clones the vanilla Soviet BT-7A tank under a new name (my_bt7a) with its own text key and its own roster card.
+# Edit two values: as (the new unit name; also change unit under roster) and name (its display name).
+# as2 gen clone-unit.yaml --target mowas2 --game <AS2 dir> --out <mods dir>/my_clone --no-stat   (add --plan first: writes nothing)
+name: my_clone
+title: My Clone
+ops:
+  - op: clone
+    entity: bt7a
+    as: my_bt7a
+    name: My BT-7A
+  - op: roster
+    unit: my_bt7a
+    like: bt7a
+    army: rus
+    fields: {cost: 90}

@@ -1,0 +1,66 @@
+{entities
+	{"tank"
+		{on spawn
+			{set "a" 1}
+		}
+		{on hit
+			{call "nothing_here"}
+			{call "spawn"}
+			{log "x"}
+			{rtfunc "p"}
+			{kick_entity_manager}
+			{kill_delay ""}
+			{kill_delay "ok"}
+			{use_blend_tex "t"}
+		}
+		{on spawn
+			{set "b" 0}
+		}
+		{on ik begin "turret"
+			{if "a" {set "c"} }
+		}
+		{on ik end "turret"
+			{if not "a" {set "c"} }
+		}
+		{on animation_end "stir" {con "x"} }
+		{on animation_end "stir" {con "y"} }
+	}
+	{"car"
+		{on blast
+			{explode_inventory
+				{0.05 "ex_a" 3}
+				{0.5 "ex_b" 5}
+			}
+		}
+	}
+}
+{entities
+	{"human"
+		{on bullet_hit
+			{health_damage_pierce 1 {effects "hit"}}
+		}
+		{on blast
+			{if hit_side left {con "l"} }
+			{if hit_side front {con "f"} }
+		}
+		{on ground_hit
+			{if min_energy 5 {con "g"} }
+		}
+	}
+	{"gun_car"
+		{on exploded {con "z"} }
+		{on bullet_hit
+			{delay 1 {if stuff "ap" {con "s"} } }
+			{delay 1 {if volume "engine" {con "v"} } }
+			{delay_ex 1 {if effector "tank" {con "e"} } }
+			{delay_ex 1 {if hit_side top {con "t"} } }
+			{delay_effect 1 "later"}
+			{tags add "ghost"}
+		}
+		{on "later" {if volume "x" {con "x"} } }
+		{on fire "gun9" {con "f"} }
+	}
+	{"ghost"
+		{on spawn {con "g"} }
+	}
+}

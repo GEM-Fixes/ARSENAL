@@ -1,0 +1,12 @@
+; invented GoH-form fortification list: each {Action "name"} is one action
+{Action "myfort"
+	{Button}
+	{Key "actions/myfort"}
+	{Instructions
+		{install_begin "sandbag_x" 0}
+		{install_end}
+		{remove_from_inventory}
+		{action_reset}
+		{plant "bush" default "bush1"}
+	}
+}

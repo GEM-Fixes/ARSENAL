@@ -1,0 +1,28 @@
+{
+"form":"limclass/1",
+"area":"MAP",
+"rows":{
+"MAP-01":{"chk":"built","class":"silent","why":"map absent from mode, skip line in log"},
+"MAP-02":{"chk":"built","class":"silent","why":"counts rounded or clamped quietly"},
+"MAP-03":{"chk":"built","class":"silent","why":"library material entry ignored"},
+"MAP-04":{"chk":"built","class":"silent","why":"unknown terrain name maps to id 0"},
+"MAP-05":{"chk":"built","class":"silent","why":"visible river passable, no message"},
+"MAP-06":{"chk":"never","class":"silent","why":"far point tasks fail with no message","never":"runtime pathfinding limit"},
+"MAP-07":{"chk":"never","class":"cosmetic","why":"zone circles not shown in match","never":"runtime overlay behaviour"},
+"MAP-08":{"chk":"built","class":"silent","why":"bigger terrain wrong, no message"},
+"MAP-09":{"chk":"built","class":"silent","why":"Wrong patch N logged; patch not applied"},
+"MAP-10":{"chk":"built","class":"review","why":"destructive move of map mod files; intent decides"},
+"MAP-11":{"chk":"built","class":"silent","why":"ranked keys skipped, no-op"},
+"MAP-12":{"chk":"built","class":"cosmetic","why":"obsolete block warning, map still loads"},
+"MAP-13":{"chk":"built","class":"silent","why":"unexpected token logged; helper block lost"},
+"MAP-14":{"chk":"built","class":"silent","why":"matrix beyond count invalid, no message"},
+"MAP-15":{"chk":"built","class":"silent","why":"unexpected token logged on bad xform"},
+"MAP-16":{"chk":"built","class":"review","why":"unit scale unresolved; maths may be off"},
+"MAP-17":{"chk":"never","class":"silent","why":"patched land not saved except warning","never":"editor-only runtime behaviour"},
+"MAP-18":{"chk":"built","class":"info","why":"slope class granularity fact"},
+"MAP-19":{"chk":"built","class":"crash","why":"id >=64 indexes table out of bounds; lower ids map to 0"}
+},
+"dead":[
+{"row":"MAP-16","tool":"mapview","code":"WARN_MAPVIEW_ENT_OUTSIDE","fix":{"code":"WARN_MAPVIEW_ENT_OUTSIDE"}}
+]
+}

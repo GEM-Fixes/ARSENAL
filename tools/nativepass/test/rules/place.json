@@ -1,0 +1,5 @@
+[
+{"name":"openforcrush 0 added to a place without one","class":"tank_heavy","def":"{game_entity\n\t{placer\n\t\t{place \"driver\"\n\t\t\t{group \"crew\"}\n\t\t\t{visor \"driver\"}\n\t\t}\n\t}\n}\n","expect":"{game_entity\n\t{placer\n\t\t{place \"driver\"\n\t\t\t{group \"crew\"}\n\t\t\t{visor \"driver\"}\n\t\t\t{openforcrush 0}\n\t\t}\n\t}\n}\n"},
+{"name":"own openforcrush stays","class":"tank_heavy","def":"{game_entity\n\t{placer\n\t\t{place \"driver\"\n\t\t\t{group \"crew\"}\n\t\t}\n\t\t{place \"commander\"\n\t\t\t{group \"crew\"}\n\t\t\t{openforcrush}\n\t\t}\n\t}\n}\n","expect":"{game_entity\n\t{placer\n\t\t{place \"driver\"\n\t\t\t{group \"crew\"}\n\t\t}\n\t\t{place \"commander\"\n\t\t\t{group \"crew\"}\n\t\t\t{openforcrush}\n\t\t}\n\t}\n}\n"},
+{"name":"other class untouched","class":"tank_medium","def":"{game_entity\n\t{placer\n\t\t{place \"driver\"\n\t\t\t{group \"crew\"}\n\t\t}\n\t}\n}\n","expect":"{game_entity\n\t{placer\n\t\t{place \"driver\"\n\t\t\t{group \"crew\"}\n\t\t}\n\t}\n}\n"}
+]

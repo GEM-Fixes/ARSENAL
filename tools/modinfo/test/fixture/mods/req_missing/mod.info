@@ -1,0 +1,7 @@
+{Mod
+{Name "req_missing"}
+{Require "ok:1.0"}
+{Require "nothere"}
+{MinGameVersion "3.262"}
+{MaxGameVersion "3.262"}
+}

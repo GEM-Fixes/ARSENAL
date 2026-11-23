@@ -1,0 +1,8 @@
+{breed
+ {behaviour "b"} {voice "v"} {tags "x"}
+ {iconn "i"}
+ {armors {head "h"}
+  {bodyy "b"}}
+ {inventory {item "a"}
+  {in_hand 0}}
+}

@@ -1,0 +1,7 @@
+{game_entity
+	(include "/properties/p.ext")
+	{Extension "a.mdl"}
+	{extender "inventory" {box {item "ammo x" 1}}}
+	{Weaponry {place "g" {weapon "w1" filling "ammo x" 1}}}
+	{Chassis {Locomotion {TurnTime 5}} {Strafe {Forth 1}}}
+}

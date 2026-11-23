@@ -1,0 +1,11 @@
+{
+ "inGame": true,
+ "date": "2026-11-20",
+ "kinds": { "assault": true, "defence": true, "breakthrough": false, "destroy": false, "escort": false },
+ "tries": [
+  { "date": "2026-11-20", "exe": "as64", "how": "direct", "kinds": ["assault", "defence"] }
+ ],
+ "untried": ["patrol", "holdfail", "menu", "result", "voices"],
+ "evidence": " section A",
+ "note": "What was played in the game. kinds: a template kind played to its win and lose ends. tries: each run, on which game build (exe: as64 = the AS64 build of this repo, mowas2 = the retail MoW:AS2 exe) and how it was started (direct = the test runner's single-player start straight into the mission, menu = through the Single player menu). untried: parts no run has shown yet (patrol = a patrol walking its route, holdfail = a hold goal failed at the timer end, menu = the Single player menu entry, result = the result screen after the end, voices = the silent story/start/outro wav files). Set a kind true, add a try, or drop a part once a run shows it. The GUI card reads this."
+}

@@ -1,0 +1,57 @@
+class,unit,foe,dist,runs,kills,raw_PASS,kills_with_fire_proof,screened_out,noorder,fired,fired_first,mg_muzzles,cannon_muzzles,hits,state,moved,donor,d_dist,d_runs,d_kills,d_raw,d_proof,d_noorder,d_fired,d_mg,d_cannon,d_hits,d_moved,outcome
+gun,105mm_wz29,gaz67b,100,5,3,3,3,,0,Y,F,6,0,13,mixed,-,lefh18,100,6,4,4,4,0,Y,19,0,36,-,U+D+
+gun,10cm_37m,gaz67b,100,6,3,5,3,overcap:2,1,Y,Z,30,0,57,mixed,-,lefh18,100,6,4,4,4,0,Y,19,0,36,-,U+D+
+gun,37mm_type_94,gaz67b,100,5,2,2,2,,0,Y,F,0,0,16,mixed,-,m3cannon,100,6,4,4,4,0,Y,0,0,24,-,U-D+
+gun,40mm_type5_aa,gaz67b,119,6,4,4,4,,0,Y,F,0,0,4,mixed,-,qf2,100,6,3,3,3,0,Y,0,0,21,-,U+D+
+gun,47mm_type_1,gaz67b,100,5,2,2,2,,0,Y,Z,0,0,2,mixed,-,pak47,100,5,1,1,1,0,Y,0,0,1,-,U-D-
+gun,4cm_bofors_36m,gaz67b,119,6,3,3,3,,0,Y,F,0,0,3,mixed,-,qf2,100,6,3,3,3,0,Y,0,0,21,-,U+D+
+gun,8mm_breda_37_aa,mp/ger/rifle,115,6,0,6,0,ordertick:6,0,N,-,0,0,0,0 kills,-,mg1_ju52,110,6,0,5,0,1,N,0,0,0,-,U-D-
+gun,cannone_10528,gaz67b,100,0,0,0,0,,0,N,-,0,0,0,no kill run,-,lefh18,100,6,4,4,4,0,Y,19,0,36,-,U-D+
+gun,cannone_4732,gaz67b,100,6,5,5,5,,0,Y,F,0,0,25,mixed,-,pak47,100,5,1,1,1,0,Y,0,0,1,-,U+D-
+gun,uk-bl7_2-inch,gaz67b,150,5,1,1,1,,3,Y,K,0,0,1,mixed,-,type4_200mm,100,5,0,0,0,5,Y,0,0,6,-,U-D-
+gun,uk-qf6pdr,t34_0,112,6,5,6,5,overcap:1,0,Y,F,0,0,18,mixed,-,m1_57mm,115,5,4,5,4,0,Y,0,0,15,-,U+D+
+gun,us-155_mm_m1,gaz67b,128,6,5,5,5,,1,Y,Z,0,24,32,mixed,-,155gpf,128,5,5,5,5,0,Y,0,16,29,-,U+D+
+gun,us-155_mm_m2,gaz67b,682,6,6,6,6,,0,Y,F,0,48,81,stable,-,155gpf,128,5,5,5,5,0,Y,0,16,29,-,U+D+
+light,3ro,gaz67b,180,6,3,3,3,,0,Y,Z,0,0,12,mixed,1/1,sdkfz234_3,120,6,1,1,1,1,Y,0,0,9,1/1,U+D-
+light,botond,none,,,,,,,,unarmed,,,,,move only,1/1,isuzutx40,,,,,,,unarmed,,,,1/1,U+D+
+light,cmp_tri-polsten,mp/ger/rifle,410,6,6,6,6,,0,Y,F,0,0,63,stable,1/1,isuzutx40_aa,317,6,0,0,0,0,Y,0,0,0,1/1,U+D-
+light,dodge_pol,none,,,,,,,,unarmed,,,,,move only,1/1,dodge,,,,,,,unarmed,,,,1/1,U+D+
+light,fiat626_fuel,none,,,,,,,,unarmed,,,,,move only,1/1,blitz3_6m,,,,,,,unarmed,,,,1/1,U+D+
+light,m4halftrack_fr,mp/ger/rifle,120,0,0,0,0,,0,N,-,0,0,0,no kill run,1/1,sdkfz8,777,6,0,0,0,0,Y,12,0,0,1/1,U-D-
+light,renault_fuel,none,,,,,,,,unarmed,,,,,move only,1/1,bedford,,,,,,,unarmed,,,,1/1,U+D+
+light,staghound_mk2_pol,gaz67b,120,6,0,0,0,,0,Y,Z,0,0,6,0 kills,1/1,sdkfz234_3,120,6,1,1,1,1,Y,0,0,9,1/1,U-D-
+light,uk-m3halftrack,mp/ger/rifle,120,6,4,6,0,overcap:2,0,?,-,0,0,0,mixed,1/1,ho-ha3mgun,120,6,5,6,0,0,?,0,0,0,1/1,U+D+
+light,us-m20,mp/ger/rifle,120,6,3,4,0,overcap:1,2,?,-,0,0,0,mixed,1/1,m20,120,6,6,6,0,0,?,0,0,0,1/1,U+D+
+light,us-m8_grayhound,gaz67b,150,6,2,2,2,,0,Y,F,0,0,5,mixed,1/1,m8grayhound,150,6,2,2,2,0,Y,0,0,2,1/1,U-D-
+mortar,150mm_type_97,mp/ger/rifle,,0,0,0,0,,0,N,-,0,0,0,no kill run,-,k18,195,6,1,1,1,0,Y,0,28,15,-,U-D-
+mortar,uk-76mm_mk_ii,mp/ger/rifle,700,6,6,6,6,,0,Y,Z,0,0,49,stable,-,m1mortar,700,0,0,0,0,0,N,0,0,0,-,U+D-
+mortar,us-107_mm_m2,mp/ger/rifle,700,6,5,5,5,,0,Y,Z,0,0,39,mixed,-,type94,700,6,0,0,0,0,N,0,0,0,-,U+D-
+tank,cromwell_mk_i_pol,t34_0,155,5,3,4,3,overcap:1,0,Y,Z,0,0,8,mixed,no valid row,mk6,137,0,0,0,0,0,N,0,0,0,no valid row,U-D-
+tank,crusader_mk2_fr,gaz67b,120,6,0,0,0,,6,N,-,0,0,0,0 kills,no valid row,m19,141,6,4,4,4,0,Y,0,0,927,1/1,U-D+
+tank,m4732,gaz67b,120,5,1,1,1,,0,Y,Z,0,0,1,mixed,1/1,chi-ha47,120,0,0,0,0,0,N,0,0,0,1/1,U-D-
+tank,m5a1_pol,gaz67b,122,5,1,1,1,,0,Y,F,0,0,1,mixed,1/1,m5a1,143,5,4,4,4,0,Y,0,0,4,1/1,U-D+
+tank,m7534,t34_0,142,6,5,5,5,,0,Y,Z,81,0,11,mixed,1/1,chi-nu,150,6,6,6,6,0,Y,83,0,12,1/1,U+D+
+tank,m8_fr,gaz67b,163,5,5,5,5,,0,Y,F,61,0,41,stable,1/1,m8,178,5,5,5,5,0,Y,50,0,39,1/1,U+D+
+tank,type97_te-ke,gaz67b,120,6,3,3,3,,0,Y,Z,0,0,3,mixed,1/1,ha-go,120,6,5,5,5,0,Y,0,0,5,1/1,U+D+
+tank,uk-a10_mk2,gaz67b,158,6,0,0,0,,6,N,-,0,0,0,0 kills,0/1,m19,141,6,4,4,4,0,Y,0,0,927,1/1,U-D+
+tank,uk-archer,t34_0,164,0,0,0,0,,0,N,-,0,0,0,no kill run,1/1,archer,168,6,4,4,4,0,Y,58,0,8,1/1,U-D+
+tank,uk-churchill_crocodile,t34_0,144,6,0,0,0,,0,Y,F,104,0,0,0 kills,1/1,cometa34,176,6,5,6,5,0,Y,85,0,12,1/1,U-D+
+tank,us-m2a4,gaz67b,150,6,4,4,4,,0,Y,F,0,0,4,mixed,1/1,m5a1,143,5,4,4,4,0,Y,0,0,4,1/1,U+D+
+tank,us-m3lee,t34_0,137,6,0,0,0,,0,Y,F,10,0,0,0 kills,1/1,cromwell_mk_vii,155,6,3,5,3,0,Y,98,0,10,1/1,U-D+
+tank,us-t26e4,t34_0,232,6,4,5,4,overcap:1,0,Y,F,56,0,10,mixed,1/1,m26e4,232,4,3,3,3,0,Y,44,0,6,1/1,U+D+
+tank,vickers_6t_b,gaz67b,120,0,0,0,0,,0,N,-,0,0,0,no kill run,1/1,t26,120,0,0,0,0,0,N,0,0,0,1/1,U-D-
+tank,toldi2,,,0,0,0,0,,0,not built,,,,,MISS LinkBone gunner+charger,,,,,,,,,,,,,,MISS
+light,sdkfz251_stuka,,,0,0,0,0,,0,not built,,,,,MISS LinkBone gunner+door emit4,,,,,,,,,,,,,,MISS
+light,uk-triumph,,,0,0,0,0,,0,not built,,,,,MISS LinkBone gunner+door emit3,,,,,,,,,,,,,,MISS
+light,sdkfz8_flak18,,,0,0,0,0,,0,not built,,,,,MISS LinkBone commander,,,,,,,,,,,,,,MISS
+light,ford_3ton_ammo,,,0,0,0,0,,0,not built,,,,,MISS ERR_DEF_READER line 43,,,,,,,,,,,,,,MISS
+gun,heavy_mg_type92_lewis,,,0,0,0,0,,0,not built,,,,,MISS DF_AIM foresight3,,,,,,,,,,,,,,MISS
+gun,maxim_x4,,,0,0,0,0,,0,not built,,,,,MISS LinkBone mgun macro,,,,,,,,,,,,,,MISS
+gun,heavy_mg_schwarzlose,,,0,0,0,0,,0,not built,,,,,MISS donorpick UNPLACED,,,,,,,,,,,,,,MISS
+mortar,us-81_mm_m1,,,0,0,0,0,,0,not built,,,,,MISS goh2as2 def names no .mdl,,,,,,,,,,,,,,MISS
+mortar,81mm_brandt_ita,,,0,0,0,0,,0,not built,,,,,MISS goh2as2 def names no .mdl,,,,,,,,,,,,,,MISS
+mortar,81mm_brandt_pol,,,0,0,0,0,,0,not built,,,,,MISS goh2as2 def names no .mdl,,,,,,,,,,,,,,MISS
+mortar,81mm_brandt_fra,,,0,0,0,0,,0,not built,,,,,MISS goh2as2 def names no .mdl,,,,,,,,,,,,,,MISS
+mortar,81mm_brandt_jap,,,0,0,0,0,,0,not built,,,,,MISS goh2as2 def names no .mdl,,,,,,,,,,,,,,MISS
+mortar,81mm_brandt_hun,,,0,0,0,0,,0,not built,,,,,MISS goh2as2 def names no .mdl,,,,,,,,,,,,,,MISS
+mortar,81_mm_m1_fr,,,0,0,0,0,,0,not built,,,,,MISS goh2as2 def names no .mdl,,,,,,,,,,,,,,MISS

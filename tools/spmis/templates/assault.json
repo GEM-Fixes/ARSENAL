@@ -1,0 +1,38 @@
+{
+  "name": "spmis_assault",
+  "campaign": "spmis_examples",
+  "campaignTitle": "Generated missions",
+  "title": "Assault on the crossroads",
+  "briefing": "Enemy infantry holds the crossroads south of our landing zone. Take it before their counter-attack arrives; our tank joins you once the crossroads is ours.",
+  "date": "June 1944",
+  "place": "Normandy",
+  "map": "map/single/01_usa-skirmish/01_usa-overlord",
+  "player": {
+    "army": "usa",
+    "start": "flag_playerbase",
+    "units": [
+      { "name": "squad1", "def": "mp/usa/squadleader2", "count": 1, "at": "start" },
+      { "name": "riflemen", "def": "mp/usa/rifle", "count": 6, "at": "start" },
+      { "name": "support", "def": "mp/usa/mgun", "count": 2, "at": "start" },
+      { "name": "tank1", "def": "m4a3e8", "count": 1, "at": "start", "crew": { "def": "mp/usa/tankman2", "count": 3 } }
+    ]
+  },
+  "enemy": {
+    "army": "ger",
+    "defenders": [
+      { "name": "garrison", "def": "mp/ger/rifle", "count": 6, "at": "flag_a02" },
+      { "name": "mgnest", "def": "mp/ger/mgun", "count": 2, "at": "flag_a02" },
+      { "name": "extra", "def": "mp/ger/smg", "count": 3, "at": "flag_a02", "difficulty": "hard" }
+    ],
+    "waves": [
+      { "name": "counter1", "def": "mp/ger/rifle", "count": 5, "from": "flag_b02", "to": "flag_a02", "time": 300 }
+    ]
+  },
+  "objectives": [
+    { "id": "take_crossroads", "type": "capture", "zone": "flag_a02", "text": "Capture the crossroads" }
+  ],
+  "reinforcements": [
+    { "name": "armor", "def": "m4a3e8", "count": 1, "at": "start", "after": "take_crossroads", "time": 5, "crew": { "def": "mp/usa/tankman2", "count": 3 } }
+  ],
+  "lose": { "allDead": true }
+}

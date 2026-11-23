@@ -1,0 +1,12 @@
+{
+ "name": "mock-team",
+ "mode": "mp",
+ "map": "mp_test",
+ "players": 2,
+ "steps": [
+  { "cmd": "mp_set team.a.army eng" },
+  { "cmd": "mp_set team.b.army fin" },
+  { "cmd": "mp_slots", "expect": "team name=a size=2 army=eng[\\s\\S]*team name=b size=2 army=fin" }
+ ],
+ "verdict": []
+}

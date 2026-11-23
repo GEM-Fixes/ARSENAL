@@ -1,0 +1,9 @@
+fx/
+fx.cache.json
+out.txt
+got.txt
+want.txt
+diff.txt
+sheet.out
+sheet.diff
+truth.txt

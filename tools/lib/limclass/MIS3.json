@@ -1,0 +1,153 @@
+{
+ "form": "limclass/1",
+ "area": "MIS3",
+ "rows": {
+  "MIS-62": {
+   "chk": "built",
+   "class": "crash",
+   "why": "null clipper at start: game crashes",
+   "tool": "milint",
+   "how": "captureflag mode map whose Clips lack captureflaga/captureflagb (mission-clone has MC_NO_CAPTURE_CLIPS)"
+  },
+  "MIS-63": {
+   "chk": "never",
+   "class": "info",
+   "why": "score rule fact",
+   "never": "game rule fact; nothing to hit"
+  },
+  "MIS-64": {
+   "chk": "never",
+   "class": "info",
+   "why": "capture weight fact",
+   "never": "game rule fact; contested effect untested"
+  },
+  "MIS-65": {
+   "chk": "built",
+   "class": "silent",
+   "why": "bots idle with no flag points, no log",
+   "tool": "milint",
+   "how": "bots enabled but mode .mi has no flag_point entity"
+  },
+  "MIS-66": {
+   "chk": "never",
+   "class": "silent",
+   "why": "team army set answers ok, ignored",
+   "never": "runtime console behaviour"
+  },
+  "MIS-67": {
+   "chk": "built",
+   "class": "silent",
+   "why": "bot men unarmed, no message",
+   "tool": "milint",
+   "how": "fix_inventory 1 in properties/human.ext of bot units"
+  },
+  "MIS-68": {
+   "chk": "never",
+   "class": "review",
+   "why": "bot tuning key; intent decides",
+   "never": "tuning value; intent decides"
+  },
+  "MIS-69": {
+   "chk": "never",
+   "class": "info",
+   "why": ".info sets parameters; fact",
+   "never": "how mode info works; nothing to hit"
+  },
+  "MIS-70": {
+   "chk": "never",
+   "class": "info",
+   "why": "bare mission plays to win; fact",
+   "never": "fact about minimal missions"
+  },
+  "MIS-71": {
+   "chk": "never",
+   "class": "silent",
+   "why": "no AI on combat of generated map, only message",
+   "never": "runtime; cause inferred"
+  },
+  "MIS-72": {
+   "chk": "never",
+   "class": "info",
+   "why": "stock win time measurement",
+   "never": "measurement; nothing to hit"
+  },
+  "MIS-73": {
+   "chk": "never",
+   "class": "info",
+   "why": "console command usage fact",
+   "never": "workflow fact"
+  },
+  "MIS-74": {
+   "chk": "never",
+   "class": "info",
+   "why": "bot tank squad measurement",
+   "never": "measurement; nothing to hit"
+  },
+  "MIS-75": {
+   "chk": "built",
+   "class": "silent",
+   "why": "squad member breed file missing"
+  },
+  "MIS-76": {
+   "chk": "built",
+   "class": "review",
+   "why": "breed declaration missing, cost fields unset"
+  },
+  "MIS-77": {
+   "chk": "built",
+   "class": "silent",
+   "why": "list no bot reads; bot.lua unread"
+  },
+  "MIS-78": {
+   "chk": "built",
+   "class": "silent",
+   "why": "Lua keeps last assignment; earlier value lost"
+  },
+  "MIS-79": {
+   "chk": "built",
+   "class": "silent",
+   "why": "nil class never matched; bot.lua unread"
+  },
+  "MIS-80": {
+   "chk": "built",
+   "class": "silent",
+   "why": "missing or ignored entry key; bot.lua unread"
+  },
+  "MIS-81": {
+   "chk": "built",
+   "class": "silent",
+   "why": "wrong table shape; Lua error is logged only"
+  },
+  "MIS-82": {
+   "chk": "built",
+   "class": "silent",
+   "why": "dead global; bot.lua unread"
+  },
+  "MIS-83": {
+   "chk": "built",
+   "class": "silent",
+   "why": "bot stops buying after last stage; bot.lua unread"
+  },
+  "MIS-84": {
+   "chk": "built",
+   "class": "silent",
+   "why": "stage shape bot.lua walks; unread this session"
+  },
+  "MIS-85": {
+   "chk": "built",
+   "class": "silent",
+   "why": "undefined event: condition false, command no-op, no log"
+  },
+  "MIS-86": {
+   "chk": "built",
+   "class": "silent",
+   "why": "mids selector with no holder picks nothing, silently"
+  },
+  "MIS-87": {
+   "chk": "built",
+   "class": "silent",
+   "why": "undefined waypoint: order refused with warning, spawn skipped"
+  }
+ },
+ "dead": []
+}

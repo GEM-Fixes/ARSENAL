@@ -1,0 +1,30 @@
+{
+  "name": "sdl-15",
+  "rows": [
+    "SDL-15"
+  ],
+  "mode": "menu",
+  "mods": [],
+  "params": {},
+  "src": [
+    " (s_sdlTokenBefore.Get() = before)",
+    " (Unread(before))",
+    "(not part of this release)"
+  ],
+  "manual": "no pipe command reads SDL, and which field type re-lexes wrongly is unknown. Recipe: clone a weapon (clone-entity --stuff ... --set \"<key> (+ (* 2 3) 4)\") on a bool / float range / tag-list key; compare in game (stat readout) with the flat value 10, and check game.log for parse exceptions. Only the exception half is automatic (verdict below); effect is by eyes.",
+  "steps": [
+    {
+      "wait": 10
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "log": "Block terminator expected",
+      "want": false
+    }
+  ]
+}

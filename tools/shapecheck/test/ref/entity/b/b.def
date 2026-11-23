@@ -1,0 +1,10 @@
+{game_entity
+	{volume "turret"
+		{tags "turret"}
+		{thickness 45.5}
+	}
+	{damage 40 0.5}
+	(mod "as64"
+		{weight 1200}
+	)
+}

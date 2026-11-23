@@ -1,0 +1,8 @@
+{game_entity
+	(include "/properties/base.ext")
+	{Extension "ok.mdl"}
+	{extender "inventory" {box {item "ammo bullet1" 5}}}
+	{Weaponry {place "gun" {weapon "rifle1" filling "ammo bullet1" 1}}}
+	{Chassis {Locomotion {TurnTime 5}} {speed {Slow 5} {Normal 10} {Fast 20}}}
+	{sensor {visor "main" {vision "vis_a"}}}
+}

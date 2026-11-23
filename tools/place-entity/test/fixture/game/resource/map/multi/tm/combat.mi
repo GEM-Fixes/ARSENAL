@@ -1,0 +1,8 @@
+{mission
+	{Entity "tree1" 0x11
+		{Position 30 30}
+	}
+	{Entity "tree1" 0x8001
+		{Position 40 30}
+	}
+}

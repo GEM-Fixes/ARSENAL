@@ -1,0 +1,10 @@
+# Gives the Soviet rifleman (rus/rifle) a PPSh-41 in hands instead of the Mosin rifle, and drops the sandbag kit.
+# Edit: breed (army/name), add ([{item, count | filled, in_hands}]) and del ([item ..]).
+# gen kit.yaml --target as64 --game <AS2 dir> --out <mods dir>/my_kit --no-stat   (add --plan first: writes nothing)
+name: my_kit
+title: My Kit
+ops:
+  - op: kit
+    breed: rus/rifle
+    add: [{item: ppsh41, filled: true, in_hands: true}]
+    del: [mosin, sandbag_kit]

@@ -1,0 +1,36 @@
+{
+  "_": "mowas_2.exe 3.262.1 inputs, 1920x1080 windowed. release log has no GUI: Activate page lines: clicks rely on settleMs, last boot line is Opening main page. LAN lobby slot menu has only open/close unless the card has enableBots; Assault Zones of a mod with enableBots gets AI. mod list comes from options.set, set it first (tools/modswitch).",
+  "game": "mowas2",
+  "proc": "mowas_2",
+  "exe": "%GAME%/mowas_2.exe",
+  "log": "%USER%/log/game.log",
+  "base": [1920, 1080],
+  "settleMs": 2500,
+  "timeout": 30,
+  "routes": {
+    "boot": [
+      { "launch": true, "expect": "Opening main page", "timeout": 240, "note": "launch to main menu" }
+    ],
+    "lobby_gazala": [
+      { "click": [960, 349], "settleMs": 8000, "note": "main: Singleplayer" },
+      { "click": [960, 558], "note": "Skirmish" },
+      { "click": [897, 608], "note": "mode dialog: OK, Local is default" },
+      { "click": [135, 55], "settleMs": 4000, "note": "game type dropdown" },
+      { "click": [67, 88], "note": "Assault Zones" },
+      { "click": [120, 228], "note": "map row Gazala 1v1: row position depends on the mod's map list" },
+      { "click": [1773, 446], "note": "Create" }
+    ],
+    "army_b_rus": [
+      { "click": [728, 159], "settleMs": 4000, "note": "select B Team row" },
+      { "click": [811, 159], "note": "open army list. rows y 192 usa, 220 ger, 248 rus, 276 eng, 304 jap, 332 ger2, 360 ger_ss, 388 rus_guard, 416 axis_minor" },
+      { "click": [728, 248], "note": "Red Army" }
+    ],
+    "bot_start": [
+      { "rclick": [36, 91], "settleMs": 4000, "note": "open slot menu on the empty slot 2" },
+      { "click": [93, 213], "note": "AI Player: Normal" },
+      { "click": [290, 444], "note": "Ready" },
+      { "click": [1763, 446], "settleMs": 5000, "expect": "Starting \"multi/", "note": "Start: needs 5 s after Ready" },
+      { "wait_log": "OnGameSpawn|faction guide", "timeout": 240, "note": "match loaded, bot running" }
+    ]
+  }
+}

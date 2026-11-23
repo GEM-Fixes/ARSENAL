@@ -1,0 +1,8 @@
+{skeleton
+ {bone "basis"
+  {orientation 1 0 0 0 -1 0 0 0 1}
+  {bone "body" {Position 0 0 0} {VolumeView "body.ply"}
+   {bone "turret" {Position 10 0 20} {VolumeView "turret.ply"}}
+  }
+ }
+}

@@ -1,0 +1,12 @@
+{
+ "name": "mock-join",
+ "mode": "mp",
+ "map": "mp_test",
+ "players": 2,
+ "steps": [
+  { "cmd": "mp_join 10.0.0.1:3220" },
+  { "cmd": "mp_join 10.0.0.1:3220" },
+  { "cmd": "mod_list", "expect": "\"name\":\"modA\"" }
+ ],
+ "verdict": [ { "log": "No Stuff found", "want": true } ]
+}

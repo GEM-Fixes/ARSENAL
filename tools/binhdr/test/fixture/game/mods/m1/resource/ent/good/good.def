@@ -1,0 +1,6 @@
+{game_entity
+ {Extension "good.mdl"}
+ {Volume "body"
+  {Thickness 5}
+ }
+}

@@ -1,0 +1,4 @@
+# MB-R6 e1 pairs: ctlpz (pz6bh vs t34_0), di_stag (pz6bh vs uk-staghound). uk-staghound never spawned.
+pz6bh
+t34_0
+uk-staghound

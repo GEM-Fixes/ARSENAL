@@ -1,0 +1,8 @@
+{game_entity
+(include "/properties/tank.ext")
+{props "light" "turret_rotator" "muzzle_ok" "muzzle_gone"}
+; kommentar рст (cp1251 bytes)
+("armor_light" turret(30) body(20 20 20 20))
+{Weaponry {place "gun" {weapon "30mm_new" filling "ammo bullet30 ap" 1} {weapon "30mm_a" filled}}}
+{item "ammo bullet30 fg" 5}
+}

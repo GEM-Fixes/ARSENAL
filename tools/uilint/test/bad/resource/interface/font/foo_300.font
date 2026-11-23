@@ -1,0 +1,7 @@
+{font_atlas
+	{name "foo"}
+	{size 300}
+	{height 17}
+	{style 0}
+	{binary_data "foo_300.fnt"}
+}

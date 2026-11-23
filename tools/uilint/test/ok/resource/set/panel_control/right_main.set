@@ -1,0 +1,13 @@
+{panel_control
+	{attack
+		{position 0 0}
+		{condition "human" "disabled"}
+	}
+	{move
+		{position 1 0}
+	}
+	{burst
+		{position 2 0}
+	}
+	{gc_cp_browse_attack}
+}

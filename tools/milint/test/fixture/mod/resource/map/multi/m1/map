@@ -1,0 +1,13 @@
+;SDL
+{map
+	{Land {Position 0 0}}
+	{Clip {world 0 0 1 1}}
+	{Entity "bush" 0x1
+		{Position 1 2}
+		{xform zl 5 scale 0.5}
+	}
+	{Entity "bush" 0x2
+		{Position 1 2}
+		{xform zl 5 foo 3}
+	}
+}

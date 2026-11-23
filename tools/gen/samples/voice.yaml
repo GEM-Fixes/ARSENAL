@@ -1,0 +1,10 @@
+# A new talk language aus with the English phrases and sounds (two speakers); a breed uses it with {voice "aus"}.
+# Edit id, like (rus ger ger2 eng usa jap) and speakers; sounds: {attack: my_attack/} replaces one folder with your .wav files.
+# gen voice.yaml --target as64 --game <AS2 dir> --out <mods dir>/my_voice --no-stat   (add --plan first)
+name: my_voice
+title: My Voice
+ops:
+  - op: voice
+    id: aus
+    like: eng
+    speakers: 2

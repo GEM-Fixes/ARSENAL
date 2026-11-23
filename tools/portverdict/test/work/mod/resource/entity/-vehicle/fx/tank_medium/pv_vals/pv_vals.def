@@ -1,0 +1,4 @@
+{game_entity
+	{patherId "vehicle.small"}
+	{mass 30000}
+}

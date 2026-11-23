@@ -1,0 +1,38 @@
+{
+ "name": "mock-ok",
+ "rows": [
+  "TST-13",
+  "TST-16"
+ ],
+ "mode": "mp",
+ "mods": [
+  "modA"
+ ],
+ "map": "mp_test",
+ "players": 2,
+ "steps": [
+  {
+   "cmd": "mod_list",
+   "expect": "\"name\":\"modA\""
+  },
+  {
+   "wait": "game_over"
+  }
+ ],
+ "verdict": [
+  {
+   "log": "No Stuff found",
+   "want": true,
+   "row": "LOG-01"
+  },
+  {
+   "log": "Exception",
+   "want": false
+  },
+  {
+   "exit": true,
+   "within": 5,
+   "row": "TST-16"
+  }
+ ]
+}

@@ -1,0 +1,7 @@
+{rifle
+	{tag "weapon rifle bolt"}
+	{entity "k98"}
+	{healthDamage 55}
+	{damage blastwave 20}
+	{note "/entity/x/y.mdl"}
+}

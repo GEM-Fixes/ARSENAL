@@ -1,0 +1,14 @@
+# Adds a new Soviet infantry squad (my_riflemen) copied from the vanilla riflemen squad: 1 leader and 5 riflemen, its own name and price, bought by bots too.
+# Edit three values: name (new squad id), display (shown name), members ([breed:count ..], breeds from resource/set/breed/mp/rus).
+# gen squad.yaml --target as64 --game <AS2 dir> --out <mods dir>/my_squad --no-stat   (add --plan first: writes nothing)
+name: my_squad
+title: My Squad
+ops:
+  - op: squad
+    name: my_riflemen
+    army: rus
+    like: riflemans
+    members: ["squadleader:1", "rifle:5"]
+    display: My riflemen
+    fields: {cost: 100}
+    bots: true

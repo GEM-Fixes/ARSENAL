@@ -1,0 +1,1 @@
+{"name":"s4","mode":"menu","mods":["modA"],"steps":[{"cmd":"echo s4"},{"wait":0.6}],"verdict":[{"reply":"echo s4","match":"^s4$"}]}

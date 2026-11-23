@@ -1,0 +1,1485 @@
+{
+ "thing": "mission",
+ "files": [
+  "tools/mission-clone",
+  "tools/misgen",
+  "gen op mission-clone",
+  "POST /api/x/maps/clone",
+  "resource/map/multi/<map>/<mode>.mi",
+  "<mode>.info",
+  "resource/set/multiplayer/games/<mode>.set",
+  "set/multiplayer/presets*.inc",
+  "localization/mission/multi/<map>.lng"
+ ],
+ "groups": [
+  {
+   "id": "source",
+   "name": "Make the mode"
+  },
+  {
+   "id": "mi",
+   "name": "The mode file (.mi)"
+  },
+  {
+   "id": "misgen",
+   "name": "Capture-the-flag generator"
+  },
+  {
+   "id": "rules",
+   "name": "Mode rules"
+  },
+  {
+   "id": "card",
+   "name": "Game card settings"
+  },
+  {
+   "id": "teams",
+   "name": "Teams and armies"
+  },
+  {
+   "id": "economy",
+   "name": "Money, presets and units"
+  },
+  {
+   "id": "test",
+   "name": "Name and test"
+  }
+ ],
+ "vars": [
+  {
+   "key": "source.map",
+   "where": "mission-clone --map; gen mission-clone.map",
+   "type": "ref",
+   "plain": "The map whose mode you copy or add.",
+   "unit": "",
+   "vanilla": null,
+   "group": "source",
+   "ref": "map key",
+   "tool": "gen mission-clone",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "source.from",
+   "where": "mission-clone --from; gen mission-clone.from",
+   "type": "choice",
+   "plain": "The mode the new one is built from.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "combat",
+     "battle_zones",
+     "battle_zones_8x8",
+     "captureflag",
+     "frontline"
+    ]
+   },
+   "group": "source",
+   "ref": null,
+   "tool": "gen mission-clone",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "source.to",
+   "where": "mission-clone --to; gen mission-clone.to; maps/clone body.mode",
+   "type": "choice",
+   "plain": "The mode the map gets.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "combat",
+     "battle_zones",
+     "captureflag"
+    ]
+   },
+   "group": "source",
+   "ref": null,
+   "tool": "POST /api/x/maps/clone",
+   "limit": "MIS-62",
+   "tag": "V"
+  },
+  {
+   "key": "source.src",
+   "where": "mission-clone --src; --src-map; gen mission-clone.src",
+   "type": "ref",
+   "plain": "Another map whose mode file is borrowed.",
+   "unit": "",
+   "vanilla": null,
+   "group": "source",
+   "ref": null,
+   "tool": "gen mission-clone",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "source.mods",
+   "where": "mission-clone --mods; gen mission-clone.mods",
+   "type": "list",
+   "plain": "Mods the source map comes from.",
+   "unit": "",
+   "vanilla": null,
+   "group": "source",
+   "ref": null,
+   "tool": "gen mission-clone",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "source.with_mode",
+   "where": "mission-clone --with-mode NEW; gen mission-clone.with_mode",
+   "type": "text",
+   "plain": "Make a brand new mode name (its own game card) instead of reusing a stock one.",
+   "unit": "",
+   "vanilla": null,
+   "group": "source",
+   "ref": null,
+   "tool": "gen mission-clone",
+   "limit": "MAP-22",
+   "tag": "T"
+  },
+  {
+   "key": "source.from_mode",
+   "where": "mission-clone --from-mode; gen mission-clone.from_mode",
+   "type": "choice",
+   "plain": "The stock card a new mode copies.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "combat",
+     "battle_zones",
+     "captureflag",
+     "cooperative",
+     "frontline"
+    ]
+   },
+   "group": "source",
+   "ref": null,
+   "tool": "gen mission-clone",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "source.title",
+   "where": "mission-clone --title; gen mission-clone.title",
+   "type": "text",
+   "plain": "The lobby name of the new mode.",
+   "unit": "",
+   "vanilla": null,
+   "group": "source",
+   "ref": null,
+   "tool": "gen mission-clone",
+   "limit": "MAP-22",
+   "tag": "T"
+  },
+  {
+   "key": "source.flags",
+   "where": "mission-clone --flags N; gen mission-clone.flags",
+   "type": "number",
+   "plain": "How many capture flags to place (battle_zones from combat).",
+   "unit": "",
+   "vanilla": {
+    "min": 1,
+    "max": 9
+   },
+   "group": "source",
+   "ref": null,
+   "tool": "gen mission-clone",
+   "limit": "MAP-34",
+   "tag": "V"
+  },
+  {
+   "key": "source.flag_zone",
+   "where": "mission-clone --flag-zone M",
+   "type": "number",
+   "plain": "Capture radius of placed flags.",
+   "unit": "m",
+   "vanilla": {
+    "values": [
+     12
+    ]
+   },
+   "group": "source",
+   "ref": null,
+   "tool": "mission-clone CLI",
+   "limit": "MAP-07",
+   "tag": "V"
+  },
+  {
+   "key": "source.no_bots",
+   "where": "mission-clone --no-bots",
+   "type": "bool",
+   "plain": "Leave bots off on the new mode.",
+   "unit": "",
+   "vanilla": null,
+   "group": "source",
+   "ref": null,
+   "tool": "mission-clone CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "source.obs_fix",
+   "where": "mission-clone --obs-fix",
+   "type": "bool",
+   "plain": "Fix observer slots of the copied file.",
+   "unit": "",
+   "vanilla": null,
+   "group": "source",
+   "ref": null,
+   "tool": "mission-clone CLI",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "source.target",
+   "where": "mission-clone --target; --game-version",
+   "type": "choice",
+   "plain": "Which game the mode is for.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "as64",
+     "mowas2"
+    ]
+   },
+   "group": "source",
+   "ref": null,
+   "tool": "gen mission-clone",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mi.players.count",
+   "where": "<mode>.mi {Players {count n}}",
+   "type": "number",
+   "plain": "Player slots in the mode file.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     17
+    ]
+   },
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": "MIS-24",
+   "tag": "V"
+  },
+  {
+   "key": "mi.players.diplomacy",
+   "where": "<mode>.mi {Players {diplomacy ..}}",
+   "type": "list",
+   "plain": "Who is enemy of whom.",
+   "unit": "",
+   "vanilla": null,
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "mi.environment",
+   "where": "<mode>.mi {Environment \"multi/multi_01\"}",
+   "type": "choice",
+   "plain": "Sky, light and weather.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "multi/multi_01",
+     "multi/multi_02",
+     "multi/multi_06"
+    ]
+   },
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mi.fog",
+   "where": "<mode>.mi {Fog 0|1}",
+   "type": "bool",
+   "plain": "Fog in the mode file.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     0,
+     1
+    ]
+   },
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mi.azimuth",
+   "where": "<mode>.mi {Azimuth} {MapOrientation}",
+   "type": "number",
+   "plain": "Sun and north direction.",
+   "unit": "deg",
+   "vanilla": null,
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "mi.map_point.team",
+   "where": "{Extender \"map_point\" {team a|b}}",
+   "type": "choice",
+   "plain": "Which team owns the point.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "a",
+     "b"
+    ]
+   },
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mi.map_point.order",
+   "where": "{Extender \"map_point\" {order n}}",
+   "type": "number",
+   "plain": "Order of points (front line).",
+   "unit": "",
+   "vanilla": null,
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mi.map_point.phase",
+   "where": "{Extender \"map_point\" {phase n}}",
+   "type": "number",
+   "plain": "Phase the point belongs to (frontline).",
+   "unit": "",
+   "vanilla": null,
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mi.map_point.zonea",
+   "where": "{zoneA m}",
+   "type": "number",
+   "plain": "Inner capture radius.",
+   "unit": "m",
+   "vanilla": {
+    "min": 7.5,
+    "max": 45
+   },
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-07",
+   "tag": "V"
+  },
+  {
+   "key": "mi.map_point.zoneb",
+   "where": "{zoneB m}",
+   "type": "number",
+   "plain": "Outer radius.",
+   "unit": "m",
+   "vanilla": {
+    "min": 1
+   },
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-07",
+   "tag": "V"
+  },
+  {
+   "key": "mi.map_point.show",
+   "where": "{show None|Scene|Minimap|All}",
+   "type": "choice",
+   "plain": "Where the point is shown.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "None",
+     "Scene",
+     "Minimap",
+     "All"
+    ]
+   },
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mi.map_point.visor",
+   "where": "{visor None|MapPoint|SpawnPoint}",
+   "type": "choice",
+   "plain": "Icon kind.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "None",
+     "MapPoint",
+     "SpawnPoint"
+    ]
+   },
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mi.map_point.allow",
+   "where": "{allow {spawn} {capture} {release} {enableCapture} {enableRelease}}",
+   "type": "list",
+   "plain": "What the point allows.",
+   "unit": "",
+   "vanilla": null,
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mi.spawn_point.mappoint",
+   "where": "{Extender \"spawn_point\" {mapPoint \"x\"} {pos}}",
+   "type": "ref",
+   "plain": "Spawn place tied to a point.",
+   "unit": "",
+   "vanilla": null,
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mi.flag_entities",
+   "where": "flag_point_N / flag_point_frontlines / flag_ring / flag_slave entities",
+   "type": "list",
+   "plain": "Flag objects used by a mode.",
+   "unit": "",
+   "vanilla": null,
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-34",
+   "tag": "V"
+  },
+  {
+   "key": "mi.helpers",
+   "where": "<mode>.mi {Helpers {waypoints} {zones} {triggers} {tasks} {reinforcements} {vars} {mission_options} {modifiers}}",
+   "type": "list",
+   "plain": "Mission helpers: zones, waypoints, reinforcements.",
+   "unit": "",
+   "vanilla": null,
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mi.triggers",
+   "where": "<mode>.mi {triggers {disabled} {on} {autoreset} {condition} {actions}}",
+   "type": "list",
+   "plain": "Mission triggers (goals, scripted events).",
+   "unit": "",
+   "vanilla": null,
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "mi.mid",
+   "where": "<mode>.mi {MID ..} {Player ..}",
+   "type": "text",
+   "plain": "Mission ids and player blocks.",
+   "unit": "",
+   "vanilla": null,
+   "group": "mi",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "misgen.mode",
+   "where": "misgen spec.mode",
+   "type": "choice",
+   "plain": "Mode the generator writes.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "captureflag"
+    ]
+   },
+   "group": "misgen",
+   "ref": null,
+   "tool": "misgen CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "misgen.sides",
+   "where": "misgen spec.sides",
+   "type": "list",
+   "plain": "Team names a / b.",
+   "unit": "",
+   "vanilla": null,
+   "group": "misgen",
+   "ref": null,
+   "tool": "misgen CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "misgen.flag",
+   "where": "misgen spec.flags[0] {x, y, name, zone, z}",
+   "type": "list",
+   "plain": "The one flag (place and radius).",
+   "unit": "m",
+   "vanilla": {
+    "values": [
+     "zone 30"
+    ]
+   },
+   "group": "misgen",
+   "ref": null,
+   "tool": "misgen CLI",
+   "limit": "MIS-62",
+   "tag": "V"
+  },
+  {
+   "key": "misgen.spawns",
+   "where": "misgen spec.spawns {a:[[x,y]|{x,y,facing}], b:[..]}",
+   "type": "list",
+   "plain": "Spawn spots of each side (same count).",
+   "unit": "",
+   "vanilla": null,
+   "group": "misgen",
+   "ref": null,
+   "tool": "misgen CLI",
+   "limit": "MAP-23",
+   "tag": "V"
+  },
+  {
+   "key": "misgen.environment",
+   "where": "misgen spec.environment",
+   "type": "choice",
+   "plain": "Sky preset.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "multi/multi_01"
+    ]
+   },
+   "group": "misgen",
+   "ref": null,
+   "tool": "misgen CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "misgen.prepare_margin",
+   "where": "misgen spec.prepareMargin",
+   "type": "number",
+   "plain": "Margin of the start areas.",
+   "unit": "map units",
+   "vanilla": {
+    "values": [
+     200
+    ]
+   },
+   "group": "misgen",
+   "ref": null,
+   "tool": "misgen CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "misgen.force",
+   "where": "misgen --force",
+   "type": "bool",
+   "plain": "Overwrite the mode file.",
+   "unit": "",
+   "vanilla": null,
+   "group": "misgen",
+   "ref": null,
+   "tool": "misgen CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "rules.freezetime",
+   "where": "parameters \"freezeTime=n\" (card / <mode>.info / misgen)",
+   "type": "number",
+   "plain": "Time before the match starts moving.",
+   "unit": "s",
+   "vanilla": null,
+   "group": "rules",
+   "ref": null,
+   "tool": "misgen CLI",
+   "limit": "MIS-69",
+   "tag": "V"
+  },
+  {
+   "key": "rules.flag_capture_time",
+   "where": "parameters \"flag_capture_time=n\"",
+   "type": "number",
+   "plain": "Time to capture a flag.",
+   "unit": "s",
+   "vanilla": null,
+   "group": "rules",
+   "ref": null,
+   "tool": "misgen CLI",
+   "limit": "MIS-63",
+   "tag": "V"
+  },
+  {
+   "key": "rules.flag_release_time",
+   "where": "parameters \"flag_release_time=n\"",
+   "type": "number",
+   "plain": "Time to lose a flag.",
+   "unit": "s",
+   "vanilla": null,
+   "group": "rules",
+   "ref": null,
+   "tool": "misgen CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "rules.flag_capture_factor",
+   "where": "parameters \"flag_capture_factor=n\"",
+   "type": "number",
+   "plain": "Speed factor for capture.",
+   "unit": "",
+   "vanilla": null,
+   "group": "rules",
+   "ref": null,
+   "tool": "misgen CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "rules.points_table",
+   "where": "parameters \"points_table=..\"",
+   "type": "text",
+   "plain": "Score per held point.",
+   "unit": "",
+   "vanilla": null,
+   "group": "rules",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "card.class",
+   "where": "set/multiplayer/games/<mode>.set {class}",
+   "type": "choice",
+   "plain": "The mode kind.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "combat",
+     "captureflag",
+     "cooperative",
+     "frontline",
+     "battle_zones",
+     "battle_zones_8x8",
+     "armored_warfare",
+     "combined_arms"
+    ]
+   },
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": "MIS-19",
+   "tag": "V"
+  },
+  {
+   "key": "card.order",
+   "where": "set/multiplayer/games/<mode>.set {order n}",
+   "type": "number",
+   "plain": "Place in the mode list.",
+   "unit": "",
+   "vanilla": null,
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "card.minplayers",
+   "where": "set/multiplayer/games/<mode>.set {minPlayers}",
+   "type": "number",
+   "plain": "Fewest players.",
+   "unit": "",
+   "vanilla": {
+    "min": 2,
+    "max": 16
+   },
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-02",
+   "tag": "V"
+  },
+  {
+   "key": "card.maxplayers",
+   "where": "set/multiplayer/games/<mode>.set {maxPlayers}",
+   "type": "number",
+   "plain": "Most players (rounded up to even).",
+   "unit": "",
+   "vanilla": {
+    "min": 2,
+    "max": 16
+   },
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-02",
+   "tag": "V"
+  },
+  {
+   "key": "card.enablebots",
+   "where": "set/multiplayer/games/<mode>.set {settings {enableBots}}",
+   "type": "bool",
+   "plain": "Bots allowed in this mode.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "on in 3 vanilla cards"
+    ]
+   },
+   "group": "card",
+   "ref": null,
+   "tool": "POST /api/x/maps/clone body.bots",
+   "limit": "MIS-65",
+   "tag": "V"
+  },
+  {
+   "key": "card.fogofwar",
+   "where": "set/multiplayer/games/<mode>.set {options {fogOfWar}}",
+   "type": "choice",
+   "plain": "Fog of war.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "fog_off",
+     "fog_realistic"
+    ]
+   },
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "card.difficulty",
+   "where": "set/multiplayer/games/<mode>.set {difficulty}",
+   "type": "choice",
+   "plain": "Difficulty set.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "multiplayer"
+    ]
+   },
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "card.gameduration",
+   "where": "set/multiplayer/games/<mode>.set {gameDuration}",
+   "type": "choice",
+   "plain": "Match length options.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "10 min",
+     "120 min"
+    ]
+   },
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "card.resourceamount",
+   "where": "set/multiplayer/games/<mode>.set {resourceAmount}",
+   "type": "choice",
+   "plain": "Resource amount option.",
+   "unit": "",
+   "vanilla": null,
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "card.preparationtime",
+   "where": "set/multiplayer/games/<mode>.set {preparationTime} {preparationTimeMin} {preparationTimeMax}",
+   "type": "number",
+   "plain": "Time to buy before fighting.",
+   "unit": "s",
+   "vanilla": null,
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "card.unitlevel",
+   "where": "set/multiplayer/games/<mode>.set {useUnitLevelRestrictions 0|1}",
+   "type": "bool",
+   "plain": "Unit level limits.",
+   "unit": "",
+   "vanilla": null,
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "card.veterancymode",
+   "where": "set/multiplayer/games/<mode>.set {veterancyMode}",
+   "type": "choice",
+   "plain": "Veterancy option.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "all",
+     "beginners",
+     "veterans"
+    ]
+   },
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "card.friendlyfire",
+   "where": "set/multiplayer/games/<mode>.set {friendlyFire}",
+   "type": "bool",
+   "plain": "Friendly fire.",
+   "unit": "",
+   "vanilla": null,
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "card.showpiercing",
+   "where": "set/multiplayer/games/<mode>.set {showPiercing} {showDamageReports}",
+   "type": "bool",
+   "plain": "Show hit info.",
+   "unit": "",
+   "vanilla": null,
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "card.florarespawn",
+   "where": "set/multiplayer/games/<mode>.set {floraRespawn}",
+   "type": "bool",
+   "plain": "Trees grow back.",
+   "unit": "",
+   "vanilla": null,
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "card.impregnable",
+   "where": "set/multiplayer/games/<mode>.set {impregnableTimeout}",
+   "type": "number",
+   "plain": "Spawn protection time.",
+   "unit": "s",
+   "vanilla": null,
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "card.score",
+   "where": "set/multiplayer/games/<mode>.set {scoreMin} {scoreMax} {scoreFinal}",
+   "type": "number",
+   "plain": "Score to win.",
+   "unit": "",
+   "vanilla": null,
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": "MIS-63",
+   "tag": "V"
+  },
+  {
+   "key": "card.parameters",
+   "where": "set/multiplayer/games/<mode>.set {parameters \"..\"}",
+   "type": "text",
+   "plain": "Mode rule string (see rules).",
+   "unit": "",
+   "vanilla": null,
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": "MIS-69",
+   "tag": "V"
+  },
+  {
+   "key": "card.optionsadvanced",
+   "where": "set/multiplayer/games/<mode>.set {optionsAdvanced} {optionsRanked}",
+   "type": "list",
+   "plain": "Advanced and ranked lobby options.",
+   "unit": "",
+   "vanilla": null,
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "card.ranked",
+   "where": "set/multiplayer/games/<mode>.set {ranked {enabled} {minPlayers} {maxPlayers}}",
+   "type": "list",
+   "plain": "Ranked match settings.",
+   "unit": "",
+   "vanilla": null,
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-11",
+   "tag": "V"
+  },
+  {
+   "key": "card.mission_options",
+   "where": "set/multiplayer/games/<mode>.set {mission_options}",
+   "type": "list",
+   "plain": "Mission options passed to the .mi.",
+   "unit": "",
+   "vanilla": null,
+   "group": "card",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "teams.mode",
+   "where": "set/multiplayer/games/<mode>.set {teamSettings {teamsMode}}",
+   "type": "choice",
+   "plain": "How teams are formed.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "teammatch",
+     "normal",
+     "default",
+     "deathmatch",
+     "none"
+    ]
+   },
+   "group": "teams",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "teams.armyselection",
+   "where": "set/multiplayer/games/<mode>.set {armySelectionMode}",
+   "type": "choice",
+   "plain": "Who chooses armies.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "alliance",
+     "team",
+     "player",
+     "default"
+    ]
+   },
+   "group": "teams",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "teams.equalize",
+   "where": "set/multiplayer/games/<mode>.set {equalizeTeams}",
+   "type": "bool",
+   "plain": "Even team sizes.",
+   "unit": "",
+   "vanilla": null,
+   "group": "teams",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "teams.team.title",
+   "where": "set/multiplayer/games/<mode>.set {teams {a|b {title}}}",
+   "type": "text",
+   "plain": "Team name.",
+   "unit": "",
+   "vanilla": null,
+   "group": "teams",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "teams.team.armies",
+   "where": "set/multiplayer/games/<mode>.set {teams {a {armies}}}",
+   "type": "list",
+   "plain": "Armies a team can pick.",
+   "unit": "",
+   "vanilla": null,
+   "group": "teams",
+   "ref": "army ids ger, usa, rus, eng, jap ...",
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "teams.team.slots",
+   "where": "set/multiplayer/games/<mode>.set {minTeamSlots} {maxTeamSlots}",
+   "type": "number",
+   "plain": "Slots of a team.",
+   "unit": "",
+   "vanilla": null,
+   "group": "teams",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "teams.team.ai",
+   "where": "set/multiplayer/games/<mode>.set {aiTeamPlayers} {hidden}",
+   "type": "number",
+   "plain": "AI players and hidden teams.",
+   "unit": "",
+   "vanilla": null,
+   "group": "teams",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "teams.alliances",
+   "where": "set/multiplayer/games/<mode>.set {alliances {title} {armies} {icon}}",
+   "type": "list",
+   "plain": "Alliances (Allies / Axis).",
+   "unit": "",
+   "vanilla": null,
+   "group": "teams",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "teams.armies",
+   "where": "set/multiplayer armies {id title icon appid_base flag}",
+   "type": "list",
+   "plain": "The army list.",
+   "unit": "",
+   "vanilla": null,
+   "group": "teams",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "preset.gamemode",
+   "where": "set/multiplayer/games/<mode>.set {presets {gameMode} {unitMode} {specMode}}",
+   "type": "choice",
+   "plain": "Preset menu choices in the lobby.",
+   "unit": "",
+   "vanilla": null,
+   "group": "economy",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "preset.apply",
+   "where": "set/multiplayer/games/<mode>.set {presets {apply} {common} {teams}}",
+   "type": "list",
+   "plain": "What a preset changes.",
+   "unit": "",
+   "vanilla": null,
+   "group": "economy",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "preset.bots",
+   "where": "set/multiplayer/games/<mode>.set {presets {bots easy..heroic}}",
+   "type": "list",
+   "plain": "Bot settings per difficulty.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "easy",
+     "normal",
+     "hard",
+     "heroic"
+    ]
+   },
+   "group": "economy",
+   "ref": null,
+   "tool": "bots ext (bots_generic.inc)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "preset.unitset",
+   "where": "set/multiplayer/games/<mode>.set {unitset}",
+   "type": "ref",
+   "plain": "Which unit list a mode uses.",
+   "unit": "",
+   "vanilla": null,
+   "group": "economy",
+   "ref": null,
+   "tool": null,
+   "limit": "MIS-03",
+   "tag": "V"
+  },
+  {
+   "key": "preset.commandpoints",
+   "where": "set/multiplayer/games/<mode>.set {commandPoints}",
+   "type": "number",
+   "plain": "Command point cap.",
+   "unit": "",
+   "vanilla": null,
+   "group": "economy",
+   "ref": null,
+   "tool": null,
+   "limit": "MIS-22",
+   "tag": "V"
+  },
+  {
+   "key": "preset.unitlimits",
+   "where": "set/multiplayer/games/<mode>.set {unitLimits}",
+   "type": "list",
+   "plain": "Per-class limits.",
+   "unit": "",
+   "vanilla": null,
+   "group": "economy",
+   "ref": null,
+   "tool": null,
+   "limit": "MIS-04",
+   "tag": "V"
+  },
+  {
+   "key": "preset.chargefactors",
+   "where": "set/multiplayer/games/<mode>.set {chargeFactors}",
+   "type": "list",
+   "plain": "Cooldown factors.",
+   "unit": "",
+   "vanilla": null,
+   "group": "economy",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "preset.balancingfactorbonus",
+   "where": "set/multiplayer/games/<mode>.set {balancingFactorBonus {cp} {mp} {payback}}",
+   "type": "number",
+   "plain": "Bonus for the weaker side.",
+   "unit": "",
+   "vanilla": null,
+   "group": "economy",
+   "ref": null,
+   "tool": null,
+   "limit": "MIS-02",
+   "tag": "V"
+  },
+  {
+   "key": "budget.mode",
+   "where": "set/multiplayer/games/<mode>.set {budgets {mode}}",
+   "type": "choice",
+   "plain": "Budget kind.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "standard",
+     "custom",
+     "with_update",
+     "without_update",
+     "fullpayback"
+    ]
+   },
+   "group": "economy",
+   "ref": null,
+   "tool": null,
+   "limit": "MIS-17",
+   "tag": "V"
+  },
+  {
+   "key": "budget.tag",
+   "where": "set/multiplayer/games/<mode>.set {budgets {tag}} {buttons}",
+   "type": "choice",
+   "plain": "Budget tag and lobby buttons.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "special",
+     "default"
+    ]
+   },
+   "group": "economy",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "budget.start",
+   "where": "{resource {start}}",
+   "type": "number",
+   "plain": "Starting money.",
+   "unit": "",
+   "vanilla": {
+    "min": 160,
+    "max": 600
+   },
+   "group": "economy",
+   "ref": null,
+   "tool": "POST /api/x/bots/edit (presets_*.inc)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "budget.finish",
+   "where": "{resource {finish}}",
+   "type": "number",
+   "plain": "Money at the end of growth.",
+   "unit": "",
+   "vanilla": {
+    "min": 3000,
+    "max": 4000
+   },
+   "group": "economy",
+   "ref": null,
+   "tool": "POST /api/x/bots/edit",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "budget.growtime",
+   "where": "{resource {growTime} {growTable}}",
+   "type": "number",
+   "plain": "How long income grows.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     1500
+    ]
+   },
+   "group": "economy",
+   "ref": null,
+   "tool": "POST /api/x/bots/edit",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "budget.period",
+   "where": "{resource {period} {speed} {speedset}}",
+   "type": "number",
+   "plain": "Income tick and speed.",
+   "unit": "",
+   "vanilla": null,
+   "group": "economy",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "budget.limits",
+   "where": "{resource {limitmin} {limitmax}}",
+   "type": "number",
+   "plain": "Money bounds.",
+   "unit": "",
+   "vanilla": null,
+   "group": "economy",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "budget.restore",
+   "where": "{resource {restoreBegin} {restoreEnd}}",
+   "type": "number",
+   "plain": "Refund window.",
+   "unit": "",
+   "vanilla": null,
+   "group": "economy",
+   "ref": null,
+   "tool": null,
+   "limit": "MIS-14",
+   "tag": "V"
+  },
+  {
+   "key": "budget.payback",
+   "where": "{resource {payback {cp} {restore}}}",
+   "type": "list",
+   "plain": "Payback rows (tabs).",
+   "unit": "",
+   "vanilla": null,
+   "group": "economy",
+   "ref": null,
+   "tool": "POST /api/x/bots/edit",
+   "limit": "MIS-06",
+   "tag": "V"
+  },
+  {
+   "key": "budget.growfactors",
+   "where": "{growFactors}",
+   "type": "list",
+   "plain": "Growth factors.",
+   "unit": "",
+   "vanilla": null,
+   "group": "economy",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "unit.entry",
+   "where": "unit set entry {charge fore group icon button cost cp score cw level content tags info breed basic not_for_sale remove}",
+   "type": "list",
+   "plain": "A buyable unit row.",
+   "unit": "",
+   "vanilla": null,
+   "group": "economy",
+   "ref": null,
+   "tool": "units ext / gen roster",
+   "limit": "MIS-64",
+   "tag": "V"
+  },
+  {
+   "key": "text.mode_title",
+   "where": "localization mission/multi/<map>/<mode> keys",
+   "type": "text",
+   "plain": "Mode names shown in the lobby.",
+   "unit": "",
+   "vanilla": null,
+   "group": "test",
+   "ref": null,
+   "tool": "lng-add CLI",
+   "limit": "LOC-24",
+   "tag": "V"
+  },
+  {
+   "key": "test.map",
+   "where": "play --map multi/<name>:<mode>",
+   "type": "text",
+   "plain": "Map and mode the test starts.",
+   "unit": "",
+   "vanilla": null,
+   "group": "test",
+   "ref": null,
+   "tool": "play",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "test.inst",
+   "where": "play --inst",
+   "type": "number",
+   "plain": "Game copy used.",
+   "unit": "",
+   "vanilla": {
+    "min": 1
+   },
+   "group": "test",
+   "ref": null,
+   "tool": "play",
+   "limit": "NET-20",
+   "tag": "V"
+  },
+  {
+   "key": "test.lint",
+   "where": "milint (maps/check); mission-clone --no-lint",
+   "type": "bool",
+   "plain": "Check the mode files.",
+   "unit": "",
+   "vanilla": null,
+   "group": "test",
+   "ref": null,
+   "tool": "POST /api/x/maps/check",
+   "limit": null,
+   "tag": "V"
+  }
+ ],
+ "gaps": [
+  "card.* (game card keys beyond enableBots): no editor, only patch-entity --set by hand; add a cards ext form (GET card, POST set {mode, key, value}) over patch-entity",
+  "source.with_mode/title/no_bots/flag_zone/obs_fix: mission-clone CLI only; add body fields to POST /api/x/maps/clone (with_mode, title) and run mission-clone; lobby name is [T] (MAP-22)",
+  "misgen.*: CLI only; add POST /api/x/maps/misgen {map, spec, write} with a click-to-place flag/spawn form on the terrain picture",
+  "teams.*: no tool for teams, team armies or alliances; add gen op card {mode, teams} or a teams block in the cards form",
+  "mi.triggers/mi.helpers: hand edit only; keep as editor hand-off, add milint rule list as a read-only view",
+  "budget.mode/tag/period/limits/restore/growfactors: not in the bots preset table; widen bots/table field list to every resource key",
+  "preset.unitset/commandpoints/unitlimits/chargefactors/balancingfactorbonus: no tool; add rows to the bots presets table or the cards form",
+  "rules.*: only misgen (captureflag) writes parameters; add parameters fields to the map-info gen op for <mode>.info",
+  "text.mode_title: no GUI route for lng-add; reuse a text route (see text census)"
+ ]
+}

@@ -1,0 +1,10 @@
+{game_entity
+	{patherId "vehicle.small"}
+	{mass 30000}
+	{Weaponry
+		{place "gun"
+			{weapon "pv_goh_75mm_l48" filling "pv_goh_bullet_75 apcbc" 1}
+			{gunner "gunner"}
+		}
+	}
+}

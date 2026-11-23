@@ -1,0 +1,38 @@
+# upgrade plan: oldmod  mowas2 -> as64   (mod.info min 3.262.1 max 3.262.1)
+READ    4 loose files, 3 paks with 5 entries. text checked, binaries by name only.
+WOULD CHANGE
+  nothing
+CAN'T
+  2 DLL (resource/bin/loose.dll, bin/hook.dll): fixed to one exe build. no conversion, the mod runs without it or not at all. never loaded by this tool
+NEEDS A LOOK  (no fixer, checked statically, [I] where the code is WARN_)
+  nothing
+WARN    behaviour changes on the target exe, from the commit log, none run in game. 1 hit in mod data, 16 notes, 5 detectors found nothing
+      1  aim-sequential [V] SequentialAim no longer waits joint by joint: joints arrive together (ik_syncJoints), upper body leads
+           resource/set/stuff/gun.set:2  {SequentialAim 1}
+           test: L3 one match: aim the gun at a moving target, compare traverse + time on target with the old exe (~10 min)
+  notes, nothing in mod data can show these (read once):
+    vision-set [I] vision props (pose, still, stealth, firing, cover, custom terms) are cached once per quant pass: a custom rul~
+    mode-filter [V] Classic loads legacy mods only, Enhanced loads as64+ and modern only, never mixed; one mod.info cannot run in~
+    mount-layers [V] as64/core and as64/plus (Enhanced) sit between base and mods: mods still override, but plus files shadow base~
+    mp-modset [V] MP: as64+ always in the mod set, Classic never joins Enhanced; Workshop mods go by mods/<name>; mp_join refus~
+    exe-crc [V] MP: commit CRC must match on both ends (txt_exedesync), mp_allowDesync overrides
+    aim-ik-all [V] every weapon aims on a changed IK path (same data, other traverse path and time on target); cvars reach the s~
+    quant-step [V] MP quant step and batch floors changed: quants per second differ, game time per quant formula same. scripts m~
+    frame-pacing [I] no FPS cap by default, SP carries sub-ms into the next quant: SP real-time timing runs faster than mowas_2 at~
+    squad-flags [I] squad inventory flags update every 0.5 s game time: squad bar icons lag after a scripted inventory change
+    math-clamp [I] NaN from asin/acos/sqrt clamped, polygon winding by double area: data that crashes or NaNs on mowas_2 may pas~
+    hermite-y [I] Hermite curve end tangent y fixed: curve users shift slightly, callers not traced
+    save-format [I] saves: x64 save crash and flash-blindness save fixed; whether 3.262 saves load is not settled
+    bug-repair [I] builds before 924475ad ff6939e2: UpdateRepair tag test inverted, repair stops or the crewman reboards. a buil~
+    bug-moves [I] builds before 8cb3562b 145198b4 641ed4d0: moves and turns may never end (upstream says the fatal form came af~
+    bug-pathers [I] builds before b020ce28: a second scene loads 44 pathers and 8028 extra rand draws (OOS)
+    bug-pushed-guns [I] builds before c46f2417 83af87a3: crew-pushed guns get height 0 (OOS)
+  after your build, not in the target exe: rejoin-script test-preset coop-leave ammo-scan water-reflect
+  note: target build 58826db6 (the installed as64 build; --to-build <sha> overrides)
+TEST    not run:
+  L2 boot + mount: `Mod: activate mod` in the log, on the target exe
+  L3 preload sweep: lists every changed entity, one match load (tools/preloadsweep)
+note    resource reference check skipped: need install roots (--as2/--goh) for both targets
+note    engine key check skipped: need both exes (--as2/--goh, --exe-<target>)
+note    3 pak(s) read: text checked, assets by name only
+VERDICT partial, untested: no game ran this, 1 behaviour warnings + 16 notes, read them

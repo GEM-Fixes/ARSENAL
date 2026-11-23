@@ -1,0 +1,71 @@
+{
+ "tool": "gen",
+ "name": "my_price",
+ "target": "mowas2",
+ "plan": true,
+ "verdict": "plan only, nothing written",
+ "ops": {
+  "total": 1,
+  "applied": 1,
+  "list": [
+   {
+    "i": 0,
+    "op": "card",
+    "status": "ok",
+    "findings": 0
+   }
+  ]
+ },
+ "files": [
+  "resource/set/multiplayer/units/vehicles_rus.set"
+ ],
+ "skipped": [],
+ "errors": [],
+ "info": [
+  {
+   "file": "<out>",
+   "line": 0,
+   "code": "GAME_NO_MODS",
+   "msg": "no mods/ under <game>",
+   "severity": "note"
+  },
+  {
+   "file": "card t34_0",
+   "line": 0,
+   "code": "GEN_CARD_EDIT",
+   "msg": "cost 100",
+   "severity": "note"
+  },
+  {
+   "file": "resource/set/multiplayer/units/vehicles_rus.set",
+   "line": 0,
+   "code": "GEN_ROSTER_REPLACES",
+   "msg": "resource/set/multiplayer/units/vehicles_rus.set: the mod copy replaces the whole base file",
+   "severity": "note"
+  },
+  {
+   "file": "card t34_0",
+   "line": 0,
+   "code": "GEN_PLAN_WRITE",
+   "msg": "resource/set/multiplayer/units/vehicles_rus.set: 2 line(s)",
+   "severity": "note"
+  },
+  {
+   "file": "card t34_0",
+   "line": 0,
+   "code": "GEN_PLAN_WRITE",
+   "msg": "resource/set/multiplayer/units/vehicles_rus.set -3: {\"t34_0\"\t(\"v\" c(0) t(all medium) s(rus) n1(2) n2(1) g(e1) sc(20.00) b(v4) cw(0) cp(15)) {level 5} {cost 170}}",
+   "severity": "note"
+  },
+  {
+   "file": "card t34_0",
+   "line": 0,
+   "code": "GEN_PLAN_WRITE",
+   "msg": "resource/set/multiplayer/units/vehicles_rus.set +3: {\"t34_0\"\t(\"v\" c(0) t(all medium) s(rus) n1(2) n2(1) g(e1) sc(20.00) b(v4) cw(0) cp(15)) {level 5} {cost 100}}",
+   "severity": "note"
+  }
+ ],
+ "counts": {},
+ "gate": null,
+ "stat": null
+}

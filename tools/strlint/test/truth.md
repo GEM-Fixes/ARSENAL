@@ -1,0 +1,22 @@
+# file:line: CODE (seeded defects; diffed by run.sh)
+resource/entity/construction/t/scale/scale.def:2: WARN_STR_DEF_SCALE
+resource/entity/construction/t/bad/bad.def:3: WARN_STR_OBSTACLE_MISSING
+resource/entity/construction/t/bad/bad.def:4: WARN_STR_VOLUME_NO_SHAPE
+resource/entity/construction/t/bad/bad.def:5: STR_WINDOW_THICKNESS
+resource/entity/construction/t/bad/bad.def:8: STR_PLACE_BONE
+resource/entity/construction/t/bad/bad.def:9: STR_PLACE_ENTITY
+resource/entity/construction/t/bad/bad.mdl:3: STR_VIEW_MISSING
+resource/entity/construction/t/bad/bad.mdl:8: WARN_STR_VOLUME_BONE
+resource/entity/construction/t/nomdl/nomdl.def:2: STR_MDL_MISSING
+resource/entity/construction/t/macro/macro.def:2: STR_MACRO_UNDEFINED
+resource/entity/vegetation/obs_bad.def:2: STR_OBSTACLE_NAME_MISSING
+resource/entity/social/fortification/fort/fort.def:6: STR_FORT_SKIP
+resource/entity/social/fortification/fort/fort.def:9: STR_FORT_ENTITY
+resource/entity/social/fortification/fort/fort.def:11: STR_FORT_VALUE
+resource/entity/social/fortification/fort/fort.def:13: STR_FORT_KEY
+resource/set/colliders.set:33: STR_COLLIDER_GROUPS
+resource/set/interaction_entity/construction/t.inc:6: STR_TEAR_ENTITY
+resource/set/interaction_entity/construction/t.inc:9: STR_CALL_UNDEFINED
+resource/set/interaction_entity/construction/t.inc:14: STR_MACRO_UNDEFINED
+resource/set/interaction_entity/construction/t.inc:18: WARN_STR_TEAR_BONE_NONE
+resource/entity/construction/t/good/good_x.mdl:5: WARN_STR_TEAR_BONE

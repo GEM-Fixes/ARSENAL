@@ -1,0 +1,12 @@
+{
+ "tool": "sdllint",
+ "version": 1,
+ "findings": [
+  {"file": "resource/entity/-vehicle/fx/tank_medium/pv_inc/pv_inc.def", "line": 4, "code": "INCLUDE_MISSING", "msg": "include \"pv_absent.inc\" not found", "severity": "warning"},
+  {"file": "resource/entity/-vehicle/fx/tank_medium/pv_syn/pv_syn.def", "line": 1, "code": "BLOCK_UNCLOSED", "msg": "\"Block terminator expected!\" block never closed", "severity": "warning"},
+  {"file": "resource/entity/-vehicle/fx/tank_medium/pv_txt/pv_txt.def", "line": 4, "code": "INCLUDE_MISSING", "msg": "include \"pv_listed.inc\" not found", "severity": "warning"}
+ ],
+ "info": [],
+ "counts": {},
+ "total": 3
+}

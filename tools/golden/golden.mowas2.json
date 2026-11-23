@@ -1,0 +1,160 @@
+{
+ "robz.binhdr": {
+  "total": 5,
+  "codes": {
+   "MDL_BONE_PARAM": 1,
+   "PLY_MTL_MISSING": 4
+  }
+ },
+ "robz.ialint": {
+  "total": 37,
+  "codes": {
+   "INT_CALL_UNDEFINED": 1,
+   "INT_HITSIDE_NOBULLET": 9,
+   "INT_KICK_NOOP": 1,
+   "WARN_FIRE_PLACE": 22,
+   "WARN_TAG_ADD_BLOCK": 4
+  }
+ },
+ "robz.keylint": {
+  "total": 2329,
+  "codes": {
+   "BOT_DATA_UNUSED_KEY": 2219,
+   "COLLIDER_UNKNOWN": 15,
+   "DEAD_KEY": 1,
+   "WARN_KEY_REPEAT": 30,
+   "WARN_PARAM_PREFIX": 47,
+   "WARN_PATHER_UNKNOWN": 1,
+   "WARN_RICOCHET_CLAMP": 16
+  }
+ },
+ "robz.lnglint": {
+  "total": 181,
+  "codes": {
+   "DUP_KEY": 177,
+   "MIXED_SCRIPT": 4
+  }
+ },
+ "robz.loccover": {
+  "total": 5,
+  "codes": {
+   "LOC_FILE_REPLACED": 5
+  }
+ },
+ "robz.milint": {
+  "total": 484,
+  "codes": {
+   "INCLUDE_MISSING": 2,
+   "MAP_CAPTURE_CLIPS": 13,
+   "MAP_MODE_UNDEFINED": 1,
+   "MAP_NO_MODE": 1,
+   "MIS_BOT_DEAD_KEY": 2,
+   "MIS_BOT_UNIT_UNKNOWN": 283,
+   "MIS_LIMITS_FORMAT": 4,
+   "MI_MAP_POINT_MISSING": 42,
+   "WARN_MAP_MODE_FLAGS": 56,
+   "WARN_MIS_UNIT_LEVEL_OFF": 3,
+   "WARN_MI_ACTOR_STATE_ALL": 1,
+   "WARN_MI_ENTITY_DUP": 2,
+   "WARN_MI_LINK_REF": 32,
+   "WARN_MI_NEAR_DISTANCE": 6,
+   "WARN_MI_POSE_AT_START": 2,
+   "WARN_MI_TASK_REF": 7,
+   "WARN_MI_WAYPOINT_REF": 3,
+   "WARN_MI_ZONE_REF": 24
+  }
+ },
+ "robz.packer": {
+  "total": 0,
+  "codes": {}
+ },
+ "robz.refcheck": {
+  "total": 377,
+  "codes": {
+   "DISABLED_ON": 1,
+   "ENTITY_REDEFINITION": 80,
+   "ENV_PRESET_MISSING": 42,
+   "INCLUDE_MISSING": 27,
+   "PATHER_TERRAIN_UNKNOWN": 13,
+   "REF_AMMO_UNKNOWN": 3,
+   "REF_ANIM_MISSING": 3,
+   "REF_ITEM_UNKNOWN": 19,
+   "REF_MESH_MISSING": 2,
+   "REF_MODEL_MISSING": 2,
+   "REF_SOUND_MISSING": 32,
+   "REF_STUFF_ENTITY_MISSING": 13,
+   "REF_TEXTURE_MISSING": 1,
+   "REF_WEAPON_UNKNOWN": 8,
+   "SOUND_LOUDNESS_MISSING": 1,
+   "VISION_RULE_SHADOWED": 13,
+   "WARN_BOARDER_BASE_UNKNOWN": 117
+  }
+ },
+ "robz.sdllint": {
+  "total": 50,
+  "codes": {
+   "BLOCK_UNCLOSED": 1,
+   "IDENT_SPLIT_MACRO": 1,
+   "INCLUDE_MISSING": 29,
+   "MACRO_UNDEFINED": 11,
+   "MOD_NAME": 1,
+   "NUMBER_GLUED_MACRO": 2,
+   "WARN_PAREN_STRAY": 5
+  }
+ },
+ "robz.uilint": {
+  "total": 29,
+  "codes": {
+   "KEYS_PATH_UNREACHED": 2,
+   "PANEL_ITEM_UNKNOWN": 1,
+   "PICTURE_MISSING": 7,
+   "WARN_ACTION_SET_MP_MISMATCH": 19
+  }
+ },
+ "van.binhdr": {
+  "total": 0,
+  "codes": {}
+ },
+ "van.ialint": {
+  "total": 0,
+  "codes": {}
+ },
+ "van.keylint": {
+  "total": 0,
+  "codes": {}
+ },
+ "van.milint": {
+  "total": 25,
+  "codes": {
+   "WARN_MI_TASK_REF": 5,
+   "WARN_MI_ZONE_REF": 20
+  }
+ },
+ "van.modinfo": {
+  "total": 14,
+  "codes": {
+   "REQ_MISSING": 1,
+   "VER_RANGE": 1,
+   "WARN_NOT_MOD": 12
+  }
+ },
+ "van.refcheck": {
+  "total": 0,
+  "codes": {}
+ },
+ "van.sdllint": {
+  "total": 7,
+  "codes": {
+   "WARN_INT_RANGE": 3,
+   "WARN_PAREN_STRAY": 4
+  }
+ },
+ "van.uilint": {
+  "total": 0,
+  "codes": {}
+ },
+ "van.vfs": {
+  "total": 0,
+  "codes": {}
+ }
+}

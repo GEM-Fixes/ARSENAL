@@ -1,0 +1,31 @@
+{
+ "form": "limclass/1",
+ "area": "NET2",
+ "rows": {
+  "NET-21": {
+   "chk": "never",
+   "class": "info",
+   "never": "test workflow fact, runtime",
+   "why": "join by loopback does not list session"
+  },
+  "NET-22": {
+   "chk": "never",
+   "class": "info",
+   "never": "test harness limit",
+   "why": "pipe cannot buy for human slot"
+  },
+  "NET-23": {
+   "chk": "never",
+   "class": "info",
+   "never": "test workflow fact",
+   "why": "stock 2v2 mode gives no bot fire"
+  },
+  "NET-24": {
+   "chk": "never",
+   "class": "info",
+   "never": "test workflow fact",
+   "why": "client army command refused by pipe"
+  }
+ },
+ "dead": []
+}

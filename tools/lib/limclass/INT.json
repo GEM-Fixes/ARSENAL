@@ -1,0 +1,165 @@
+{
+  "form": "limclass/1",
+  "area": "INT",
+  "rows": {
+    "INT-01": {
+      "chk": "built",
+      "class": "silent",
+      "why": "runtime tags do not change blocks",
+      "tool": "ialint",
+      "how": "tags add used where block applicability depends on that tag"
+    },
+    "INT-02": {
+      "chk": "built",
+      "class": "crash",
+      "why": "event already defined load error"
+    },
+    "INT-03": {
+      "chk": "built",
+      "class": "silent",
+      "why": "delay_ex drops effector/hit_side",
+      "tool": "ialint",
+      "how": "delay_ex body using effector or hit_side left/right"
+    },
+    "INT-04": {
+      "chk": "built",
+      "class": "silent",
+      "why": "undefined call is a silent no-op"
+    },
+    "INT-05": {
+      "chk": "built",
+      "class": "silent",
+      "why": "terrain bullet handler is dead"
+    },
+    "INT-06": {
+      "chk": "never",
+      "class": "info",
+      "why": "language fact: no comparison ops",
+      "never": "language design fact"
+    },
+    "INT-07": {
+      "chk": "built",
+      "class": "silent",
+      "why": "left/right/top/bottom conditions never true",
+      "tool": "ialint",
+      "how": "hit_side left/right/top/bottom in handler without bullet or in delay_ex"
+    },
+    "INT-08": {
+      "chk": "built",
+      "class": "cosmetic",
+      "why": "logs not supported, no effect"
+    },
+    "INT-09": {
+      "chk": "never",
+      "class": "review",
+      "why": "origin vs hit point depends on intent",
+      "never": "depends on modder intent"
+    },
+    "INT-10": {
+      "chk": "built",
+      "class": "crash",
+      "why": "129th flag name: fatal error with message at load"
+    },
+    "INT-11": {
+      "chk": "built",
+      "class": "crash",
+      "why": "33rd able name: fatal error with message at load"
+    },
+    "INT-12": {
+      "chk": "never",
+      "class": "silent",
+      "why": "delay rerun restarts timer silently",
+      "never": "timer behaviour, intent-dependent"
+    },
+    "INT-13": {
+      "chk": "built",
+      "class": "silent",
+      "why": "delay context empty, no message",
+      "tool": "ialint",
+      "how": "delay/delay_effect body using bullet, volume or position"
+    },
+    "INT-14": {
+      "chk": "never",
+      "class": "info",
+      "why": "duplicate of DMG-11",
+      "never": "duplicate row, nothing to check"
+    },
+    "INT-15": {
+      "chk": "built",
+      "class": "cosmetic",
+      "why": "no-op actions, log noise"
+    },
+    "INT-16": {
+      "chk": "never",
+      "class": "info",
+      "why": "damage_report display fact",
+      "never": "UI display rule, runtime only"
+    },
+    "INT-17": {
+      "chk": "built",
+      "class": "crash",
+      "why": "empty kill_delay name is error"
+    },
+    "INT-18": {
+      "chk": "never",
+      "class": "review",
+      "why": "centre/spread misread depends on intent",
+      "never": "author must read value meaning"
+    },
+    "INT-19": {
+      "chk": "built",
+      "class": "info",
+      "why": "console variable access fact"
+    },
+    "INT-20": {
+      "chk": "built",
+      "class": "silent",
+      "why": "tiny cook-offs do nothing"
+    },
+    "INT-21": {
+      "chk": "built",
+      "class": "silent",
+      "why": "wrong place name never fires",
+      "tool": "ialint",
+      "how": "fire \"weapon\" place name absent from owner fires table"
+    },
+    "INT-22": {
+      "chk": "never",
+      "class": "info",
+      "why": "sign convention, constants unused",
+      "never": "convention fact, nothing to hit"
+    },
+    "INT-23": {
+      "chk": "built",
+      "class": "crash",
+      "why": "invented event name: fatal error with message at load",
+      "tool": "ialint",
+      "how": "{on X} where X is outside the 29 known event words (quoted = effect)"
+    },
+    "INT-24": {
+      "chk": "built",
+      "class": "silent",
+      "why": "min_energy condition never true",
+      "tool": "ialint",
+      "how": "ground_hit handler testing min_energy"
+    },
+    "INT-25": {
+      "chk": "built",
+      "class": "crash",
+      "why": "unknown terrain effect: fatal error with message",
+      "tool": "refcheck",
+      "how": "terrain material {effect \"name\"} against set/interaction_terrain/effects entries in mod and vanilla"
+    }
+  },
+  "dead": [
+    {
+      "row": "INT-19",
+      "tool": "cvarcheck",
+      "code": "CVAR_ABSENT",
+      "fix": {
+        "code": null,
+        "why": "removed: cvarcheck retired to tools/_retired"
+      }
+    }
+  ]
+}

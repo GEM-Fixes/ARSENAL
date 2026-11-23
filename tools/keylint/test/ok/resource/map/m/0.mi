@@ -1,0 +1,8 @@
+{Mission
+	{Entity "a"
+		{Extender "mine"
+			{Mined}
+			{Miner 1}
+		}
+	}
+}

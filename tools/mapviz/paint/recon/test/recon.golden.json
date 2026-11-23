@@ -1,0 +1,17 @@
+{
+ "v": 1,
+ "tone.synth128": {
+  "sha1": "6e5c96ac9f575923a47b38514a9a067b415f7b83"
+ },
+ "tone.synth256.thumb": {
+  "sha1": "99c78fec4f179729e89f2d4489f42beec7bacfa0"
+ },
+ "full.synth256.thumb": {
+  "source": "shared",
+  "sha1": "6bed9078a7ebced85bbf757951e5059fded64cd7"
+ },
+ "full.synth640": {
+  "source": "shared",
+  "sha1": "7d056900fee44cc12b23dc22c2b064bcac507d8a"
+ }
+}

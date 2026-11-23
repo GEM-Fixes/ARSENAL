@@ -1,0 +1,20 @@
+# uilint truth: one expected finding per line (file:line: CODE). bad/ must produce exactly these; ok/ must have 0.
+resource/interface/action/burst.set:3: PICTURE_MISSING
+resource/interface/action/burst.set:6: ACTION_INSTRUCTION_UNKNOWN
+resource/interface/action/burst.set:9: ACTION_INSTRUCTION_UNKNOWN
+resource/interface/font/foo_300.font:1: FONT_SIZE_RANGE
+resource/interface/font/foo_300.font:1: WARN_FONT_BINARY_MISSING
+resource/interface/profile/default/keys.set: KEYS_PATH_UNREACHED
+resource/interface/profiles/default/keys.set:6: KEYS_TOKEN_UNKNOWN
+resource/interface/profiles/default/keys.set:9: KEYS_MOUSE_MIDDLE
+resource/interface/profiles/default/keys.set:11: KEYS_ACTION_NO_HOTKEY
+resource/interface/profiles/default/keys.set:14: KEYS_ACTION_NO_HOTKEY
+resource/interface/profiles/default/keys.set:17: WARN_KEYS_ID_UNREAD
+resource/set/panel_control/right_attack.set:14: PANEL_CELLS_FULL
+resource/set/panel_control/right_main.set:8: PANEL_ITEM_UNKNOWN
+resource/set/panel_control/right_main.set:11: PANEL_CONDITION_UNKNOWN
+resource/set/panel_control/right_main.set:16: PANEL_SPECIAL_UNLOADED
+resource/set/panel_control/right_main.set:6: PANEL_CELL_CLASH
+resource/set/panel_control/right_main.set:14: WARN_PANEL_CELL_RANGE
+resource/set/panel_control/right_special.set: PANEL_SPECIAL_UNLOADED
+interface/font: WARN_FONT_MAIN10_MISSING

@@ -1,0 +1,305 @@
+{
+ "form": "limmap/1",
+ "part": "gen-1",
+ "codes": {
+  "GAME_NO_MODS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/newmod/newmod.js:95",
+   "class": "info",
+   "why": "game folder has no mods/ dir"
+  },
+  "GEN_ARMOR_ALL_PARTS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:177",
+   "class": "info",
+   "why": "one armor value applied to several parts"
+  },
+  "GEN_ARMOR_ARGC": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:164",
+   "class": "tool",
+   "why": "spec value count differs from part slot count"
+  },
+  "GEN_ARMOR_ARG_MISSING": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:175",
+   "class": "tool",
+   "why": "no part takes that many values"
+  },
+  "GEN_ARMOR_BAD_FORM": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:158",
+   "class": "tool",
+   "why": "armor value form: numbers before part names"
+  },
+  "GEN_ARMOR_FULL_COPY": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "VFS-01",
+    "VFS-41"
+   ],
+   "at": "tools/gen/lib/ops.js:184",
+   "class": "info",
+   "why": "armor edit writes whole-file override of base def"
+  },
+  "GEN_ARMOR_NO_MACRO": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "DMG-06"
+   ],
+   "at": "tools/gen/lib/ops.js:133",
+   "class": "review",
+   "why": "no armor macro; thickness is per-volume, macro wins when set"
+  },
+  "GEN_ARMOR_NO_VALUE": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:139",
+   "class": "tool",
+   "why": "armor op without value"
+  },
+  "GEN_ARMOR_PART_UNKNOWN": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:163",
+   "class": "tool",
+   "why": "armor op names a part the macro lacks"
+  },
+  "GEN_ARMOR_PLAN_VIRTUAL": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:123",
+   "class": "info",
+   "why": "entity made in this spec, not checked in plan"
+  },
+  "GEN_BAD_SPEC": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/gen.js:333",
+   "class": "tool",
+   "why": "unknown op kind in spec"
+  },
+  "GEN_BOTS_NO_DATA": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:416",
+   "class": "tool",
+   "why": "bot data file absent in base data"
+  },
+  "GEN_BREED_ARGS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:500",
+   "class": "tool",
+   "why": "breed op missing name, like or army"
+  },
+  "GEN_BREED_DECL_MISSING": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:506",
+   "class": "tool",
+   "why": "like breed declaration not found in base files"
+  },
+  "GEN_BREED_EXISTS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:504",
+   "class": "tool",
+   "why": "target breed file already exists"
+  },
+  "GEN_BREED_LIKE_MISSING": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:503",
+   "class": "tool",
+   "why": "like breed file not found in base data"
+  },
+  "GEN_BREED_VET_MISSING": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:515",
+   "class": "tool",
+   "why": "like breed has no veterancy call to change"
+  },
+  "GEN_BREED_VET_UNDEFINED": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "GPL-11"
+   ],
+   "at": "tools/gen/lib/ops.js:518",
+   "class": "crash",
+   "why": "veterancy macro undefined: define not found is fatal"
+  },
+  "GEN_CARD_ARGS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:360",
+   "class": "tool",
+   "why": "card op missing unit or army"
+  },
+  "GEN_CARD_UNKNOWN": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:371",
+   "class": "tool",
+   "why": "card not in army lists of the base data"
+  },
+  "GEN_CLONE_ARGS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:218",
+   "class": "tool",
+   "why": "clone op missing arguments"
+  },
+  "GEN_CRASH": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/gen.js:336",
+   "class": "tool",
+   "why": "gen op threw an exception"
+  },
+  "GEN_FIELD_UNKNOWN": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:266",
+   "class": "tool",
+   "why": "card field name not in the card"
+  },
+  "GEN_GOH_LNG_CONVERTED": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "PORT-42"
+   ],
+   "at": "tools/gen/gen.js:176",
+   "class": "info",
+   "why": "GoH reads .pot, .lng left in mod ignored"
+  },
+  "GEN_GUN_GOH_ARGS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:885",
+   "class": "tool",
+   "why": "GoH gun accuracy define needs params the like does not give"
+  },
+  "GEN_ICON_LIKE_MISSING": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:352",
+   "class": "tool",
+   "why": "no unit_icon files for the like stem"
+  },
+  "GEN_LOC_AUTO": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:409",
+   "class": "info",
+   "why": "loc key auto-generated by gen"
+  },
+  "GEN_MAPCLONE_ARGS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:545",
+   "class": "tool",
+   "why": "map-clone op bad map or name"
+  },
+  "GEN_MISSION_ARGS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:557",
+   "class": "tool",
+   "why": "mission-clone op missing map or modes"
+  },
+  "GEN_MODINFO_AS2_ONLY": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:194",
+   "class": "info",
+   "why": "AS2 modinfo lint ran on GoH mod.info"
+  },
+  "GEN_MOD_EXISTS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:204",
+   "class": "info",
+   "why": "mod.info exists, newmod skipped"
+  },
+  "GEN_OUT_EXISTS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/gen.js:322",
+   "class": "tool",
+   "why": "out folder not empty"
+  },
+  "GEN_OUT_UNSAFE": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/gen.js:316",
+   "class": "tool",
+   "why": "out path refused by write guard"
+  },
+  "GEN_PLACE_ARGS": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "MAP-16"
+   ],
+   "at": "tools/gen/lib/ops.js:575",
+   "class": "review",
+   "why": "place pos is in map units, not metres"
+  },
+  "GEN_PLAN_SKIPPED": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:558",
+   "class": "info",
+   "why": "op on map from earlier map-clone not simulated"
+  },
+  "GEN_PLAN_TEXT": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/gen.js:132",
+   "class": "info",
+   "why": "plan lists text rows to be written"
+  }
+ }
+}

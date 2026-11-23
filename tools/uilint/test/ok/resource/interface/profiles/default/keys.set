@@ -1,0 +1,14 @@
+{keys
+	{"common/center_active"
+		{value "SHIFT + KEY_F"}
+	}
+	{"common/prev_unit"
+		{value MOUSE_MIDLE}
+	}
+	{"actions/attack"
+		{value KEY_B}
+	}
+	{"groups/assign_1"
+		{value "CTRL + MOUSE2"}
+	}
+}

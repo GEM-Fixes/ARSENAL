@@ -1,0 +1,12 @@
+{entities
+{"wood thing"
+	{inflammation_time 4}
+	{on "burn_volume" {delete}}
+}
+{"wood thing big"
+	{on "burn_volume" {delete}}
+}
+{"hay" ;@WARN_BURN_NO_INFLAMMATION_TIME
+	{on "burn_volume" {delete}}
+}
+}

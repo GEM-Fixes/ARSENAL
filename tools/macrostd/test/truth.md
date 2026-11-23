@@ -1,0 +1,17 @@
+# macrostd fixture defects (built by test.js; one per line)
+- resource/properties/mod_macros.inc:7 DEFINE_DEAD "unused_one" never called -> step dead moves it (with its header) under the heading
+- resource/properties/mod_macros.inc:12 + other.inc:1 DEFINE_DUP_DIFF "dupe" two bodies (both also dead)
+- resource/properties/mod_macros.inc:2 NAME_STYLE "Plate-Armor" called from a.def, b.def, c.def (macro body) and "wrap" (macro body) -> plate_armor
+- resource/properties/mod_macros.inc:13 "Vanilla_Cap" vanilla-owned (vanilla defines it): no NAME_STYLE, never renamed
+- resource/properties/shared.inc:1 "Shared_Cap" vanilla-owned (file overwrites a vanilla path, VFS-01): never renamed
+- resource/properties/mod_macros.inc:15 "gore_pieceA" buildable by "gore_piece%0": names case, not dead
+- resource/properties/mod_macros.inc:17 "Dup_Name" -> "dup_name" exists: names case
+- resource/properties/mod_macros.inc:11 PARAM_PREFIX (crash-risk) "pref" %c / %cw, a.def passes c only (SDL-56)
+- resource/entity/b/b.def:4 CALL_UNDEFINED "nowhere"
+- resource/entity/b/b.def LF line ends, trailing spaces/tab, no final newline -> fmt
+- resource/entity/c/c.def indent: spaces, mixed tab/space, two-line perk, define with nested call, commented block, `})`, cp1251 comment
+- resource/entity/d/d.def unbalanced (stray ')'): indent case, file untouched
+- resource/entity/e/e.def:1 INCLUDE_MISSING /properties/nope.inc
+- resource/set/stuff/rifle/m1 calls "rifle_base" from vanilla stuff .presets (SDL-50): no CALL_UNDEFINED; trailing tab
+- game resource/entity/tank/t1/t1.def vanilla root reaching the mod's shared.inc (PORT-55/61): verified too
+- hand edit {z 3} -> {z 4} in c.def: verify DIFF at "perks"/z, --allow approves

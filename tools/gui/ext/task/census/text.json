@@ -1,0 +1,490 @@
+{
+ "thing": "text",
+ "files": [
+  "tools/lng-add",
+  "tools/lng (extract, merge)",
+  "tools/lnglint",
+  "tools/loccover",
+  "gen op text",
+  "POST /api/x/units/change",
+  "localization/#<mod>.lng",
+  "localization/desc.lng",
+  "localization/mission/multi/<map>.lng"
+ ],
+ "groups": [
+  {
+   "id": "add",
+   "name": "Add a line"
+  },
+  {
+   "id": "keys",
+   "name": "Key families"
+  },
+  {
+   "id": "format",
+   "name": "Format and files"
+  },
+  {
+   "id": "translate",
+   "name": "Translate"
+  },
+  {
+   "id": "check",
+   "name": "Check"
+  }
+ ],
+ "vars": [
+  {
+   "key": "add.mod",
+   "where": "lng-add <mod>",
+   "type": "path",
+   "plain": "The mod the text goes into.",
+   "unit": "",
+   "vanilla": null,
+   "group": "add",
+   "ref": null,
+   "tool": "lng-add CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "add.file",
+   "where": "lng-add --file (default localization/#<mod>.lng)",
+   "type": "path",
+   "plain": "Which .lng file gets the line.",
+   "unit": "",
+   "vanilla": null,
+   "group": "add",
+   "ref": null,
+   "tool": "lng-add CLI",
+   "limit": "LOC-01",
+   "tag": "V"
+  },
+  {
+   "key": "add.key",
+   "where": "lng-add --key; gen text.key",
+   "type": "text",
+   "plain": "The text key (path-like).",
+   "unit": "",
+   "vanilla": null,
+   "group": "add",
+   "ref": null,
+   "tool": "gen text",
+   "limit": "LOC-19",
+   "tag": "V"
+  },
+  {
+   "key": "add.text",
+   "where": "lng-add --text; gen text.text",
+   "type": "text",
+   "plain": "The words shown in game.",
+   "unit": "",
+   "vanilla": null,
+   "group": "add",
+   "ref": null,
+   "tool": "gen text",
+   "limit": "LOC-28",
+   "tag": "V"
+  },
+  {
+   "key": "add.items",
+   "where": "gen text.items[] {key, text, file}",
+   "type": "list",
+   "plain": "Several lines at once.",
+   "unit": "",
+   "vanilla": null,
+   "group": "add",
+   "ref": null,
+   "tool": "gen text",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "add.force",
+   "where": "lng-add --force (LNG_KEY_EXISTS)",
+   "type": "bool",
+   "plain": "Replace a key that is already there.",
+   "unit": "",
+   "vanilla": null,
+   "group": "add",
+   "ref": null,
+   "tool": "lng-add CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "add.dry",
+   "where": "lng-add --dry-run",
+   "type": "bool",
+   "plain": "Preview only.",
+   "unit": "",
+   "vanilla": null,
+   "group": "add",
+   "ref": null,
+   "tool": "lng-add CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "add.lang",
+   "where": "lng-add --lang (no effect)",
+   "type": "choice",
+   "plain": "Language (one set per install).",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "en",
+     "ru",
+     "uk",
+     "zh"
+    ]
+   },
+   "group": "add",
+   "ref": null,
+   "tool": "lng-add CLI",
+   "limit": "LOC-17",
+   "tag": "V"
+  },
+  {
+   "key": "key.unit_name",
+   "where": "desc/entity/<model> ; units/change field name",
+   "type": "text",
+   "plain": "Name of a vehicle or gun.",
+   "unit": "",
+   "vanilla": {
+    "min": 1,
+    "max": 80
+   },
+   "group": "keys",
+   "ref": null,
+   "tool": "POST /api/x/units/change",
+   "limit": "LOC-11",
+   "tag": "V"
+  },
+  {
+   "key": "key.squad",
+   "where": "desc/squad/<name>(<side>)",
+   "type": "text",
+   "plain": "Squad name.",
+   "unit": "",
+   "vanilla": null,
+   "group": "keys",
+   "ref": null,
+   "tool": null,
+   "limit": "LOC-11",
+   "tag": "V"
+  },
+  {
+   "key": "key.human",
+   "where": "desc/human/mp/<side>/<breed>",
+   "type": "text",
+   "plain": "Soldier name.",
+   "unit": "",
+   "vanilla": null,
+   "group": "keys",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "key.weapon",
+   "where": "desc/weapon|ammo|stuff/<tags>; desc/weapon/type/<type>",
+   "type": "text",
+   "plain": "Weapon, ammo and item names.",
+   "unit": "",
+   "vanilla": null,
+   "group": "keys",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "key.info",
+   "where": "info/entity/<name>; info/squad/<name>; info/special/<model>",
+   "type": "text",
+   "plain": "Info panel text.",
+   "unit": "",
+   "vanilla": null,
+   "group": "keys",
+   "ref": null,
+   "tool": null,
+   "limit": "LOC-11",
+   "tag": "V"
+  },
+  {
+   "key": "key.armor_angle",
+   "where": "info/armor_angle/<model>/<volume>",
+   "type": "text",
+   "plain": "Armour labels.",
+   "unit": "",
+   "vanilla": null,
+   "group": "keys",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "key.component",
+   "where": "component/<key>",
+   "type": "text",
+   "plain": "Part names.",
+   "unit": "",
+   "vanilla": null,
+   "group": "keys",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "key.mission",
+   "where": "mission/multi/<folder>/name; mission/single/..",
+   "type": "text",
+   "plain": "Map and mission names.",
+   "unit": "",
+   "vanilla": null,
+   "group": "keys",
+   "ref": null,
+   "tool": "POST /api/x/maps/clone body.title",
+   "limit": "LOC-24",
+   "tag": "V"
+  },
+  {
+   "key": "key.unit_reg",
+   "where": "units/<name>/desc (unit.reg)",
+   "type": "text",
+   "plain": "Unit list text.",
+   "unit": "",
+   "vanilla": null,
+   "group": "keys",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "key.ui",
+   "where": "actionbar/*, mp/scene/hint_*, mp/lobby/*, options/keys/*",
+   "type": "text",
+   "plain": "Interface text.",
+   "unit": "",
+   "vanilla": null,
+   "group": "keys",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "fmt.tags",
+   "where": "text tags <c(..)> </c> <e(..)> <f(..)> <s(..)> <b> <i> <p(..)> <t(..)>",
+   "type": "list",
+   "plain": "Colour, font and icon tags inside a text.",
+   "unit": "",
+   "vanilla": null,
+   "group": "format",
+   "ref": null,
+   "tool": null,
+   "limit": "LOC-28",
+   "tag": "V"
+  },
+  {
+   "key": "fmt.escapes",
+   "where": "escapes \\n \\t \\\" \\\\",
+   "type": "list",
+   "plain": "Line breaks and quotes.",
+   "unit": "",
+   "vanilla": null,
+   "group": "format",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "fmt.placeholders",
+   "where": "% placeholders",
+   "type": "list",
+   "plain": "Numbers filled in by the game; keep them.",
+   "unit": "",
+   "vanilla": null,
+   "group": "format",
+   "ref": null,
+   "tool": null,
+   "limit": "LOC-28",
+   "tag": "V"
+  },
+  {
+   "key": "fmt.encoding",
+   "where": ".lng UTF-8 with {tags} root; CRLF",
+   "type": "choice",
+   "plain": "File encoding.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "UTF-8"
+    ]
+   },
+   "group": "format",
+   "ref": null,
+   "tool": null,
+   "limit": "LOC-05",
+   "tag": "V"
+  },
+  {
+   "key": "file.hash_name",
+   "where": "localization/#<mod>.lng (title not part of key)",
+   "type": "path",
+   "plain": "Own text file that adds keys without replacing vanilla files.",
+   "unit": "",
+   "vanilla": null,
+   "group": "format",
+   "ref": null,
+   "tool": null,
+   "limit": "LOC-01",
+   "tag": "V"
+  },
+  {
+   "key": "file.replace",
+   "where": "same-path .lng replaces the vanilla file whole",
+   "type": "path",
+   "plain": "A full copy is needed to change vanilla text.",
+   "unit": "",
+   "vanilla": null,
+   "group": "format",
+   "ref": null,
+   "tool": "POST /api/x/units/change",
+   "limit": "LOC-01",
+   "tag": "V"
+  },
+  {
+   "key": "tr.extract_out",
+   "where": "lng extract <mod> --out x.tsv --lang",
+   "type": "path",
+   "plain": "Export all text to a table for translation.",
+   "unit": "",
+   "vanilla": null,
+   "group": "translate",
+   "ref": null,
+   "tool": "lng extract CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "tr.merge_in",
+   "where": "lng merge <mod> x.tsv --out --all --dry-run",
+   "type": "path",
+   "plain": "Bring a translated table back.",
+   "unit": "",
+   "vanilla": null,
+   "group": "translate",
+   "ref": null,
+   "tool": "lng merge CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "tr.merge_all",
+   "where": "lng merge --all",
+   "type": "bool",
+   "plain": "Write rows that did not change too.",
+   "unit": "",
+   "vanilla": null,
+   "group": "translate",
+   "ref": null,
+   "tool": "lng merge CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "check.lnglint",
+   "where": "lnglint <folder>",
+   "type": "path",
+   "plain": "Check text files for errors.",
+   "unit": "",
+   "vanilla": null,
+   "group": "check",
+   "ref": null,
+   "tool": "lnglint CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "check.loccover",
+   "where": "loccover <mod> --exe as64|mowas_2 --lang --summary --vfs",
+   "type": "list",
+   "plain": "Find units with missing names or info.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "LOC_FILE_REPLACED",
+     "NAME_MISSING",
+     "INFO_MISSING",
+     "DAMAGE_KEY",
+     "HOW_SIDEKEY",
+     "STUFF_KEY_ORDER",
+     "STUFF_KEY_MISSING"
+    ]
+   },
+   "group": "check",
+   "ref": null,
+   "tool": "loccover CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "check.exe",
+   "where": "loccover --exe",
+   "type": "choice",
+   "plain": "Game build to check against.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "as64",
+     "mowas_2"
+    ]
+   },
+   "group": "check",
+   "ref": null,
+   "tool": "loccover CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "check.lngdup",
+   "where": "fix --only lngdup",
+   "type": "bool",
+   "plain": "Remove duplicate keys.",
+   "unit": "",
+   "vanilla": null,
+   "group": "check",
+   "ref": null,
+   "tool": "fix",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "goh.pot",
+   "where": "GoH localizations/<lang>/*.pot",
+   "type": "file",
+   "plain": "GoH text format (for ports).",
+   "unit": "",
+   "vanilla": null,
+   "group": "check",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  }
+ ],
+ "gaps": [
+  "add.*: lng-add has no GUI route; add POST /api/x/text/add {mod, file, key, text, force, write}",
+  "tr.*: lng extract/merge CLI only; add GET /api/x/text/extract (tsv download) and POST /api/x/text/merge (upload)",
+  "check.loccover/lnglint: CLI only; add POST /api/x/text/check {mod, exe} returning code rows",
+  "key.* families: no key picker; add GET /api/x/text/keys?family= from vfs (q.js already indexes names)",
+  "fmt.tags: no preview of tagged text; add a render preview in the text form (low value)"
+ ]
+}

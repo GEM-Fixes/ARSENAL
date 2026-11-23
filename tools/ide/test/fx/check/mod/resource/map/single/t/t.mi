@@ -1,0 +1,11 @@
+{mission
+	{Helpers
+		{triggers
+			{"t1"
+				{actions
+					{"0.bogus_cmd"}
+				}
+			}
+		}
+	}
+}

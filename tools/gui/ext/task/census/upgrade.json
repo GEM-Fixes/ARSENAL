@@ -1,0 +1,387 @@
+{
+ "thing": "upgrade",
+ "files": [
+  "contract upgrade",
+  "tools/upgrade",
+  "UPGRADE.md",
+  "mod.info",
+  "GET /api/x/logs/ticklist"
+ ],
+ "groups": [
+  {
+   "id": "source",
+   "name": "From and to"
+  },
+  {
+   "id": "run",
+   "name": "Run"
+  },
+  {
+   "id": "carry",
+   "name": "Missing files"
+  },
+  {
+   "id": "changes",
+   "name": "What changes"
+  },
+  {
+   "id": "after",
+   "name": "After"
+  }
+ ],
+ "vars": [
+  {
+   "key": "src.mod",
+   "where": "upgrade --mod",
+   "type": "path",
+   "plain": "The old mod to bring up to date.",
+   "unit": "",
+   "vanilla": null,
+   "group": "source",
+   "ref": null,
+   "tool": "upgrade",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "src.from",
+   "where": "upgrade --from",
+   "type": "choice",
+   "plain": "Which game it was made for.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "mowas2",
+     "as64",
+     "goh"
+    ]
+   },
+   "group": "source",
+   "ref": null,
+   "tool": "upgrade",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "src.to",
+   "where": "upgrade --to (req)",
+   "type": "choice",
+   "plain": "Which game it should run on.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "as64",
+     "mowas2",
+     "goh"
+    ]
+   },
+   "group": "source",
+   "ref": null,
+   "tool": "upgrade",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "src.to_build",
+   "where": "upgrade --toBuild",
+   "type": "text",
+   "plain": "Target game build.",
+   "unit": "",
+   "vanilla": null,
+   "group": "source",
+   "ref": null,
+   "tool": "upgrade",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "src.mode",
+   "where": "upgrade --mode",
+   "type": "choice",
+   "plain": "Classic or Enhanced.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "classic",
+     "enhanced"
+    ]
+   },
+   "group": "source",
+   "ref": null,
+   "tool": "upgrade",
+   "limit": "VFS-19",
+   "tag": "V"
+  },
+  {
+   "key": "run.plan",
+   "where": "upgrade --plan",
+   "type": "bool",
+   "plain": "Show the plan first.",
+   "unit": "",
+   "vanilla": null,
+   "group": "run",
+   "ref": null,
+   "tool": "upgrade",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "run.out",
+   "where": "upgrade --out",
+   "type": "path",
+   "plain": "Where the upgraded copy goes.",
+   "unit": "",
+   "vanilla": null,
+   "group": "run",
+   "ref": null,
+   "tool": "upgrade",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "run.no_link",
+   "where": "upgrade --noLink",
+   "type": "bool",
+   "plain": "Do not link into the game.",
+   "unit": "",
+   "vanilla": null,
+   "group": "run",
+   "ref": null,
+   "tool": "upgrade",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "run.then_fix",
+   "where": "upgrade --thenFix",
+   "type": "bool",
+   "plain": "Run the fixers after.",
+   "unit": "",
+   "vanilla": null,
+   "group": "run",
+   "ref": null,
+   "tool": "upgrade",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "run.export",
+   "where": "upgrade --export (not with plan)",
+   "type": "bool",
+   "plain": "Export a full copy.",
+   "unit": "",
+   "vanilla": null,
+   "group": "run",
+   "ref": null,
+   "tool": "upgrade",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "run.only",
+   "where": "upgrade --only / --drop",
+   "type": "list",
+   "plain": "Pick upgrade steps.",
+   "unit": "",
+   "vanilla": null,
+   "group": "run",
+   "ref": null,
+   "tool": "upgrade",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "carry.on",
+   "where": "upgrade --carry --carryMax --dropDangling",
+   "type": "bool",
+   "plain": "Carry vanilla files the mod depends on.",
+   "unit": "",
+   "vanilla": null,
+   "group": "carry",
+   "ref": null,
+   "tool": "upgrade",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "carry.donor",
+   "where": "upgrade --donor --patch",
+   "type": "path",
+   "plain": "Donor folder for missing files.",
+   "unit": "",
+   "vanilla": null,
+   "group": "carry",
+   "ref": null,
+   "tool": "upgrade",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "carry.paths",
+   "where": "upgrade --as2 --goh --gohVersion --top",
+   "type": "path",
+   "plain": "Game installs used.",
+   "unit": "",
+   "vanilla": null,
+   "group": "carry",
+   "ref": null,
+   "tool": "upgrade",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "chg.version_lines",
+   "where": "mod.info version lines",
+   "type": "text",
+   "plain": "Version range rewritten.",
+   "unit": "",
+   "vanilla": null,
+   "group": "changes",
+   "ref": null,
+   "tool": null,
+   "limit": "VFS-19",
+   "tag": "V"
+  },
+  {
+   "key": "chg.add_modinfo",
+   "where": "adds mod.info if missing",
+   "type": "bool",
+   "plain": "mod.info created.",
+   "unit": "",
+   "vanilla": null,
+   "group": "changes",
+   "ref": null,
+   "tool": null,
+   "limit": "VFS-62",
+   "tag": "V"
+  },
+  {
+   "key": "chg.include_paths",
+   "where": "include paths",
+   "type": "list",
+   "plain": "Include paths fixed.",
+   "unit": "",
+   "vanilla": null,
+   "group": "changes",
+   "ref": null,
+   "tool": null,
+   "limit": "MAP-36",
+   "tag": "V"
+  },
+  {
+   "key": "chg.encoding",
+   "where": "cp1251 -> UTF-8, CRLF",
+   "type": "bool",
+   "plain": "Text re-encoded.",
+   "unit": "",
+   "vanilla": null,
+   "group": "changes",
+   "ref": null,
+   "tool": null,
+   "limit": "LOC-05",
+   "tag": "V"
+  },
+  {
+   "key": "chg.fileid",
+   "where": "removes FileId",
+   "type": "bool",
+   "plain": "Workshop id dropped.",
+   "unit": "",
+   "vanilla": null,
+   "group": "changes",
+   "ref": null,
+   "tool": null,
+   "limit": "VFS-60",
+   "tag": "V"
+  },
+  {
+   "key": "chg.require",
+   "where": "drops Require of built-ins",
+   "type": "list",
+   "plain": "Built-in requires dropped.",
+   "unit": "",
+   "vanilla": null,
+   "group": "changes",
+   "ref": null,
+   "tool": null,
+   "limit": "VFS-50",
+   "tag": "V"
+  },
+  {
+   "key": "chg.dll",
+   "where": "leaves out .dll files",
+   "type": "list",
+   "plain": "DLLs left out.",
+   "unit": "",
+   "vanilla": null,
+   "group": "changes",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "res.exit",
+   "where": "exit 0 clean, 3 partial, 2 refused, 1 failed; UPGRADE.md",
+   "type": "choice",
+   "plain": "Result of the run.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     0,
+     1,
+     2,
+     3
+    ]
+   },
+   "group": "after",
+   "ref": null,
+   "tool": "upgrade",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "after.check",
+   "where": "check --mod --exe",
+   "type": "list",
+   "plain": "Check after upgrade.",
+   "unit": "",
+   "vanilla": null,
+   "group": "after",
+   "ref": null,
+   "tool": "check",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "after.ticklist",
+   "where": "GET /api/x/logs/ticklist ?mod",
+   "type": "list",
+   "plain": "Things to test in game.",
+   "unit": "",
+   "vanilla": null,
+   "group": "after",
+   "ref": null,
+   "tool": "GET /api/x/logs/ticklist",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "after.play",
+   "where": "play / install",
+   "type": "text",
+   "plain": "Test it in game.",
+   "unit": "",
+   "vanilla": null,
+   "group": "after",
+   "ref": null,
+   "tool": "play",
+   "limit": null,
+   "tag": "T"
+  }
+ ],
+ "gaps": [
+  "after.check: contract check lacks --target; add field target to COMMANDS.check",
+  "after.ticklist: only after a write; allow ?plan=1 ticklist from the plan output"
+ ]
+}

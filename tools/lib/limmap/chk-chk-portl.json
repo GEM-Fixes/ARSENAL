@@ -1,0 +1,37 @@
+{
+  "form": "limmap/1",
+  "part": "chk-chk-portl",
+  "codes": {
+    "PORT_STUFF_OVERRIDE": { "tool": "portlint", "sev": "crash", "lim": ["PORT-47"], "at": "tools/portlint/portlint.js:121", "class": "crash", "why": "GoH stuff.ext with NoVisibilityPatch over the AS2 path kills load" },
+    "PORT_ENTITY_KEY_LEFT": { "tool": "portlint", "sev": "crash", "lim": ["PORT-53", "PORT-89"], "at": "tools/portlint/portlint.js:125", "class": "crash", "why": "GoH-only entity key, incl entity-form perks, is an unexpected token" },
+    "PORT_GOH_INCLUDE_DANGLES": { "tool": "portlint", "sev": "crash", "lim": ["PORT-126"], "at": "tools/portlint/portlint.js:134", "class": "crash", "why": "relative include in properties/goh names a file nobody has" },
+    "PORT_NAME_CLASH": { "tool": "portlint", "sev": "crash", "lim": ["PORT-155"], "at": "tools/portlint/portlint.js:167", "class": "crash", "why": "item and non-item entity share a name, stuff extender crashes" },
+    "PORT_BONE_MISSING": { "tool": "portlint", "sev": "crash", "lim": ["PORT-157"], "at": "tools/portlint/portlint.js:175", "class": "crash", "why": "def bone block names a bone its mdl lacks, load aborts" },
+    "PORT_PLACE_CHILD_MISSING": { "tool": "portlint", "sev": "crash", "lim": ["PORT-170"], "at": "tools/portlint/portlint.js:182", "class": "crash", "why": "place child entity defined nowhere, spawn dies cannot link object" },
+    "PORT_HUMAN_SEQ_KEY": { "tool": "portlint", "sev": "crash", "lim": ["PORT-184"], "at": "tools/portlint/portlint.js:155", "class": "crash", "why": "events or additive in human table sequence is unexpected token" },
+    "PORT_PATHER_UNKNOWN": { "tool": "portlint", "sev": "crash", "lim": ["PORT-187"], "at": "tools/portlint/portlint.js:184", "class": "crash", "why": "PatherId not an AS2 profile stops the whole map load" },
+    "WARN_PORT_GOH_SET_FORM": { "tool": "portlint", "sev": "silent", "lim": ["PORT-85"], "at": "tools/portlint/portlint.js:140", "class": "silent", "why": "GoH headgear pattern or item body form in set, AS2 ignores" },
+    "WARN_PORT_NO_STUFF": { "tool": "portlint", "sev": "silent", "lim": ["PORT-124"], "at": "tools/portlint/portlint.js:189", "class": "silent", "why": "GoH weapon def with no stuff entry, no man carries it" },
+    "PORT_SPEED_DEFINE": { "tool": "portlint", "sev": "silent", "lim": ["PORT-197"], "at": "tools/portlint/portlint.js:148", "class": "silent", "why": "GoH velocity or dead speed_all define call in AS2 stuff file" },
+    "WARN_PORT_MDL_EVENTS": { "tool": "portlint", "sev": "review", "lim": ["PORT-99"], "at": "tools/portlint/portlint.js:156", "class": "review", "why": "events block in mdl sequence, as64 parse of it untested" },
+    "WARN_PORT_DONOR_ARMOR_SPA": { "tool": "portlint", "sev": "review", "lim": ["PORT-183"], "at": "tools/portlint/portlint.js:191", "class": "review", "why": "ported def keeps donor armor_spa call, translated armour not written" }
+  },
+  "result": {
+    "PORT-47": { "state": "built", "code": "PORT_STUFF_OVERRIDE" },
+    "PORT-53": { "state": "built", "code": "PORT_ENTITY_KEY_LEFT" },
+    "PORT-126": { "state": "built", "code": "PORT_GOH_INCLUDE_DANGLES" },
+    "PORT-155": { "state": "built", "code": "PORT_NAME_CLASH" },
+    "PORT-157": { "state": "built", "code": "PORT_BONE_MISSING" },
+    "PORT-170": { "state": "built", "code": "PORT_PLACE_CHILD_MISSING" },
+    "PORT-184": { "state": "built", "code": "PORT_HUMAN_SEQ_KEY" },
+    "PORT-187": { "state": "built", "code": "PORT_PATHER_UNKNOWN" },
+    "PORT-85": { "state": "built", "code": "WARN_PORT_GOH_SET_FORM" },
+    "PORT-89": { "state": "built", "code": "PORT_ENTITY_KEY_LEFT" },
+    "PORT-116": { "state": "never", "code": null, "why": "row names no file, key or value form to match" },
+    "PORT-124": { "state": "built", "code": "WARN_PORT_NO_STUFF" },
+    "PORT-159": { "state": "never", "code": null, "why": "vanilla defs leave seat bones and crew doors unresolved too" },
+    "PORT-197": { "state": "built", "code": "PORT_SPEED_DEFINE" },
+    "PORT-99": { "state": "built", "code": "WARN_PORT_MDL_EVENTS" },
+    "PORT-183": { "state": "built", "code": "WARN_PORT_DONOR_ARMOR_SPA" }
+  }
+}

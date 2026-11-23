@@ -1,0 +1,3 @@
+{Skeleton
+	{bone "b" {VolumeView "a.ply"} {Polyhedron "a.vol"}}
+}

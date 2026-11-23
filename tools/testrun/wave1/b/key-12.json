@@ -1,0 +1,33 @@
+{
+  "name": "key-12",
+  "rows": [
+    "KEY-12"
+  ],
+  "mode": "menu",
+  "mods": [
+    "as64+"
+  ],
+  "params": {},
+  "src": [
+    " (row cite: SerializeParams writes reload under aim_range)",
+    "(not part of this release)"
+  ],
+  "manual": "no fixture (needs a vanilla ability that uses ability_weapon: pick one in set/ with an aim_range key, copy to a mod with clone-entity --stuff and change aim_range only). In game use the ability twice: the cooldown/reload between uses follows the changed aim_range value, not a `reload` key. Needs eyes + stopwatch; not scriptable via the pipe (no ability trigger command).",
+  "steps": [
+    {
+      "wait": 10
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "mod_list",
+      "match": "as64\\+",
+      "want": true
+    }
+  ],
+  "note": "Stays manual: DDA skips unknown keys silently and no reply shows an ability reload. New verdict is liveness only: the game answered."
+}

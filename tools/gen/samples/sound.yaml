@@ -1,0 +1,10 @@
+# A new shot sound folder weapon/shot/my_mg with the mg42 burst sounds and settings (add files: [my_shots/] to use your own .wav files).
+# Edit id (folder under resource/sound), like and the values; files are read from this spec's folder and converted when the game cannot play them.
+# gen sound.yaml --target as64 --game <AS2 dir> --out <mods dir>/my_sound --no-stat   (add --plan first)
+name: my_sound
+title: My Sound
+ops:
+  - op: sound
+    id: weapon/shot/my_mg
+    like: weapon/shot/mgun/mg42_burst
+    volume: 0.8

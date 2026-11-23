@@ -1,0 +1,5 @@
+Mod 'as64+' from as64/plus/
+Mod 'ai3_t' from mods/ai3_t/
+Mod 'review_1' from mods/review_1/
+Mod 'edrun_test2' from mods/edrun_test2/
+EDRUN rmw98svmm start

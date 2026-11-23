@@ -1,0 +1,25 @@
+; invented mdl for the donorfit --write fixtures (not game data)
+{skeleton
+	{bone "basis"
+		{bone "body"
+			{bone "gun"}
+			{bone "mg3"}
+			{bone revolute "turret"
+				{bone revolute "mgun_rot"
+					{bone "foresight1"}
+				}
+			}
+			{bone "emit1"}
+		}
+	}
+}
+{volume "body1"
+	{thickness 10}
+}
+{volume "turret1"
+	{thickness 10}
+	{Bone "turret"}
+}
+{volume "gun1"
+	{thickness 10}
+}

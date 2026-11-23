@@ -1,0 +1,7 @@
+{
+  "name": "m2pipe",
+  "game": "mowas_2",
+  "mods": ["as64+", "trs_x"],
+  "steps": [{ "cmd": "mod_list" }, { "wait": "loaded" }],
+  "verdict": [{ "reply": "mod_list", "match": "trs_x", "want": true }, { "event": "loaded", "want": true }, { "log": "Game started", "want": true }]
+}

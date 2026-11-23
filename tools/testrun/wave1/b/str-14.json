@@ -1,0 +1,56 @@
+{
+  "name": "str-14",
+  "rows": [
+    "STR-14"
+  ],
+  "mode": "menu",
+  "fixture": [
+    "str-14"
+  ],
+  "mods": [
+    "as64+",
+    "str-14"
+  ],
+  "params": {},
+  "prepare": [
+    {
+      "argv": [
+        "node",
+        "tools/clone-entity/clone-entity.js",
+        "--game",
+        "{game}",
+        "--out",
+        "{mods}/str-14",
+        "--entity",
+        "m3",
+        "--as",
+        "trs_m3",
+        "--copy-assets",
+        "--roster"
+      ]
+    }
+  ],
+  "src": [
+    "(not part of this release)",
+    "(not part of this release)",
+    "tools/clone-entity/clone-entity.js:255 (CLONE_NO_X_VARIANT)"
+  ],
+  "manual": "clone trs_m3 of halftrack m3 (which has m3_x) with NO trs_m3_x. In a skirmish/MP game buy both m3 and trs_m3 (roster line), destroy both: m3 swaps to its m3_x wreck/breaks apart; does trs_m3 break apart or stay a plain hulk? Needs eyes. If the clone fails to appear, check the roster line / base name via clone-entity output.",
+  "steps": [
+    {
+      "wait": 20
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "s_select \"/entity/-vehicle/btr/trs_m3/\"",
+      "match": "trs_m3\\.def",
+      "want": true
+    }
+  ],
+  "note": "Stays manual: nothing destroys a vehicle over the pipe and no log names the _x swap. New verdict only proves the clone is mounted."
+}

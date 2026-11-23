@@ -1,0 +1,10 @@
+{action
+	{cursor}
+	{button "burst_icon"}
+	{instructions
+		{bind}
+		{if props "vehicle"
+			{plant "bush" default "bush8"}
+		}
+	}
+}

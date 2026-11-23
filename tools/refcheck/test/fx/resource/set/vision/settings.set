@@ -1,0 +1,6 @@
+{terms
+	{t_a firing "x"}
+	{t_b actor "y"}
+	{t_a actor "z"} ;@TERM_DUP
+	{t_c colour "z"} ;@TERM_PROP
+}

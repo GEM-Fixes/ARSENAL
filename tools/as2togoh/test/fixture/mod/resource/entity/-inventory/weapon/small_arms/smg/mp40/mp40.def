@@ -1,0 +1,4 @@
+{actor
+  (include "/properties/stuff_small.ext")
+  {mdl "mp40.mdl"}
+}

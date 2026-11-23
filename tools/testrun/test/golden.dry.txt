@@ -1,0 +1,19 @@
+testrun plan (dry: nothing launched)
+pipe: \\.\pipe\as64.0
+1. archive: copy fixture/log/{game.log,game.prev.log,minidumps,oos} -> fixture/arch/<timestamp>/ (never delete)
+2. spawn: <exe> -control -nosound -console
+3. connect: retry up to 60s; no pipe -> "exe has no control pipe → manual test (testing/loop)"
+   send {"id":1,"cmd":"pipe_events all"}   (reply timeout 120s)
+   send {"id":2,"cmd":"mod_set modA modB"}   (reply timeout 300s)
+   send {"id":3,"cmd":"mp_lan"}
+   wait stage event state=active (timeout 60s)
+   send {"id":4,"cmd":"mp_host multi/mp_test:combat 2"}
+   wait stage event state=active (timeout 60s)
+   send {"id":5,"cmd":"mp_ready"}
+   send {"id":6,"cmd":"mp_start"}
+   wait event loaded (timeout 120s)
+   hold 30s
+   send {"id":7,"cmd":"mp_state"}
+   send {"id":8,"cmd":"mp_result"}
+   send {"id":9,"cmd":"q"}
+4. triage: node tools/logtriage/logtriage.js fixture/log -q --summary

@@ -1,0 +1,31 @@
+{
+  "name": "spmis_destroy",
+  "campaign": "spmis_examples",
+  "campaignTitle": "Generated missions",
+  "title": "Silence the guns",
+  "briefing": "Enemy anti-tank guns cover the road east of town. Destroy them and their crews.",
+  "date": "June 1944",
+  "place": "Normandy",
+  "map": "map/single/01_usa-skirmish/01_usa-overlord",
+  "player": {
+    "army": "usa",
+    "start": "flag_playerbase",
+    "units": [
+      { "name": "leader", "def": "mp/usa/squadleader2", "count": 1, "at": "start" },
+      { "name": "riflemen", "def": "mp/usa/rifle", "count": 6, "at": "start" },
+      { "name": "bazookas", "def": "mp/usa/bazooker", "count": 2, "at": "start" }
+    ]
+  },
+  "enemy": {
+    "army": "ger",
+    "defenders": [
+      { "name": "atguns", "def": "pak40", "count": 2, "at": "flag_a03", "crew": { "def": "mp/ger/rifle", "count": 2 } },
+      { "name": "guards", "def": "mp/ger/rifle", "count": 4, "at": "flag_a03" }
+    ]
+  },
+  "objectives": [
+    { "id": "kill_guns", "type": "destroy", "target": ["atguns"], "text": "Destroy the anti-tank guns" },
+    { "id": "kill_guards", "type": "destroy", "target": "guards", "primary": false, "text": "Wipe out the gun guards" }
+  ],
+  "lose": { "allDead": true }
+}

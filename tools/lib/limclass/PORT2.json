@@ -1,0 +1,175 @@
+{
+ "form": "limclass/1",
+ "area": "PORT2",
+ "rows": {
+  "PORT-26": {
+   "chk": "built",
+   "class": "crash",
+   "why": "GoH weapon keys unknown to AS2 [I]"
+  },
+  "PORT-27": {
+   "chk": "built",
+   "class": "crash",
+   "why": "GoH .mine root shape not read [I]"
+  },
+  "PORT-28": {
+   "chk": "built",
+   "class": "info",
+   "why": "both forms native, only gaps in mode sets"
+  },
+  "PORT-29": {
+   "chk": "built",
+   "class": "silent",
+   "why": "call_synced has no AS2 form [I]"
+  },
+  "PORT-30": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unknown vision rules are silent"
+  },
+  "PORT-31": {
+   "chk": "built",
+   "class": "silent",
+   "why": "no AS2 loader, no log signal"
+  },
+  "PORT-32": {
+   "chk": "never",
+   "class": "silent",
+   "never": "conversion rule: do not rewrite",
+   "why": "dead blocks stay dead, leave as written"
+  },
+  "PORT-33": {
+   "chk": "built",
+   "class": "silent",
+   "why": "no AS2 reader for these data kinds"
+  },
+  "PORT-34": {
+   "chk": "built",
+   "class": "info",
+   "why": "pak key rule for tools"
+  },
+  "PORT-35": {
+   "chk": "never",
+   "class": "info",
+   "never": "tool workflow fact",
+   "why": "converter refuses out-dir in install"
+  },
+  "PORT-36": {
+   "chk": "never",
+   "class": "review",
+   "never": "needs a build run per entity",
+   "why": "ported vehicle not gate-clean"
+  },
+  "PORT-37": {
+   "chk": "built",
+   "class": "silent",
+   "why": "weapon loads in GoH but will not fire"
+  },
+  "PORT-38": {
+   "chk": "built",
+   "class": "silent",
+   "why": "missing pattern, head set unresolved [I]"
+  },
+  "PORT-39": {
+   "chk": "built",
+   "class": "silent",
+   "why": "AS2 vehicle def not reused in GoH"
+  },
+  "PORT-40": {
+   "chk": "never",
+   "class": "info",
+   "never": "needs live run, now settled",
+   "why": "folder name claim of tutorial false"
+  },
+  "PORT-41": {
+   "chk": "never",
+   "class": "silent",
+   "never": "different UI systems, no conversion",
+   "why": "AS2 UI mod does not carry to GoH"
+  },
+  "PORT-42": {
+   "chk": "built",
+   "class": "silent",
+   "why": "lng ignored, raw keys shown [T]"
+  },
+  "PORT-43": {
+   "chk": "built",
+   "class": "silent",
+   "why": "mod disabled, log line only"
+  },
+  "PORT-44": {
+   "chk": "built",
+   "class": "silent",
+   "why": "moved map loses terrain layers"
+  },
+  "PORT-45": {
+   "chk": "never",
+   "class": "info",
+   "never": "conversion note",
+   "why": "actor root differs, not a general rule"
+  },
+  "PORT-46": {
+   "chk": "built",
+   "class": "silent",
+   "why": "mod not activated, listed as not up to date"
+  }
+ },
+ "dead": [
+  {
+   "row": "PORT-37",
+   "tool": "modmove",
+   "code": "WARN_MOVE_GOH_WEAPON_INCLUDE",
+   "fix": {
+    "code": "WARN_MOVE_GOH_WEAPON_INCLUDE"
+   }
+  },
+  {
+   "row": "PORT-38",
+   "tool": "modmove",
+   "code": "WARN_MOVE_GOH_HEAD_PATTERN",
+   "fix": {
+    "code": "WARN_MOVE_GOH_HEAD_PATTERN"
+   }
+  },
+  {
+   "row": "PORT-39",
+   "tool": "modmove",
+   "code": "WARN_MOVE_GOH_VEHICLE_DEF",
+   "fix": {
+    "code": "WARN_MOVE_GOH_VEHICLE_DEF"
+   }
+  },
+  {
+   "row": "PORT-42",
+   "tool": "modmove",
+   "code": "WARN_MOVE_LNG_GOH",
+   "fix": {
+    "code": "WARN_MOVE_LNG_GOH"
+   }
+  },
+  {
+   "row": "PORT-43",
+   "tool": "modmove",
+   "code": "MOVE_GOH_VERSION_SCALE",
+   "fix": {
+    "code": "MOVE_GOH_VERSION_SCALE"
+   }
+  },
+  {
+   "row": "PORT-44",
+   "tool": "modmove",
+   "code": "WARN_MOVE_MAP_MTL_LAYER",
+   "fix": {
+    "code": "WARN_MOVE_MAP_MTL_LAYER"
+   }
+  },
+  {
+   "row": "PORT-46",
+   "tool": "modmove",
+   "code": "MOVE_GOH_VERSION_SCALE",
+   "fix": {
+    "code": "MOVE_GOH_VERSION_SCALE"
+   }
+  }
+ ]
+}

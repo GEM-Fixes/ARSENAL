@@ -1,0 +1,48 @@
+{
+ "form": "score-result/1",
+ "item": "C",
+ "_note": "Written by hand (T-BOARD 2026-11-09) from the source reports; replaces the state.json C steps on the board. Counted = built by the one recorded script (tools/chains/chains/chainmod.json), PLAN ## Complete item 3. game = what an in-game run showed, listed, not counted. G-CHAIN3 updated the game fields.",
+ "source": "(not part of this release)",
+ "sources": [
+  "(not part of this release)",
+  "(not part of this release)",
+  "(not part of this release)",
+  "(not part of this release)",
+  "(not part of this release)"
+ ],
+ "run": "G-CHAIN3",
+ "date": "2026-11-09",
+ "by": "G-CHAIN3",
+ "steps": {
+  "unit": {
+   "status": "pass",
+   "how": "goh2as2 --donor pz4h --rep-key (fit pass renames DF_CREW_EXT), exit 0",
+   "game": "as built, no donorfit step: BOOT pass; SPAWN 4 of 4 shooterready; kills 4 of 4 vs t34_0, hits 2 each, control pass (G-CHAIN3 g2; g1 void, control NOKILL)"
+  },
+  "map": {
+   "status": "pass",
+   "how": "map-clone --no-mission -> chain_map, exit 0",
+   "game": "loads to the clock in edrun and in the MP bot game (G-CHAIN3)"
+  },
+  "mission": {
+   "status": "pass",
+   "how": "mission-clone --with-mode chain_mode --src-map 1v1_reloading_point --map chain_map, exit 0; {enableBots} in chain_mode.set:25",
+   "game": "chain_map:chain_mode hosted, mp_slot 2 normal gives 'AI Player: Normal', game reaches GameThreadStart (G-CHAIN3)"
+  },
+  "bot": {
+   "status": "pass",
+   "how": "botrecipe --buy-first panzer4j (no --after), line in the ger list after pz2l, exit 0",
+   "game": "not seen: mp_set team.a/b.army ger failed (no such field), the bot played usa and spawned smgs(usa) x2, 0 SpawnUnit panzer4j (G-CHAIN3)"
+  },
+  "text": {
+   "status": "pass",
+   "how": "lng-add info/entity/panzer4j, exit 0",
+   "game": "no redefinition or error line for the key (G-CHAIN3 bot log); display not seen"
+  },
+  "model": {
+   "status": "open",
+   "how": "no tool builds or edits a model; expcheck is only a gate",
+   "game": null
+  }
+ }
+}

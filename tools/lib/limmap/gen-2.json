@@ -1,0 +1,321 @@
+{
+ "form": "limmap/1",
+ "part": "gen-2",
+ "codes": {
+  "GEN_ROSTER_ARGS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:332",
+   "class": "tool",
+   "why": "spec op missing unit/like/army"
+  },
+  "GEN_ROSTER_CHAIN": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:318",
+   "class": "info",
+   "why": "reports include chain root of the list file"
+  },
+  "GEN_ROSTER_EXISTS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:336",
+   "class": "tool",
+   "why": "spec adds a card that already exists"
+  },
+  "GEN_ROSTER_LIKE_MISSING": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:338",
+   "class": "tool",
+   "why": "spec names a like card absent from the list"
+  },
+  "GEN_ROSTER_NOT_LOADED": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "TST-94"
+   ],
+   "at": "tools/gen/lib/ops.js:320",
+   "class": "silent",
+   "why": "card file unreachable from include chain"
+  },
+  "GEN_ROSTER_NO_FILE": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:335",
+   "class": "tool",
+   "why": "no army list file found for the army"
+  },
+  "GEN_ROSTER_REPLACES": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "VFS-41"
+   ],
+   "at": "tools/gen/lib/ops.js:324",
+   "class": "silent",
+   "why": "mod copy replaces whole base file"
+  },
+  "GEN_SET_BAD_OP": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:80",
+   "class": "tool",
+   "why": "row op not set/add/del"
+  },
+  "GEN_SET_BINARY": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:85",
+   "class": "tool",
+   "why": "target def is not SDL text"
+  },
+  "GEN_SET_CSV_MISSING": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:67",
+   "class": "tool",
+   "why": "spec csv file not found"
+  },
+  "GEN_SET_EMPTY": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:76",
+   "class": "tool",
+   "why": "set op has no rows"
+  },
+  "GEN_SET_ENTITY_AMBIGUOUS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:36",
+   "class": "tool",
+   "why": "entity name matches several defs"
+  },
+  "GEN_SET_ENTITY_UNKNOWN": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:32",
+   "class": "tool",
+   "why": "entity has no def in mod or base"
+  },
+  "GEN_SET_FULL_COPY": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "VFS-01",
+    "VFS-41"
+   ],
+   "at": "tools/gen/lib/ops.js:111",
+   "class": "info",
+   "why": "edit makes whole-file override of base copy"
+  },
+  "GEN_SET_NOT_SDL": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:96",
+   "class": "tool",
+   "why": "target file did not parse as SDL"
+  },
+  "GEN_SET_NOT_WRITTEN": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:105",
+   "class": "tool",
+   "why": "refused rows hold back valid rows"
+  },
+  "GEN_SET_PATH_MISSING": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:81",
+   "class": "tool",
+   "why": "row path empty or absent in the def"
+  },
+  "GEN_SET_PLAN_VIRTUAL": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:84",
+   "class": "info",
+   "why": "entity created earlier in spec, unchecked in plan"
+  },
+  "GEN_SQUAD_ARGS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:454",
+   "class": "tool",
+   "why": "squad op missing name/army/like/members"
+  },
+  "GEN_SQUAD_BREED_UNKNOWN": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "MIS-75"
+   ],
+   "at": "tools/gen/lib/ops.js:476",
+   "class": "silent",
+   "why": "squad member breed file missing"
+  },
+  "GEN_SQUAD_EXISTS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:468",
+   "class": "tool",
+   "why": "squad name already exists for army"
+  },
+  "GEN_SQUAD_LIKE_MISSING": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:467",
+   "class": "tool",
+   "why": "like squad line not found"
+  },
+  "GEN_SQUAD_MACRO_UNDEFINED": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "SDL-17"
+   ],
+   "at": "tools/gen/lib/ops.js:481",
+   "class": "crash",
+   "why": "squad macro not defined: define not found"
+  },
+  "GEN_TEXT_ARGS": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:236",
+   "class": "tool",
+   "why": "text op needs key and text"
+  },
+  "GEN_TEXT_DUP_SKIPPED": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "LOC-22"
+   ],
+   "at": "tools/gen/gen.js:130",
+   "class": "info",
+   "why": "same text twice, one write kept"
+  },
+  "GEN_TEXT_VANILLA_FILE": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "LOC-19",
+    "LOC-25"
+   ],
+   "at": "tools/gen/gen.js:145",
+   "class": "silent",
+   "why": "vanilla key needs whole vanilla lng copy"
+  },
+  "GEN_TOOL_FAILED": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:200",
+   "class": "tool",
+   "why": "wrapped tool exited non-zero"
+  },
+  "GEN_WRECK_AUTOCLONE": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "STR-14"
+   ],
+   "at": "tools/gen/gen.js:368",
+   "class": "cosmetic",
+   "why": "clone also gets _x wreck sibling"
+  },
+  "GEN_XX_AUTOCLONE": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "STR-31"
+   ],
+   "at": "tools/gen/gen.js:381",
+   "class": "silent",
+   "why": "clone lacks _xx wreck, SetSkeleton fails"
+  },
+  "PATCH_KEY_MISSING": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:97",
+   "class": "tool",
+   "why": "edit path absent from def"
+  },
+  "SELFCHECK_MODINFO": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:194",
+   "class": "tool",
+   "why": "newmod self-check note on its own mod.info"
+  },
+  "WARN_GEN_BOTS_AS2_ONLY": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:414",
+   "class": "tool",
+   "why": "GoH bot purchase data not mapped"
+  },
+  "WARN_GEN_BOTS_LIKE_ABSENT": {
+   "tool": "gen",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/gen/lib/ops.js:430",
+   "class": "tool",
+   "why": "like card not in bot Purchases, nothing copied"
+  },
+  "WARN_GEN_SET_THICKNESS_SHADOWED": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "DMG-06",
+    "GPL-04"
+   ],
+   "at": "tools/gen/lib/ops.js:98",
+   "class": "silent",
+   "why": "armor macro overrides thickness"
+  },
+  "WARN_GEN_SQUAD_BREED_UNDECLARED": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "MIS-76"
+   ],
+   "at": "tools/gen/lib/ops.js:477",
+   "class": "review",
+   "why": "breed declaration missing, cost fields unset"
+  },
+  "WARN_GEN_TEXT_DUP": {
+   "tool": "gen",
+   "sev": "review",
+   "lim": [
+    "LOC-04"
+   ],
+   "at": "tools/gen/gen.js:131",
+   "class": "silent",
+   "why": "differing duplicate key, later wins"
+  }
+ }
+}

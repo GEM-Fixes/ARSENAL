@@ -1,0 +1,32 @@
+{
+  "name": "clone-play",
+  "rows": [],
+  "mode": "menu",
+  "fixture": ["clone-play"],
+  "mods": ["as64+", "clone-play"],
+  "params": { "map": "multi/1v1_road:combat", "botSlot": "2" },
+  "src": [
+    " (Spawn: not found prints, buy prints DBG: SpawnUnit)",
+    " (mp_userUnits lists bought units with card name)"
+  ],
+  "note": "Fixture is generated: node tools/testrun/scenarios/mkclone-play.js --game <install>. Packed vehicle clone in a real match; resource/ holds only paks. Bot buys a fake name (control), the vanilla base card (control), then the clone e2e_v_<army>. Pass = clone listed by mp_userUnits with its card name. Fixed wait 66 s (third in the buy queue, 50 s read too early), not wait_log: game.log flushes late, wait_log timed out on a line that was there.",
+  "steps": [
+    { "cmd": "mp_lan" },
+    { "wait_stage": true },
+    { "cmd": "mp_host {map} 2" },
+    { "wait_stage": true },
+    { "cmd": "mp_slot {botSlot} normal" },
+    { "cmd": "mp_ready" },
+    { "cmd": "mp_start" },
+    { "wait": "loaded", "timeout": 300 },
+    { "wait": 66 },
+    { "cmd": "mp_userUnits", "expect": "u:e2e_v_" }
+  ],
+  "verdict": [
+    { "log": "\\*{5,} Exception \\*{5,}", "want": false },
+    { "log": "Spawning Unit Not found - e2e_no_such_card" },
+    { "log": "SpawnUnit (willysmb|gaz67b|r12|willysmb_eng|type97) " },
+    { "log": "SpawnUnit e2e_v_" },
+    { "log": "Spawning Unit Not found - e2e_v_", "want": false }
+  ]
+}

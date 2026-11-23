@@ -1,0 +1,132 @@
+{
+  "form": "limclass/1",
+  "area": "STR2",
+  "rows": {
+    "STR-14": {
+      "chk": "built",
+      "class": "silent",
+      "why": "clone without _x sibling may not break apart"
+    },
+    "STR-15": {
+      "chk": "built",
+      "class": "cosmetic",
+      "why": "dup of STR-01; advisory"
+    },
+    "STR-16": {
+      "chk": "built",
+      "class": "silent",
+      "why": "dup of STR-02"
+    },
+    "STR-17": {
+      "chk": "built",
+      "class": "silent",
+      "why": "dup of STR-03"
+    },
+    "STR-18": {
+      "chk": "built",
+      "class": "silent",
+      "why": "dup of STR-05"
+    },
+    "STR-19": {
+      "chk": "built",
+      "class": "crash",
+      "why": "dup of STR-06"
+    },
+    "STR-20": {
+      "chk": "built",
+      "class": "silent",
+      "why": "dup of STR-07"
+    },
+    "STR-21": {
+      "chk": "built",
+      "class": "silent",
+      "why": "dup of STR-08"
+    },
+    "STR-22": {
+      "chk": "built",
+      "class": "silent",
+      "why": "dup of STR-09"
+    },
+    "STR-23": {
+      "chk": "built",
+      "class": "silent",
+      "why": "dup of STR-10"
+    },
+    "STR-24": {
+      "chk": "built",
+      "class": "silent",
+      "why": "dup of STR-11"
+    },
+    "STR-25": {
+      "chk": "built",
+      "class": "silent",
+      "why": "piece never detaches"
+    },
+    "STR-26": {
+      "chk": "built",
+      "class": "silent",
+      "why": "unresolved call is a silent no-op"
+    },
+    "STR-27": {
+      "chk": "built",
+      "class": "info",
+      "why": "tool must resolve macros via entity.set"
+    },
+    "STR-28": {
+      "chk": "built",
+      "class": "silent",
+      "why": "tear with unknown bone never slices"
+    },
+    "STR-29": {
+      "chk": "built",
+      "class": "crash",
+      "why": "unregistered obstacle ID crashes later in can_crush",
+      "tool": "strlint",
+      "how": "{obstacleID \"name\"} not in mod or vanilla obstacles.reg (STR_OBSTACLE_MISSING)"
+    },
+    "STR-30": {
+      "chk": "built",
+      "class": "silent",
+      "why": "vanilla defect; part never attached, recursion risk"
+    },
+    "STR-31": {
+      "chk": "built",
+      "class": "silent",
+      "why": "clone lacks _xx wreck, SetSkeleton fails"
+    }
+  },
+  "dead": [
+    {
+      "row": "STR-15",
+      "tool": "strlint",
+      "code": "WARN_STR_VOLUME_NO_SHAPE",
+      "fix": {
+        "code": "STR_VOLUME_NO_SHAPE"
+      }
+    },
+    {
+      "row": "STR-16",
+      "tool": "strlint",
+      "code": "WARN_STR_OBSTACLE_MISSING",
+      "fix": {
+        "code": "STR_OBSTACLE_MISSING"
+      }
+    },
+    {
+      "row": "STR-17",
+      "tool": "strlint",
+      "code": "WARN_STR_VOLUME_BONE",
+      "fix": {
+        "code": "STR_VOLUME_BONE"
+      }
+    },
+    {
+      "row": "STR-25",
+      "tool": "strlint",
+      "code": "WARN_STR_TEAR_BONE",
+      "fix": {
+        "code": "STR_TEAR_BONE"
+      }
+    }
+  ]
+}

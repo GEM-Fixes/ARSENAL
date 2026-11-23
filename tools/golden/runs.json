@@ -1,0 +1,21 @@
+{
+ "van.vfs": ["vfs", "${GAME}", "-q"],
+ "van.modinfo": ["modinfo", "${GAME}/mods", "-q"],
+ "van.sdllint": ["sdllint", "--vfs", "--game", "${GAME}", "-q"],
+ "van.keylint": ["keylint", "--vfs", "--game", "${GAME}", "-q"],
+ "van.ialint": ["ialint", "--vfs", "--game", "${GAME}", "-q"],
+ "van.uilint": ["uilint", "--vfs", "--game", "${GAME}", "-q"],
+ "van.milint": ["milint", "--vfs", "--game", "${GAME}", "-q"],
+ "van.binhdr": ["binhdr", "${GAME}", "-q"],
+ "van.refcheck": ["refcheck", "${GAME}", "-q"],
+ "robz.lnglint": ["lnglint", "${GAME}/mods/robz realism mod 1.30.10/localization", "-q"],
+ "robz.sdllint": ["sdllint", "${GAME}/mods/robz realism mod 1.30.10", "--game", "${GAME}", "-q"],
+ "robz.keylint": ["keylint", "${GAME}/mods/robz realism mod 1.30.10", "--game", "${GAME}", "-q"],
+ "robz.ialint": ["ialint", "${GAME}/mods/robz realism mod 1.30.10", "--game", "${GAME}", "-q"],
+ "robz.uilint": ["uilint", "${GAME}/mods/robz realism mod 1.30.10", "--game", "${GAME}", "-q"],
+ "robz.milint": ["milint", "${GAME}/mods/robz realism mod 1.30.10", "--game", "${GAME}", "-q"],
+ "robz.binhdr": ["binhdr", "${GAME}", "--mods", "robz realism mod 1.30.10", "-q"],
+ "robz.refcheck": ["refcheck", "${GAME}", "--mods", "robz realism mod 1.30.10", "--scope", "mod", "-q"],
+ "robz.loccover": ["loccover", "${GAME}/mods/robz realism mod 1.30.10", "--vfs", "--game", "${GAME}", "-q"],
+ "robz.packer": ["packer", "${GAME}/mods/robz realism mod 1.30.10", "--dry", "-q"]
+}

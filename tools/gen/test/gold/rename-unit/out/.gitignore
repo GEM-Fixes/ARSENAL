@@ -1,0 +1,11 @@
+# VFS-32: Workshop uploads the whole mod folder; keep dev files out of git (and out of the upload)
+*.bak
+*.tmp
+*.orig
+*.log
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+notes/
+dev/

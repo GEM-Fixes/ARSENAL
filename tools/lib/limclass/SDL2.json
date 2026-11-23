@@ -1,0 +1,257 @@
+{
+  "form": "limclass/1",
+  "area": "SDL2",
+  "rows": {
+    "SDL-34": {
+      "chk": "built",
+      "class": "silent",
+      "why": "unknown key skipped with no log"
+    },
+    "SDL-35": {
+      "chk": "built",
+      "class": "silent",
+      "why": "extra tokens dropped; only a log warning"
+    },
+    "SDL-36": {
+      "chk": "built",
+      "class": "crash",
+      "why": "type reader throws on missing value"
+    },
+    "SDL-37": {
+      "chk": "built",
+      "class": "silent",
+      "why": "unknown enum name reads as invalid, no message"
+    },
+    "SDL-38": {
+      "chk": "built",
+      "class": "crash",
+      "why": "unknown flag in hand-written bitset is fatal"
+    },
+    "SDL-39": {
+      "chk": "built",
+      "class": "crash",
+      "why": "bad color digit count is fatal"
+    },
+    "SDL-40": {
+      "chk": "never",
+      "class": "review",
+      "why": "same numbers, two meanings; depends on intended range",
+      "never": "which form was meant needs the author"
+    },
+    "SDL-41": {
+      "chk": "built",
+      "class": "silent",
+      "why": "sub-ms timespan truncates to 0"
+    },
+    "SDL-42": {
+      "chk": "built",
+      "class": "crash",
+      "why": "float where integer ms expected is fatal"
+    },
+    "SDL-43": {
+      "chk": "built",
+      "class": "silent",
+      "why": "several strings not split into tags",
+      "tool": "keylint",
+      "how": "tags key given several quoted strings instead of one space-separated string"
+    },
+    "SDL-44": {
+      "chk": "built",
+      "class": "crash",
+      "why": "ident or number for resource name rejected by reader"
+    },
+    "SDL-45": {
+      "chk": "never",
+      "class": "info",
+      "why": "absent key uses C++ initialiser; fact",
+      "never": "engine default, nothing to hit"
+    },
+    "SDL-46": {
+      "chk": "built",
+      "class": "silent",
+      "why": "repeated scalar key: last wins, no error"
+    },
+    "SDL-47": {
+      "chk": "never",
+      "class": "info",
+      "why": "schema table lookup caveat for tool authors",
+      "never": "tool-side schema fact"
+    },
+    "SDL-48": {
+      "chk": "never",
+      "class": "info",
+      "why": "schema covers DDA only; fact about tools",
+      "never": "tool coverage fact"
+    },
+    "SDL-49": {
+      "chk": "never",
+      "class": "info",
+      "why": "consumer-level semantics of from/extender",
+      "never": "semantics fact; failure case is SDL-57"
+    },
+    "SDL-50": {
+      "chk": "built",
+      "class": "cosmetic",
+      "why": "only a false lint finding without presets"
+    },
+    "SDL-51": {
+      "chk": "built",
+      "class": "info",
+      "why": "documents how args parse; nothing breaks"
+    },
+    "SDL-52": {
+      "chk": "built",
+      "class": "info",
+      "why": "which fields accept idents; style not rule"
+    },
+    "SDL-53": {
+      "chk": "built",
+      "class": "cosmetic",
+      "why": "LF parses fine; mixed endings only diff noise"
+    },
+    "SDL-54": {
+      "chk": "built",
+      "class": "silent",
+      "why": "stray file in set/stuff loads as a stuff"
+    },
+    "SDL-55": {
+      "chk": "built",
+      "class": "info",
+      "why": "accepted by design; hint suppressed"
+    },
+    "SDL-56": {
+      "chk": "built",
+      "class": "silent",
+      "why": "macro param prefix overlap yields stray token, unread data"
+    },
+    "SDL-57": {
+      "chk": "built",
+      "class": "crash",
+      "why": "self-matching from clone exits at load",
+      "tool": "sdllint",
+      "how": "stuff {from \"tags\"} matching a file that sorts before the base and carries its tags"
+    },
+    "SDL-58": {
+      "chk": "built",
+      "class": "silent",
+      "why": "include resolves from wrong folder in copied def"
+    },
+    "SDL-59": {
+      "chk": "built",
+      "class": "crash",
+      "why": "first quant crashes on weapon without filling"
+    },
+    "SDL-60": {
+      "chk": "built",
+      "class": "crash",
+      "why": "thrown grenade from redefined stem can crash"
+    },
+    "SDL-61": {
+      "chk": "built",
+      "class": "crash",
+      "why": "map load stops with String expected",
+      "tool": "keylint",
+      "how": "mtl {diffuse} value as bare word, not a quoted string (STRING_EXPECTED)"
+    },
+    "SDL-62": {
+      "chk": "never",
+      "class": "crash",
+      "why": "generic block terminator error stops the load",
+      "never": "explains a message; cause is any extra token"
+    },
+    "SDL-63": {
+      "chk": "built",
+      "class": "silent",
+      "why": "stray file treated as stuff or ignored without message"
+    },
+    "SDL-64": {
+      "chk": "built",
+      "class": "silent",
+      "why": "clone tags superset shadows existing stuff"
+    },
+    "SDL-65": {
+      "chk": "built",
+      "class": "crash",
+      "why": "(mod) not closed before } or EOF"
+    },
+    "SDL-66": {
+      "chk": "built",
+      "class": "crash",
+      "why": "non-number arithmetic operand is fatal"
+    }
+  },
+  "dead": [
+    {
+      "row": "SDL-34",
+      "tool": "keylint",
+      "code": "WARN_UNKNOWN_KEY",
+      "fix": {
+        "code": "UNKNOWN_KEY"
+      }
+    },
+    {
+      "row": "SDL-35",
+      "tool": "keylint",
+      "code": "WARN_VALUE_SURPLUS",
+      "fix": {
+        "code": "VALUE_SURPLUS"
+      }
+    },
+    {
+      "row": "SDL-36",
+      "tool": "keylint",
+      "code": "WARN_VALUE_MISSING",
+      "fix": {
+        "code": "VALUE_MISSING"
+      }
+    },
+    {
+      "row": "SDL-37",
+      "tool": "keylint",
+      "code": "WARN_ENUM_UNKNOWN",
+      "fix": {
+        "code": "ENUM_UNKNOWN"
+      }
+    },
+    {
+      "row": "SDL-38",
+      "tool": "keylint",
+      "code": "WARN_UNKNOWN_KEY",
+      "fix": {
+        "code": "UNKNOWN_KEY"
+      }
+    },
+    {
+      "row": "SDL-41",
+      "tool": "keylint",
+      "code": "WARN_TIMESPAN_TRUNC",
+      "fix": {
+        "code": "TIMESPAN_TRUNC"
+      }
+    },
+    {
+      "row": "SDL-42",
+      "tool": "keylint",
+      "code": "WARN_QUANT_FLOAT",
+      "fix": {
+        "code": "QUANT_FLOAT"
+      }
+    },
+    {
+      "row": "SDL-44",
+      "tool": "keylint",
+      "code": "WARN_STRING_EXPECTED",
+      "fix": {
+        "code": "STRING_EXPECTED"
+      }
+    },
+    {
+      "row": "SDL-46",
+      "tool": "keylint",
+      "code": "WARN_KEY_REPEAT",
+      "fix": {
+        "code": "KEY_REPEAT"
+      }
+    }
+  ]
+}

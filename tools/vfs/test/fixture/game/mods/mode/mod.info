@@ -1,0 +1,5 @@
+{Mod
+ {Name "x"}
+ {MinGameVersion "3.100"}
+ {MaxGameVersion "3.200"}
+}

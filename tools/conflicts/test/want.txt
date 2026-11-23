@@ -1,0 +1,17 @@
+resource/set/a.def CONFLICT_KEY_OVERRIDDEN
+resource/set/a.def ITM_KEY
+resource/set/a.def MOD_ORDER_UNDECLARED
+resource/set/a.def WARN_CONFLICT_MOD_MOD
+resource/set/b.def CONFLICT_KEY_OVERRIDDEN
+resource/set/c.def CONFLICT_FILE_SHADOW
+resource/set/c.def CONFLICT_KEY_OVERRIDDEN
+resource/set/c.def ITM_KEY
+resource/set/c.def ITM_KEY
+resource/set/d.def ITM_FILE
+resource/set/e.def CONFLICT_KEY_OVERRIDDEN
+resource/set/e.def ITM_KEY
+resource/set/f.bin WARN_CONFLICT_OPAQUE_MOD_MOD
+resource/set/h.def ITM_FILE
+resource/set/h.def ITM_FILE
+resource/set/h.def ITM_KEY
+resource/set/h.def ITM_KEY

@@ -1,0 +1,18 @@
+{"form":"limmap/1","part":"chk-chk-sdl","codes":{
+"MAP_MTL_LAYER_COUNT":{"tool":"sdllint","sev":"crash","lim":["MAP-29"],"at":"tools/sdllint/rawchecks.js:49","class":"crash","why":"terrain material without exactly two layer blocks crashes at first crater"},
+"STUFF_FROM_SELF":{"tool":"sdllint","sev":"crash","lim":["SDL-57"],"at":"tools/sdllint/rawchecks.js:58","class":"crash","why":"stuff from-tags carried by own file name that sorts first"},
+"STUFF_DAMAGE_NUMBER":{"tool":"sdllint","sev":"crash","lim":["TST-104"],"at":"tools/sdllint/rawchecks.js:67","class":"crash","why":"damage followed by a number in set/stuff is a fatal load error"},
+"STR_ESCAPE_BS_N":{"tool":"sdllint","sev":"silent","lim":["SDL-09"],"at":"tools/sdllint/rawchecks.js:71","class":"silent","why":"double backslash n in a string decodes to a line feed"},
+"DDA_DISABLED_BLOCK":{"tool":"sdllint","sev":"silent","lim":["SDL-11"],"at":"tools/sdllint/rawchecks.js:76","class":"silent","why":"disabled block in multiplayer.set or breed.set is flagged, not removed"},
+"MACRO_CASE_MISMATCH":{"tool":"sdllint","sev":"silent","lim":["SDL-18"],"at":"tools/sdllint/rawchecks.js:88","class":"silent","why":"macro called with different case than its define name"},
+"ARITH_DIV_ZERO":{"tool":"sdllint","sev":"silent","lim":["SDL-28"],"at":"tools/sdllint/rawchecks.js:109","class":"silent","why":"division by literal zero gives inf"}
+},"result":{
+"MAP-29":{"state":"built","code":"MAP_MTL_LAYER_COUNT","why":null},
+"SDL-57":{"state":"built","code":"STUFF_FROM_SELF","why":null},
+"TST-104":{"state":"built","code":"STUFF_DAMAGE_NUMBER","why":null},
+"SDL-09":{"state":"built","code":"STR_ESCAPE_BS_N","why":null},
+"SDL-11":{"state":"built","code":"DDA_DISABLED_BLOCK","why":null},
+"SDL-18":{"state":"built","code":"MACRO_CASE_MISMATCH","why":null},
+"SDL-20":{"state":"never","code":null,"why":"vanilla uses prefixed params and %x in strings on purpose"},
+"SDL-28":{"state":"built","code":"ARITH_DIV_ZERO","why":null}
+}}

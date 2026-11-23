@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- fake theme in the shape of a Notepad++ stylers theme (ARSENAL tests; not the user's GEM2) -->
+<NotepadPlus>
+	<LexerStyles>
+		<LexerType name="cpp" desc="C++" ext="inc set mdl def">
+			<WordsStyle name="DEFAULT" styleID="11" fgColor="FFFFFF" bgColor="1C1B1A" fontName="" fontStyle="0" fontSize="" />
+			<WordsStyle name="INSTRUCTION WORD" styleID="5" fgColor="93C763" bgColor="1C1B1A" fontName="" fontStyle="1" fontSize="">event on off end</WordsStyle>
+		</LexerType>
+	</LexerStyles>
+	<GlobalStyles>
+		<WidgetStyle name="Default Style" styleID="32" fgColor="FFFFFF" bgColor="1C1B1A" fontName="Consolas" fontStyle="0" fontSize="11" />
+	</GlobalStyles>
+</NotepadPlus>

@@ -1,0 +1,20 @@
+;SDL invented fixture, the six-line shape: a weapon place (place, type, LinkBone, gunner, charger, close) whose LinkBone is absent
+(define "xcrew"
+	{placer {place "%place" {group "crew"}}}
+	{boarder
+		{door "%door1"}
+		{door "%door2"}
+	}
+)
+{game_entity
+	{Extension "fit.mdl"}
+	("xcrew" place(driver) door1(emit1) door2(emit1))
+	{Weaponry
+		{place "gun"
+			{type "cannon"}
+			{foresight "foresight1"}
+			{gunner "driver"}
+			{LinkBone "mgun_rot"}
+		}
+	}
+}

@@ -1,0 +1,4248 @@
+{
+ "note": "Made by tools/build-search-terms.mjs from aliases.json and translations.json. Edit those, not this file.",
+ "built": "2026-11-08T09:36:55.248Z",
+ "groups": [
+  [
+   "2 cm",
+   "2.0 cm",
+   "2,0 cm",
+   "2cm",
+   "20 mm",
+   "20mm"
+  ],
+  [
+   "3.7 cm",
+   "3,7 cm",
+   "3.7cm",
+   "37 mm",
+   "37mm"
+  ],
+  [
+   "4.7 cm",
+   "4,7 cm",
+   "4.7cm",
+   "47 mm",
+   "47mm"
+  ],
+  [
+   "5 cm",
+   "5.0 cm",
+   "5,0 cm",
+   "5cm",
+   "50 mm",
+   "50mm"
+  ],
+  [
+   "7.5 cm",
+   "7,5 cm",
+   "7.5cm",
+   "75 mm",
+   "75mm"
+  ],
+  [
+   "7.62 cm",
+   "7,62 cm",
+   "7.62cm",
+   "76.2 mm",
+   "76,2 mm",
+   "76.2mm"
+  ],
+  [
+   "8.8 cm",
+   "8,8 cm",
+   "8.8cm",
+   "88 mm",
+   "88mm"
+  ],
+  [
+   "10.5 cm",
+   "10,5 cm",
+   "10.5cm",
+   "105 mm",
+   "105mm"
+  ],
+  [
+   "12.8 cm",
+   "12,8 cm",
+   "12.8cm",
+   "128 mm",
+   "128mm"
+  ],
+  [
+   "15 cm",
+   "15cm",
+   "150 mm",
+   "150mm"
+  ],
+  [
+   "2 pounder",
+   "2 pdr",
+   "2pdr",
+   "two pounder"
+  ],
+  [
+   "6 pounder",
+   "6 pdr",
+   "6pdr",
+   "six pounder"
+  ],
+  [
+   "17 pounder",
+   "17 pdr",
+   "17pdr",
+   "seventeen pounder"
+  ],
+  [
+   "25 pounder",
+   "25 pdr",
+   "25pdr",
+   "twenty five pounder"
+  ],
+  [
+   "pak",
+   "panzerabwehrkanone",
+   "antitank gun",
+   "anti tank gun"
+  ],
+  [
+   "flak",
+   "fliegerabwehrkanone",
+   "antiaircraft gun",
+   "anti aircraft gun"
+  ],
+  [
+   "kwk",
+   "kampfwagenkanone"
+  ],
+  [
+   "stug",
+   "sturmgeschutz",
+   "assault gun"
+  ],
+  [
+   "pzkpfw",
+   "panzerkampfwagen",
+   "pz kpfw",
+   "pzkw"
+  ],
+  [
+   "panther",
+   "pzkpfw v",
+   "panzerkampfwagen v",
+   "panzer v"
+  ],
+  [
+   "tiger",
+   "pzkpfw vi",
+   "panzerkampfwagen vi",
+   "panzer vi"
+  ],
+  [
+   "sherman",
+   "m4 medium tank",
+   "medium tank m4"
+  ],
+  [
+   "t 34",
+   "t34"
+  ],
+  [
+   "kv 1",
+   "kv1"
+  ],
+  [
+   "is 2",
+   "is2",
+   "js 2",
+   "js2"
+  ],
+  [
+   "armor",
+   "armour"
+  ],
+  [
+   "antitank",
+   "anti tank",
+   "at gun"
+  ],
+  [
+   "antiaircraft",
+   "anti aircraft"
+  ],
+  [
+   "kstn",
+   "kriegsstarkenachweisung"
+  ],
+  [
+   "kan",
+   "kriegsausrustungsnachweisung"
+  ],
+  [
+   "t o e",
+   "toe",
+   "table of organization and equipment",
+   "tables of organization and equipment"
+  ],
+  [
+   "panzerfaust",
+   "faustpatrone"
+  ],
+  [
+   "panzerschreck",
+   "raketenpanzerbuchse",
+   "ofenrohr"
+  ],
+  [
+   "bazooka",
+   "rocket launcher"
+  ],
+  [
+   "nebelwerfer",
+   "rocket projector"
+  ],
+  [
+   "katyusha",
+   "bm 13"
+  ],
+  [
+   "bf 109",
+   "me 109",
+   "bf109",
+   "me109"
+  ],
+  [
+   "bf 110",
+   "me 110",
+   "bf110",
+   "me110"
+  ],
+  [
+   "fw 190",
+   "fw190"
+  ],
+  [
+   "ju 87",
+   "ju87",
+   "stuka"
+  ],
+  [
+   "ju 88",
+   "ju88"
+  ],
+  [
+   "zero",
+   "a6m",
+   "type 0 fighter"
+  ],
+  [
+   "spitfire",
+   "supermarine spitfire"
+  ],
+  [
+   "p 51",
+   "p51",
+   "mustang"
+  ],
+  [
+   "p 47",
+   "p47",
+   "thunderbolt"
+  ],
+  [
+   "f4u",
+   "corsair"
+  ],
+  [
+   "f6f",
+   "hellcat"
+  ],
+  [
+   "b 17",
+   "b17",
+   "flying fortress"
+  ],
+  [
+   "b 24",
+   "b24",
+   "liberator"
+  ],
+  [
+   "b 29",
+   "b29",
+   "superfortress"
+  ],
+  [
+   "usntmj",
+   "naval technical mission to japan",
+   "navtechjap"
+  ],
+  [
+   "ussbs",
+   "strategic bombing survey",
+   "u s s b s"
+  ]
+ ],
+ "translations": [
+  {
+   "en": [
+    "tank",
+    "tanks"
+   ],
+   "forms": [
+    [
+     "de",
+     "panzer"
+    ],
+    [
+     "de",
+     "panzerkampfwagen"
+    ],
+    [
+     "de",
+     "kampfwagen"
+    ],
+    [
+     "ru",
+     "танк*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "light tank"
+   ],
+   "forms": [
+    [
+     "ru",
+     "легкий танк"
+    ],
+    [
+     "ru",
+     "легких танков"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "medium tank"
+   ],
+   "forms": [
+    [
+     "ru",
+     "средний танк"
+    ],
+    [
+     "ru",
+     "средние танки"
+    ],
+    [
+     "ru",
+     "средних танков"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "heavy tank"
+   ],
+   "forms": [
+    [
+     "ru",
+     "тяжелые танки"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "armoured car",
+    "armored car",
+    "armoured cars",
+    "armored cars"
+   ],
+   "forms": [
+    [
+     "de",
+     "panzerspähwagen"
+    ],
+    [
+     "ru",
+     "бронеавтомобил*"
+    ],
+    [
+     "ru",
+     "броневик*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "armoured train",
+    "armored train"
+   ],
+   "forms": [
+    [
+     "de",
+     "panzerzug"
+    ],
+    [
+     "ru",
+     "бронепоезд*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "armour",
+    "armor"
+   ],
+   "forms": [
+    [
+     "de",
+     "panzerung"
+    ],
+    [
+     "it",
+     "blindatura"
+    ],
+    [
+     "ru",
+     "брон*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "armour plate",
+    "armor plate"
+   ],
+   "forms": [
+    [
+     "de",
+     "panzerplatte*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "armoured",
+    "armored"
+   ],
+   "forms": [
+    [
+     "de",
+     "gepanzert*"
+    ],
+    [
+     "it",
+     "blindat*"
+    ],
+    [
+     "ru",
+     "бронированн*"
+    ],
+    [
+     "ru",
+     "бронетанков*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "machine gun",
+    "machine guns",
+    "machinegun",
+    "machineguns"
+   ],
+   "forms": [
+    [
+     "de",
+     "maschinengewehr*"
+    ],
+    [
+     "it",
+     "mitragliatric*"
+    ],
+    [
+     "ru",
+     "пулемет*"
+    ],
+    [
+     "ja",
+     "機関銃"
+    ],
+    [
+     "ja",
+     "機銃"
+    ],
+    [
+     "pl",
+     "karabinów maszynowych"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "light machine gun",
+    "light machine guns"
+   ],
+   "forms": [
+    [
+     "ru",
+     "ручной пулемет"
+    ],
+    [
+     "ru",
+     "ручного пулемета"
+    ],
+    [
+     "ru",
+     "ручные пулеметы"
+    ],
+    [
+     "ru",
+     "ручных пулеметов"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "heavy machine gun",
+    "heavy machine guns"
+   ],
+   "forms": [
+    [
+     "ru",
+     "станковый пулемет"
+    ],
+    [
+     "ru",
+     "станкового пулемета"
+    ],
+    [
+     "ru",
+     "станковые пулеметы"
+    ],
+    [
+     "ru",
+     "станковых пулеметов"
+    ],
+    [
+     "ru",
+     "крупнокалиберн*"
+    ],
+    [
+     "ja",
+     "重機"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "submachine gun",
+    "submachine guns",
+    "sub machine gun",
+    "machine pistol",
+    "machine pistols"
+   ],
+   "forms": [
+    [
+     "de",
+     "maschinenpistole*"
+    ],
+    [
+     "ru",
+     "автомат"
+    ],
+    [
+     "ru",
+     "автоматы"
+    ],
+    [
+     "ru",
+     "автоматов"
+    ],
+    [
+     "ru",
+     "автоматчик*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "rifle",
+    "rifles"
+   ],
+   "forms": [
+    [
+     "de",
+     "gewehr"
+    ],
+    [
+     "de",
+     "gewehre"
+    ],
+    [
+     "de",
+     "gewehrs"
+    ],
+    [
+     "de",
+     "karabiner"
+    ],
+    [
+     "ru",
+     "винтовк*"
+    ],
+    [
+     "ru",
+     "карабин*"
+    ],
+    [
+     "pl",
+     "karabinów"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "pistol",
+    "pistols",
+    "revolver",
+    "revolvers"
+   ],
+   "forms": [
+    [
+     "de",
+     "pistole"
+    ],
+    [
+     "it",
+     "pistola"
+    ],
+    [
+     "ru",
+     "пистолет"
+    ],
+    [
+     "ru",
+     "пистолета"
+    ],
+    [
+     "ru",
+     "пистолеты"
+    ],
+    [
+     "ru",
+     "револьвер*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "bayonet",
+    "bayonets"
+   ],
+   "forms": [
+    [
+     "de",
+     "seitengewehr"
+    ],
+    [
+     "de",
+     "bajonett*"
+    ],
+    [
+     "it",
+     "baionett*"
+    ],
+    [
+     "ru",
+     "штык*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "hand grenade",
+    "hand grenades",
+    "grenade",
+    "grenades"
+   ],
+   "forms": [
+    [
+     "de",
+     "handgranate*"
+    ],
+    [
+     "ru",
+     "гранат*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "grenade discharger",
+    "rifle grenade",
+    "rifle grenades",
+    "grenade launcher"
+   ],
+   "forms": [
+    [
+     "de",
+     "gewehrgranate*"
+    ],
+    [
+     "de",
+     "schießbecher"
+    ],
+    [
+     "it",
+     "lanciabomb*"
+    ],
+    [
+     "ru",
+     "ружейн* гранат*"
+    ],
+    [
+     "ru",
+     "мортирк*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "mortar",
+    "mortars"
+   ],
+   "forms": [
+    [
+     "de",
+     "granatwerfer"
+    ],
+    [
+     "de",
+     "minenwerfer"
+    ],
+    [
+     "ru",
+     "миномет*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "flamethrower",
+    "flamethrowers",
+    "flame thrower",
+    "flame throwers"
+   ],
+   "forms": [
+    [
+     "ru",
+     "огнемет*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "mine",
+    "mines",
+    "land mine",
+    "land mines"
+   ],
+   "forms": [
+    [
+     "de",
+     "minen"
+    ],
+    [
+     "ru",
+     "мин"
+    ],
+    [
+     "ru",
+     "мина"
+    ],
+    [
+     "ru",
+     "мины"
+    ],
+    [
+     "ru",
+     "минами"
+    ],
+    [
+     "ru",
+     "минах"
+    ],
+    [
+     "ru",
+     "противотанков* мин*"
+    ],
+    [
+     "ru",
+     "противопехотн* мин*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "minefield",
+    "minefields",
+    "mine field",
+    "mine fields"
+   ],
+   "forms": [
+    [
+     "de",
+     "minenfeld*"
+    ],
+    [
+     "de",
+     "minensperre*"
+    ],
+    [
+     "ru",
+     "минн* пол*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "explosive",
+    "explosives",
+    "demolition",
+    "demolitions"
+   ],
+   "forms": [
+    [
+     "de",
+     "sprengstoff*"
+    ],
+    [
+     "de",
+     "sprengmittel"
+    ],
+    [
+     "de",
+     "sprengladung*"
+    ],
+    [
+     "ru",
+     "взрывчат*"
+    ],
+    [
+     "ru",
+     "подрыв*"
+    ],
+    [
+     "ru",
+     "заряд*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "artillery"
+   ],
+   "forms": [
+    [
+     "it",
+     "artiglierie"
+    ],
+    [
+     "ru",
+     "артиллери*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "gun",
+    "guns",
+    "cannon",
+    "cannons"
+   ],
+   "forms": [
+    [
+     "de",
+     "geschütz"
+    ],
+    [
+     "de",
+     "geschütze"
+    ],
+    [
+     "de",
+     "geschützes"
+    ],
+    [
+     "de",
+     "kanone"
+    ],
+    [
+     "de",
+     "kanonen"
+    ],
+    [
+     "it",
+     "pezzo"
+    ],
+    [
+     "it",
+     "pezzi"
+    ],
+    [
+     "ru",
+     "орудие"
+    ],
+    [
+     "ru",
+     "орудия"
+    ],
+    [
+     "ru",
+     "орудий"
+    ],
+    [
+     "ru",
+     "пушк*"
+    ],
+    [
+     "pl",
+     "dział"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "howitzer",
+    "howitzers"
+   ],
+   "forms": [
+    [
+     "de",
+     "haubitze"
+    ],
+    [
+     "ru",
+     "гаубиц*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "field gun",
+    "field guns"
+   ],
+   "forms": [
+    [
+     "de",
+     "feldkanone*"
+    ],
+    [
+     "ru",
+     "дивизионн* пушк*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "mountain gun",
+    "mountain guns"
+   ],
+   "forms": [
+    [
+     "ru",
+     "горн* пушк*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "infantry gun",
+    "infantry guns",
+    "infantry howitzer"
+   ],
+   "forms": [
+    [
+     "de",
+     "infanteriegeschütz*"
+    ],
+    [
+     "ru",
+     "полков* пушк*"
+    ],
+    [
+     "ru",
+     "полков* орудия"
+    ],
+    [
+     "ru",
+     "батальонн* орудия"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "antitank gun",
+    "antitank guns",
+    "anti tank gun",
+    "anti tank guns"
+   ],
+   "forms": [
+    [
+     "de",
+     "pak"
+    ],
+    [
+     "ru",
+     "противотанков* пушк*"
+    ],
+    [
+     "ru",
+     "противотанков* орудия"
+    ],
+    [
+     "ru",
+     "противотанков* орудий"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "antitank",
+    "anti tank"
+   ],
+   "forms": [
+    [
+     "de",
+     "panzerabwehr"
+    ],
+    [
+     "de",
+     "panzerjäger"
+    ],
+    [
+     "ru",
+     "противотанков*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "antitank rifle",
+    "antitank rifles",
+    "anti tank rifle",
+    "anti tank rifles"
+   ],
+   "forms": [
+    [
+     "de",
+     "panzerbüchse*"
+    ],
+    [
+     "ru",
+     "противотанков* ружь*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "antiaircraft",
+    "anti aircraft",
+    "air defence",
+    "air defense"
+   ],
+   "forms": [
+    [
+     "de",
+     "flugabwehr"
+    ],
+    [
+     "de",
+     "flak"
+    ],
+    [
+     "ru",
+     "зенитн*"
+    ],
+    [
+     "ru",
+     "противовоздушн*"
+    ],
+    [
+     "ru",
+     "пво"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "antiaircraft gun",
+    "antiaircraft guns",
+    "anti aircraft gun",
+    "anti aircraft guns"
+   ],
+   "forms": [
+    [
+     "de",
+     "flak"
+    ],
+    [
+     "ru",
+     "зенитн* пушк*"
+    ],
+    [
+     "ru",
+     "зенитн* орудия"
+    ],
+    [
+     "ru",
+     "зенитн* орудий"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "assault gun",
+    "assault guns"
+   ],
+   "forms": [
+    [
+     "de",
+     "sturmgeschütz*"
+    ],
+    [
+     "de",
+     "sturmgeschutz*"
+    ],
+    [
+     "ru",
+     "штурмов* орудия"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "self propelled gun",
+    "self propelled guns",
+    "self propelled"
+   ],
+   "forms": [
+    [
+     "de",
+     "selbstfahrlafette*"
+    ],
+    [
+     "ru",
+     "самоходн*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "shell",
+    "shells",
+    "projectile",
+    "projectiles"
+   ],
+   "forms": [
+    [
+     "de",
+     "granate"
+    ],
+    [
+     "de",
+     "granaten"
+    ],
+    [
+     "de",
+     "geschoß"
+    ],
+    [
+     "de",
+     "geschosse"
+    ],
+    [
+     "de",
+     "geschosses"
+    ],
+    [
+     "it",
+     "proiettile"
+    ],
+    [
+     "it",
+     "proiettili"
+    ],
+    [
+     "ru",
+     "снаряд*"
+    ],
+    [
+     "ja",
+     "弾丸"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "armour piercing",
+    "armor piercing",
+    "ap shell",
+    "ap shot"
+   ],
+   "forms": [
+    [
+     "de",
+     "panzergranate*"
+    ],
+    [
+     "de",
+     "pzgr"
+    ],
+    [
+     "ru",
+     "бронебойн*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "high explosive",
+    "he shell",
+    "he shells"
+   ],
+   "forms": [
+    [
+     "de",
+     "sprenggranate*"
+    ],
+    [
+     "de",
+     "sprgr"
+    ],
+    [
+     "ru",
+     "осколочно фугасн*"
+    ],
+    [
+     "ru",
+     "фугасн*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "shrapnel"
+   ],
+   "forms": [
+    [
+     "ru",
+     "шрапнел*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "hollow charge",
+    "shaped charge",
+    "heat"
+   ],
+   "forms": [
+    [
+     "ru",
+     "кумулятивн*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "ammunition",
+    "ammo",
+    "cartridge",
+    "cartridges",
+    "round",
+    "rounds"
+   ],
+   "forms": [
+    [
+     "de",
+     "patrone"
+    ],
+    [
+     "de",
+     "patronen"
+    ],
+    [
+     "it",
+     "munizion*"
+    ],
+    [
+     "it",
+     "cartucce"
+    ],
+    [
+     "it",
+     "colpo"
+    ],
+    [
+     "it",
+     "colpi"
+    ],
+    [
+     "ru",
+     "боеприпас*"
+    ],
+    [
+     "ru",
+     "патрон*"
+    ],
+    [
+     "ru",
+     "выстрел*"
+    ],
+    [
+     "ja",
+     "弾薬"
+    ],
+    [
+     "pl",
+     "amunicj*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "fuze",
+    "fuzes",
+    "fuse",
+    "fuses"
+   ],
+   "forms": [
+    [
+     "de",
+     "zünder"
+    ],
+    [
+     "de",
+     "zünders"
+    ],
+    [
+     "it",
+     "spoletta"
+    ],
+    [
+     "it",
+     "spolette"
+    ],
+    [
+     "ru",
+     "взрывател*"
+    ],
+    [
+     "ru",
+     "трубк*"
+    ],
+    [
+     "ja",
+     "信管"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "calibre",
+    "caliber"
+   ],
+   "forms": [
+    [
+     "de",
+     "kaliber"
+    ],
+    [
+     "it",
+     "calibro"
+    ],
+    [
+     "it",
+     "calibri"
+    ],
+    [
+     "ru",
+     "калибр*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "barrel",
+    "barrels"
+   ],
+   "forms": [
+    [
+     "de",
+     "rohr"
+    ],
+    [
+     "de",
+     "rohre"
+    ],
+    [
+     "de",
+     "rohres"
+    ],
+    [
+     "de",
+     "lauf"
+    ],
+    [
+     "it",
+     "canna"
+    ],
+    [
+     "ru",
+     "ствол*"
+    ],
+    [
+     "ja",
+     "銃身"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "muzzle velocity"
+   ],
+   "forms": [
+    [
+     "de",
+     "anfangsgeschwindigkeit"
+    ],
+    [
+     "ru",
+     "начальн* скорост*"
+    ],
+    [
+     "ja",
+     "初速"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "range",
+    "ranges"
+   ],
+   "forms": [
+    [
+     "de",
+     "reichweite*"
+    ],
+    [
+     "de",
+     "entfernung*"
+    ],
+    [
+     "it",
+     "portata"
+    ],
+    [
+     "it",
+     "distanza"
+    ],
+    [
+     "ru",
+     "дальност*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "penetration",
+    "armour penetration",
+    "armor penetration"
+   ],
+   "forms": [
+    [
+     "de",
+     "durchschlag*"
+    ],
+    [
+     "de",
+     "durchschlagsleistung"
+    ],
+    [
+     "it",
+     "penetrazione"
+    ],
+    [
+     "ru",
+     "пробива*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "sight",
+    "sights",
+    "gunsight",
+    "telescope"
+   ],
+   "forms": [
+    [
+     "de",
+     "visier"
+    ],
+    [
+     "de",
+     "zielfernrohr"
+    ],
+    [
+     "de",
+     "aufsatz"
+    ],
+    [
+     "it",
+     "congegno di punteria"
+    ],
+    [
+     "it",
+     "alzo"
+    ],
+    [
+     "it",
+     "cannocchiale"
+    ],
+    [
+     "ru",
+     "прицел*"
+    ],
+    [
+     "ru",
+     "панорам*"
+    ],
+    [
+     "ja",
+     "照準"
+    ],
+    [
+     "ja",
+     "照準器"
+    ],
+    [
+     "ja",
+     "眼鏡"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "rate of fire"
+   ],
+   "forms": [
+    [
+     "ru",
+     "скорострельност*"
+    ],
+    [
+     "ru",
+     "темп стрельбы"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "recoil"
+   ],
+   "forms": [
+    [
+     "de",
+     "rücklauf"
+    ],
+    [
+     "de",
+     "rückstoß"
+    ],
+    [
+     "ru",
+     "откат*"
+    ],
+    [
+     "ru",
+     "отдач*"
+    ],
+    [
+     "ja",
+     "駐退"
+    ],
+    [
+     "ja",
+     "後座"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "carriage",
+    "gun carriage",
+    "mount"
+   ],
+   "forms": [
+    [
+     "de",
+     "lafette"
+    ],
+    [
+     "de",
+     "lafetten"
+    ],
+    [
+     "ru",
+     "лафет*"
+    ],
+    [
+     "ja",
+     "砲架"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "infantry"
+   ],
+   "forms": [
+    [
+     "de",
+     "infanterie"
+    ],
+    [
+     "de",
+     "schützen"
+    ],
+    [
+     "ru",
+     "пехот*"
+    ],
+    [
+     "ru",
+     "стрелков*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "cavalry"
+   ],
+   "forms": [
+    [
+     "de",
+     "kavallerie"
+    ],
+    [
+     "ru",
+     "кавалери*"
+    ],
+    [
+     "ru",
+     "конниц*"
+    ],
+    [
+     "pl",
+     "kawaleri*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "engineers",
+    "pioneers",
+    "sappers",
+    "engineer",
+    "sapper"
+   ],
+   "forms": [
+    [
+     "ru",
+     "сапер*"
+    ],
+    [
+     "ru",
+     "инженерн*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "signals",
+    "signal troops",
+    "communications"
+   ],
+   "forms": [
+    [
+     "de",
+     "nachrichtentruppe"
+    ],
+    [
+     "de",
+     "nachrichtenverbindung*"
+    ],
+    [
+     "de",
+     "fernsprech*"
+    ],
+    [
+     "it",
+     "collegament*"
+    ],
+    [
+     "it",
+     "trasmission*"
+    ],
+    [
+     "ru",
+     "связь"
+    ],
+    [
+     "ru",
+     "связи"
+    ],
+    [
+     "ru",
+     "связист*"
+    ],
+    [
+     "ja",
+     "通信"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "radio",
+    "wireless"
+   ],
+   "forms": [
+    [
+     "de",
+     "funkgerät*"
+    ],
+    [
+     "de",
+     "funker"
+    ],
+    [
+     "it",
+     "radiotelegraf*"
+    ],
+    [
+     "ru",
+     "радио*"
+    ],
+    [
+     "ru",
+     "рация"
+    ],
+    [
+     "ru",
+     "рации"
+    ],
+    [
+     "ru",
+     "радиостанци*"
+    ],
+    [
+     "ja",
+     "無線"
+    ],
+    [
+     "ja",
+     "無線機"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "telephone",
+    "field telephone"
+   ],
+   "forms": [
+    [
+     "de",
+     "fernsprecher"
+    ],
+    [
+     "de",
+     "fernsprech*"
+    ],
+    [
+     "it",
+     "telefono"
+    ],
+    [
+     "it",
+     "telefoni"
+    ],
+    [
+     "ru",
+     "телефон*"
+    ],
+    [
+     "ja",
+     "電話"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "tactics",
+    "tactical"
+   ],
+   "forms": [
+    [
+     "de",
+     "taktisch*"
+    ],
+    [
+     "it",
+     "tattico"
+    ],
+    [
+     "ru",
+     "тактик*"
+    ],
+    [
+     "ru",
+     "тактическ*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "attack",
+    "attacks",
+    "assault",
+    "offensive"
+   ],
+   "forms": [
+    [
+     "de",
+     "angriff"
+    ],
+    [
+     "de",
+     "angriffs"
+    ],
+    [
+     "de",
+     "angriffe"
+    ],
+    [
+     "it",
+     "attacco"
+    ],
+    [
+     "it",
+     "attacchi"
+    ],
+    [
+     "ru",
+     "наступлени*"
+    ],
+    [
+     "ru",
+     "атак*"
+    ],
+    [
+     "ru",
+     "штурм*"
+    ],
+    [
+     "pl",
+     "szturm*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "defence",
+    "defense",
+    "defensive"
+   ],
+   "forms": [
+    [
+     "de",
+     "verteidigung"
+    ],
+    [
+     "de",
+     "abwehr"
+    ],
+    [
+     "it",
+     "difesa"
+    ],
+    [
+     "it",
+     "difensiv*"
+    ],
+    [
+     "ru",
+     "оборон*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "counterattack",
+    "counter attack",
+    "counterattacks"
+   ],
+   "forms": [
+    [
+     "de",
+     "gegenstoß"
+    ],
+    [
+     "ru",
+     "контратак*"
+    ],
+    [
+     "ru",
+     "контрудар*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "withdrawal",
+    "retreat",
+    "retirement"
+   ],
+   "forms": [
+    [
+     "de",
+     "ausweichen"
+    ],
+    [
+     "it",
+     "ripiegamento"
+    ],
+    [
+     "ru",
+     "отход*"
+    ],
+    [
+     "ru",
+     "отступлени*"
+    ],
+    [
+     "ja",
+     "後退"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "pursuit"
+   ],
+   "forms": [
+    [
+     "it",
+     "inseguimento"
+    ],
+    [
+     "ru",
+     "преследовани*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "encirclement",
+    "envelopment",
+    "flank attack"
+   ],
+   "forms": [
+    [
+     "de",
+     "umfassung"
+    ],
+    [
+     "ru",
+     "окружени*"
+    ],
+    [
+     "ru",
+     "охват*"
+    ],
+    [
+     "ru",
+     "обход*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "breakthrough",
+    "penetration of the front"
+   ],
+   "forms": [
+    [
+     "de",
+     "durchbruch"
+    ],
+    [
+     "it",
+     "rottura"
+    ],
+    [
+     "ru",
+     "прорыв*"
+    ],
+    [
+     "pl",
+     "przełam*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "reconnaissance",
+    "recce",
+    "scouting",
+    "patrol",
+    "patrols"
+   ],
+   "forms": [
+    [
+     "de",
+     "aufklärung"
+    ],
+    [
+     "de",
+     "erkundung"
+    ],
+    [
+     "de",
+     "spähtrupp*"
+    ],
+    [
+     "it",
+     "ricognizione"
+    ],
+    [
+     "it",
+     "pattuglia"
+    ],
+    [
+     "ru",
+     "разведк*"
+    ],
+    [
+     "ru",
+     "разведыват*"
+    ],
+    [
+     "ru",
+     "дозор*"
+    ],
+    [
+     "ja",
+     "偵察"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "night attack",
+    "night fighting",
+    "night operations"
+   ],
+   "forms": [
+    [
+     "de",
+     "nachtangriff*"
+    ],
+    [
+     "de",
+     "nachtgefecht*"
+    ],
+    [
+     "ru",
+     "ночн* бо*"
+    ],
+    [
+     "ru",
+     "ночн* атак*"
+    ],
+    [
+     "ru",
+     "ночью"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "street fighting",
+    "urban warfare",
+    "fighting in towns"
+   ],
+   "forms": [
+    [
+     "de",
+     "ortskampf"
+    ],
+    [
+     "ru",
+     "бой в населенн* пункт*"
+    ],
+    [
+     "ru",
+     "уличн* бо*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "river crossing",
+    "crossing of rivers"
+   ],
+   "forms": [
+    [
+     "ru",
+     "переправ*"
+    ],
+    [
+     "ru",
+     "форсировани*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "camouflage",
+    "concealment"
+   ],
+   "forms": [
+    [
+     "de",
+     "tarnung"
+    ],
+    [
+     "ru",
+     "маскировк*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "fortification",
+    "fortifications",
+    "field fortification",
+    "pillbox",
+    "bunker"
+   ],
+   "forms": [
+    [
+     "de",
+     "befestigung*"
+    ],
+    [
+     "ru",
+     "укреплени*"
+    ],
+    [
+     "ru",
+     "фортификаци*"
+    ],
+    [
+     "ru",
+     "дот"
+    ],
+    [
+     "ru",
+     "дзот*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "trench",
+    "trenches",
+    "foxhole",
+    "foxholes",
+    "entrenchment"
+   ],
+   "forms": [
+    [
+     "de",
+     "graben"
+    ],
+    [
+     "de",
+     "schützenloch"
+    ],
+    [
+     "de",
+     "deckungsloch"
+    ],
+    [
+     "ru",
+     "окоп*"
+    ],
+    [
+     "ru",
+     "транше*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "obstacle",
+    "obstacles",
+    "barbed wire",
+    "wire entanglement"
+   ],
+   "forms": [
+    [
+     "de",
+     "hindernis*"
+    ],
+    [
+     "de",
+     "stacheldraht"
+    ],
+    [
+     "de",
+     "sperre"
+    ],
+    [
+     "de",
+     "sperren"
+    ],
+    [
+     "it",
+     "ostacol*"
+    ],
+    [
+     "ru",
+     "заграждени*"
+    ],
+    [
+     "ru",
+     "препятстви*"
+    ],
+    [
+     "ru",
+     "проволочн*"
+    ],
+    [
+     "ja",
+     "障害"
+    ],
+    [
+     "pl",
+     "przeszkod*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "position",
+    "positions",
+    "defensive position"
+   ],
+   "forms": [
+    [
+     "de",
+     "stellung"
+    ],
+    [
+     "de",
+     "stellungen"
+    ],
+    [
+     "it",
+     "posizione"
+    ],
+    [
+     "it",
+     "posizioni"
+    ],
+    [
+     "ru",
+     "позици*"
+    ],
+    [
+     "ru",
+     "опорн* пункт*"
+    ],
+    [
+     "ru",
+     "рубеж*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "outpost",
+    "outposts",
+    "security",
+    "covering force"
+   ],
+   "forms": [
+    [
+     "de",
+     "sicherung"
+    ],
+    [
+     "it",
+     "sicurezza"
+    ],
+    [
+     "ru",
+     "охранени*"
+    ],
+    [
+     "ru",
+     "боев* охранени*"
+    ],
+    [
+     "ru",
+     "застав*"
+    ],
+    [
+     "pl",
+     "placów*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "fire plan",
+    "fire support",
+    "covering fire"
+   ],
+   "forms": [
+    [
+     "de",
+     "feuerunterstützung"
+    ],
+    [
+     "de",
+     "feuerschutz"
+    ],
+    [
+     "ru",
+     "огнев* поддерж*"
+    ],
+    [
+     "ru",
+     "систем* огня"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "fire",
+    "firing",
+    "shooting"
+   ],
+   "forms": [
+    [
+     "de",
+     "feuer"
+    ],
+    [
+     "de",
+     "schießen"
+    ],
+    [
+     "de",
+     "beschuß"
+    ],
+    [
+     "it",
+     "fuoco"
+    ],
+    [
+     "ru",
+     "огонь"
+    ],
+    [
+     "ru",
+     "огня"
+    ],
+    [
+     "ru",
+     "огнем"
+    ],
+    [
+     "ru",
+     "стрельб*"
+    ],
+    [
+     "ja",
+     "射撃"
+    ],
+    [
+     "pl",
+     "ognia"
+    ],
+    [
+     "pl",
+     "strzelani*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "indirect fire"
+   ],
+   "forms": [
+    [
+     "de",
+     "steilfeuer"
+    ],
+    [
+     "ru",
+     "навесн* огонь"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "barrage",
+    "bombardment",
+    "artillery preparation"
+   ],
+   "forms": [
+    [
+     "ru",
+     "заградительн* огонь"
+    ],
+    [
+     "ru",
+     "артподготовк*"
+    ],
+    [
+     "ru",
+     "артиллерийск* подготовк*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "observation post",
+    "forward observer",
+    "observer"
+   ],
+   "forms": [
+    [
+     "de",
+     "beobachter"
+    ],
+    [
+     "it",
+     "osservatore"
+    ],
+    [
+     "ru",
+     "наблюдательн* пункт*"
+    ],
+    [
+     "ru",
+     "наблюдател*"
+    ],
+    [
+     "ja",
+     "観測"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "ballistics",
+    "ballistic"
+   ],
+   "forms": [
+    [
+     "de",
+     "schußtafel*"
+    ],
+    [
+     "it",
+     "balistic*"
+    ],
+    [
+     "ru",
+     "таблиц* стрельбы"
+    ],
+    [
+     "ja",
+     "射表"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "platoon",
+    "platoons"
+   ],
+   "forms": [
+    [
+     "de",
+     "züge"
+    ],
+    [
+     "de",
+     "zuges"
+    ],
+    [
+     "de",
+     "zugführer"
+    ],
+    [
+     "ru",
+     "взвод*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "section",
+    "squad",
+    "squads",
+    "sections"
+   ],
+   "forms": [
+    [
+     "de",
+     "gruppenführer"
+    ],
+    [
+     "it",
+     "squadra"
+    ],
+    [
+     "ru",
+     "отделени*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "company",
+    "companies"
+   ],
+   "forms": [
+    [
+     "de",
+     "kompanie"
+    ],
+    [
+     "de",
+     "kompanien"
+    ],
+    [
+     "ru",
+     "рот*"
+    ],
+    [
+     "ru",
+     "роты"
+    ],
+    [
+     "ja",
+     "中隊"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "battalion",
+    "battalions"
+   ],
+   "forms": [
+    [
+     "de",
+     "bataillon"
+    ],
+    [
+     "de",
+     "bataillons"
+    ],
+    [
+     "de",
+     "abteilung"
+    ],
+    [
+     "ru",
+     "батальон*"
+    ],
+    [
+     "ru",
+     "дивизион*"
+    ],
+    [
+     "ja",
+     "大隊"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "regiment",
+    "regiments"
+   ],
+   "forms": [
+    [
+     "ru",
+     "полк"
+    ],
+    [
+     "ru",
+     "полка"
+    ],
+    [
+     "ru",
+     "полков"
+    ],
+    [
+     "ru",
+     "полку"
+    ],
+    [
+     "ru",
+     "полком"
+    ],
+    [
+     "ru",
+     "полки"
+    ],
+    [
+     "pl",
+     "pułk*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "brigade",
+    "brigades"
+   ],
+   "forms": [
+    [
+     "ru",
+     "бригад*"
+    ],
+    [
+     "pl",
+     "brygad*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "division",
+    "divisions"
+   ],
+   "forms": [
+    [
+     "de",
+     "divisionen"
+    ],
+    [
+     "ru",
+     "дивизи*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "battery",
+    "batteries"
+   ],
+   "forms": [
+    [
+     "de",
+     "batterien"
+    ],
+    [
+     "it",
+     "batteria"
+    ],
+    [
+     "it",
+     "batterie"
+    ],
+    [
+     "ru",
+     "батаре*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "organization",
+    "organisation",
+    "table of organization",
+    "establishment",
+    "strength"
+   ],
+   "forms": [
+    [
+     "de",
+     "gliederung"
+    ],
+    [
+     "de",
+     "kstn"
+    ],
+    [
+     "it",
+     "formazione"
+    ],
+    [
+     "ru",
+     "штат"
+    ],
+    [
+     "ru",
+     "штата"
+    ],
+    [
+     "ru",
+     "штаты"
+    ],
+    [
+     "ru",
+     "организаци*"
+    ],
+    [
+     "ru",
+     "численност*"
+    ],
+    [
+     "pl",
+     "organizacj*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "regulations",
+    "field manual",
+    "manual",
+    "drill regulations",
+    "training manual"
+   ],
+   "forms": [
+    [
+     "de",
+     "vorschrift"
+    ],
+    [
+     "de",
+     "vorschriften"
+    ],
+    [
+     "de",
+     "ausbildungsvorschrift"
+    ],
+    [
+     "de",
+     "merkblatt"
+    ],
+    [
+     "de",
+     "hdv"
+    ],
+    [
+     "it",
+     "istruzione"
+    ],
+    [
+     "it",
+     "istruzioni"
+    ],
+    [
+     "it",
+     "norme"
+    ],
+    [
+     "ru",
+     "устав*"
+    ],
+    [
+     "ru",
+     "наставлени*"
+    ],
+    [
+     "ru",
+     "руководств*"
+    ],
+    [
+     "pl",
+     "regulamin*"
+    ],
+    [
+     "pl",
+     "instrukcj*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "training",
+    "instruction",
+    "drill"
+   ],
+   "forms": [
+    [
+     "de",
+     "ausbildung"
+    ],
+    [
+     "de",
+     "schulung"
+    ],
+    [
+     "it",
+     "istruzione"
+    ],
+    [
+     "ru",
+     "обучени*"
+    ],
+    [
+     "ru",
+     "подготовк*"
+    ],
+    [
+     "ru",
+     "строев*"
+    ],
+    [
+     "ja",
+     "訓練"
+    ],
+    [
+     "pl",
+     "szkoleni*"
+    ],
+    [
+     "pl",
+     "wyszkoleni*"
+    ],
+    [
+     "pl",
+     "musztr*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "order",
+    "orders",
+    "operation order"
+   ],
+   "forms": [
+    [
+     "de",
+     "befehl"
+    ],
+    [
+     "de",
+     "befehle"
+    ],
+    [
+     "it",
+     "ordine"
+    ],
+    [
+     "it",
+     "ordini"
+    ],
+    [
+     "ru",
+     "приказ*"
+    ],
+    [
+     "ru",
+     "боев* приказ*"
+    ],
+    [
+     "pl",
+     "rozkaz*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "command",
+    "commander",
+    "commanders",
+    "leadership"
+   ],
+   "forms": [
+    [
+     "de",
+     "führung"
+    ],
+    [
+     "de",
+     "führer"
+    ],
+    [
+     "de",
+     "kommandeur"
+    ],
+    [
+     "de",
+     "befehlshaber"
+    ],
+    [
+     "it",
+     "comando"
+    ],
+    [
+     "ru",
+     "командир*"
+    ],
+    [
+     "ru",
+     "командовани*"
+    ],
+    [
+     "ru",
+     "управлени*"
+    ],
+    [
+     "ja",
+     "指揮"
+    ],
+    [
+     "pl",
+     "dowódc*"
+    ],
+    [
+     "pl",
+     "dowodzeni*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "headquarters",
+    "staff",
+    "general staff"
+   ],
+   "forms": [
+    [
+     "de",
+     "stabes"
+    ],
+    [
+     "de",
+     "generalstab"
+    ],
+    [
+     "it",
+     "comando"
+    ],
+    [
+     "ru",
+     "штаб*"
+    ],
+    [
+     "ru",
+     "генштаб*"
+    ],
+    [
+     "ja",
+     "司令部"
+    ],
+    [
+     "pl",
+     "sztab*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "soldier",
+    "soldiers",
+    "rifleman",
+    "riflemen"
+   ],
+   "forms": [
+    [
+     "de",
+     "soldaten"
+    ],
+    [
+     "de",
+     "schütze"
+    ],
+    [
+     "de",
+     "schützen"
+    ],
+    [
+     "ru",
+     "боец"
+    ],
+    [
+     "ru",
+     "бойц*"
+    ],
+    [
+     "ru",
+     "солдат*"
+    ],
+    [
+     "ru",
+     "стрел*"
+    ],
+    [
+     "pl",
+     "żołnierz*"
+    ],
+    [
+     "pl",
+     "strzel*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "officer",
+    "officers"
+   ],
+   "forms": [
+    [
+     "de",
+     "offizier"
+    ],
+    [
+     "de",
+     "offiziere"
+    ],
+    [
+     "ru",
+     "офицер*"
+    ],
+    [
+     "ru",
+     "командн* состав*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "nco",
+    "non commissioned officer",
+    "sergeant",
+    "corporal"
+   ],
+   "forms": [
+    [
+     "de",
+     "unteroffizier*"
+    ],
+    [
+     "ru",
+     "сержант*"
+    ],
+    [
+     "ru",
+     "младш* командир*"
+    ],
+    [
+     "ru",
+     "ефрейтор*"
+    ],
+    [
+     "pl",
+     "podoficer*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "aircraft",
+    "aeroplane",
+    "aeroplanes",
+    "airplane",
+    "airplanes",
+    "plane",
+    "planes"
+   ],
+   "forms": [
+    [
+     "de",
+     "flugzeug"
+    ],
+    [
+     "de",
+     "flugzeuges"
+    ],
+    [
+     "it",
+     "aereo"
+    ],
+    [
+     "it",
+     "aerei"
+    ],
+    [
+     "it",
+     "aeroplano"
+    ],
+    [
+     "it",
+     "aeroplani"
+    ],
+    [
+     "it",
+     "velivolo"
+    ],
+    [
+     "it",
+     "apparecchio"
+    ],
+    [
+     "ru",
+     "самолет*"
+    ],
+    [
+     "ru",
+     "авиаци*"
+    ],
+    [
+     "ja",
+     "飛行機"
+    ],
+    [
+     "ja",
+     "航空機"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "fighter",
+    "fighters",
+    "fighter aircraft"
+   ],
+   "forms": [
+    [
+     "it",
+     "caccia"
+    ],
+    [
+     "ru",
+     "истребител*"
+    ],
+    [
+     "ja",
+     "戦闘機"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "bomber",
+    "bombers",
+    "bombing"
+   ],
+   "forms": [
+    [
+     "it",
+     "bombardamento"
+    ],
+    [
+     "ru",
+     "бомбардировщик*"
+    ],
+    [
+     "ru",
+     "бомбардировк*"
+    ],
+    [
+     "ru",
+     "бомбометани*"
+    ],
+    [
+     "ja",
+     "爆撃機"
+    ],
+    [
+     "ja",
+     "爆撃"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "dive bomber",
+    "dive bombing"
+   ],
+   "forms": [
+    [
+     "ru",
+     "пикировани*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "engine",
+    "engines",
+    "motor",
+    "motors"
+   ],
+   "forms": [
+    [
+     "de",
+     "motoren"
+    ],
+    [
+     "de",
+     "triebwerk*"
+    ],
+    [
+     "it",
+     "motore"
+    ],
+    [
+     "it",
+     "motori"
+    ],
+    [
+     "ru",
+     "двигател*"
+    ],
+    [
+     "ru",
+     "мотор*"
+    ],
+    [
+     "ja",
+     "発動機"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "wing",
+    "wings"
+   ],
+   "forms": [
+    [
+     "de",
+     "flügel"
+    ],
+    [
+     "it",
+     "ala"
+    ],
+    [
+     "it",
+     "semiala"
+    ],
+    [
+     "it",
+     "semiali"
+    ],
+    [
+     "ru",
+     "крыл*"
+    ],
+    [
+     "ja",
+     "主翼"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "propeller",
+    "propellers",
+    "airscrew"
+   ],
+   "forms": [
+    [
+     "de",
+     "luftschraube*"
+    ],
+    [
+     "it",
+     "elica"
+    ],
+    [
+     "it",
+     "eliche"
+    ],
+    [
+     "ru",
+     "винт*"
+    ],
+    [
+     "ja",
+     "プロペラ"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "undercarriage",
+    "landing gear"
+   ],
+   "forms": [
+    [
+     "de",
+     "fahrwerk*"
+    ],
+    [
+     "de",
+     "fahrgestell"
+    ],
+    [
+     "it",
+     "carrello"
+    ],
+    [
+     "it",
+     "carrelli"
+    ],
+    [
+     "ru",
+     "шасси"
+    ],
+    [
+     "ja",
+     "降着装置"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "bomb",
+    "bombs"
+   ],
+   "forms": [
+    [
+     "it",
+     "bombe"
+    ],
+    [
+     "ru",
+     "бомб*"
+    ],
+    [
+     "ru",
+     "авиабомб*"
+    ],
+    [
+     "ja",
+     "爆弾"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "torpedo",
+    "torpedoes"
+   ],
+   "forms": [
+    [
+     "it",
+     "siluro"
+    ],
+    [
+     "it",
+     "siluri"
+    ],
+    [
+     "ru",
+     "торпед*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "warship",
+    "warships",
+    "ship",
+    "ships"
+   ],
+   "forms": [
+    [
+     "ru",
+     "корабл*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "submarine",
+    "submarines",
+    "u boat",
+    "u boats"
+   ],
+   "forms": [
+    [
+     "it",
+     "sommergibile"
+    ],
+    [
+     "it",
+     "sommergibili"
+    ],
+    [
+     "it",
+     "sottomarino"
+    ],
+    [
+     "ru",
+     "подводн* лодк*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "vehicle",
+    "vehicles",
+    "motor vehicle",
+    "lorry",
+    "truck",
+    "trucks"
+   ],
+   "forms": [
+    [
+     "de",
+     "fahrzeug"
+    ],
+    [
+     "de",
+     "fahrzeuge"
+    ],
+    [
+     "de",
+     "kraftfahrzeug*"
+    ],
+    [
+     "de",
+     "kfz"
+    ],
+    [
+     "de",
+     "lastkraftwagen"
+    ],
+    [
+     "de",
+     "lkw"
+    ],
+    [
+     "ru",
+     "автомобил*"
+    ],
+    [
+     "ru",
+     "машин*"
+    ],
+    [
+     "ru",
+     "грузовик*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "tractor",
+    "prime mover",
+    "half track",
+    "halftrack"
+   ],
+   "forms": [
+    [
+     "de",
+     "zugmaschine*"
+    ],
+    [
+     "it",
+     "trattore"
+    ],
+    [
+     "ru",
+     "тягач*"
+    ],
+    [
+     "ru",
+     "трактор*"
+    ],
+    [
+     "ru",
+     "полугусенич*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "track",
+    "tracks",
+    "tracked",
+    "suspension"
+   ],
+   "forms": [
+    [
+     "de",
+     "laufwerk"
+    ],
+    [
+     "de",
+     "gleiskette*"
+    ],
+    [
+     "ru",
+     "гусениц*"
+    ],
+    [
+     "ru",
+     "гусеничн*"
+    ],
+    [
+     "ru",
+     "подвеск*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "turret",
+    "turrets"
+   ],
+   "forms": [
+    [
+     "de",
+     "turm"
+    ],
+    [
+     "de",
+     "türme"
+    ],
+    [
+     "de",
+     "turmes"
+    ],
+    [
+     "de",
+     "drehturm"
+    ],
+    [
+     "it",
+     "torretta"
+    ],
+    [
+     "it",
+     "torrette"
+    ],
+    [
+     "ru",
+     "башн*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "hull",
+    "chassis"
+   ],
+   "forms": [
+    [
+     "de",
+     "wanne"
+    ],
+    [
+     "de",
+     "aufbau"
+    ],
+    [
+     "de",
+     "fahrgestell"
+    ],
+    [
+     "it",
+     "scafo"
+    ],
+    [
+     "it",
+     "scafi"
+    ],
+    [
+     "ru",
+     "корпус*"
+    ],
+    [
+     "ja",
+     "車体"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "crew",
+    "crews"
+   ],
+   "forms": [
+    [
+     "de",
+     "besatzung"
+    ],
+    [
+     "de",
+     "bedienung"
+    ],
+    [
+     "it",
+     "equipaggio"
+    ],
+    [
+     "ru",
+     "экипаж*"
+    ],
+    [
+     "ru",
+     "расчет*"
+    ],
+    [
+     "ja",
+     "乗員"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "weight",
+    "weights"
+   ],
+   "forms": [
+    [
+     "de",
+     "gewicht"
+    ],
+    [
+     "it",
+     "peso"
+    ],
+    [
+     "ru",
+     "вес"
+    ],
+    [
+     "ru",
+     "веса"
+    ],
+    [
+     "ru",
+     "масса"
+    ],
+    [
+     "ja",
+     "重量"
+    ],
+    [
+     "pl",
+     "ciężar"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "speed",
+    "maximum speed"
+   ],
+   "forms": [
+    [
+     "de",
+     "geschwindigkeit"
+    ],
+    [
+     "it",
+     "velocità"
+    ],
+    [
+     "ru",
+     "скорост*"
+    ],
+    [
+     "ja",
+     "速度"
+    ],
+    [
+     "ja",
+     "最大速度"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "specifications",
+    "technical data",
+    "performance",
+    "characteristics"
+   ],
+   "forms": [
+    [
+     "de",
+     "angaben"
+    ],
+    [
+     "de",
+     "leistung*"
+    ],
+    [
+     "it",
+     "dati tecnici"
+    ],
+    [
+     "it",
+     "caratteristiche"
+    ],
+    [
+     "ru",
+     "характеристик*"
+    ],
+    [
+     "ru",
+     "данны*"
+    ],
+    [
+     "ja",
+     "諸元"
+    ],
+    [
+     "ja",
+     "性能"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "test",
+    "tests",
+    "trial",
+    "trials",
+    "firing trial",
+    "firing trials"
+   ],
+   "forms": [
+    [
+     "de",
+     "versuche"
+    ],
+    [
+     "de",
+     "prüfung"
+    ],
+    [
+     "it",
+     "prova"
+    ],
+    [
+     "it",
+     "esperimento"
+    ],
+    [
+     "it",
+     "esperimenti"
+    ],
+    [
+     "ru",
+     "испытани*"
+    ],
+    [
+     "ja",
+     "試験"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "maintenance",
+    "care and cleaning",
+    "repair"
+   ],
+   "forms": [
+    [
+     "de",
+     "pflege"
+    ],
+    [
+     "de",
+     "wartung"
+    ],
+    [
+     "de",
+     "instandsetzung"
+    ],
+    [
+     "de",
+     "reinigung"
+    ],
+    [
+     "it",
+     "manutenzione"
+    ],
+    [
+     "it",
+     "pulizia"
+    ],
+    [
+     "it",
+     "riparazione"
+    ],
+    [
+     "ru",
+     "уход"
+    ],
+    [
+     "ru",
+     "сбережени*"
+    ],
+    [
+     "ru",
+     "ремонт*"
+    ],
+    [
+     "ru",
+     "чистк*"
+    ],
+    [
+     "ja",
+     "手入"
+    ],
+    [
+     "ja",
+     "保存"
+    ],
+    [
+     "ja",
+     "修理"
+    ],
+    [
+     "pl",
+     "konserwacj*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "description",
+    "handbook"
+   ],
+   "forms": [
+    [
+     "de",
+     "beschreibung"
+    ],
+    [
+     "de",
+     "handbuch"
+    ],
+    [
+     "it",
+     "descrizione"
+    ],
+    [
+     "it",
+     "manuale"
+    ],
+    [
+     "ru",
+     "описани*"
+    ],
+    [
+     "ja",
+     "説明書"
+    ],
+    [
+     "ja",
+     "取扱法"
+    ],
+    [
+     "ja",
+     "取扱"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "gas",
+    "chemical warfare",
+    "poison gas",
+    "gas mask"
+   ],
+   "forms": [
+    [
+     "de",
+     "gasmaske*"
+    ],
+    [
+     "de",
+     "kampfstoff*"
+    ],
+    [
+     "de",
+     "gasschutz"
+    ],
+    [
+     "ru",
+     "противогаз*"
+    ],
+    [
+     "ru",
+     "отравляющ* веществ*"
+    ],
+    [
+     "ru",
+     "химическ*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "smoke",
+    "smoke screen"
+   ],
+   "forms": [
+    [
+     "de",
+     "nebelwerfer"
+    ],
+    [
+     "it",
+     "nebbia"
+    ],
+    [
+     "ru",
+     "дым*"
+    ],
+    [
+     "ru",
+     "дымов*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "parachute",
+    "paratroops",
+    "paratroopers",
+    "airborne"
+   ],
+   "forms": [
+    [
+     "de",
+     "fallschirm*"
+    ],
+    [
+     "it",
+     "paracadut*"
+    ],
+    [
+     "ru",
+     "парашют*"
+    ],
+    [
+     "ru",
+     "десант*"
+    ],
+    [
+     "ja",
+     "落下傘"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "mountain troops",
+    "mountain warfare"
+   ],
+   "forms": [
+    [
+     "de",
+     "gebirgsjäger"
+    ],
+    [
+     "ru",
+     "горно стрелков*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "winter warfare",
+    "cold weather",
+    "winter"
+   ],
+   "forms": [
+    [
+     "de",
+     "kälte"
+    ],
+    [
+     "ru",
+     "зим*"
+    ],
+    [
+     "ja",
+     "冬季"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "supply",
+    "supplies",
+    "logistics"
+   ],
+   "forms": [
+    [
+     "it",
+     "rifornimento"
+    ],
+    [
+     "it",
+     "rifornimenti"
+    ],
+    [
+     "it",
+     "vettovagliamento"
+    ],
+    [
+     "ru",
+     "снабжени*"
+    ],
+    [
+     "ru",
+     "тыл*"
+    ],
+    [
+     "ru",
+     "подвоз*"
+    ],
+    [
+     "ja",
+     "補給"
+    ],
+    [
+     "pl",
+     "zaopatrzeni*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "medical",
+    "wounded",
+    "casualties",
+    "first aid"
+   ],
+   "forms": [
+    [
+     "de",
+     "sanitäts*"
+    ],
+    [
+     "de",
+     "verluste"
+    ],
+    [
+     "it",
+     "feriti"
+    ],
+    [
+     "it",
+     "perdite"
+    ],
+    [
+     "ru",
+     "санитарн*"
+    ],
+    [
+     "ru",
+     "раненых"
+    ],
+    [
+     "ru",
+     "раненые"
+    ],
+    [
+     "ru",
+     "потер*"
+    ],
+    [
+     "ja",
+     "衛生"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "horse",
+    "horses"
+   ],
+   "forms": [
+    [
+     "de",
+     "pferd"
+    ],
+    [
+     "de",
+     "pferde"
+    ],
+    [
+     "de",
+     "pferden"
+    ],
+    [
+     "ru",
+     "лошад*"
+    ],
+    [
+     "ru",
+     "кон*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "bicycle",
+    "bicycles",
+    "cyclist",
+    "cyclists"
+   ],
+   "forms": [
+    [
+     "de",
+     "fahrrad"
+    ],
+    [
+     "de",
+     "fahrräder"
+    ],
+    [
+     "de",
+     "radfahrer"
+    ],
+    [
+     "ru",
+     "велосипед*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "motorcycle",
+    "motorcycles"
+   ],
+   "forms": [
+    [
+     "de",
+     "krad"
+    ],
+    [
+     "ru",
+     "мотоцикл*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "map",
+    "maps",
+    "map reading"
+   ],
+   "forms": [
+    [
+     "de",
+     "karte"
+    ],
+    [
+     "de",
+     "karten"
+    ],
+    [
+     "it",
+     "carta"
+    ],
+    [
+     "ru",
+     "карт*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "coastal defence",
+    "coast defense",
+    "coast artillery"
+   ],
+   "forms": [
+    [
+     "ru",
+     "береговая оборона"
+    ],
+    [
+     "ru",
+     "береговой обороны"
+    ],
+    [
+     "ru",
+     "берегов* артиллери*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "landing",
+    "amphibious"
+   ],
+   "forms": [
+    [
+     "de",
+     "landung"
+    ],
+    [
+     "ru",
+     "высадк*"
+    ],
+    [
+     "ru",
+     "морск* десант*"
+    ]
+   ]
+  },
+  {
+   "en": [
+    "morale",
+    "discipline"
+   ],
+   "forms": [
+    [
+     "ru",
+     "дисциплин*"
+    ],
+    [
+     "ru",
+     "морально*"
+    ]
+   ]
+  }
+ ]
+}

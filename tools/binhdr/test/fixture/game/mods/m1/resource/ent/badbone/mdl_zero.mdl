@@ -1,0 +1,7 @@
+{Skeleton
+ {bone "basis"
+  {bone revolute "r"
+   {speed 0}
+  }
+ }
+}

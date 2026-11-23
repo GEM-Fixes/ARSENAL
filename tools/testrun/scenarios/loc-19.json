@@ -1,0 +1,36 @@
+{
+  "name": "loc-19",
+  "rows": [
+    "LOC-19"
+  ],
+  "mode": "menu",
+  "fixture": [
+    "loc-19"
+  ],
+  "mods": [
+    "as64+",
+    "loc-19"
+  ],
+  "params": {},
+  "src": [
+    " (localization/ mounted over resource/interface/text/)",
+    " (mod_set)",
+    "(not part of this release)"
+  ],
+  "steps": [
+    {
+      "wait": 20
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "log": "Localization key redefinition: desc/squad/riflemans\\(usa\\) in /interface/text/desc\\.lng",
+      "want": true
+    }
+  ],
+  "note": "mod localization/#loc19.lng sets desc/squad/riflemans(usa) = TRS_LOC19_NAME, a key vanilla desc.lng also defines. By eye 2026-11-03: buy panel, tooltip, info panel show vanilla \"Regular infantry\", so vanilla wins. The logged redefinition is the automatic check; control runs without the fixture log 0 such lines."
+}

@@ -1,0 +1,6 @@
+{keys
+	{"actions/myfort"
+		{value KEY_F}
+		{"category" "build"}
+	}
+}

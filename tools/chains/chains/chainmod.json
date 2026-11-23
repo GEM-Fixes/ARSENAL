@@ -1,0 +1,17 @@
+{
+  "name": "chainmod",
+  "desc": "PLAN goal C (G-CHAIN): one mod from tool commands: ported unit (GoH panzer4j on the pz4h donor), cloned map, cloned mission, bot buys the unit, unit name text, model gate",
+  "needs": ["GOH"],
+  "steps": [
+    { "tool": "newmod", "argv": ["$MOD", "--name", "E2E Chainmod", "--game", "$GAME", "$TARGETOPT"] },
+    { "tool": "goh2as2", "argv": ["--goh", "$GOH", "--entity", "panzer4j", "--donor", "pz4h", "--game", "$GAME", "--exe", "$EXE", "--rep-key", "--mtl-fallback", "--match-weapon", "--no-ask", "-q", "--out", "$SCRATCH/port"], "exit": [0, 1], "note": "unit + its GoH model files on the vanilla pz4h donor def; key panzer4j" },
+    { "tool": "@copy", "argv": ["$SCRATCH/port", "$MOD"] },
+    { "tool": "map-clone", "argv": ["--game", "$GAME", "--map", "map/multi/1v1_reloading_point", "--name", "chain_map", "--out", "$MOD", "--no-mission", "$TARGETOPT"], "exit": [0, 1] },
+    { "tool": "mission-clone", "argv": ["--game", "$GAME", "--mods", "$MODNAME", "--map", "map/multi/chain_map", "--src-map", "map/multi/1v1_reloading_point", "--from", "combat", "--to", "chain_mode", "--with-mode", "chain_mode", "--out", "$MOD", "--target", "$TARGET"], "exit": [0], "note": "mode file read from the vanilla map, written onto the mod's cloned chain_map; chain_mode = {class combat}, nothing manual" },
+    { "tool": "botrecipe", "argv": ["$MOD", "--out", "$MOD", "--buy-first", "panzer4j", "--class", "Tank", "--card-like", "pz4h", "--game", "$GAME", "--target", "$TARGET"], "exit": [0] },
+    { "tool": "lng-add", "argv": ["$MOD", "--file", "#chainmod.lng", "--key", "info/entity/panzer4j", "--text", "Chain Panzer IV J: GoH panzer4j model on the pz4h donor def"] },
+    { "tool": "expcheck", "argv": ["$MOD", "--game", "$GAME", "--summary", "$EXEOPT"], "exit": [0, 1], "note": "model gate only: no tool builds or edits a model; the model comes from the GoH files in step 2" },
+    { "tool": "keylint", "argv": ["$MOD", "--game", "$GAME", "--summary", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "refcheck", "argv": ["$GAME", "--mods", "$BUILTIN$MODNAME", "--scope", "mod", "--summary", "$EXEOPT"], "exit": [0, 1], "note": "$BUILTIN = as64+, under AS64 only (MoW:AS2 has no built-in mod)" }
+  ]
+}

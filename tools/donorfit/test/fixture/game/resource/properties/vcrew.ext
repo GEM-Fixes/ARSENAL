@@ -1,0 +1,13 @@
+;SDL  invented vanilla-shaped crew macros for the donorfit FXC-5 test (not game data)
+(define "v_seat"
+	{placer
+		{place "%place" {LinkBone "%bone"}}
+	}
+)
+(define "v_crew"
+	("v_seat" place(driver) bone(basis))
+	("v_seat" place(gunner2) bone(seat09))
+)
+(define "v_crew_bad"
+	("v_seat" place(driver) bone(seat09))
+)

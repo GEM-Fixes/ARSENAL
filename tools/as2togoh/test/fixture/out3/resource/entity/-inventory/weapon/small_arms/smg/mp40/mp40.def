@@ -1,0 +1,4 @@
+{actor
+  (include "/properties/stuff_weapon.ext")
+  {mdl "mp40.mdl"}
+}

@@ -1,0 +1,51 @@
+{
+  "name": "sdl-33c",
+  "rows": [
+    "SDL-33"
+  ],
+  "fixture": [
+    "sdl-33c"
+  ],
+  "params": {
+    "map": "multi/1v1_road:combat"
+  },
+  "src": [
+    "(not part of this release)",
+    "(not part of this release)"
+  ],
+  "note": "Control of sdl-33: right case. Pass: value=777, so a profile-saved value (FLAG_SAVED) or a preset does not hide the file value. If this fails, sdl-33 proves nothing.",
+  "steps": [
+    {
+      "cmd": "mp_lan"
+    },
+    {
+      "wait_stage": true
+    },
+    {
+      "cmd": "mp_host {map} 2"
+    },
+    {
+      "wait_stage": true
+    },
+    {
+      "cmd": "mp_settings",
+      "expect": "scoreFinal"
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "mp_settings",
+      "match": "scoreFinal[^\\n]*value=777\\b",
+      "want": true
+    }
+  ],
+  "mode": "menu",
+  "mods": [
+    "as64+",
+    "sdl-33c"
+  ]
+}

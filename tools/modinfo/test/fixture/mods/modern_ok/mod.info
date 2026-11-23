@@ -1,0 +1,6 @@
+{Mod
+{Name "modern_ok"}
+{Require "as64+"}
+{Desc "esc \"q\" ok"}
+{MinGameVersion "3.301"}
+}

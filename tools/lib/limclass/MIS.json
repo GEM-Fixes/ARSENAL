@@ -1,0 +1,180 @@
+{
+ "form": "limclass/1",
+ "area": "MIS",
+ "rows": {
+  "MIS-01": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unknown keys skipped, typos fail quietly"
+  },
+  "MIS-02": {
+   "chk": "built",
+   "class": "silent",
+   "why": "balancing falls back wrongly, no message"
+  },
+  "MIS-03": {
+   "chk": "built",
+   "class": "silent",
+   "why": "empty include matches nothing, no message"
+  },
+  "MIS-04": {
+   "chk": "built",
+   "class": "silent",
+   "why": "later limits dropped, no message"
+  },
+  "MIS-05": {
+   "chk": "built",
+   "class": "silent",
+   "why": "HUD/bots break on missing vehicle budget"
+  },
+  "MIS-06": {
+   "chk": "built",
+   "class": "crash",
+   "why": "size mismatch error on load"
+  },
+  "MIS-07": {
+   "chk": "built",
+   "class": "info",
+   "why": "army id/flag fields: fact about what is read",
+   "tool": "milint",
+   "how": "army entry with flag key or negative id"
+  },
+  "MIS-08": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unknown bot order does nothing, no message"
+  },
+  "MIS-09": {
+   "chk": "built",
+   "class": "silent",
+   "why": "army absent from stage Units buys nothing"
+  },
+  "MIS-10": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "dead keys, no effect"
+  },
+  "MIS-11": {
+   "chk": "built",
+   "class": "silent",
+   "why": "wrong-case key skipped silently"
+  },
+  "MIS-12": {
+   "chk": "built",
+   "class": "info",
+   "why": "console availability fact"
+  },
+  "MIS-13": {
+   "chk": "built",
+   "class": "silent",
+   "why": "Spawn returns true for bad unit"
+  },
+  "MIS-14": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "dead keys, no effect unless nonzero rejected"
+  },
+  "MIS-15": {
+   "chk": "built",
+   "class": "silent",
+   "why": "level dead under several modes, no message",
+   "tool": "milint",
+   "how": "unit level set while useUnitLevelRestrictions is 0"
+  },
+  "MIS-16": {
+   "chk": "never",
+   "class": "info",
+   "why": "prefixes are naming convention only",
+   "never": "naming convention; nothing parsed"
+  },
+  "MIS-17": {
+   "chk": "built",
+   "class": "crash",
+   "why": "Invalid parameter value on load"
+  },
+  "MIS-18": {
+   "chk": "built",
+   "class": "silent",
+   "why": "template keys not read"
+  },
+  "MIS-19": {
+   "chk": "built",
+   "class": "silent",
+   "why": "class registered without set or mission"
+  },
+  "MIS-20": {
+   "chk": "never",
+   "class": "info",
+   "why": "Lua unsandboxed; host only",
+   "never": "engine design fact, no mod-file form"
+  },
+  "MIS-21": {
+   "chk": "built",
+   "class": "silent",
+   "why": "other durations not selectable"
+  },
+  "MIS-22": {
+   "chk": "built",
+   "class": "silent",
+   "why": "only first matching pool applies, no message",
+   "tool": "milint",
+   "how": "unit tags match two or more commandPoints pools"
+  },
+  "MIS-23": {
+   "chk": "never",
+   "class": "info",
+   "why": "mod term differs from SDL mod check",
+   "never": "mechanism difference; nothing to hit"
+  },
+  "MIS-24": {
+   "chk": "built",
+   "class": "silent",
+   "why": "map without mode file skipped, log only"
+  },
+  "MIS-25": {
+   "chk": "never",
+   "class": "review",
+   "why": "engine handling unknown; needs a game test",
+   "never": "engine handling not decidable from files"
+  },
+  "MIS-26": {
+   "chk": "built",
+   "class": "crash",
+   "why": "fatal Unknown thread statement"
+  },
+  "MIS-27": {
+   "chk": "built",
+   "class": "crash",
+   "why": "unknown condition term: fatal error with message at load"
+  },
+  "MIS-28": {
+   "chk": "built",
+   "class": "silent",
+   "why": "other trigger keys skipped silently"
+  },
+  "MIS-29": {
+   "chk": "built",
+   "class": "silent",
+   "why": "bad expression: trigger never fires"
+  }
+ },
+ "dead": [
+  {
+   "row": "MIS-08",
+   "tool": "milint",
+   "code": "MIS_BOT_ORDER",
+   "fix": {
+    "code": "WARN_MIS_BOT_ORDER"
+   }
+  },
+  {
+   "row": "MIS-12",
+   "tool": "cvarcheck",
+   "code": "CVAR_NO_PIPE",
+   "fix": {
+    "code": null,
+    "why": "removed: cvarcheck retired to tools/_retired"
+   }
+  }
+ ]
+}

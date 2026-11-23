@@ -1,0 +1,23 @@
+{
+ "tool": "bootcheck",
+ "version": 1,
+ "kind": "base",
+ "game": "goh",
+ "window": "to-clock",
+ "reachedClock": true,
+ "errorLines": 0,
+ "warningLines": 10,
+ "errors": {},
+ "warnings": {
+  "/texture/common/service/selection_circle.dds: No MIP levels! @ /entity/service/selection_circle/selection_circle.def": 1,
+  "Skipping broken shader cache file //shader_cache/dx11.#/06e81ab9141ec0625d944206c16926b5.hso": 1,
+  "Skipping broken shader cache file //shader_cache/dx11.#/45c9015fc68ecb4c0c96e4a158224779.hso": 1,
+  "Skipping broken shader cache file //shader_cache/dx11.#/470bfdfaee8dd62e5141f437871b9e72.hso": 1,
+  "Skipping broken shader cache file //shader_cache/dx11.#/4993fcfee53d4ed774e64e752edb9dbd.hso": 1,
+  "Skipping broken shader cache file //shader_cache/dx11.#/5e2c520f4702cfc62930f49057532b47.hso": 1,
+  "Skipping broken shader cache file //shader_cache/dx11.#/783b43787cbadce5035c02100fb81701.hso": 1,
+  "Skipping broken shader cache file //shader_cache/dx11.#/7e90a6dadab1d4cc723fe97f922567b2.hso": 1,
+  "Skipping broken shader cache file //shader_cache/dx11.#/e29cb61ecd49a6a2b245f266f49b0266.hso": 1,
+  "Skipping broken shader cache file //shader_cache/dx11.#/ebe4994067f3480b79fc09dfee76740f.hso": 1
+ }
+}

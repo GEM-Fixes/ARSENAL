@@ -1,0 +1,7 @@
+{
+  "name": "m2fix",
+  "game": "mowas2",
+  "fixture": ["trs_m"],
+  "mods": ["trs_m"],
+  "verdict": [{ "log": "Game started", "want": true }]
+}

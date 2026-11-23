@@ -1,0 +1,923 @@
+{
+ "thing": "item",
+ "files": [
+  "resource/set/stuff/grenade/<nn kind>/<name>.grenade (+ grenade/*.pattern, set/stuff/throwable.pattern)",
+  "resource/set/stuff/explosive/<name>[.mine], med/, capacity/, content/, head/ (+ helmet/headgear.pattern), body/ (+ overcoat.pattern), special/ (+ flag.pattern), melee/ (+ knife/sword.pattern)",
+  "resource/set/stuff/thrower.hand (shared throwing hand)",
+  "resource/entity/inventory/<e>/<e>.{def,mdl,ply,mtl,dds}; resource/properties/stuff_{small,grenade,mine}.ext",
+  "resource/set/interaction_entity/{grenade,explosive}.inc (fuse, smoke, detonation by props)",
+  "breeds {inventory {item}} {armors}, vehicle {extender \"inventory\" {box}}, supply_zone",
+  "resource/interface/text/desc.lng"
+ ],
+ "groups": [
+  {
+   "id": "id",
+   "name": "What it is and what it copies"
+  },
+  {
+   "id": "model",
+   "name": "Model and skin"
+  },
+  {
+   "id": "numbers",
+   "name": "Numbers it holds"
+  },
+  {
+   "id": "throw",
+   "name": "Throwing"
+  },
+  {
+   "id": "fuse",
+   "name": "Fuse and preparing"
+  },
+  {
+   "id": "blast",
+   "name": "Blast, shaped charge, smoke"
+  },
+  {
+   "id": "anim",
+   "name": "How it is held"
+  },
+  {
+   "id": "inventory",
+   "name": "Inventory"
+  },
+  {
+   "id": "sound",
+   "name": "Sound"
+  },
+  {
+   "id": "carry",
+   "name": "Who carries it"
+  },
+  {
+   "id": "text",
+   "name": "Name text"
+  }
+ ],
+ "vars": [
+  {
+   "key": "item.id",
+   "where": "file name (tags from the name split on dots; .grenade/.mine add the word)",
+   "type": "text",
+   "plain": "Name of the item.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "m24x5.grenade",
+     "antitank.mine",
+     "medkit",
+     "binocular"
+    ]
+   },
+   "count": 125,
+   "group": "id",
+   "ref": null,
+   "tool": "gen clone (stuff + tags)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.kind",
+   "where": "folder set/stuff/<kind>/",
+   "type": "choice",
+   "plain": "What sort of thing: grenade (smoke, anti-personnel, anti-tank), mine or charge, medical, container, contents, helmet or cap, body armour, special tool, melee.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "grenade/00 grenade_smoke",
+     "grenade/01 grenade_ap",
+     "grenade/02 grenade_at",
+     "explosive",
+     "med",
+     "capacity",
+     "content",
+     "head",
+     "body",
+     "special",
+     "melee"
+    ]
+   },
+   "count": 125,
+   "group": "id",
+   "ref": null,
+   "tool": "gen clone (same folder as the base)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.type",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: root word",
+   "type": "choice",
+   "plain": "Engine kind: item (most), weapon_throwing (the throwing hand).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "item",
+     "from",
+     "weapon_bullet",
+     "bullet"
+    ]
+   },
+   "count": 41,
+   "group": "id",
+   "ref": null,
+   "tool": "gen clone (inherits it)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.from",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {from \"pattern x\"}",
+   "type": "ref",
+   "plain": "The item or pattern this one copies (pattern throwable, grenade_ap, grenade_at, grenade_smoke, knife, helmet ...).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "pattern throwable",
+     "pattern grenade_ap",
+     "pattern grenade_at",
+     "pattern grenade_smoke",
+     "pattern helmet",
+     "pattern headgear"
+    ]
+   },
+   "count": 91,
+   "group": "id",
+   "ref": "stuff pattern",
+   "tool": "gen clone stuff",
+   "limit": "KEY-19",
+   "tag": "V"
+  },
+  {
+   "key": "item.tag.hands",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {tag} hand word",
+   "type": "choice",
+   "plain": "How it is held: one small item in one hand, one hand, two hands, or to_hand.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "smallitemin1hand",
+     "itemin1hand",
+     "itemin2hands",
+     "to_hand"
+    ]
+   },
+   "count": 56,
+   "group": "anim",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/tag, op add)",
+   "limit": "HUM-28",
+   "tag": "V"
+  },
+  {
+   "key": "item.tag.class",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {tag} class words",
+   "type": "list",
+   "plain": "What it counts as: grenade, dynamite, smoke, armor, capacity, liquid, fortification, knife, ap, big, cumulative, ic (fire).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "grenade",
+     "dynamite",
+     "armor",
+     "capacity",
+     "liquid",
+     "fortification",
+     "ap",
+     "cumulative",
+     "ic"
+    ]
+   },
+   "count": 56,
+   "group": "id",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/tag, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.tag.flags",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {tag} flags",
+   "type": "list",
+   "plain": "Behaviour words: dropboxed, nokeep, stackable, keepEntity, -missile, player_bonus_target.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "dropboxed",
+     "nokeep",
+     "stackable",
+     "keepentity",
+     "-missile",
+     "player_bonus_target"
+    ]
+   },
+   "count": 56,
+   "group": "id",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/tag, op add)",
+   "limit": "HUM-23",
+   "tag": "V"
+  },
+  {
+   "key": "item.entity",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {entity}",
+   "type": "ref",
+   "plain": "Model of the item (entity under entity/inventory/).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "mine_antitank_jap",
+     "body_armor",
+     "kamikaze_bomb",
+     "barrel1",
+     "box1",
+     "can",
+     "box2",
+     "dummy_item"
+    ]
+   },
+   "count": 119,
+   "group": "model",
+   "ref": "entity def",
+   "tool": "gen set (entity file:<stuff key>, path <root>/entity, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.model.def",
+   "where": "entity/inventory/<e>/<e>.{def,mdl,ply,mtl,dds}",
+   "type": "file",
+   "plain": "The item's model files and skin; the def includes stuff_small/stuff_grenade/stuff_mine.ext and ties back with {extender \"stuff\" {item}}.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "air_bomb.mdl",
+     "flaergun_ammo.mdl",
+     "medkit.mdl",
+     "radio_station.mdl",
+     "sandbag_kit.mdl",
+     "flaergun.mdl",
+     "20cm_rocket_ammo.mdl",
+     "30cm_rocket_ammo.mdl"
+    ]
+   },
+   "count": 326,
+   "group": "model",
+   "ref": "entity def + model",
+   "tool": "gen clone (entity + as, copy_assets) / /art/copy / Models page",
+   "limit": "KEY-32",
+   "tag": "V"
+  },
+  {
+   "key": "item.model.props",
+   "where": "entity def {props ..}",
+   "type": "choice",
+   "plain": "Behaviour of the thrown model: grenade (timed), grenade contact (explodes on impact), smoke.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "grenade",
+     "grenade contact",
+     "smoke",
+     "steel",
+     "explosive_stuff"
+    ]
+   },
+   "count": 122,
+   "group": "fuse",
+   "ref": "set/interaction_entity/grenade.inc, properties/stuff_grenade.ext",
+   "tool": "gen set (def path actor/props)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.model.collider",
+   "where": "entity def {collider}",
+   "type": "choice",
+   "plain": "Collision class of the dropped or thrown model.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "ammo",
+     "stuff.construction",
+     "construction",
+     "grenade",
+     "stuff",
+     "torpedo",
+     "mine.ap",
+     "mine.at"
+    ]
+   },
+   "count": 100,
+   "group": "model",
+   "ref": null,
+   "tool": "gen set (def path)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.skin.texture",
+   "where": "entity/inventory/<e>/*.dds named in .mtl",
+   "type": "file",
+   "plain": "Pictures painted on the item.",
+   "unit": null,
+   "vanilla": null,
+   "count": 120,
+   "group": "model",
+   "ref": "texture",
+   "tool": "/art/copy or task upload",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "item.icon.preview",
+   "where": ".mdl {Extender \"preview\" {\"Stuff\" {camera} {lights}}}",
+   "type": "list",
+   "plain": "The inventory picture is the model drawn live; this sets its camera.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "inventory",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "item.mass",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {mass}",
+   "type": "number",
+   "plain": "Weight.",
+   "unit": "kg",
+   "vanilla": {
+    "min": 0.1,
+    "max": 25
+   },
+   "count": 52,
+   "group": "id",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/mass, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.desc",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {desc}",
+   "type": "text",
+   "plain": "Optional text key for the name.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "desc/container/box",
+     "desc/container/small_box",
+     "desc/stuff/petrol",
+     "Stuff not found"
+    ]
+   },
+   "count": 4,
+   "group": "text",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/desc, op add)",
+   "limit": "LOC-15",
+   "tag": "V"
+  },
+  {
+   "key": "item.inventory.size",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {inventory {size w h}}",
+   "type": "list",
+   "plain": "Inventory cells it takes.",
+   "unit": "cells",
+   "vanilla": {
+    "min": 1,
+    "max": 6
+   },
+   "count": 49,
+   "group": "inventory",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/size, op add)",
+   "limit": "HUM-23",
+   "tag": "V"
+  },
+  {
+   "key": "item.inventory.weight",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {inventory {weight}}",
+   "type": "number",
+   "plain": "Inventory weight.",
+   "unit": null,
+   "vanilla": {
+    "min": 1,
+    "max": 100
+   },
+   "count": 43,
+   "group": "inventory",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/weight, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.inventory.fsm",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {inventory {fsm}}",
+   "type": "choice",
+   "plain": "How a soldier carries and handles it (belt, stuff, hand-only).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "belt",
+     "stuff",
+     "hand-only"
+    ]
+   },
+   "count": 39,
+   "group": "anim",
+   "ref": "set/stuff/_settings/*.fsm",
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/fsm, op add)",
+   "limit": "HUM-26",
+   "tag": "V"
+  },
+  {
+   "key": "item.inventory.noview",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {inventory {noView}}",
+   "type": "bool",
+   "plain": "Not shown in the inventory (contents such as fuel).",
+   "unit": null,
+   "vanilla": null,
+   "count": 6,
+   "group": "inventory",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/noView, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.inventory.link_bone",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {inventory {link_bone}}",
+   "type": "text",
+   "plain": "Body bone it hangs on.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "gun_back"
+    ]
+   },
+   "count": 1,
+   "group": "inventory",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/inventory/link_bone, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.filling",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {filling \"content\" n}",
+   "type": "list",
+   "plain": "What it holds and how much (fuel can, medkit drug, light).",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "light 0",
+     "liquid 500",
+     "liquid 60",
+     "drug 500"
+    ]
+   },
+   "count": 5,
+   "group": "numbers",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/filling, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.preloaded",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {preloaded}",
+   "type": "bool",
+   "plain": "Comes already filled.",
+   "unit": null,
+   "vanilla": null,
+   "count": 1,
+   "group": "numbers",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/preloaded, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.throw.range",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {throw {range}}",
+   "type": "number",
+   "plain": "Farthest it can be thrown.",
+   "unit": "m",
+   "vanilla": {
+    "min": 1.5,
+    "max": 25
+   },
+   "count": 13,
+   "group": "throw",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/throw/range, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.throw.startangle",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {throw {startAngle}}",
+   "type": "number",
+   "plain": "Throw angle above the ground (held between 10 and 80).",
+   "unit": "deg",
+   "vanilla": {
+    "min": 30,
+    "max": 90
+   },
+   "count": 8,
+   "group": "throw",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/throw/startAngle, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.throw.constantspeed",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {throw {constantSpeed}}",
+   "type": "number",
+   "plain": "Fixed throw speed instead of one worked out from the distance.",
+   "unit": null,
+   "vanilla": {
+    "min": 6,
+    "max": 12
+   },
+   "count": 3,
+   "group": "throw",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/throw/constantSpeed, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.throw.spreading",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {throw {spreading n {RadiusFunction ..}}}",
+   "type": "number",
+   "plain": "How far throws scatter.",
+   "unit": "m",
+   "vanilla": {
+    "min": 0.1,
+    "max": 0.3
+   },
+   "count": 4,
+   "group": "throw",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/throw/spreading, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.thrower",
+   "where": "set/stuff/thrower.hand (weapon_throwing: aimRange, AimingTolerance, states, filling \"throwable\")",
+   "type": "ref",
+   "plain": "The shared throwing hand every soldier uses; changes it for all thrown items.",
+   "unit": null,
+   "vanilla": null,
+   "count": 1,
+   "group": "throw",
+   "ref": "weapon_throwing",
+   "tool": "gen set (entity file:<stuff key>, path <root>/aimRange, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.special.mode",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {special {mode}}",
+   "type": "choice",
+   "plain": "detonate: a charge set off by its timer or the soldier.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "detonate",
+     "aim"
+    ]
+   },
+   "count": 6,
+   "group": "fuse",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/special/mode, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.special.preparetime",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {special {PrepareTime}}",
+   "type": "number",
+   "plain": "Time to prepare (set the charge) before it can be used.",
+   "unit": "s",
+   "vanilla": {
+    "min": 0.01,
+    "max": 10
+   },
+   "count": 6,
+   "group": "fuse",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/special/PrepareTime, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.special.preparecursor",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {special {PrepareCursor}}",
+   "type": "ref",
+   "plain": "Cursor while preparing.",
+   "unit": null,
+   "vanilla": {
+    "values": [
+     "grenade"
+    ]
+   },
+   "count": 6,
+   "group": "fuse",
+   "ref": "cursor",
+   "tool": "gen set (entity file:<stuff key>, path <root>/special/PrepareCursor, op add)",
+   "limit": "UI-21",
+   "tag": "V"
+  },
+  {
+   "key": "item.fuse.time",
+   "where": "no stuff key found for a hand grenade's timed fuse",
+   "type": "number",
+   "plain": "Delay of a timed grenade; not found in data, may be fixed in the engine.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "fuse",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "T"
+  },
+  {
+   "key": "item.mine.time",
+   "where": "mine entity def {extender \"mine\" {time}}",
+   "type": "number",
+   "plain": "Arming time of a laid mine.",
+   "unit": "s",
+   "vanilla": null,
+   "count": 2,
+   "group": "fuse",
+   "ref": null,
+   "tool": "gen set (def path)",
+   "limit": "KEY-29",
+   "tag": "V"
+  },
+  {
+   "key": "item.mine.obstacle",
+   "where": "mine entity def {Obstacle \"body\" {Circle2 {Radius}}}",
+   "type": "number",
+   "plain": "Area units path around.",
+   "unit": "game units",
+   "vanilla": null,
+   "count": 2,
+   "group": "model",
+   "ref": null,
+   "tool": "gen set (def path)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.smoke",
+   "where": "entity props \"smoke\" + set/interaction_entity/grenade.inc \"grenade smoke\"",
+   "type": "text",
+   "plain": "Smoke screen: start 3 s after landing, lasts about 60 s; numbers live in the shared interaction file, not the item.",
+   "unit": null,
+   "vanilla": null,
+   "count": 4,
+   "group": "blast",
+   "ref": "interaction",
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.damage.blastwave.energy",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {damage [add] blastwave {energy}}",
+   "type": "number",
+   "plain": "Blast strength of a layer.",
+   "unit": null,
+   "vanilla": {
+    "min": 0.5,
+    "max": 50
+   },
+   "count": 11,
+   "group": "blast",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/damage/energy, op add) (first layer only)",
+   "limit": "KEY-02",
+   "tag": "V"
+  },
+  {
+   "key": "item.damage.blastwave.area",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {damage [add] blastwave {area inner outer}}",
+   "type": "list",
+   "plain": "Full strength inside the first radius, nothing at the second.",
+   "unit": "m",
+   "vanilla": {
+    "min": 0.2,
+    "max": 15
+   },
+   "count": 11,
+   "group": "blast",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/damage/area, op add)",
+   "limit": "GPL-01",
+   "tag": "V"
+  },
+  {
+   "key": "item.damage.blastwave.add",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {damage add blastwave}",
+   "type": "bool",
+   "plain": "Adds a layer; without add the inherited first layer is replaced.",
+   "unit": null,
+   "vanilla": null,
+   "count": 9,
+   "group": "blast",
+   "ref": null,
+   "tool": null,
+   "limit": "KEY-17",
+   "tag": "V"
+  },
+  {
+   "key": "item.damage.cumulative.damage",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {damage cumulative {damage}}",
+   "type": "number",
+   "plain": "Armour piercing of the shaped charge (anti-tank grenades).",
+   "unit": "mm",
+   "vanilla": {
+    "values": [
+     "75",
+     "85",
+     "100",
+     "120",
+     "150"
+    ]
+   },
+   "count": 5,
+   "group": "blast",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/damage/damage, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.damage.cumulative.distance",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {damage cumulative {distance}}",
+   "type": "number",
+   "plain": "How far the shaped-charge jet reaches.",
+   "unit": "m",
+   "vanilla": {
+    "min": 0.3,
+    "max": 1
+   },
+   "count": 5,
+   "group": "blast",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/damage/distance, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.damage.fire",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {damage fire {radius}{heating}{time}}",
+   "type": "list",
+   "plain": "Sets things on fire (fire bottles use the ic tag instead in vanilla).",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "blast",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "item.possibledamageradius",
+   "where": "item file set/stuff/{grenade/<nn kind>,explosive,med,capacity,content,head,body,special,melee}/<name>[.grenade|.mine] or its pattern: {possibleDamageRadius}",
+   "type": "number",
+   "plain": "Radius the computer's soldiers avoid; does not change damage.",
+   "unit": "m",
+   "vanilla": {
+    "min": 0.3,
+    "max": 5
+   },
+   "count": 5,
+   "group": "blast",
+   "ref": null,
+   "tool": "gen set (entity file:<stuff key>, path <root>/possibleDamageRadius, op add)",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "item.explosive_amount",
+   "where": "sum of all blast layers of carried items",
+   "type": "number",
+   "plain": "Carried explosives add up to how likely a vehicle or soldier cooks off.",
+   "unit": null,
+   "vanilla": null,
+   "count": 0,
+   "group": "blast",
+   "ref": null,
+   "tool": null,
+   "limit": "DMG-18",
+   "tag": "V"
+  },
+  {
+   "key": "item.armor.slot",
+   "where": "breed {armors {head <item>}} / tag armor",
+   "type": "choice",
+   "plain": "Helmets and body armour go in the armour slot; the protection value belongs to the soldier, not the item.",
+   "unit": null,
+   "vanilla": null,
+   "count": 281,
+   "group": "numbers",
+   "ref": null,
+   "tool": "gen breed set (armors/head)",
+   "limit": "HUM-24",
+   "tag": "V"
+  },
+  {
+   "key": "item.sound",
+   "where": "interaction effects by tag (e.g. link_sound \"detonation/grenade_smoke/..\")",
+   "type": "text",
+   "plain": "Explosion or hiss sound, picked by the item's class in the interaction files.",
+   "unit": null,
+   "vanilla": null,
+   "count": 1,
+   "group": "sound",
+   "ref": "sound",
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "item.carry.breed_item",
+   "where": "breed {inventory {item \"tags\" n}}",
+   "type": "list",
+   "plain": "Which soldiers carry it and how many.",
+   "unit": null,
+   "vanilla": null,
+   "count": 281,
+   "group": "carry",
+   "ref": null,
+   "tool": "gen breed set (+inventory/item)",
+   "limit": "HUM-21",
+   "tag": "I"
+  },
+  {
+   "key": "item.carry.vehicle_box",
+   "where": "vehicle def {extender \"inventory\" {box {item \"tags\" n}}}",
+   "type": "list",
+   "plain": "How many a vehicle stores.",
+   "unit": null,
+   "vanilla": null,
+   "count": 301,
+   "group": "carry",
+   "ref": null,
+   "tool": "gen set",
+   "limit": "HUM-23",
+   "tag": "V"
+  },
+  {
+   "key": "item.carry.supply",
+   "where": "{extender \"supply_zone\" {resupply {item \"tags\" n}}}",
+   "type": "list",
+   "plain": "Refilled by supply trucks or crates.",
+   "unit": null,
+   "vanilla": null,
+   "count": 1,
+   "group": "carry",
+   "ref": null,
+   "tool": "gen set",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "item.text.name",
+   "where": "desc.lng desc/stuff/<tags> (or desc/weapon for grenades) / mod #file.lng",
+   "type": "text",
+   "plain": "Name of the item in the game.",
+   "unit": null,
+   "vanilla": null,
+   "count": 1,
+   "group": "text",
+   "ref": "localization",
+   "tool": "gen clone name / gen text",
+   "limit": "LOC-15",
+   "tag": "I"
+  }
+ ],
+ "gaps": [
+  "no op makes a new item from a like item with its numbers -> op item (name, like, kind, throw {range, angle, speed, spread}, blast layers, cumulative, size, weight, mass)",
+  "second and later blast layers ({damage add blastwave}) cannot be addressed by gen set paths -> op item field blast (layers written whole)",
+  "item model/skin/inventory picture: no op clones an inventory entity and re-points {extender \"stuff\" {item}} -> op stuffmodel (shared with gun)",
+  "mine arming time and props (contact fuse) live in the entity def: gen set works only once the def is in the mod -> op stuffmodel fields props, mine_time",
+  "who carries it: breed inventory lines and armour slot only via raw gen breed set -> op kit (shared with gun)",
+  "smoke length and timed grenade fuse are not item keys (shared interaction file / engine) -> no op; timed fuse needs an in-game test [T]"
+ ]
+}

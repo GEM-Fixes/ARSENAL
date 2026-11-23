@@ -1,0 +1,20 @@
+{"form":"limmap/1","part":"chk-chk-hum","codes":{
+"HUM_WEAPON_RELOAD_PERK":{"tool":"humlint","sev":"silent","lim":["HUM-11"],"at":"tools/humlint/humlint.js:262","class":"silent","why":"weapon_reload perk or ability def outside veterancy is read by nothing"},
+"HUM_VETERANCY_TIED":{"tool":"humlint","sev":"silent","lim":["HUM-17"],"at":"tools/humlint/humlint.js:278","class":"silent","why":"breed veterancy ranks with one threshold are active together, no stacking"},
+"HUM_FILLED_N_GLOBAL":{"tool":"humlint","sev":"silent","lim":["HUM-20"],"at":"tools/humlint/humlint.js:291","class":"silent","why":"breed filled N rewrites magazine size of stuff other breeds carry"},
+"HUM_IN_HANDS_RANGE":{"tool":"humlint","sev":"silent","lim":["HUM-21"],"at":"tools/humlint/humlint.js:285","class":"silent","why":"in_hands index beyond item blocks is ignored, hand stays empty"},
+"HUM_HOLDER_TWO_ITEMS":{"tool":"humlint","sev":"silent","lim":["HUM-25"],"at":"tools/humlint/humlint.js:164","class":"silent","why":"second weapon item on one holder place is ignored"},
+"HUM_WEAPON_NO_TAG":{"tool":"humlint","sev":"silent","lim":["HUM-27"],"at":"tools/humlint/humlint.js:247","class":"silent","why":"weapon type tag without weapon tag makes the stuff a plain item"},
+"HUM_VISION_RADIUS_TINY":{"tool":"humlint","sev":"silent","lim":["TST-106"],"at":"tools/humlint/humlint.js:240","class":"silent","why":"vision_human radius of a few metres stops every infantry kill"},
+"WARN_HUM_HEALTH_FAR":{"tool":"humlint","sev":"silent","lim":["TST-107"],"at":"tools/humlint/humlint.js:172","class":"silent","why":"human.ext Health max far from 100 changes all kill times"}
+},"result":{
+"HUM-11":{"state":"built","code":"HUM_WEAPON_RELOAD_PERK","why":""},
+"HUM-17":{"state":"built","code":"HUM_VETERANCY_TIED","why":""},
+"HUM-19":{"state":"never","code":null,"why":"vanilla breeds use other tags (officer, stealth) as selectors"},
+"HUM-20":{"state":"built","code":"HUM_FILLED_N_GLOBAL","why":""},
+"HUM-21":{"state":"built","code":"HUM_IN_HANDS_RANGE","why":""},
+"HUM-25":{"state":"built","code":"HUM_HOLDER_TWO_ITEMS","why":""},
+"HUM-27":{"state":"built","code":"HUM_WEAPON_NO_TAG","why":""},
+"TST-106":{"state":"built","code":"HUM_VISION_RADIUS_TINY","why":""},
+"TST-107":{"state":"built","code":"WARN_HUM_HEALTH_FAR","why":""}
+}}

@@ -1,0 +1,27 @@
+// recipe "make a mod": strings, rows [key, en, ru, uk, zh]; every key starts with task.mod. Plain words, no dash characters.
+// Author: Imperator_Aug (ARSENAL, ia-000fd2c3)
+'use strict';
+module.exports = [
+  ['task.mod.t', 'a mod', 'мод', 'мод', '一个模组'],
+  ['task.mod.g.place', 'Where the mod goes', 'Где будет мод', 'Де буде мод', '模组放在哪里'],
+  ['task.mod.g.info', 'What the game shows', 'Что показывает игра', 'Що показує гра', '游戏显示的内容'],
+  ['task.mod.g.more', 'More about the mod', 'Ещё о моде', 'Ще про мод', '模组的更多信息'],
+  ['task.mod.q.place', 'Where does the new mod go?', 'Куда положить новый мод?', 'Куди покласти новий мод?', '新模组放在哪里？'],
+  ['task.mod.h.place', 'The game lists only the mods in its own mods folder, so that is best.', 'Игра показывает только моды из своей папки mods, поэтому так лучше всего.', 'Гра показує лише моди зі своєї теки mods, тому так найкраще.', '游戏只列出它自己 mods 文件夹里的模组，所以这样最好。'],
+  ['task.mod.v.place.game', "The game's mods folder (best: the game lists it at once)", 'Папка mods игры (лучше всего: игра сразу его покажет)', 'Тека mods гри (найкраще: гра одразу його покаже)', '游戏的 mods 文件夹（最好：游戏会立即列出它）'],
+  ['task.mod.v.place.other', 'Another folder (you install it later on the Mods page)', 'Другая папка (установите мод потом на странице «Моды»)', 'Інша тека (встановіть мод потім на сторінці «Моди»)', '其他文件夹（之后在模组页面安装）'],
+  ['task.mod.q.where', 'Which folder does the new mod go in?', 'В какую папку положить новый мод?', 'У яку теку покласти новий мод?', '新模组放在哪个文件夹？'],
+  ['task.mod.h.where', 'The full path of a folder on this PC. The game does not list a mod from here; install it later on the Mods page.', 'Полный путь к папке на этом ПК. Игра не покажет мод отсюда; установите его потом на странице «Моды».', 'Повний шлях до теки на цьому ПК. Гра не покаже мод звідси; встановіть його потім на сторінці «Моди».', '这台电脑上某个文件夹的完整路径。游戏不会从这里列出模组；之后在模组页面安装即可。'],
+  ['task.mod.q.folder', 'Folder name of the new mod', 'Имя папки нового мода', 'Імʼя теки нового моду', '新模组的文件夹名'],
+  ['task.mod.h.folder', 'Lowercase English letters a to z, digits 0 to 9 and _ only, no spaces, for example my_first_mod. It is made from the title; change it if you like. It must not be taken in that folder.', 'Только строчные английские буквы a до z, цифры 0 до 9 и _, без пробелов, например my_first_mod. Оно сделано из названия; можно изменить. Имя не должно быть занято в этой папке.', 'Лише малі англійські літери a до z, цифри 0 до 9 та _, без пробілів, наприклад my_first_mod. Її зроблено з назви; можна змінити. Імʼя не має бути зайняте в цій теці.', '只能用小写英文字母 a 到 z、数字 0 到 9 和 _，不能有空格，例如 my_first_mod。它根据标题生成，可以修改。该文件夹中不能已有同名模组。'],
+  ['task.mod.h.folderEx', 'Use lowercase a to z, 0 to 9 and _, starting with a letter, for example my_first_mod.', 'Используйте строчные a до z, 0 до 9 и _, начиная с буквы, например my_first_mod.', 'Використовуйте малі a до z, 0 до 9 та _, починаючи з літери, наприклад my_first_mod.', '请用小写 a 到 z、0 到 9 和 _，以字母开头，例如 my_first_mod。'],
+  ['task.mod.q.title', 'Title shown in the game\'s mod list', 'Название в списке модов игры', 'Назва у списку модів гри', '游戏模组列表中显示的标题'],
+  ['task.mod.h.title', 'Any words you like (name in mod.info).', 'Любые слова (name в mod.info).', 'Будь які слова (name у mod.info).', '任意文字（mod.info 中的 name）。'],
+  ['task.mod.q.desc', 'A short description', 'Короткое описание', 'Короткий опис', '简短说明'],
+  ['task.mod.h.desc', 'One or two sentences (desc in mod.info). You can leave it empty.', 'Одно или два предложения (desc в mod.info). Можно оставить пустым.', 'Одне або два речення (desc у mod.info). Можна залишити порожнім.', '一两句话（mod.info 中的 desc）。可以留空。'],
+  ['task.mod.h.whereGoh', 'Gates of Hell: ARSENAL never writes into the game folder, so pick a folder outside it (for example on your Desktop). When the mod is ready, copy its folder into the mods folder of Gates of Hell yourself.', 'Gates of Hell: ARSENAL никогда не пишет в папку игры, поэтому выберите папку вне её (например, на рабочем столе). Когда мод готов, скопируйте его папку в папку mods Gates of Hell сами.', 'Gates of Hell: ARSENAL ніколи не пише в теку гри, тому виберіть теку поза нею (наприклад, на робочому столі). Коли мод готовий, скопіюйте його теку в теку mods Gates of Hell самі.', 'Gates of Hell：ARSENAL 从不写入游戏文件夹，所以请选择游戏文件夹以外的文件夹（例如桌面）。模组做好后，请自己把它的文件夹复制到 Gates of Hell 的 mods 文件夹中。'],
+  ['task.mod.q.deps', 'Mods it needs', 'Какие моды нужны', 'Які моди потрібні', '需要哪些模组'],
+  ['task.mod.h.deps', 'Mods that must be switched on with it (deps in mod.info). Add a line and pick a mod from the list. Most mods need none.', 'Моды, которые должны быть включены вместе с ним (deps в mod.info). Добавьте строку и выберите мод из списка. Обычно не нужно ничего.', 'Моди, які мають бути ввімкнені разом із ним (deps у mod.info). Додайте рядок і виберіть мод зі списку. Зазвичай нічого не потрібно.', '必须与它一起启用的模组（mod.info 中的 deps）。添加一行并从列表中选择模组。大多数模组不需要。'],
+  ['task.mod.c.list', 'The mod shows in the game\'s mod list with its title', 'Мод виден в списке модов игры со своим названием', 'Мод видно у списку модів гри з його назвою', '模组带着标题出现在游戏的模组列表中'],
+  ['task.mod.c.on', 'On the Mods page, switch the mod on, then start the game: it starts with no error.', 'На странице «Моды» включите мод, потом запустите игру: она запускается без ошибки.', 'На сторінці «Моди» увімкніть мод, потім запустіть гру: вона запускається без помилки.', '在模组页面启用该模组，然后启动游戏：游戏能正常启动，没有错误。'],
+];

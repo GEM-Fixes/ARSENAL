@@ -1,0 +1,160 @@
+{
+  "form": "limclass/1",
+  "area": "ENG2",
+  "rows": {
+    "ENG-15": {
+      "chk": "never",
+      "class": "info",
+      "why": "sync check period, fact",
+      "never": "engine constant"
+    },
+    "ENG-16": {
+      "chk": "never",
+      "class": "info",
+      "why": "threading rule for the game, fact",
+      "never": "engine internals"
+    },
+    "ENG-17": {
+      "chk": "built",
+      "class": "silent",
+      "why": "bad cross-file refs fail lazily at use"
+    },
+    "ENG-18": {
+      "chk": "never",
+      "class": "silent",
+      "why": "later tag changes do not reselect blocks, quiet",
+      "never": "engine runtime behaviour"
+    },
+    "ENG-19": {
+      "chk": "built",
+      "class": "crash",
+      "why": "ed_reloadInteractions at main menu crashes"
+    },
+    "ENG-20": {
+      "chk": "never",
+      "class": "info",
+      "why": "src vs shipped pacing differs, fact",
+      "never": "build difference, not mod data"
+    },
+    "ENG-21": {
+      "chk": "never",
+      "class": "info",
+      "why": "Phase line order, log reading fact",
+      "never": "log reading fact"
+    },
+    "ENG-22": {
+      "chk": "never",
+      "class": "hang",
+      "why": "workshop query stalls startup up to 15 s",
+      "never": "network runtime only"
+    },
+    "ENG-23": {
+      "chk": "never",
+      "class": "info",
+      "why": "packet type meaning, fact",
+      "never": "engine protocol"
+    },
+    "ENG-24": {
+      "chk": "built",
+      "class": "crash",
+      "why": "bad mod.info stops game start"
+    },
+    "ENG-25": {
+      "chk": "built",
+      "class": "crash",
+      "why": "mod.info parse exception ends game early"
+    },
+    "ENG-26": {
+      "chk": "built",
+      "class": "crash",
+      "why": "mode-mismatch mod leads to fallback font fatal"
+    },
+    "ENG-27": {
+      "chk": "never",
+      "class": "info",
+      "why": "source vars may be absent in exe, tool fact",
+      "never": "exe build content, only live console shows it"
+    },
+    "ENG-28": {
+      "chk": "never",
+      "class": "info",
+      "why": "editor-only cvars absent in release exe, fact",
+      "never": "exe build fact, not in mod files"
+    },
+    "ENG-29": {
+      "chk": "never",
+      "class": "info",
+      "why": "function-local var absent until first run, fact",
+      "never": "runtime registration timing of engine var"
+    },
+    "ENG-30": {
+      "chk": "never",
+      "class": "info",
+      "why": "installed exe older than src, fact",
+      "never": "installed exe age, not mod content"
+    },
+    "ENG-31": {
+      "chk": "never",
+      "class": "hang",
+      "why": "crashed game waits on dialog, live silent process",
+      "never": "runtime crash dialog behaviour, no mod file"
+    },
+    "ENG-32": {
+      "chk": "built",
+      "class": "crash",
+      "why": "missing Extension file fatal at def read"
+    },
+    "ENG-33": {
+      "chk": "built",
+      "class": "silent",
+      "why": "unknown boarder animation does nothing, no log",
+      "tool": "refcheck",
+      "how": "boarder animation names in unit files against model {anm} block names, not .anm files"
+    },
+    "ENG-34": {
+      "chk": "built",
+      "class": "crash",
+      "why": "missing .anm named in model is fatal"
+    },
+    "ENG-35": {
+      "chk": "built",
+      "class": "crash",
+      "why": "as64+ in player options hits fallback font fatal"
+    },
+    "ENG-36": {
+      "chk": "built",
+      "class": "crash",
+      "why": "access violation at main menu"
+    },
+    "ENG-37": {
+      "chk": "built",
+      "class": "crash",
+      "why": "armor ref to deleted def: fatal error with message when worn"
+    },
+    "ENG-38": {
+      "chk": "built",
+      "class": "review",
+      "why": "name-only match, entity absent on target"
+    }
+  },
+  "dead": [
+    {
+      "row": "ENG-19",
+      "tool": "cvarcheck",
+      "code": "CVAR_NO_PIPE",
+      "fix": {
+        "code": null,
+        "why": "removed: cvarcheck retired; TESTRUN_NO_PIPE is the nearest"
+      }
+    },
+    {
+      "row": "ENG-36",
+      "tool": "cvarcheck",
+      "code": "CVAR_NO_PIPE",
+      "fix": {
+        "code": null,
+        "why": "removed: cvarcheck retired; TESTRUN_NO_PIPE is the nearest"
+      }
+    }
+  ]
+}

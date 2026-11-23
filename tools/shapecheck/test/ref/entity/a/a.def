@@ -1,0 +1,12 @@
+{game_entity
+	{props "medium" "turret_rotator"}
+	{volume "body1"
+		{tags "body"}
+		{component "body"}
+		{thickness 30}
+	}
+	{extender "enumerator"
+		{digit_folder "ger"}
+	}
+	{damage 60 0.75}
+}

@@ -1,0 +1,4 @@
+{actor "b"
+  {foo 2}
+  {gears 2}
+}

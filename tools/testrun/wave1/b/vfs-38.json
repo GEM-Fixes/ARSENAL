@@ -1,0 +1,47 @@
+{
+  "name": "vfs-38",
+  "preflight": false,
+  "rows": [
+    "VFS-38"
+  ],
+  "fixture": [
+    "vfs-38"
+  ],
+  "mods": [
+    "as64+",
+    "vfs-38:3"
+  ],
+  "src": [
+    " (MountPatches stops at first missing)",
+    "(not part of this release)"
+  ],
+  "note": "1.pat and 3.pat, no 2.pat, count 3. Pass: 1.pat file answers, 3.pat file is \"file not found\". [T] the patch count under --stage-as (seed writes folder:0, key-23 form): if the 1.pat marker is missing the run is inconclusive, not row false; run unstaged then.",
+  "steps": [
+    {
+      "cmd": "exec \"vfs38_1.cfg\"",
+      "expect": "trs_vfs38_marker_1"
+    },
+    {
+      "cmd": "exec \"vfs38_3.cfg\"",
+      "expect": "file not found"
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "exec \"vfs38_1.cfg\"",
+      "match": "trs_vfs38_marker_1",
+      "want": true
+    },
+    {
+      "reply": "exec \"vfs38_3.cfg\"",
+      "match": "file not found",
+      "want": true
+    }
+  ],
+  "mode": "menu",
+  "params": {}
+}

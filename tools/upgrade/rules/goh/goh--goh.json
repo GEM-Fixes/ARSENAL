@@ -1,0 +1,15 @@
+[
+ {
+  "id": "version",
+  "kind": "version",
+  "from": "goh",
+  "to": "goh",
+  "scope": "mod.info",
+  "action": "rewrite",
+  "evidence": "PORT-46: range must hold the exe version, read from the exe",
+  "tag": "V",
+  "origin": "manual",
+  "test": "L2 Mod: activate mod",
+  "exe": true
+ }
+]

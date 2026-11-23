@@ -1,0 +1,2 @@
+{material "m" {diffuse tex_bare}}
+{material "n" {diffuse "$/ok/tex"}}

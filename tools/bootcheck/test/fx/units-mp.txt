@@ -1,0 +1,5 @@
+# roster units in newerr.log (CHAIN-G g4)
+mp/eng/rifle
+smg
+mgun
+tankman2

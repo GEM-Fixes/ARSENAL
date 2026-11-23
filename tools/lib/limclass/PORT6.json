@@ -1,0 +1,128 @@
+{
+ "form": "limclass/1",
+ "area": "PORT6",
+ "rows": {
+  "PORT-120": {
+   "chk": "built",
+   "class": "crash",
+   "why": "mission load aborts, file not found",
+   "tool": "goh2as2",
+   "how": "mdl polyhedron .vol file missing, key case-insensitive"
+  },
+  "PORT-121": {
+   "chk": "built",
+   "class": "crash",
+   "why": "null deref in SetItem",
+   "tool": "refcheck",
+   "how": "weapon tags in def matching no set/stuff entry"
+  },
+  "PORT-122": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unit never operatable, no log line",
+   "tool": "donorfit",
+   "how": "def and macro names missing from the mdl"
+  },
+  "PORT-123": {
+   "chk": "never",
+   "class": "info",
+   "why": "describes donorfit itself",
+   "never": "tool description"
+  },
+  "PORT-124": {
+   "chk": "built",
+   "class": "silent",
+   "why": "man wears or carries nothing",
+   "tool": "goh2as2",
+   "how": "GoH man def with skin or item but no breed set or stuff entry"
+  },
+  "PORT-125": {
+   "chk": "built",
+   "class": "crash",
+   "why": "breed include unresolved, exception",
+   "tool": "refcheck",
+   "how": "relative veterancy_generic include not beside the breed file"
+  },
+  "PORT-126": {
+   "chk": "built",
+   "class": "crash",
+   "why": "dangling include loads fail",
+   "tool": "goh2as2",
+   "how": "properties/goh/stuff_small.ext include of stuff.ext without stub"
+  },
+  "PORT-127": {
+   "chk": "built",
+   "class": "crash",
+   "why": "parser rejects limits on plain bone",
+   "tool": "donorfit",
+   "how": "limits or speed under a plain mdl bone, DF_PLAIN_BONE"
+  },
+  "PORT-128": {
+   "chk": "never",
+   "class": "review",
+   "why": "miss alone not a blocker",
+   "never": "whether a miss blocks needs game"
+  },
+  "PORT-129": {
+   "chk": "built",
+   "class": "silent",
+   "why": "donor units never damage foe",
+   "tool": "donorfit",
+   "how": "donor def Extension mdl and crew.ext doors or bones absent in mdl"
+  },
+  "PORT-130": {
+   "chk": "never",
+   "class": "review",
+   "why": "donor weapon vs rep calibre is a role choice",
+   "never": "role fit is a judgement"
+  },
+  "PORT-131": {
+   "chk": "built",
+   "class": "crash",
+   "why": "ply without mtl crashes at load",
+   "tool": "donorfit",
+   "how": "donor folder lacks mdl, ply, anm, mtl, vol, textures, DF_FOLDER"
+  },
+  "PORT-132": {
+   "chk": "never",
+   "class": "silent",
+   "why": "no damage, no log line",
+   "never": "rig cause unknown, needs game"
+  },
+  "PORT-133": {
+   "chk": "built",
+   "class": "silent",
+   "why": "0 shots, no log line",
+   "tool": "donorfit",
+   "how": "towed gun with Rotate and plain mdl basis bone"
+  },
+  "PORT-134": {
+   "chk": "built",
+   "class": "silent",
+   "why": "gun never fires, no log line",
+   "tool": "donorfit",
+   "how": "default aim bone foresight1 absent from mdl bones"
+  },
+  "PORT-135": {
+   "chk": "built",
+   "class": "cosmetic",
+   "why": "Cant find bone log noise",
+   "tool": "donorfit",
+   "how": "Barrels n>1 with mdl bones shot1 not shooter00"
+  },
+  "PORT-136": {
+   "chk": "never",
+   "class": "review",
+   "why": "donor armour and ammo need judgement",
+   "never": "role and armour class are intent"
+  },
+  "PORT-137": {
+   "chk": "built",
+   "class": "silent",
+   "why": "unit never operatable, no order lands",
+   "tool": "donorfit",
+   "how": "crew macro driver door absent from the mdl"
+  }
+ },
+ "dead": []
+}

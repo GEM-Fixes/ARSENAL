@@ -1,0 +1,43 @@
+{
+ "form": "limmap/1",
+ "part": "chk-chk-donor",
+ "codes": {
+  "WARN_FILLING_FORM": {
+   "tool": "donorfit",
+   "sev": "crash",
+   "lim": [
+    "PORT-162"
+   ],
+   "at": "tools/donorfit/donorfit.js:648",
+   "class": "crash",
+   "why": "no stuff file name carries all filling words: other game's form"
+  },
+  "WARN_FILLING_GUN": {
+   "tool": "donorfit",
+   "sev": "crash",
+   "lim": [
+    "PORT-156"
+   ],
+   "at": "tools/donorfit/donorfit.js:636",
+   "class": "crash",
+   "why": "def filling lacks the mounted gun's own filling words: null magazine"
+  }
+ },
+ "result": {
+  "PORT-103": { "state": "had", "code": "DF_FOLDER", "why": null },
+  "PORT-127": { "state": "had", "code": "DF_PLAIN_BONE", "why": null },
+  "PORT-131": { "state": "had", "code": "DF_FOLDER", "why": null },
+  "PORT-151": { "state": "had", "code": "DF_MATERIAL", "why": null },
+  "PORT-156": { "state": "built", "code": "WARN_FILLING_GUN", "why": null },
+  "PORT-162": { "state": "built", "code": "WARN_FILLING_FORM", "why": null },
+  "PORT-165": { "state": "had", "code": "DF_STUFF", "why": null },
+  "PORT-84": { "state": "had", "code": "DF_AIM", "why": null },
+  "PORT-105": { "state": "had", "code": "DF_BONE_MISSING", "why": null },
+  "PORT-122": { "state": "had", "code": "DF_BONE_MISSING", "why": null },
+  "PORT-129": { "state": "had", "code": "door", "why": null },
+  "PORT-133": { "state": "had", "code": "DF_GUN_BASIS", "why": null },
+  "PORT-134": { "state": "had", "code": "DF_AIM", "why": null },
+  "PORT-137": { "state": "had", "code": "door", "why": null },
+  "PORT-135": { "state": "had", "code": "DF_BARRELS", "why": null }
+ }
+}

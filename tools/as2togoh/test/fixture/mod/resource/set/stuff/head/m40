@@ -1,0 +1,4 @@
+{from "helmet pattern"
+  {entity "m40"}
+  {comment "шлем"}
+}

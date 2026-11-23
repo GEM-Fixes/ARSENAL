@@ -1,0 +1,38 @@
+{
+  "name": "key-23",
+  "rows": [
+    "KEY-23"
+  ],
+  "mode": "menu",
+  "fixture": [
+    "key-23"
+  ],
+  "mods": [
+    "as64+",
+    "key-23:1"
+  ],
+  "params": {},
+  "src": [
+    " (MountMod: resource/ then MountPatches)",
+    " (patch `delete`)",
+    " (exec falls back to /at/)"
+  ],
+  "note": "mod ships resource/at/key23.cfg (.cfg: loose .txt is never indexed, VFS-06) and 1.pat (built by install.js from 1.pat.zipsrc) whose key23.patch deletes at/key23.cfg. exec \"key23.cfg\" => \"file not found\" means the patch delete removed the mod-shipped file (row true); the marker text echoed means it survived. mod_set takes \"key-23:1\" (patch count) as in options.set {mods}: [T] whether mod_set accepts that form; a reply error shows in TESTRUN_CMD_FAIL. Live 2026-11-03 PASS; control without 1.pat echoes the marker.",
+  "steps": [
+    {
+      "cmd": "exec \"key23.cfg\"",
+      "expect": "file not found"
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "reply": "exec \"key23.cfg\"",
+      "match": "file not found",
+      "want": true
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{Skeleton
+ {bone "basis"
+  {animation
+   {sequence "walk"}
+   {sequence "none"}
+  }
+ }
+}

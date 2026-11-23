@@ -1,0 +1,38 @@
+{
+  "name": "spmis_defence",
+  "campaign": "spmis_examples",
+  "campaignTitle": "Generated missions",
+  "title": "Hold the line",
+  "briefing": "Our company dug in at the crossroads. Enemy attacks come in waves. Hold for eight minutes.",
+  "date": "June 1944",
+  "place": "Normandy",
+  "map": "map/single/01_usa-skirmish/01_usa-overlord",
+  "player": {
+    "army": "usa",
+    "start": "flag_a02",
+    "units": [
+      { "name": "hq", "def": "mp/usa/squadleader2", "count": 1, "at": "start" },
+      { "name": "line", "def": "mp/usa/rifle", "count": 8, "at": "start" },
+      { "name": "guns", "def": "mp/usa/mgun", "count": 2, "at": "start" },
+      { "name": "bazookas", "def": "mp/usa/bazooker", "count": 2, "at": "start" }
+    ]
+  },
+  "enemy": {
+    "army": "ger",
+    "patrols": [
+      { "name": "scouts", "def": "mp/ger/smg", "count": 2, "route": ["flag_b01", "flag_b02", "flag_b03"] }
+    ],
+    "waves": [
+      { "name": "wave1", "def": "mp/ger/rifle", "count": 6, "from": "flag_b02", "to": "flag_a02", "time": 60 },
+      { "name": "wave2", "def": "mp/ger/rifle", "count": 8, "from": "flag_c02", "to": "flag_a02", "time": 200 },
+      { "name": "wave3", "def": "mp/ger/smg", "count": 8, "from": "flag_b01", "to": "flag_a02", "time": 330, "difficulty": "normal" }
+    ]
+  },
+  "objectives": [
+    { "id": "hold_crossroads", "type": "hold", "zone": "flag_a02", "minutes": 8, "text": "Hold the crossroads for 8 minutes" }
+  ],
+  "reinforcements": [
+    { "name": "relief", "def": "mp/usa/rifle", "count": 4, "at": "flag_playerbase", "time": 240 }
+  ],
+  "lose": { "allDead": true }
+}

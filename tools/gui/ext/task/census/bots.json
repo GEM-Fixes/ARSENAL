@@ -1,0 +1,734 @@
+{
+ "thing": "bots",
+ "files": [
+  "GET /api/x/bots/buys",
+  "GET /api/x/bots/table",
+  "POST /api/x/bots/edit",
+  "POST /api/x/bots/reset",
+  "POST /api/x/bots/buyfirst",
+  "GET /api/x/doctrine/*",
+  "POST /api/x/doctrine/gen",
+  "POST /api/x/doctrine/check",
+  "tools/botrecipe",
+  "resource/script/multiplayer/bot.data.lua",
+  "set/multiplayer/bots_generic.inc",
+  "set/multiplayer/presets_*.inc",
+  "set/multiplayer/games/<mode>.set"
+ ],
+ "groups": [
+  {
+   "id": "on",
+   "name": "Switch bots on"
+  },
+  {
+   "id": "buy",
+   "name": "What the bot buys"
+  },
+  {
+   "id": "level",
+   "name": "Difficulty"
+  },
+  {
+   "id": "preset",
+   "name": "Money presets"
+  },
+  {
+   "id": "mind",
+   "name": "How the bot fights"
+  },
+  {
+   "id": "test",
+   "name": "Test"
+  }
+ ],
+ "vars": [
+  {
+   "key": "on.enablebots",
+   "where": "set/multiplayer/games/<mode>.set {settings {enableBots}}",
+   "type": "bool",
+   "plain": "Let bots join this mode.",
+   "unit": "",
+   "vanilla": null,
+   "group": "on",
+   "ref": null,
+   "tool": "POST /api/x/maps/clone body.bots",
+   "limit": "MIS-65",
+   "tag": "V"
+  },
+  {
+   "key": "on.lobby_slot",
+   "where": "lobby slot \"mp_slot 2 normal\"",
+   "type": "choice",
+   "plain": "Bot slot and difficulty in the lobby.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "easy",
+     "normal",
+     "hard",
+     "heroic"
+    ]
+   },
+   "group": "on",
+   "ref": null,
+   "tool": null,
+   "limit": "MIS-61",
+   "tag": "I"
+  },
+  {
+   "key": "on.mod",
+   "where": "bots routes ?mod / body.mod",
+   "type": "path",
+   "plain": "The mod the bot files go into.",
+   "unit": "",
+   "vanilla": null,
+   "group": "on",
+   "ref": null,
+   "tool": "GET /api/x/bots/buys",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "buy.unit",
+   "where": "POST /api/x/bots/buyfirst body.unit; botrecipe --buy-first",
+   "type": "ref",
+   "plain": "The unit the bot should buy.",
+   "unit": "",
+   "vanilla": null,
+   "group": "buy",
+   "ref": "unit set entry name",
+   "tool": "POST /api/x/bots/buyfirst",
+   "limit": "MIS-32",
+   "tag": "V"
+  },
+  {
+   "key": "buy.army",
+   "where": "POST /api/x/bots/buyfirst body.army; botrecipe --army",
+   "type": "choice",
+   "plain": "Army whose bot buys it.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "eng",
+     "ger",
+     "ger2",
+     "usa",
+     "rus",
+     "jap"
+    ]
+   },
+   "group": "buy",
+   "ref": null,
+   "tool": "POST /api/x/bots/buyfirst",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "buy.class",
+   "where": "POST /api/x/bots/buyfirst body.cls; botrecipe --class",
+   "type": "choice",
+   "plain": "Bot class of the unit.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "Infantry",
+     "ATInfantry",
+     "Vehicle",
+     "Tank",
+     "AATank",
+     "ATTank",
+     "HeavyTank",
+     "ArtilleryTank"
+    ]
+   },
+   "group": "buy",
+   "ref": null,
+   "tool": "POST /api/x/bots/buyfirst",
+   "limit": "MIS-77",
+   "tag": "V"
+  },
+  {
+   "key": "buy.priority",
+   "where": "POST /api/x/bots/buyfirst body.priority; botrecipe --priority",
+   "type": "number",
+   "plain": "How much the bot wants it.",
+   "unit": "",
+   "vanilla": {
+    "min": 0.5,
+    "max": 3
+   },
+   "group": "buy",
+   "ref": null,
+   "tool": "POST /api/x/bots/buyfirst",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "buy.first",
+   "where": "POST /api/x/bots/buyfirst body.first (1000)",
+   "type": "bool",
+   "plain": "Buy it before anything else.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     1000
+    ]
+   },
+   "group": "buy",
+   "ref": null,
+   "tool": "POST /api/x/bots/buyfirst",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "buy.stage",
+   "where": "POST /api/x/bots/buyfirst body.stage; botrecipe --stage",
+   "type": "number",
+   "plain": "Which buy stage.",
+   "unit": "",
+   "vanilla": {
+    "min": 1,
+    "max": 8
+   },
+   "group": "buy",
+   "ref": null,
+   "tool": "POST /api/x/bots/buyfirst",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "buy.after",
+   "where": "POST /api/x/bots/buyfirst body.after; botrecipe --after",
+   "type": "ref",
+   "plain": "Insert after this unit.",
+   "unit": "",
+   "vanilla": null,
+   "group": "buy",
+   "ref": null,
+   "tool": "POST /api/x/bots/buyfirst",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "buy.cheap",
+   "where": "POST /api/x/bots/buyfirst body.cheap; botrecipe --cheap",
+   "type": "bool",
+   "plain": "Pick a cheap stage.",
+   "unit": "",
+   "vanilla": null,
+   "group": "buy",
+   "ref": null,
+   "tool": "POST /api/x/bots/buyfirst",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "buy.card_like",
+   "where": "POST /api/x/bots/buyfirst body.cardLike; botrecipe --card-like",
+   "type": "ref",
+   "plain": "Copy the buy row of a similar unit.",
+   "unit": "",
+   "vanilla": null,
+   "group": "buy",
+   "ref": null,
+   "tool": "POST /api/x/bots/buyfirst",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "buy.write",
+   "where": "POST /api/x/bots/buyfirst body.write",
+   "type": "bool",
+   "plain": "Preview, then write.",
+   "unit": "",
+   "vanilla": null,
+   "group": "buy",
+   "ref": null,
+   "tool": "POST /api/x/bots/buyfirst",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "buy.min_income",
+   "where": "bot.data.lua entry {min_income}",
+   "type": "number",
+   "plain": "Income needed before buying.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     -1
+    ]
+   },
+   "group": "buy",
+   "ref": null,
+   "tool": null,
+   "limit": "MIS-78",
+   "tag": "V"
+  },
+  {
+   "key": "buy.min_team",
+   "where": "bot.data.lua entry {min_team}",
+   "type": "number",
+   "plain": "Team size needed before buying.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     0
+    ]
+   },
+   "group": "buy",
+   "ref": null,
+   "tool": null,
+   "limit": "MIS-78",
+   "tag": "V"
+  },
+  {
+   "key": "buy.stage_repeat",
+   "where": "bot.data.lua Purchases[n].Repeat",
+   "type": "number",
+   "plain": "Repeat a stage.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     0,
+     1
+    ]
+   },
+   "group": "buy",
+   "ref": null,
+   "tool": null,
+   "limit": "MIS-79",
+   "tag": "V"
+  },
+  {
+   "key": "buy.remove",
+   "where": "bot.data.lua Purchases[n].Units[k] removed or reordered",
+   "type": "list",
+   "plain": "Take units out of or reorder the buy list.",
+   "unit": "",
+   "vanilla": null,
+   "group": "buy",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "buy.ignored",
+   "where": "bot.data.lua period, AttackBaseTime",
+   "type": "number",
+   "plain": "Keys the game does not read.",
+   "unit": "",
+   "vanilla": null,
+   "group": "buy",
+   "ref": null,
+   "tool": null,
+   "limit": "MIS-10",
+   "tag": "V"
+  },
+  {
+   "key": "buy.team_mode",
+   "where": "botrecipe --team-mode",
+   "type": "choice",
+   "plain": "Write per team instead of per army.",
+   "unit": "",
+   "vanilla": null,
+   "group": "buy",
+   "ref": null,
+   "tool": "botrecipe CLI",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "buy.stock",
+   "where": "botrecipe --stock; --bot-main; --copy",
+   "type": "bool",
+   "plain": "Start from the stock bot file.",
+   "unit": "",
+   "vanilla": null,
+   "group": "buy",
+   "ref": null,
+   "tool": "botrecipe CLI",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "level.botcp",
+   "where": "bots_generic.inc botCp per easy/normal/hard/heroic",
+   "type": "number",
+   "plain": "Command points the bot gets.",
+   "unit": "",
+   "vanilla": {
+    "min": 0.75,
+    "max": 1.5
+   },
+   "group": "level",
+   "ref": null,
+   "tool": "POST /api/x/bots/edit",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "level.botmp",
+   "where": "bots_generic.inc botMp",
+   "type": "number",
+   "plain": "Money factor of the bot.",
+   "unit": "",
+   "vanilla": {
+    "min": 0.75,
+    "max": 2
+   },
+   "group": "level",
+   "ref": null,
+   "tool": "POST /api/x/bots/edit",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "level.botpayback",
+   "where": "bots_generic.inc botPayback",
+   "type": "number",
+   "plain": "Refund factor of the bot.",
+   "unit": "",
+   "vanilla": {
+    "min": 0.75,
+    "max": 2
+   },
+   "group": "level",
+   "ref": null,
+   "tool": "POST /api/x/bots/edit",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "level.chargefactors",
+   "where": "game card {presets {bots <level> {chargeFactors}}}",
+   "type": "list",
+   "plain": "Cooldowns per difficulty.",
+   "unit": "",
+   "vanilla": null,
+   "group": "level",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "preset.file",
+   "where": "bots/table ?file",
+   "type": "choice",
+   "plain": "Which preset file.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "bots_generic.inc",
+     "presets_competitive.inc",
+     "presets_all.inc",
+     "presets_user.inc",
+     "presets_test.inc"
+    ]
+   },
+   "group": "preset",
+   "ref": null,
+   "tool": "GET /api/x/bots/table",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "preset.start",
+   "where": "presets_*.inc {start}",
+   "type": "number",
+   "plain": "Start money.",
+   "unit": "",
+   "vanilla": {
+    "min": 160,
+    "max": 600
+   },
+   "group": "preset",
+   "ref": null,
+   "tool": "POST /api/x/bots/edit",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "preset.finish",
+   "where": "{finish}",
+   "type": "number",
+   "plain": "End money.",
+   "unit": "",
+   "vanilla": {
+    "min": 3000,
+    "max": 4000
+   },
+   "group": "preset",
+   "ref": null,
+   "tool": "POST /api/x/bots/edit",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "preset.cp",
+   "where": "{cp}",
+   "type": "number",
+   "plain": "Command points.",
+   "unit": "",
+   "vanilla": {
+    "min": 50,
+    "max": 200
+   },
+   "group": "preset",
+   "ref": null,
+   "tool": "POST /api/x/bots/edit",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "preset.growtime",
+   "where": "{growTime}",
+   "type": "number",
+   "plain": "Growth time.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     1500
+    ]
+   },
+   "group": "preset",
+   "ref": null,
+   "tool": "POST /api/x/bots/edit",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "preset.bonus",
+   "where": "{bonusCp} {bonusMp}",
+   "type": "number",
+   "plain": "Bonus factors.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     1
+    ]
+   },
+   "group": "preset",
+   "ref": null,
+   "tool": "POST /api/x/bots/edit",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "preset.payback",
+   "where": "{paybackCp} {paybackRestore} rows",
+   "type": "list",
+   "plain": "Refund rows; keep the same count.",
+   "unit": "",
+   "vanilla": null,
+   "group": "preset",
+   "ref": null,
+   "tool": "POST /api/x/bots/edit",
+   "limit": "MIS-06",
+   "tag": "V"
+  },
+  {
+   "key": "preset.reset",
+   "where": "POST /api/x/bots/reset {file}",
+   "type": "bool",
+   "plain": "Put the file back to stock.",
+   "unit": "",
+   "vanilla": null,
+   "group": "preset",
+   "ref": null,
+   "tool": "POST /api/x/bots/reset",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mind.persona",
+   "where": "POST /api/x/doctrine/gen body.persona",
+   "type": "choice",
+   "plain": "Fighting style of the bot.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "universal",
+     "us-1944-rifle",
+     "uk-1944-infantry",
+     "ger-1944-kampfgruppe",
+     "su-1941-rifle",
+     "su-1944-guards",
+     "jp-1942-infantry",
+     "fi-1940-winter",
+     "what-if-modern"
+    ]
+   },
+   "group": "mind",
+   "ref": null,
+   "tool": "POST /api/x/doctrine/gen",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mind.profile",
+   "where": "POST /api/x/doctrine/gen body.profile",
+   "type": "choice",
+   "plain": "Which bot code it targets.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     "auto",
+     "vanilla",
+     "botconfig"
+    ]
+   },
+   "group": "mind",
+   "ref": null,
+   "tool": "POST /api/x/doctrine/gen",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mind.scale",
+   "where": "POST /api/x/doctrine/gen body.scale",
+   "type": "number",
+   "plain": "How strong the style is.",
+   "unit": "",
+   "vanilla": {
+    "min": 0,
+    "max": 2
+   },
+   "group": "mind",
+   "ref": null,
+   "tool": "POST /api/x/doctrine/gen",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mind.base",
+   "where": "POST /api/x/doctrine/gen body.base",
+   "type": "path",
+   "plain": "Bot file it builds on.",
+   "unit": "",
+   "vanilla": null,
+   "group": "mind",
+   "ref": null,
+   "tool": "POST /api/x/doctrine/gen",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mind.maxsquadsize",
+   "where": "bot globals MaxSquadSize",
+   "type": "number",
+   "plain": "Units per bot squad.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     5
+    ]
+   },
+   "group": "mind",
+   "ref": null,
+   "tool": "POST /api/x/doctrine/gen",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mind.orderrotation",
+   "where": "OrderRotationPeriod",
+   "type": "number",
+   "plain": "How often orders change.",
+   "unit": "ms",
+   "vanilla": {
+    "values": [
+     180000
+    ]
+   },
+   "group": "mind",
+   "ref": null,
+   "tool": "POST /api/x/doctrine/gen",
+   "limit": "MIS-25",
+   "tag": "V"
+  },
+  {
+   "key": "mind.flagpriority",
+   "where": "FlagPriority {Captured 1, Enemy 2, Neutral 3}",
+   "type": "list",
+   "plain": "Which flags the bot goes for.",
+   "unit": "",
+   "vanilla": {
+    "values": [
+     1,
+     2,
+     3
+    ]
+   },
+   "group": "mind",
+   "ref": null,
+   "tool": "POST /api/x/doctrine/gen",
+   "limit": null,
+   "tag": "V"
+  },
+  {
+   "key": "mind.botconfig_keys",
+   "where": "botconfig 18 keys (DirAttackRatio..ReorderPeriod) of 207",
+   "type": "list",
+   "plain": "Fine attack and defence knobs.",
+   "unit": "",
+   "vanilla": null,
+   "group": "mind",
+   "ref": null,
+   "tool": "POST /api/x/doctrine/gen",
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "mind.per_army",
+   "where": "one persona per mod",
+   "type": "ref",
+   "plain": "A different style per army.",
+   "unit": "",
+   "vanilla": null,
+   "group": "mind",
+   "ref": null,
+   "tool": null,
+   "limit": null,
+   "tag": "I"
+  },
+  {
+   "key": "mind.check",
+   "where": "POST /api/x/doctrine/check",
+   "type": "bool",
+   "plain": "Check the bot files.",
+   "unit": "",
+   "vanilla": null,
+   "group": "mind",
+   "ref": null,
+   "tool": "POST /api/x/doctrine/check",
+   "limit": "MIS-84",
+   "tag": "V"
+  },
+  {
+   "key": "test.match",
+   "where": "play --map --inst with a bot slot",
+   "type": "text",
+   "plain": "Run a match against the bot.",
+   "unit": "",
+   "vanilla": null,
+   "group": "test",
+   "ref": null,
+   "tool": "play",
+   "limit": null,
+   "tag": "T"
+  }
+ ],
+ "gaps": [
+  "buy.min_income/min_team: no step; add body.minIncome, body.minTeam to POST /api/x/bots/buyfirst",
+  "buy.stage_repeat: no step; add POST /api/x/bots/stage {army, stage, repeat}",
+  "buy.remove (remove/reorder entries): no step; add botrecipe --remove <unit> and a route",
+  "mind.maxsquadsize/orderrotation/flagpriority: only via a persona; add a doctrine \"raw\" override map to POST gen",
+  "mind.per_army: one persona per mod; add body.army to doctrine gen writing per-army tables",
+  "on.enablebots without cloning a map: none; add POST /api/x/bots/enable {mod, mode}",
+  "level.chargefactors: no tool; add to bots table fields",
+  "buy.team_mode/stock: botrecipe flags not in the route; add body fields"
+ ]
+}

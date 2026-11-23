@@ -1,0 +1,5 @@
+{game_entity
+(include "/properties/tank_unarmed.ext")
+{props "medium" "muzzle_ok"}
+{Weaponry {place "gun" {weapon "nocal"}}}
+}

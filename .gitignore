@@ -1,0 +1,9 @@
+# generated: caches, test outputs, work folders. tests and tools recreate these
+node_modules/
+**/cache/
+tools/*/test/*.out
+tools/*/test/got.txt
+tools/*/test/out*.txt
+*.out
+REPORT*.json
+guide/dist/

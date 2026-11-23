@@ -1,0 +1,9 @@
+{tags
+	{"a" "x\qy"}
+	{"b" Bare}
+	{"c" "same"}
+	{"c" "same"}
+	{"d"
+		(include "inc/x.inc")
+	}
+}

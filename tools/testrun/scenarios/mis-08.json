@@ -1,0 +1,75 @@
+{
+  "name": "mis-08",
+  "rows": [
+    "MIS-08"
+  ],
+  "mode": "menu",
+  "fixture": [
+    "mis-08"
+  ],
+  "mods": [
+    "as64+",
+    "mis-08"
+  ],
+  "params": {
+    "map": "multi/1v1_road:combat",
+    "botSlot": "2"
+  },
+  "src": [
+    " (Spawn SayChat CaptureFlag Income EnemyHasTanks)",
+    " (mp_slot ... easy)",
+    "(not part of this release)"
+  ],
+  "note": "mod replaces script/multiplayer/bot.lua with a probe that, at GameStart, prints and SayChats \"TRS08 <name>=<type>\" for ten BotApi.Commands members. Row true if Spawn/CaptureFlag are present and ClearOrders/Attack/Retreat are nil. [T] whether Lua print / bot chat reaches game.log, and the bot slot id (mp_slots output; override --param botSlot=N). If no TRS08 line appears the verdict fails = inconclusive, not \"row false\".",
+  "steps": [
+    {
+      "cmd": "mp_lan"
+    },
+    {
+      "wait_stage": true
+    },
+    {
+      "cmd": "mp_host {map} 2"
+    },
+    {
+      "wait_stage": true
+    },
+    {
+      "cmd": "mp_slots"
+    },
+    {
+      "cmd": "mp_slot {botSlot} easy"
+    },
+    {
+      "cmd": "mp_ready"
+    },
+    {
+      "cmd": "mp_start"
+    },
+    {
+      "wait": "loaded",
+      "timeout": 300
+    },
+    {
+      "wait": 15
+    }
+  ],
+  "verdict": [
+    {
+      "log": "\\*{5,} Exception \\*{5,}",
+      "want": false
+    },
+    {
+      "log": "TRS08 Spawn=(function|userdata)"
+    },
+    {
+      "log": "TRS08 CaptureFlag=(function|userdata)"
+    },
+    {
+      "log": "TRS08 ClearOrders=nil"
+    },
+    {
+      "log": "TRS08 Attack=nil"
+    }
+  ]
+}

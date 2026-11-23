@@ -1,0 +1,8 @@
+{
+  "name": "m2log",
+  "game": "mowas2",
+  "rows": ["TST-19"],
+  "note": "made-up MoW:AS2 scenario: game.log only",
+  "mods": ["trs_x"],
+  "verdict": [{ "log": "Game started", "want": true }]
+}

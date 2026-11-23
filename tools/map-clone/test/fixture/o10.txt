@@ -1,0 +1,8 @@
+info: map/multi/a1/combat.mi: MAPCLONE_MISSION_SKIPPED --no-mission: root .mi not copied, so a test tool can host its own mission on the clone
+info: map/multi/a1/map.ply: MAPCLONE_BINARY_REF binary file contains "a1"; copied unedited
+info: localization/mission/multi/b10.lng: MAPCLONE_LOC_KEY lobby reads key mission/multi/b10/name ( + + ) [V, lobby display [T]]
+info: localization/mission/multi/b10.lng: MAPCLONE_LOC_ADDED source a1 has no name in mission.lng; name set to b10
+info: localization/mission/multi/b10.lng: MAPCLONE_LOC_ADDED written
+info: mod.info: MAPCLONE_MODINFO written/kept
+info: map/multi/b10: MAPCLONE_COPIED 3 files written, map.net 32 bytes unedited
+0 findings

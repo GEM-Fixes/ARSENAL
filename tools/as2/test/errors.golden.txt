@@ -1,0 +1,88 @@
+$ ARSENAL game   (no game anywhere)
+error: no game folder found. Looked at:
+  --game    not given
+  AS2_GAME  not set
+  as2.json  none in <cwd> or any folder above it
+  Steam     skipped (AS2_NO_STEAM is set)
+Set it one of three ways:
+  1. add --game "<game folder>" to the command
+  2. set the AS2_GAME environment variable to the game folder
+  3. put as2.json in your mod folder or above it: {"game": "<game folder>"}
+  (the game folder is the one holding as64.exe or mowas_2.exe, e.g. ...\steamapps\common\Men of War Assault Squad 2)
+rc=2
+$ ARSENAL game   (AS2_GAME set to a missing folder)
+warning: AS2_GAME=nosuch_game is ignored: no folder there. Fix or clear AS2_GAME.
+error: no game folder found. Looked at:
+  --game    not given
+  AS2_GAME  nosuch_game (ignored: no folder there)
+  as2.json  none in <cwd> or any folder above it
+  Steam     skipped (AS2_NO_STEAM is set)
+Set it one of three ways:
+  1. add --game "<game folder>" to the command
+  2. set the AS2_GAME environment variable to the game folder
+  3. put as2.json in your mod folder or above it: {"game": "<game folder>"}
+  (the game folder is the one holding as64.exe or mowas_2.exe, e.g. ...\steamapps\common\Men of War Assault Squad 2)
+rc=2
+$ ARSENAL maps list   (no game)
+error: no game folder found. Looked at:
+  --game    not given
+  AS2_GAME  not set
+  as2.json  none in <cwd> or any folder above it
+  Steam     skipped (AS2_NO_STEAM is set)
+Set it one of three ways:
+  1. add --game "<game folder>" to the command
+  2. set the AS2_GAME environment variable to the game folder
+  3. put as2.json in your mod folder or above it: {"game": "<game folder>"}
+  (the game folder is the one holding as64.exe or mowas_2.exe, e.g. ...\steamapps\common\Men of War Assault Squad 2)
+rc=2
+$ ARSENAL install x   (no game)
+error: no game folder found. Looked at:
+  --game    not given
+  AS2_GAME  not set
+  as2.json  none in <cwd> or any folder above it
+  Steam     skipped (AS2_NO_STEAM is set)
+Set it one of three ways:
+  1. add --game "<game folder>" to the command
+  2. set the AS2_GAME environment variable to the game folder
+  3. put as2.json in your mod folder or above it: {"game": "<game folder>"}
+  (the game folder is the one holding as64.exe or mowas_2.exe, e.g. ...\steamapps\common\Men of War Assault Squad 2)
+rc=2
+$ ARSENAL play x --dry   (no game)
+error: no game folder found. Looked at:
+  --game    not given
+  AS2_GAME  not set
+  as2.json  none in <cwd> or any folder above it
+  Steam     skipped (AS2_NO_STEAM is set)
+Set it one of three ways:
+  1. add --game "<game folder>" to the command
+  2. set the AS2_GAME environment variable to the game folder
+  3. put as2.json in your mod folder or above it: {"game": "<game folder>"}
+  (the game folder is the one holding as64.exe or mowas_2.exe, e.g. ...\steamapps\common\Men of War Assault Squad 2)
+rc=2
+$ ARSENAL play x --inst 0   (instance 0)
+error: play never uses instance 0 (that is your own game settings and log). Use --inst 1 or higher
+rc=2
+$ ARSENAL play nosuch
+error: not a mod folder: nosuch
+rc=2
+$ ARSENAL play
+error: usage: ARSENAL play <mod folder> [--map m] [--inst N] [--dry]
+rc=2
+$ ARSENAL new
+usage: ARSENAL new <mod folder> [--name "Title"] [--desc "..."] [--deps a,b] [--game G] [--target as64|mowas2|goh] [--dry-run] [-q]
+  makes an empty mod. --target picks the game: as64 (default: mod.info MinGameVersion 3.301, no MaxGameVersion), mowas2 (3.262.0 to 3.262.1)
+  or goh (the Gates of Hell exe version; --game is the GoH install, found the usual way when not given). The folder name is made lowercase.
+  --name defaults to the folder name as you typed it.  e.g. ARSENAL new mymod --name "My Mod"
+rc=2
+$ ARSENAL new m --target nosuch
+error: --target nosuch: unknown game (as64, mowas2, goh)
+rc=2
+$ ARSENAL maps nope
+error: unknown maps command nope
+usage: ARSENAL maps list|view|clone|mode [args..] [--target as64|mowas2|goh]   (--game G is optional: the game is found the usual way)
+  list   game modes per multiplayer map (all maps, or --map map/multi/<name>)   (= ARSENAL mission-clone --list)
+  view   picture of a map in the terminal: --map multi/<group>/<name>, or a map.net / map folder   (= ARSENAL mapview)
+  clone  copy a map under a new name into a mod: --map map/multi/<m> --name <new> --out <mod>   (= ARSENAL map-clone)
+  mode   add a game mode to a map: --map map/multi/<m> --from <mode> --to <mode> --out <mod>   (= ARSENAL mission-clone)
+  e.g. ARSENAL maps list
+rc=2

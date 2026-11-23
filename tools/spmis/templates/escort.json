@@ -1,0 +1,33 @@
+{
+  "name": "spmis_escort",
+  "campaign": "spmis_examples",
+  "campaignTitle": "Generated missions",
+  "title": "Bring the squad leader through",
+  "briefing": "Our squad leader carries the attack plans. Get him to the road junction alive. Enemy riflemen hold the crossroads and a patrol walks the line.",
+  "date": "June 1944",
+  "place": "Normandy",
+  "map": "map/single/01_usa-skirmish/01_usa-overlord",
+  "player": {
+    "army": "usa",
+    "start": "flag_playerbase",
+    "units": [
+      { "name": "officer", "def": "mp/usa/squadleader2", "count": 1, "at": "start" },
+      { "name": "escort", "def": "mp/usa/rifle", "count": 6, "at": "start" },
+      { "name": "support", "def": "mp/usa/mgun", "count": 2, "at": "start" }
+    ]
+  },
+  "enemy": {
+    "army": "ger",
+    "defenders": [
+      { "name": "crossroads", "def": "mp/ger/rifle", "count": 5, "at": "flag_a02" }
+    ],
+    "patrols": [
+      { "name": "line_patrol", "def": "mp/ger/smg", "count": 3, "route": ["flag_b01", "flag_b02", "flag_b03"] }
+    ]
+  },
+  "objectives": [
+    { "id": "bring_officer", "type": "escort", "unit": "officer", "to": "flag_b02", "text": "Bring the squad leader to the road junction" },
+    { "id": "clear_crossroads", "type": "capture", "zone": "flag_a02", "primary": false, "text": "Clear the crossroads on the way" }
+  ],
+  "lose": { "allDead": true }
+}

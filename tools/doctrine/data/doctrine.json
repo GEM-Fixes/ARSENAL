@@ -1,0 +1,3245 @@
+{
+ "schema": 1,
+ "note": "Generated from E:/theory by tools/export.mjs. Do not edit; edit the yaml and re-export. Numbers tagged design are starting values, not doctrine.",
+ "rules": [
+  {
+   "id": "force.shape-by-size",
+   "family": "force",
+   "task": "Decide what shape a bot's force should have at this size",
+   "keywords": [
+    "ladder",
+    "base of fire",
+    "maneuver",
+    "reserve"
+   ],
+   "when": "A bot buys or re-plans, and its squads on hand are known",
+   "do": [
+    "Up to 6 squads: one base of fire and one maneuver element, keeping a squad back at first if there are enough. Don't split further.",
+    "7 to 15: support group, two maneuver groups, a small reserve.",
+    "16 to 28: support group, company-size groups, a real reserve.",
+    "Change shape at a phase change, never during an assault."
+   ],
+   "roles": {
+    "base": [
+     "mg",
+     "mortar",
+     "assault_gun"
+    ],
+    "maneuver": [
+     "rifle",
+     "smg",
+     "tank"
+    ],
+    "held": [
+     "any"
+    ]
+   },
+   "scale": {
+    "from": "ladder",
+    "thresholds": "squads per bot"
+   },
+   "flavor": {},
+   "fit": {
+    "shape": "engine",
+    "thresholds": "engine"
+   },
+   "param_source": {
+    "thresholds": "design"
+   },
+   "pitfalls": [],
+   "cites": [
+    "company.infantry.attack",
+    "platoon.infantry.attack",
+    "c-UK-1010",
+    "c-US-1056"
+   ]
+  },
+  {
+   "id": "force.combined-arms-minimum",
+   "family": "force",
+   "task": "Decide which roles must exist before others grow",
+   "keywords": [
+    "must-haves",
+    "combined arms",
+    "AT before armor"
+   ],
+   "when": "Choosing the next purchases",
+   "do": [
+    "Have a base of fire (mg) before adding more maneuver squads.",
+    "Have anti-tank means before the enemy can field armor, and more once it does.",
+    "Buy tanks with supporting infantry and fire, not as a tank-only force.",
+    "A tank alone doesn't count as a group: keep tanks in twos or more."
+   ],
+   "roles": {
+    "must": [
+     "mg",
+     "at_infantry",
+     "rifle"
+    ],
+    "then": [
+     "mortar",
+     "at_gun",
+     "tank"
+    ]
+   },
+   "scale": {
+    "at_platoon": "one of each must-have",
+    "at_company": "support group complete",
+    "at_battalion": "AT plan and reserve"
+   },
+   "flavor": {
+    "ger_reported": "tank commander leads the combat team, all arms under him"
+   },
+   "fit": {
+    "role_order": "engine",
+    "group_of_tanks": "engine"
+   },
+   "param_source": {
+    "order": "design"
+   },
+   "pitfalls": [
+    "Don't apply MP or CP price sheets; prices belong to the mod."
+   ],
+   "cites": [
+    "c-USA-0021",
+    "c-USA-0002",
+    "c-GER-0016",
+    "c-USA-0043",
+    "c-USA-0044"
+   ]
+  },
+  {
+   "id": "force.counter-buy",
+   "family": "force",
+   "task": "Decide how to respond to seen enemy armor in the buy",
+   "keywords": [
+    "counter-buy",
+    "unknown armor",
+    "mass"
+   ],
+   "when": "Enemy armor is seen, or could arrive and its strength is unknown",
+   "do": [
+    "Strength unknown: hold anti-tank means massed, in one place you can move.",
+    "Small-scale armor only: spread light anti-tank among forward groups.",
+    "Fewer anti-tank weapons on hand means a larger share massed."
+   ],
+   "roles": {
+    "counter": [
+     "at_gun",
+     "td",
+     "at_infantry"
+    ]
+   },
+   "scale": {
+    "share": "role share of force at each shape"
+   },
+   "flavor": {},
+   "fit": {
+    "seen_armor_trigger": "engine",
+    "buying": "engine"
+   },
+   "param_source": {
+    "shares": "design"
+   },
+   "pitfalls": [],
+   "cites": [
+    "battalion.at.defense",
+    "c-USA-0043",
+    "c-USA-0046",
+    "c-USA-0047"
+   ]
+  },
+  {
+   "id": "force.hold-back",
+   "family": "force",
+   "task": "Decide how much force and income to keep unspent",
+   "keywords": [
+    "money held",
+    "reserve",
+    "rebuild"
+   ],
+   "when": "Any purchase or commitment while a fight is on",
+   "do": [
+    "Treat unspent income as part of the reserve: keep enough for one group's worth of answers (design).",
+    "Spend it at once for a decisive blow, a counterattack, or to restart a stalled attack.",
+    "After spending, rebuild a reserve from relieved units before attacking again."
+   ],
+   "roles": {
+    "held": [
+     "any"
+    ]
+   },
+   "scale": {
+    "amount": "one group at the current shape"
+   },
+   "flavor": {},
+   "fit": {
+    "money_as_reserve": "proxy",
+    "timing": "engine"
+   },
+   "param_source": {
+    "amount": "design"
+   },
+   "pitfalls": [],
+   "cites": [
+    "c-US-1014",
+    "c-US-1035",
+    "c-US-1037",
+    "c-US-1039",
+    "c-UK-1020"
+   ]
+  },
+  {
+   "id": "tac.main-effort",
+   "family": "tactical",
+   "task": "Choose where a team or bot attacks",
+   "keywords": [
+    "main effort",
+    "covered ground",
+    "economy",
+    "team"
+   ],
+   "when": "Team or bot is choosing where to attack",
+   "do": [
+    "Score axes by cover on the way in and by enemy strength; pick one.",
+    "Team: one bot or pair is main effort, the others hold or fix.",
+    "Bot: most maneuver groups on that axis; the rest press to split the enemy.",
+    "If a unit isn't stopped, it keeps going while neighbors are halted."
+   ],
+   "roles": {
+    "main": [
+     "rifle",
+     "smg",
+     "tank"
+    ],
+    "fix": [
+     "mg",
+     "mortar",
+     "rifle"
+    ]
+   },
+   "scale": {
+    "team": "one main effort",
+    "bot": "one axis",
+    "group": "one route"
+   },
+   "flavor": {
+    "ger_reported": "narrow Schwerpunkt, massed heavy weapons",
+    "uk": "press through gaps, regardless of earlier objective",
+    "su": "leaders push through gaps on own initiative, even off direction",
+    "jp_reported": "attacks even on thin artillery preparation: a known risk"
+   },
+   "fit": {
+    "axis_choice": "engine",
+    "cover_score": "proxy",
+    "team_coordination": "engine"
+   },
+   "param_source": {
+    "scoring": "design"
+   },
+   "pitfalls": [
+    "Stock bot Lua orders only Spawn, CaptureFlag and SayChat (MIS-08)."
+   ],
+   "cites": [
+    "battalion.infantry.attack",
+    "company.infantry.attack",
+    "c-US-1009",
+    "c-US-1010",
+    "c-US-1026",
+    "c-GER-0008",
+    "c-SU-0018"
+   ]
+  },
+  {
+   "id": "tac.frontage",
+   "family": "tactical",
+   "task": "Set how wide a group spreads",
+   "keywords": [
+    "frontage",
+    "attack",
+    "defense",
+    "delay",
+    "control"
+   ],
+   "when": "Assigning a group a width on the map",
+   "do": [
+    "Attack width W: 1.0 x mg per company-shape bot, 0.5 x mg per platoon-shape bot (design).",
+    "Defense width 2 x W, delay width 4 x W. A bot only fixing or holding uses 2 x W.",
+    "Widen by gaps between groups covered by fire, not by thinning a group.",
+    "Too narrow also fails: bunching raises losses."
+   ],
+   "roles": {
+    "all": [
+     "any"
+    ]
+   },
+   "scale": {
+    "W": "scale with group size and profile mg range"
+   },
+   "flavor": {},
+   "fit": {
+    "frontage": "engine"
+   },
+   "param_source": {
+    "ratio_1_2_4": "claim",
+    "W_base": "design"
+   },
+   "pitfalls": [],
+   "cites": [
+    "platoon.infantry.defense",
+    "battalion.infantry.defense",
+    "battalion.infantry.attack",
+    "c-US-1007",
+    "c-USD-0004",
+    "c-USD-0039",
+    "c-GER-0032",
+    "c-GER-0054",
+    "c-SU-0036",
+    "c-UK-1011",
+    "c-UK-1012",
+    "c-USD-0045"
+   ]
+  },
+  {
+   "id": "tac.fire-and-move",
+   "family": "tactical",
+   "task": "Order a group forward once in contact",
+   "keywords": [
+    "base of fire",
+    "oblique",
+    "bound",
+    "covered move"
+   ],
+   "when": "Group in contact, or moving where the enemy can fire",
+   "do": [
+    "Split: base of fire pins, maneuver moves. They may swap.",
+    "Site the base to fire obliquely, about 0.6 to 0.8 x mg from the objective (design).",
+    "Maneuver goes by a covered route that isn't the obvious one, never a wide loop in the open.",
+    "Keep on the first post; detach the least possible to answer flank fire."
+   ],
+   "roles": {
+    "base": [
+     "mg",
+     "assault_gun",
+     "tank"
+    ],
+    "maneuver": [
+     "rifle",
+     "smg"
+    ],
+    "close": [
+     "engineer"
+    ]
+   },
+   "scale": {
+    "platoon": "squads",
+    "company": "platoons",
+    "battalion": "companies"
+   },
+   "flavor": {
+    "uk": "fire section plus flanking sections, drilled",
+    "su": "more open ground means shorter, faster rushes",
+    "jp_reported": "final deployment in time to fire over the last stretch",
+    "us": "long bounds only under overwhelming fire"
+   },
+   "fit": {
+    "base_and_maneuver": "engine",
+    "pin_effect": "proxy",
+    "route_choice": "engine"
+   },
+   "param_source": {
+    "base_distance": "design"
+   },
+   "pitfalls": [
+    "No suppression model in stock AS2 and morale follows health: pinning is really hurting."
+   ],
+   "cites": [
+    "squad.infantry.attack",
+    "platoon.infantry.attack",
+    "c-US-1003",
+    "c-US-1060",
+    "c-UK-1033",
+    "c-UK-1035",
+    "c-UK-1037",
+    "c-UK-1042",
+    "c-SU-0002"
+   ]
+  },
+  {
+   "id": "tac.assault-timing",
+   "family": "tactical",
+   "task": "Time an assault and its supporting fire",
+   "keywords": [
+    "assault",
+    "lift",
+    "shift",
+    "together"
+   ],
+   "when": "Maneuver group is near the objective",
+   "do": [
+    "Close to the nearest point that doesn't mask supporting fire, then assault.",
+    "Before that, move guns toward the flank of the resistance, so they fire longest.",
+    "When masked, mg and mortars shift to enemy beside or behind the objective.",
+    "Assault together. A piecemeal assault loses much of its effect."
+   ],
+   "roles": {
+    "assault": [
+     "rifle",
+     "smg",
+     "tank"
+    ],
+    "shift": [
+     "mg",
+     "mortar"
+    ]
+   },
+   "scale": {
+    "assault_start": "0.5 x rifle (design)",
+    "group": "same rule at any echelon"
+   },
+   "flavor": {},
+   "fit": {
+    "timing": "engine",
+    "fire_shift": "proxy"
+   },
+   "param_source": {
+    "assault_start": "design"
+   },
+   "pitfalls": [],
+   "cites": [
+    "company.mg.attack",
+    "c-US-1041",
+    "c-US-1030",
+    "c-US-1068",
+    "c-USA-0026",
+    "c-USA-0027",
+    "c-UK-1060"
+   ]
+  },
+  {
+   "id": "tac.reserve",
+   "family": "tactical",
+   "task": "Decide when to commit the reserve",
+   "keywords": [
+    "reserve",
+    "whole",
+    "flank",
+    "rebuild"
+   ],
+   "when": "A group is held back, or an attack stalls",
+   "do": [
+    "Exposed flank or unclear enemy: hold back more, up to two of three groups.",
+    "Hold while fires or other groups can restart the attack.",
+    "Commit whole, at once, at a flank or at weakness; never reinforce strong resistance.",
+    "Then rebuild one from relieved or stray units."
+   ],
+   "roles": {
+    "reserve": [
+     "rifle",
+     "smg",
+     "tank"
+    ]
+   },
+   "scale": {
+    "platoon": "one squad",
+    "company": "one platoon",
+    "battalion": "one company"
+   },
+   "flavor": {},
+   "fit": {
+    "holding": "engine",
+    "commit_trigger": "engine"
+   },
+   "param_source": {
+    "trigger": "design"
+   },
+   "pitfalls": [],
+   "cites": [
+    "company.infantry.attack",
+    "c-US-1005",
+    "c-US-1006",
+    "c-US-1036",
+    "c-US-1037",
+    "c-US-1038",
+    "c-UK-1018"
+   ]
+  },
+  {
+   "id": "tac.consolidate",
+   "family": "tactical",
+   "task": "Decide what a group does after taking an objective",
+   "keywords": [
+    "consolidate",
+    "past the post",
+    "cover",
+    "tank danger"
+   ],
+   "when": "A group has just taken an objective",
+   "do": [
+    "Don't stop on it: move a short way past (design 0.1 to 0.2 x rifle).",
+    "Bring mg and light AT up at once to cover front and open flanks.",
+    "If not advancing, set all-round defense and enter cover.",
+    "Clear the whole objective."
+   ],
+   "roles": {
+    "cover": [
+     "mg",
+     "at_infantry",
+     "at_gun"
+    ]
+   },
+   "scale": {
+    "all": "same rule"
+   },
+   "flavor": {},
+   "fit": {
+    "move_past": "engine",
+    "take_cover": "direct",
+    "weapons_forward": "engine"
+   },
+   "param_source": {
+    "distance": "design"
+   },
+   "pitfalls": [],
+   "cites": [
+    "squad.infantry.assault",
+    "c-UK-1058",
+    "c-UK-1059",
+    "c-UK-1050",
+    "c-UK-1032",
+    "c-US-1046",
+    "c-US-1070",
+    "c-SU-0039"
+   ]
+  },
+  {
+   "id": "tac.defense-layout",
+   "family": "tactical",
+   "task": "Lay out a defense",
+   "keywords": [
+    "two up",
+    "depth",
+    "block approaches",
+    "hold fire"
+   ],
+   "when": "Force is on the defensive or holding what it took",
+   "do": [
+    "Two parts forward, one back; each covers its neighbor.",
+    "Block covered approaches with troops; cover open ground with mg fire.",
+    "Depth between positions: within rifle range of each other (design 0.5 to 1.0 x rifle).",
+    "Riflemen hold fire to effective range, heavy weapons open earlier.",
+    "Prefer reverse slopes where the map offers them."
+   ],
+   "roles": {
+    "forward": [
+     "rifle",
+     "mg"
+    ],
+    "back": [
+     "rifle",
+     "smg"
+    ],
+    "depth": [
+     "at_gun",
+     "mortar"
+    ]
+   },
+   "scale": {
+    "W": "from tac.frontage",
+    "shape": "from ladder"
+   },
+   "flavor": {
+    "ger_reported": "reverse slope, strongpoints built for all-round defense",
+    "su": "uneven fire: mass suddenly on the densest attackers, then shift",
+    "jp_reported": "all-round centers of resistance, outposts far forward"
+   },
+   "fit": {
+    "layout": "engine",
+    "hold_fire": "engine",
+    "entrench": "direct"
+   },
+   "param_source": {
+    "depth": "design"
+   },
+   "pitfalls": [
+    "RobZ sees farther (124 m) and recognises at once, but prone in cover cuts sight to 33 m: concealment pays more, not less. Firing reveals."
+   ],
+   "cites": [
+    "platoon.infantry.defense",
+    "battalion.infantry.defense",
+    "company.infantry.defense",
+    "c-USD-0005",
+    "c-USD-0006",
+    "c-USD-0007",
+    "c-USD-0021",
+    "c-USD-0024",
+    "c-GER-0037",
+    "c-SU-0057"
+   ]
+  },
+  {
+   "id": "tac.counterattack",
+   "family": "tactical",
+   "task": "React to a lost position",
+   "keywords": [
+    "counterattack",
+    "flank",
+    "quick",
+    "base"
+   ],
+   "when": "A held point has just fallen and a reserve exists",
+   "do": [
+    "Go at once, whole, at the flank of the penetration.",
+    "Fire across its base to stop more entering.",
+    "Stop at the old line. Beyond it, fire only.",
+    "Enemy armor seen near and able to reach it: keep the reserve, hold a flank line, and use tac.at-screen."
+   ],
+   "roles": {
+    "strike": [
+     "rifle",
+     "smg",
+     "tank"
+    ],
+    "fire": [
+     "mg",
+     "mortar"
+    ]
+   },
+   "scale": {
+    "platoon": "support squad",
+    "company": "support platoon",
+    "battalion": "reserve company"
+   },
+   "flavor": {
+    "ger_reported": "artillery first, then immediate counterthrust by whoever is near",
+    "su": "short surprise blow into flank and rear"
+   },
+   "fit": {
+    "trigger": "engine",
+    "flank_choice": "engine",
+    "stop_line": "engine"
+   },
+   "param_source": {
+    "delay": "design"
+   },
+   "pitfalls": [],
+   "cites": [
+    "company.infantry.counterattack",
+    "c-USD-0029",
+    "c-USD-0031",
+    "c-USD-0032",
+    "c-USD-0034",
+    "c-USD-0028",
+    "c-GER-0044",
+    "c-SU-0058",
+    "c-SU-0060"
+   ]
+  },
+  {
+   "id": "tac.withdrawal",
+   "family": "tactical",
+   "task": "Pull a group back",
+   "keywords": [
+    "withdrawal",
+    "covered",
+    "early",
+    "RobZ"
+   ],
+   "when": "A group can't hold and has somewhere to go",
+   "do": [
+    "Go before the enemy is within 0.5 x rifle or rifle fire is hurting you.",
+    "One part covers while the rest moves, then swap. Last out has a covered route.",
+    "Delay: spread wide, fire from maximum range, then go when he deploys.",
+    "Successive lines no farther apart than 1.0 x mg, so each covers the last.",
+    "The withdrawal is an order in both mods. Auto-move only: vanilla idle soldiers may also fall back alone, so expect leaks; RobZ idle soldiers never do (no_retreat)."
+   ],
+   "roles": {
+    "cover": [
+     "mg",
+     "at_gun"
+    ],
+    "leave": [
+     "rifle",
+     "smg"
+    ]
+   },
+   "scale": {
+    "delay_open_fire": "1.6 to 2.4 x rifle per source, so maximum weapon range in practice"
+   },
+   "flavor": {
+    "ger_reported": "rear company leapfrogs through the others until dark",
+    "su": "fire until he is disrupted, never wait for the assault, commander last",
+    "jp_reported": "automatic-weapon shell stays at night",
+    "uk": "next position organized before leaving this one"
+   },
+   "fit": {
+    "order": "engine",
+    "vanilla_auto_retreat": "direct"
+   },
+   "param_source": {
+    "open_fire_ratio": "claim",
+    "line_spacing": "claim"
+   },
+   "pitfalls": [],
+   "cites": [
+    "battalion.infantry.withdrawal",
+    "company.infantry.withdrawal",
+    "c-USD-0044",
+    "c-USD-0037",
+    "c-USD-0042",
+    "c-USA-0065",
+    "c-USA-0066",
+    "c-GER-0049",
+    "c-SU-0061",
+    "c-SU-0062"
+   ]
+  },
+  {
+   "id": "tac.at-screen",
+   "family": "tactical",
+   "task": "Place and fire anti-tank weapons",
+   "keywords": [
+    "AT screen",
+    "flanking",
+    "hold fire",
+    "mass"
+   ],
+   "when": "Enemy armor is possible on a route",
+   "do": [
+    "Be in place before tanks arrive. Stay hidden.",
+    "Site for flank shots; platoons cover each other's dead ground.",
+    "Hold fire inside gun range (design 0.6 x gun_medium, or vision if shorter). Others stay silent until enemy tanks turn toward the first gun.",
+    "Save AT ammunition for armor. Never chase.",
+    "Keep infantry next to the guns; don't call terrain impassable."
+   ],
+   "roles": {
+    "screen": [
+     "at_gun",
+     "td"
+    ],
+    "close": [
+     "at_infantry"
+    ],
+    "guard": [
+     "rifle",
+     "mg"
+    ]
+   },
+   "scale": {
+    "guns_per_position": "2 to 3 (reported of Germans)",
+    "mass": "share kept together grows as guns get fewer"
+   },
+   "flavor": {
+    "ger_reported": "held very late; reverse slopes"
+   },
+   "fit": {
+    "placement": "engine",
+    "hold_fire": "engine",
+    "concealment": "proxy"
+   },
+   "param_source": {
+    "hold_ratio": "design",
+    "guns_per_position": "claim"
+   },
+   "pitfalls": [
+    "RobZ: longer gun range and near-instant recognition make surprise weaker; test the ratio."
+   ],
+   "cites": [
+    "platoon.at.defense",
+    "battalion.at.defense",
+    "c-USA-0048",
+    "c-USA-0050",
+    "c-USA-0058",
+    "c-USA-0063",
+    "c-USA-0045",
+    "c-GER-0041",
+    "c-GER-0042"
+   ]
+  },
+  {
+   "id": "tac.tank-infantry",
+   "family": "tactical",
+   "task": "Combine tanks and infantry in an attack",
+   "keywords": [
+    "tank",
+    "infantry",
+    "envelop",
+    "obstacles"
+   ],
+   "when": "A group with tanks attacks",
+   "do": [
+    "Default: support fires frontally, tanks go under cover to a flank.",
+    "Known AT obstacles or fortifications: infantry first, tanks fire from behind.",
+    "When tanks lead, infantry follows at once, in small groups clear of the tanks.",
+    "Assault only once AT weapons are gone; all together.",
+    "Stalled: fall back to a rally point and retry."
+   ],
+   "roles": {
+    "tank": [
+     "tank",
+     "assault_gun"
+    ],
+    "foot": [
+     "rifle",
+     "smg",
+     "engineer"
+    ],
+    "support": [
+     "mg",
+     "mortar"
+    ]
+   },
+   "scale": {
+    "assault_start": "as tac.assault-timing",
+    "tanks": "in twos or more"
+   },
+   "flavor": {
+    "ger_reported": "tanks bound cover to cover; infantry rides to the line",
+    "su": "tanks stay close to their infantry; carry riflemen if short of transport",
+    "jp_reported": "infantry holds what tanks overrun"
+   },
+   "fit": {
+    "sequence": "engine",
+    "follow_distance": "engine",
+    "rally": "engine"
+   },
+   "param_source": {
+    "all_ratios": "design"
+   },
+   "pitfalls": [
+    "Bailed crews aren't re-crewed in stock (AI-13)."
+   ],
+   "cites": [
+    "battalion.tank.attack",
+    "company.tank.attack",
+    "c-USA-0024",
+    "c-USA-0030",
+    "c-USA-0028",
+    "c-USA-0029",
+    "c-UK-1022",
+    "c-GER-0024",
+    "c-GER-0025",
+    "c-GER-0026"
+   ]
+  },
+  {
+   "id": "tac.tank-reflex",
+   "family": "tactical",
+   "task": "Set a tank's target priority and when it halts",
+   "keywords": [
+    "target order",
+    "halt",
+    "hull down",
+    "reflex"
+   ],
+   "when": "A tank has targets, or is about to fire on the move",
+   "do": [
+    "Order: enemy tanks that can hurt it, AT guns, harmless armor, troops.",
+    "Against an AT gun: some fire from cover, others close from a flank.",
+    "Halt briefly, in cover, to shoot; beyond short range don't fire on the move for effect.",
+    "Stay within support of another tank."
+   ],
+   "roles": {
+    "tank": [
+     "tank",
+     "assault_gun",
+     "td"
+    ]
+   },
+   "scale": {
+    "moving_fire_limit": "from mod accuracy data"
+   },
+   "flavor": {},
+   "fit": {
+    "target_priority": "proxy",
+    "hull_down": "engine",
+    "pairing": "engine"
+   },
+   "param_source": {
+    "order": "claim",
+    "limit": "design"
+   },
+   "pitfalls": [
+    "One target list per vehicle (AI-06). Hatch gunners (AI-20) count separately."
+   ],
+   "cites": [
+    "individual.tank.attack",
+    "c-USA-0005",
+    "c-USA-0006",
+    "c-USA-0008",
+    "c-USA-0009",
+    "c-USA-0002"
+   ]
+  },
+  {
+   "id": "tac.mortar-use",
+   "family": "tactical",
+   "task": "Give mortars targets",
+   "keywords": [
+    "mortar",
+    "known target",
+    "ammo",
+    "control"
+   ],
+   "when": "Mortars are available and ammunition is finite",
+   "do": [
+    "Fire at located guns or men, clearly stopping the advance, and on counterattacks.",
+    "Never search woods, crests, big building groups or unknown areas.",
+    "Keep them under central control, near the front.",
+    "Save some for reserves that exploit without a fire plan."
+   ],
+   "roles": {
+    "mortar": [
+     "mortar"
+    ]
+   },
+   "scale": {
+    "all": "same rule"
+   },
+   "flavor": {
+    "su": "lift to depth at the assault, to cut infantry from tanks",
+    "uk": "stay forward, fire at once; keep some for reserves"
+   },
+   "fit": {
+    "target_choice": "proxy",
+    "ammo_care": "engine"
+   },
+   "param_source": {
+    "all": "claim"
+   },
+   "pitfalls": [
+    "Stock bots have no artillery fire missions (AI-11)."
+   ],
+   "cites": [
+    "company.mortar.attack",
+    "company.mg.attack",
+    "c-US-1017",
+    "c-US-1018",
+    "c-US-1031",
+    "c-US-1032",
+    "c-UK-1030",
+    "c-UK-1031"
+   ]
+  },
+  {
+   "id": "tac.smoke",
+   "family": "tactical",
+   "task": "Fire smoke",
+   "keywords": [
+    "smoke on enemy",
+    "short life",
+    "HE if located"
+   ],
+   "when": "A group must cross ground an enemy weapon watches, or an unseen weapon fires",
+   "do": [
+    "Located target in range: HE. Unlocated or out of range: smoke on it or its field of view.",
+    "Smoke the enemy weapon, never a curtain in front of own units.",
+    "Start just before the move, keep it up until cover: rounds = (gap / speed) / profile smoke life (vanilla about 60 s, RobZ grenade about 90 s).",
+    "Skip if it blinds own overwatch or a neighbour's lane. Wind moves no smoke in game, so doctrine wind rules drop out.",
+    "Enemy smoke: laid weapons keep firing on approaches; reserve moves up."
+   ],
+   "roles": {
+    "smoke": [
+     "mortar",
+     "tank",
+     "assault_gun"
+    ],
+    "moving": [
+     "rifle",
+     "smg",
+     "engineer",
+     "tank"
+    ]
+   },
+   "scale": {
+    "platoon": "light mortar",
+    "company": "mortars",
+    "team": "main effort only"
+   },
+   "flavor": {
+    "uk": "smoke as artificial defilade against flank fire",
+    "su": "plan for enemy smoke",
+    "ger_reported": "smoke candles"
+   },
+   "fit": {
+    "smoke_round": "direct",
+    "smoke_decision": "engine",
+    "wind": "out",
+    "round_life": "direct"
+   },
+   "param_source": {
+    "he_vs_smoke": "claim",
+    "advantage_4_1": "claim",
+    "round_life": "profile"
+   },
+   "pitfalls": [
+    "No bot artillery missions (AI-11).",
+    "Wind does not move smoke (VIS-16).",
+    "Smoke life is fixed per mod: read the profile."
+   ],
+   "cites": [
+    "company.infantry.smoke",
+    "c-USA01-0017",
+    "c-USA01-0029",
+    "c-USA03-0006",
+    "c-USA03-0135",
+    "c-USI06-0064",
+    "c-UK-1040",
+    "c-SU-2042"
+   ]
+  },
+  {
+   "id": "tac.bait",
+   "family": "tactical",
+   "task": "Bait or refuse bait",
+   "keywords": [
+    "bait",
+    "hold fire",
+    "kill on reply",
+    "feint",
+    "ambush"
+   ],
+   "when": "Enemy weapons unknown, or the enemy shows a lone or easy target",
+   "do": [
+    "A cheap element shows itself or fires; hidden killers are laid where a reply would come from and hit it at once.",
+    "Only units named for it engage scouts and lone vehicles; AT guns hold to the set range.",
+    "Feint on a second axis; if it finds weakness it becomes the main effort.",
+    "Withdrawing: a few weapons keep firing to mimic the position.",
+    "Ambush in close ground or defiles: open close, keep a way out, never chase."
+   ],
+   "roles": {
+    "bait": [
+     "scout",
+     "rifle",
+     "light_tank"
+    ],
+    "killer": [
+     "at_gun",
+     "mortar",
+     "tank",
+     "sniper"
+    ],
+    "hold": [
+     "at_gun"
+    ]
+   },
+   "scale": {
+    "platoon": "one bait one killer",
+    "team": "feint bot and main-effort bot"
+   },
+   "flavor": {
+    "su": "covering platoons fire while others leave",
+    "ger": "sniper lures fire with a dummy",
+    "jp_reported": "noisy frontal show"
+   },
+   "fit": {
+    "probe_and_kill": "engine",
+    "hold_fire": "proxy",
+    "feint": "engine",
+    "ambush": "proxy",
+    "dummies": "out"
+   },
+   "param_source": {
+    "dummy_offset_150yd": "claim"
+   },
+   "pitfalls": [
+    "RobZ RecognizeTime 0.01 weakens ambush.",
+    "No dummy units in stock AS2."
+   ],
+   "cites": [
+    "company.infantry.deception",
+    "c-USI11-0031",
+    "c-USI10-0025",
+    "c-USI17-0130",
+    "c-USA04-0152",
+    "c-USI17-0215",
+    "c-SU-0001",
+    "c-JP-2004"
+   ]
+  },
+  {
+   "id": "tac.reverse-slope",
+   "family": "tactical",
+   "task": "Site a defense",
+   "keywords": [
+    "reverse slope",
+    "crest killing ground",
+    "outposts",
+    "counterattack crest"
+   ],
+   "when": "Defending a ridge or rise the enemy can see from his side, or under enemy artillery or long-range tank fire",
+   "do": [
+    "Main position just behind the crest, out of sight of enemy units beyond close range; weapons laid on the crest line.",
+    "One or two outposts on the forward slope or crest to see and warn; they fall back on contact.",
+    "Most of the force held back as a counterattack group aimed at the crest.",
+    "If the crest is lost, counterattack it at once: whoever holds it sees the whole position.",
+    "Woods count as a reverse slope; sit back from the wood edge, not on it."
+   ],
+   "roles": {
+    "main": [
+     "rifle",
+     "mg",
+     "at_gun"
+    ],
+    "outpost": [
+     "scout",
+     "rifle"
+    ],
+    "counterattack": [
+     "rifle",
+     "smg",
+     "tank"
+    ],
+    "indirect": [
+     "mortar",
+     "heavy_mortar"
+    ]
+   },
+   "scale": {
+    "platoon": "one outpost",
+    "company": "outposts plus two positions",
+    "team": "one bot holds the crest line"
+   },
+   "flavor": {
+    "ger_reported": "second ridge fires onto the first crest",
+    "su": "dominated once the crest is lost",
+    "uk": "localities on reverse slopes"
+   },
+   "fit": {
+    "siting": "engine",
+    "crest_from_heightmap": "engine",
+    "outpost_fallback": "proxy",
+    "counterattack": "engine"
+   },
+   "param_source": {
+    "outpost_count": "design",
+    "crest_offset": "tuned"
+   },
+   "pitfalls": [
+    "Needs per-map height data to find crests.",
+    "Long-range mods (RobZ) make the forward slope even less tenable."
+   ],
+   "cites": [
+    "company.infantry.reverse-slope",
+    "c-US-3001",
+    "c-GER-3010",
+    "c-GER-3009",
+    "c-SU-3001",
+    "c-UK-3012",
+    "c-GER-3011",
+    "c-SU-3002"
+   ]
+  },
+  {
+   "id": "tac.ambush",
+   "family": "tactical",
+   "task": "Lay an ambush",
+   "keywords": [
+    "ambush",
+    "let scouts pass",
+    "leader opens",
+    "staggered",
+    "way out"
+   ],
+   "when": "Own force is weaker or holding, and the enemy must pass through close ground (woods, town, defile, hedges)",
+   "do": [
+    "Two or more parties on both sides of the route, staggered so their fire does not cross into each other.",
+    "Hold fire until the main body is in close range; let the scouts through.",
+    "One unit opens the ambush, all fire at once; first targets are leaders, AT crews and vehicles stopped by mines.",
+    "Against tanks: mine or block the lead and rear vehicles first.",
+    "Strike, then leave by a planned covered route before the enemy can reply in strength; never chase."
+   ],
+   "roles": {
+    "ambush": [
+     "rifle",
+     "smg",
+     "mg",
+     "at_infantry"
+    ],
+    "block": [
+     "engineer",
+     "at_gun"
+    ],
+    "vehicles": [
+     "at_infantry",
+     "at_gun"
+    ]
+   },
+   "scale": {
+    "squad": "one party",
+    "platoon": "two parties plus cut-off",
+    "team": "ambush on the enemy's likely path to an objective"
+   },
+   "flavor": {
+    "su": "fire then bayonet, take prisoners",
+    "uk": "best shots on officers",
+    "jp_reported": "road blocks on jungle tracks"
+   },
+   "fit": {
+    "hold_fire": "proxy",
+    "open_together": "engine",
+    "mines": "direct",
+    "exit": "engine"
+   },
+   "param_source": {
+    "open_range": "tuned",
+    "party_count": "design"
+   },
+   "pitfalls": [
+    "RobZ RecognizeTime 0.01 makes spotting near instant, so ambush works best in dense cover.",
+    "Hold fire must be set on units, or they open on the scouts."
+   ],
+   "cites": [
+    "company.infantry.ambush",
+    "c-SU-3003",
+    "c-UK-3022",
+    "c-UK-3023",
+    "c-UK-3010",
+    "c-US-3002",
+    "c-JP-3004"
+   ]
+  },
+  {
+   "id": "tac.infiltration",
+   "family": "tactical",
+   "task": "Infiltrate or stop infiltration",
+   "keywords": [
+    "infiltration",
+    "unwatched ground",
+    "all-round posts",
+    "hunting reserve"
+   ],
+   "when": "Attack: a route the enemy does not watch exists past his line. Defense: enemy infantry appears behind or between posts",
+   "do": [
+    "Attack: send a small, well-armed group (SMG, MG, light mortar) along the unwatched route while the main attack holds the front.",
+    "Its targets are the enemy's rear: heavy weapons, AT guns, crews, and the line the main attack must cross.",
+    "Defense: every post can fire all round; do not pull posts back when infiltrators appear.",
+    "Use the reserve to hunt the infiltrators, pivoting on the posts."
+   ],
+   "roles": {
+    "infiltrate": [
+     "smg",
+     "rifle",
+     "mg",
+     "mortar"
+    ],
+    "posts": [
+     "rifle",
+     "mg"
+    ],
+    "hunt": [
+     "smg",
+     "rifle",
+     "light_tank"
+    ]
+   },
+   "scale": {
+    "platoon": "one squad",
+    "company": "one platoon",
+    "team": "one bot's flank group"
+   },
+   "flavor": {
+    "ger_reported": "no preparatory fire",
+    "su": "SMG gunners in the enemy's formation",
+    "jp_reported": "an LMG in the rear unsettles"
+   },
+   "fit": {
+    "route_finding": "engine",
+    "all_round": "proxy",
+    "hunt": "engine"
+   },
+   "param_source": {
+    "group_size": "design"
+   },
+   "pitfalls": [
+    "Needs knowledge of what the enemy can see: use own vision map, not omniscience."
+   ],
+   "cites": [
+    "company.infantry.infiltration",
+    "c-GER-3012",
+    "c-SU-3022",
+    "c-SU-3004",
+    "c-JP-3005",
+    "c-US-3005"
+   ]
+  },
+  {
+   "id": "tac.tank-hunting",
+   "family": "tactical",
+   "task": "Infantry against tanks",
+   "keywords": [
+    "tank hunting",
+    "lead tank",
+    "blind side",
+    "mines",
+    "following infantry"
+   ],
+   "when": "Enemy tanks within close range of own infantry with grenades, charges, AT rifles or flame",
+   "do": [
+    "Most infantry fire on the infantry with or behind the tanks; separated tanks are far easier to kill.",
+    "Named hunter teams, about one per platoon, close in from the rear or flank where the tank cannot see.",
+    "Strike the lead tank first; tanks stopped by mines, obstacles or town streets are first targets.",
+    "Do not send hunters across open ground in the tank's view."
+   ],
+   "roles": {
+    "hunters": [
+     "at_infantry",
+     "engineer",
+     "flamethrower"
+    ],
+    "screen": [
+     "rifle",
+     "mg",
+     "smg"
+    ],
+    "stop": [
+     "engineer",
+     "at_gun"
+    ]
+   },
+   "scale": {
+    "squad": "one hunter pair",
+    "platoon": "one hunter team",
+    "company": "hunters plus AT guns"
+   },
+   "flavor": {
+    "su": "AT rifles on dug-in tanks in towns",
+    "jp_reported": "raid tank parks",
+    "us": "mines in ambush"
+   },
+   "fit": {
+    "close_assault": "direct",
+    "blind_side_approach": "engine",
+    "target_split": "engine"
+   },
+   "param_source": {
+    "hunter_ratio": "claim"
+   },
+   "pitfalls": [
+    "Grenade and charge reach are per mod; read the profile.",
+    "Bailed crews are not re-crewed (AI-13)."
+   ],
+   "cites": [
+    "squad.infantry.tank-hunting",
+    "c-US-3002",
+    "c-SU-3005",
+    "c-UK-3010",
+    "c-UK-3011",
+    "c-JP-3006",
+    "c-JP-3007",
+    "c-SU-3008"
+   ]
+  },
+  {
+   "id": "tac.pillbox",
+   "family": "tactical",
+   "task": "Assault a fortified point",
+   "keywords": [
+    "pillbox",
+    "embrasure fire",
+    "smoke",
+    "lane",
+    "flame",
+    "bypass"
+   ],
+   "when": "A bunker, pillbox, emplaced gun or fortified building blocks the advance",
+   "do": [
+    "Find it: embrasures, and where it can flank the approach.",
+    "Guns, tanks or MGs fire on the embrasures from a flank; smoke blinds the rest.",
+    "Engineers clear wire or mines; the assault party closes from the side the embrasures don't cover, with flame or charges.",
+    "Other units bypass it and watch its exits; once it is silent, the attack continues at once."
+   ],
+   "roles": {
+    "fire": [
+     "tank",
+     "assault_gun",
+     "td",
+     "at_gun",
+     "mg"
+    ],
+    "smoke": [
+     "mortar"
+    ],
+    "breach": [
+     "engineer"
+    ],
+    "assault": [
+     "flamethrower",
+     "engineer",
+     "smg"
+    ],
+    "bypass": [
+     "rifle"
+    ]
+   },
+   "scale": {
+    "platoon": "one point",
+    "company": "assault group plus fire group",
+    "team": "main effort past it"
+   },
+   "flavor": {
+    "su": "assault group with sappers and guns",
+    "ger_reported": "craters for cover, wind-laid smoke",
+    "jp_reported": "angled entrances against grenades"
+   },
+   "fit": {
+    "embrasure_fire": "direct",
+    "smoke": "direct",
+    "flame": "direct",
+    "breach": "proxy",
+    "bypass": "engine"
+   },
+   "param_source": {
+    "flame_reach": "profile"
+   },
+   "pitfalls": [
+    "Flame reach and pillbox armour are per mod.",
+    "No bot artillery fire missions (AI-11)."
+   ],
+   "cites": [
+    "company.engineer.assault",
+    "c-SU-3023",
+    "c-SU-3006",
+    "c-SU-3007",
+    "c-GER-3015",
+    "c-GER-3016",
+    "c-SU-3009",
+    "c-US-3003"
+   ]
+  },
+  {
+   "id": "tac.assault-gun",
+   "family": "tactical",
+   "task": "Use assault guns and tank destroyers",
+   "keywords": [
+    "assault gun",
+    "tank destroyer",
+    "main effort",
+    "own security"
+   ],
+   "when": "Force has assault guns or tank destroyers",
+   "do": [
+    "Assault guns go with the infantry of the main effort, firing HE on the points that hold it up.",
+    "Tank destroyers wait in overwatch for tanks, away from close enemy infantry, with their own infantry or MG cover.",
+    "Either can fire on bunkers once enemy AT is suppressed."
+   ],
+   "roles": {
+    "assault": [
+     "assault_gun",
+     "spg"
+    ],
+    "overwatch": [
+     "td"
+    ],
+    "cover": [
+     "rifle",
+     "mg"
+    ]
+   },
+   "scale": {
+    "company": "one or two vehicles",
+    "team": "grouped at the main effort"
+   },
+   "flavor": {
+    "ger_reported": "decisive at the main effort",
+    "us": "TDs need tank warning"
+   },
+   "fit": {
+    "role_from_unit_data": "direct",
+    "placement": "engine"
+   },
+   "param_source": {},
+   "pitfalls": [
+    "Role tags differ per mod; unknown vehicles use the universal core."
+   ],
+   "cites": [
+    "company.assault-gun.attack",
+    "c-GER-3019",
+    "c-US-3003",
+    "c-US-3004"
+   ]
+  },
+  {
+   "id": "tac.pursuit",
+   "family": "tactical",
+   "task": "Exploit a break",
+   "keywords": [
+    "pursuit",
+    "no waiting",
+    "broad front",
+    "cut retreat",
+    "limit"
+   ],
+   "when": "Enemy units are falling back, or his force ratio drops sharply in a sector",
+   "do": [
+    "Go at once with the nearest fast units; don't wait for neighbours.",
+    "Press on a broad front against his flanks; send groups by the shortest routes to cut his retreat.",
+    "Bring MGs, mortars and guns forward so he can't re-form.",
+    "Bypass strongpoints and rearguards; stop at a set limit (his next prepared line or own support range) and consolidate."
+   ],
+   "roles": {
+    "pursue": [
+     "smg",
+     "light_tank",
+     "tank",
+     "light_vehicle",
+     "recon"
+    ],
+    "support": [
+     "mg",
+     "mortar",
+     "assault_gun"
+    ]
+   },
+   "scale": {
+    "platoon": "next cover line",
+    "company": "next enemy line",
+    "team": "one bot pursues",
+    "others hold": null
+   },
+   "flavor": {
+    "su": "commanders at the head; only a senior commander halts it"
+   },
+   "fit": {
+    "trigger": "engine",
+    "pursue_limit": "engine",
+    "bypass": "engine"
+   },
+   "param_source": {
+    "limit": "design"
+   },
+   "pitfalls": [
+    "Chasing into an untouched AT screen is the usual loss: stop at the limit.",
+    "Retreat settings only govern idle units on AI auto-move; pursuit is an order."
+   ],
+   "cites": [
+    "company.infantry.pursuit",
+    "c-SU-3011",
+    "c-SU-3012",
+    "c-SU-3013",
+    "c-SU-3016"
+   ]
+  },
+  {
+   "id": "tac.counter-sniper",
+   "family": "tactical",
+   "task": "Use and counter snipers",
+   "keywords": [
+    "sniper",
+    "hidden fire points",
+    "roofs",
+    "tempt fire",
+    "move after firing"
+   ],
+   "when": "Own or enemy snipers present, or a hidden weapon is firing",
+   "do": [
+    "Own sniper: forward or on a flank, apart from the platoon; first targets are MG crews, AT crews, officers and spotters.",
+    "Move after firing or after a miss; mark targets for MGs and mortars.",
+    "Against enemy snipers: watch roofs, towers and steeples; clear them early.",
+    "Find a hidden enemy with searching fire or a cheap unit moving to tempt a shot, then answer with HE."
+   ],
+   "roles": {
+    "sniper": [
+     "sniper"
+    ],
+    "watchers": [
+     "rifle",
+     "mg"
+    ],
+    "bait": [
+     "scout",
+     "rifle"
+    ],
+    "answer": [
+     "mortar",
+     "tank"
+    ]
+   },
+   "scale": {
+    "platoon": "one sniper",
+    "company": "sniper pair",
+    "team": "snipers on flanks"
+   },
+   "flavor": {
+    "su": "hidden fire points first",
+    "fi_reported": "mark with tracer and move",
+    "uk": "clear churches early"
+   },
+   "fit": {
+    "target_priority": "engine",
+    "relocate": "engine",
+    "bait": "engine"
+   },
+   "param_source": {},
+   "pitfalls": [
+    "Morale follows health in stock AS2, so officer kills matter less than in doctrine."
+   ],
+   "cites": [
+    "individual.sniper.counter",
+    "c-SU-3021",
+    "c-FI-3001",
+    "c-FI-3002",
+    "c-UK-3019",
+    "c-UK-3021",
+    "c-UK-3020"
+   ]
+  },
+  {
+   "id": "tac.mg-defense",
+   "family": "tactical",
+   "task": "Site machine guns in defense",
+   "keywords": [
+    "enfilade",
+    "crossing fire",
+    "final protective line",
+    "flanks"
+   ],
+   "when": "Any defense with machine guns",
+   "do": [
+    "Site MGs on the flanks of the position, firing across the front, not straight ahead.",
+    "Neighbouring MGs' fields cross; check each flank is covered.",
+    "Heavy MGs take the long fixed lines; light MGs fill the gaps near posts."
+   ],
+   "roles": {
+    "mg": [
+     "mg"
+    ],
+    "posts": [
+     "rifle"
+    ]
+   },
+   "scale": {
+    "platoon": "one MG per flank",
+    "company": "crossing HMG lines"
+   },
+   "flavor": {
+    "uk": "no gaps especially at the flanks",
+    "ger_reported": "strongpoints with up to six MGs"
+   },
+   "fit": {
+    "siting": "engine",
+    "fixed_lines": "proxy"
+   },
+   "param_source": {
+    "range": "profile"
+   },
+   "pitfalls": [
+    "MG range is per mod; read the profile."
+   ],
+   "cites": [
+    "company.mg.defense",
+    "c-UK-3013",
+    "c-UK-3014",
+    "c-UK-3015",
+    "c-US-3006",
+    "c-GER-3021"
+   ]
+  },
+  {
+   "id": "tac.approach",
+   "family": "terrain-and-special",
+   "task": "Move a group to the fight",
+   "keywords": [
+    "covered column",
+    "spread",
+    "bound",
+    "clear the road"
+   ],
+   "when": "A group is moving and contact is not yet made",
+   "do": [
+    "Use covered routes first, in column while cover lasts.",
+    "Open ground: spread groups to about 1.5 x rifle apart (design).",
+    "Stop at terrain bounds; the next group moves only once this bound is secure.",
+    "Air or tank warning: leave the road for the nearest cover, disperse."
+   ],
+   "roles": {
+    "lead": [
+     "recon",
+     "rifle"
+    ],
+    "follow": [
+     "mg",
+     "mortar",
+     "at"
+    ]
+   },
+   "scale": {
+    "spacing": "rifle range",
+    "bound": "nearest terrain feature"
+   },
+   "flavor": {
+    "su": "column as long as cover allows; SMG teams infiltrate ahead",
+    "jp_reported": "advance guard seizes key ground first",
+    "ger_reported": "infantry guide assault guns round mines"
+   },
+   "fit": {
+    "routes": "engine",
+    "spacing": "proxy",
+    "bounds": "engine"
+   },
+   "param_source": {
+    "spacing": "design"
+   },
+   "pitfalls": [
+    "Doctrine yard values are wartime marches. Use the order of actions, not the distance."
+   ],
+   "cites": [
+    "company.infantry.approach"
+   ]
+  },
+  {
+   "id": "tac.recon",
+   "family": "terrain-and-special",
+   "task": "Use scouts or light vehicles",
+   "keywords": [
+    "pairs",
+    "observe",
+    "bypass",
+    "draw fire"
+   ],
+   "when": "Enemy positions are unknown or an axis is being chosen",
+   "do": [
+    "Send at least two elements together, never one alone.",
+    "One covers while the other moves up, then dashes back to draw fire and reveal guns.",
+    "Superior force: don't fight; bypass, mark it, and keep one element watching.",
+    "Feed what is found to axis choice and to the AT and mortar target lists.",
+    "Fight only to break through or to avoid destruction."
+   ],
+   "roles": {
+    "scout": [
+     "recon",
+     "light_vehicle",
+     "rifle"
+    ],
+    "watch": [
+     "sniper",
+     "recon"
+    ]
+   },
+   "scale": {
+    "pairs": "per axis",
+    "range": "1 x vision beyond own line"
+   },
+   "flavor": {
+    "su": "observation first; ambush only when it must",
+    "us": "section per route; hold enemy flanks after contact"
+   },
+   "fit": {
+    "pairing": "proxy",
+    "contact_report": "engine",
+    "draw_fire": "engine"
+   },
+   "param_source": {
+    "range": "design"
+   },
+   "pitfalls": [
+    "RobZ recognition is near-instant, so a scout is seen as fast as it sees."
+   ],
+   "cites": [
+    "platoon.recon.recon"
+   ]
+  },
+  {
+   "id": "tac.town",
+   "family": "terrain-and-special",
+   "task": "Attack or hold buildings",
+   "keywords": [
+    "back gardens",
+    "street fire",
+    "top down",
+    "killing ground"
+   ],
+   "when": "Objective is a built-up area",
+   "do": [
+    "Bypass with leading groups if possible; a following group clears.",
+    "Fire element suppresses street-facing windows; assault elements enter from the rear.",
+    "Assault sections alternate clearing and covering; fire element moves up in bounds.",
+    "Don't encircle: leave one retreat line and cover it with a fire element or tanks.",
+    "Defending: hold inside the built-up area, not on its edge."
+   ],
+   "roles": {
+    "fire": [
+     "mg",
+     "tank",
+     "at"
+    ],
+    "clear": [
+     "smg",
+     "rifle",
+     "engineer",
+     "flamethrower"
+    ]
+   },
+   "scale": {
+    "platoon": "one street block",
+    "company": "one side of a village"
+   },
+   "flavor": {
+    "uk": "fire section, two clearing sections, ambush party on the way out",
+    "ger_reported": "main line inside the town, irregular for flank fire",
+    "su": "reinforced platoon strongpoint, stocked to last"
+   },
+   "fit": {
+    "enter_buildings": "engine",
+    "street_fire": "proxy",
+    "exit_lane": "engine"
+   },
+   "param_source": {
+    "all": "design"
+   },
+   "pitfalls": [
+    "Almost all of this comes from one UK manual, read only on the lighter pass.",
+    "Top-down entry is only an ideal, and may not be expressible in the game."
+   ],
+   "cites": [
+    "platoon.infantry.town"
+   ]
+  },
+  {
+   "id": "tac.woods",
+   "family": "terrain-and-special",
+   "task": "Attack or hold woods",
+   "keywords": [
+    "edge target",
+    "close reserve",
+    "short halt",
+    "rush out"
+   ],
+   "when": "Route or objective lies in woods",
+   "do": [
+    "Cross open ground to the near edge under smoke or concealment if possible.",
+    "Halt briefly inside the edge, not on it, to restore contact.",
+    "Keep the reserve within about 1 x rifle of the lead.",
+    "Stop short of the far edge, then leave in one rush if shelled, or filter out if under small-arms fire.",
+    "Soviet habit worth copying: bypass a strong woodland point and let followers kill it."
+   ],
+   "roles": {
+    "lead": [
+     "rifle",
+     "smg"
+    ],
+    "support": [
+     "mg",
+     "mortar"
+    ],
+    "guard": [
+     "at"
+    ]
+   },
+   "scale": {
+    "reserve": "rifle range",
+    "halt": "a few bot ticks"
+   },
+   "flavor": {
+    "su": "clearing to clearing, trail to trail",
+    "ger_reported": "close up, then all rush out at once"
+   },
+   "fit": {
+    "edge_avoidance": "engine",
+    "group_cohesion": "proxy",
+    "mortar_clearance": "out"
+   },
+   "param_source": {
+    "reserve": "design"
+   },
+   "pitfalls": [
+    "Doctrine's 300 to 500 yards is too long for most maps, hence the ratio."
+   ],
+   "cites": [
+    "battalion.infantry.woods"
+   ]
+  },
+  {
+   "id": "tac.night",
+   "family": "terrain-and-special",
+   "task": "Act when vision is short",
+   "keywords": [
+    "straight ahead",
+    "close deploy",
+    "narrow sectors",
+    "hedgehog"
+   ],
+   "when": "Mission or weather shortens vision",
+   "do": [
+    "Keep groups in column and deploy only close to the objective.",
+    "No envelopment: one direct assault on a point already scouted.",
+    "Narrow each weapon's sector and raise density on the line.",
+    "A group that stops loses its order: set all-round defense where it stands.",
+    "Patrol the gaps between held points."
+   ],
+   "roles": {
+    "assault": [
+     "rifle",
+     "smg"
+    ],
+    "patrol": [
+     "recon",
+     "rifle"
+    ],
+    "line": [
+     "mg"
+    ]
+   },
+   "scale": {
+    "deploy": "0.5 x vision"
+   },
+   "flavor": {
+    "ger": "reconnoiter the night before; go for flank or rear",
+    "uk": "limit fire to close targets",
+    "jp_reported": "thin line left on the front by night to mask withdrawal"
+   },
+   "fit": {
+    "vision_trigger": "proxy",
+    "sector_narrowing": "proxy",
+    "silence": "out"
+   },
+   "param_source": {
+    "deploy": "design"
+   },
+   "pitfalls": [
+    "German 'go for flank or rear' and US 'straight ahead' disagree. Default to straight ahead; use the German form only as flavor."
+   ],
+   "cites": [
+    "company.infantry.night"
+   ]
+  },
+  {
+   "id": "tac.crossing",
+   "family": "terrain-and-special",
+   "task": "Cross a river or bridge",
+   "keywords": [
+    "several points",
+    "far bank first",
+    "don't bunch",
+    "rally"
+   ],
+   "when": "A river, bridge or ford lies on the axis",
+   "do": [
+    "Cover the far bank with fire before anything crosses.",
+    "Cross at more than one point when the map allows.",
+    "Infantry first, abreast; heavy weapons and vehicles after the far bank holds.",
+    "Rally on the first prominent feature; don't stop on the bank.",
+    "Lead elements take an undefended crossing at once rather than waiting."
+   ],
+   "roles": {
+    "cover": [
+     "mg",
+     "tank",
+     "mortar"
+    ],
+    "cross": [
+     "rifle",
+     "smg"
+    ],
+    "follow": [
+     "at",
+     "tank"
+    ]
+   },
+   "scale": {
+    "points": "one per main group"
+   },
+   "flavor": {
+    "su": "fords and bridges first, ice in winter",
+    "uk": "spare gear at assembly points"
+   },
+   "fit": {
+    "crossing_choice": "engine",
+    "boats": "out",
+    "far_bank_cover": "proxy"
+   },
+   "param_source": {
+    "points": "design"
+   },
+   "pitfalls": [
+    "Boat doctrine doesn't apply. Only the choke logic carries over."
+   ],
+   "cites": [
+    "company.infantry.river"
+   ]
+  },
+  {
+   "id": "tac.sniper",
+   "family": "terrain-and-special",
+   "task": "Use a sniper",
+   "keywords": [
+    "key targets",
+    "offset",
+    "few shots",
+    "move"
+   ],
+   "when": "A sniper unit is available",
+   "do": [
+    "Target order: gun and mortar crews, MG crews, commanders, then enemy snipers.",
+    "Site offset from the squad, at sector limits or open flanks.",
+    "Fire a few rounds, then change position.",
+    "Attack: stay just behind the firing line, with the security element."
+   ],
+   "roles": {
+    "sniper": [
+     "sniper"
+    ],
+    "spotter": [
+     "recon"
+    ]
+   },
+   "scale": {
+    "all": "per sniper"
+   },
+   "flavor": {
+    "ger": "observer pair, 3 to 6 rounds per position"
+   },
+   "fit": {
+    "target_priority": "direct",
+    "relocation": "engine",
+    "offset": "proxy"
+   },
+   "param_source": {
+    "all": "design"
+   },
+   "pitfalls": [
+    "Lighter-pass reads only. Crew removal is how it fits the game, not a source claim of value."
+   ],
+   "cites": [
+    "individual.sniper.attack"
+   ]
+  },
+  {
+   "id": "tac.artillery",
+   "family": "terrain-and-special",
+   "task": "Use heavy guns or fire support",
+   "keywords": [
+    "AT first",
+    "observers",
+    "safety margin",
+    "no long barrage"
+   ],
+   "when": "Heavy guns or fire support are available",
+   "do": [
+    "Targets, in order: AT guns, observation posts, enemy guns, front-line positions.",
+    "Keep impact a clear margin from own troops; lift when the assault closes.",
+    "Don't spend it on what tanks or mortars reach faster, or on clearing mines.",
+    "Sudden short fire, then move; no long preparation."
+   ],
+   "roles": {
+    "fire": [
+     "artillery",
+     "heavy_mortar",
+     "spg"
+    ],
+    "observe": [
+     "recon",
+     "sniper"
+    ]
+   },
+   "scale": {
+    "margin": "0.5 x mg"
+   },
+   "flavor": {
+    "ger_reported": "rockets and mortars instead of massed guns",
+    "su": "guns forward in direct fire with storm groups",
+    "jp_reported": "guns bound close behind infantry"
+   },
+   "fit": {
+    "fire_missions": "engine",
+    "direct_fire": "direct",
+    "counterbattery": "out"
+   },
+   "param_source": {
+    "margin": "design"
+   },
+   "pitfalls": [
+    "Stock bots have no artillery fire missions (AI-11)."
+   ],
+   "cites": [
+    "battalion.artillery.attack"
+   ]
+  },
+  {
+   "id": "tac.obstacles",
+   "family": "terrain-and-special",
+   "task": "Place mines, wire or tank traps",
+   "keywords": [
+    "covered",
+    "standoff",
+    "tank routes",
+    "dummy"
+   ],
+   "when": "Defending with engineers or a build option",
+   "do": [
+    "Put obstacles only where a weapon covers them.",
+    "Keep them outside grenade range of own positions.",
+    "Use them to turn tanks into AT fire, not as a wall.",
+    "Guard any working party."
+   ],
+   "roles": {
+    "build": [
+     "engineer"
+    ],
+    "cover": [
+     "at",
+     "mg"
+    ]
+   },
+   "scale": {
+    "all": "per covered approach"
+   },
+   "flavor": {
+    "su": "at least 50 m from trenches"
+   },
+   "fit": {
+    "mine_placement": "engine",
+    "coverage_check": "proxy",
+    "construction_time": "out"
+   },
+   "param_source": {
+    "all": "design"
+   },
+   "pitfalls": [
+    "Weakest evidence in the pack; mostly lighter-pass reads."
+   ],
+   "cites": [
+    "company.engineer.defense",
+    "platoon.at.defense"
+   ]
+  },
+  {
+   "id": "tac.winter",
+   "family": "terrain-and-special",
+   "task": "Fight on a snow map",
+   "keywords": [
+    "shelter",
+    "roads",
+    "flanks",
+    "slow"
+   ],
+   "when": "Map is winter, with slow off-road movement",
+   "do": [
+    "Value villages and woods more when choosing axes and held points.",
+    "Expect slow off-road flanks; plan shorter maneuvers.",
+    "Check tank routes before committing them."
+   ],
+   "roles": {
+    "all": [
+     "any"
+    ]
+   },
+   "scale": {
+    "all": "map-wide score change"
+   },
+   "flavor": {
+    "su": "ski raids into the rear where the mod has ski troops"
+   },
+   "fit": {
+    "map_season": "proxy",
+    "score_change": "engine",
+    "skis": "out"
+   },
+   "param_source": {
+    "all": "design"
+   },
+   "pitfalls": [
+    "Single nation, lighter-pass read only. Shelter has no game effect, so only the roads and terrain carry over."
+   ],
+   "cites": [
+    "battalion.infantry.winter"
+   ]
+  }
+ ],
+ "personas": [
+  {
+   "id": "universal",
+   "title": "Competent commander, no nation",
+   "family": "core",
+   "date": null,
+   "armies": [
+    "axis_minor"
+   ],
+   "fidelity": 0,
+   "temperament": {
+    "aggression": 0.5,
+    "reserve_share": 0.2,
+    "initiative": 0.6,
+    "caution": 0.5
+   },
+   "voice": "neutral",
+   "traits": [],
+   "modern": [],
+   "lobby_note": "Fallback for unknown armies; plays the core rules only."
+  },
+  {
+   "id": "us-1944-rifle",
+   "title": "US rifle battalion, 1944",
+   "family": "us",
+   "date": 1944,
+   "armies": [
+    "usa"
+   ],
+   "fidelity": 0.6,
+   "temperament": {
+    "aggression": 0.5,
+    "reserve_share": 0.25,
+    "initiative": 0.6,
+    "caution": 0.6
+   },
+   "voice": "us",
+   "traits": [
+    {
+     "rule": "tac.fire-and-move",
+     "do": "Lead with fire: mortars and MGs on the objective before any rifle squad moves.",
+     "basis": "claim",
+     "cites": [
+      "company.infantry.attack",
+      "company.mortar.attack"
+     ]
+    },
+    {
+     "rule": "tac.reverse-slope",
+     "do": "Put the main line on the reverse slope when the forward slope is under observed fire.",
+     "basis": "claim",
+     "cites": [
+      "c-US-3001"
+     ]
+    },
+    {
+     "rule": "tac.infiltration",
+     "do": "Counter infiltration with posts that hold alone and a reserve that strikes hard.",
+     "basis": "claim",
+     "cites": [
+      "company.infantry.infiltration"
+     ]
+    },
+    {
+     "rule": "tac.artillery",
+     "do": "Prefer waiting for fire support over a bare assault.",
+     "basis": "design",
+     "cites": []
+    }
+   ],
+   "modern": [],
+   "lobby_note": "Methodical; strong with support weapons, slow without them."
+  },
+  {
+   "id": "uk-1944-infantry",
+   "title": "British infantry battalion, 1944",
+   "family": "uk",
+   "date": 1944,
+   "armies": [
+    "eng"
+   ],
+   "fidelity": 0.6,
+   "temperament": {
+    "aggression": 0.4,
+    "reserve_share": 0.25,
+    "initiative": 0.5,
+    "caution": 0.7
+   },
+   "voice": "uk",
+   "traits": [
+    {
+     "rule": "tac.smoke",
+     "do": "Screen every crossing of open ground; move once the smoke is thick.",
+     "basis": "claim",
+     "cites": [
+      "company.infantry.smoke"
+     ]
+    },
+    {
+     "rule": "tac.consolidate",
+     "do": "Consolidate at once on each objective before the next bound.",
+     "basis": "claim",
+     "cites": [
+      "squad.infantry.assault"
+     ]
+    },
+    {
+     "rule": "tac.main-effort",
+     "do": "Stick to the fire plan's objectives; exploit only inside them.",
+     "basis": "design",
+     "cites": []
+    }
+   ],
+   "modern": [],
+   "lobby_note": "Careful and smoke-heavy; rarely overextends."
+  },
+  {
+   "id": "ger-1944-kampfgruppe",
+   "title": "German battle group, 1944 (reported doctrine)",
+   "family": "ger",
+   "date": 1944,
+   "armies": [
+    "ger",
+    "ger2",
+    "ger_ss"
+   ],
+   "fidelity": 0.7,
+   "temperament": {
+    "aggression": 0.7,
+    "reserve_share": 0.3,
+    "initiative": 0.8,
+    "caution": 0.4
+   },
+   "voice": "ger",
+   "traits": [
+    {
+     "rule": "tac.counterattack",
+     "do": "Counterattack a lost position at once, close behind the fire, at the flank of the break-in.",
+     "basis": "claim",
+     "cites": [
+      "c-GER-0044"
+     ]
+    },
+    {
+     "rule": "tac.mg-defense",
+     "do": "Build strongpoints round MGs, heavy mortars and an SP gun, firing all round.",
+     "basis": "claim",
+     "cites": [
+      "c-GER-3021"
+     ]
+    },
+    {
+     "rule": "tac.main-effort",
+     "do": "One narrow main effort with the heavy weapons massed behind it.",
+     "basis": "claim",
+     "cites": [
+      "battalion.infantry.attack"
+     ]
+    }
+   ],
+   "modern": [],
+   "lobby_note": "Aggressive counterattacks; dangerous to push into. German doctrine here is reported by other nations."
+  },
+  {
+   "id": "su-1941-rifle",
+   "title": "Soviet rifle regiment, summer 1941",
+   "family": "su",
+   "date": 1941,
+   "armies": [
+    "rus"
+   ],
+   "fidelity": 0.9,
+   "temperament": {
+    "aggression": 0.9,
+    "reserve_share": 0.1,
+    "initiative": 0.2,
+    "caution": 0.1
+   },
+   "voice": "su",
+   "traits": [
+    {
+     "rule": "tac.main-effort",
+     "do": "Attack straight down the ordered axis; do not shift to a found gap.",
+     "basis": "design",
+     "departs": true,
+     "cites": []
+    },
+    {
+     "rule": "tac.withdrawal",
+     "do": "Hold or counterattack; withdraw only on a direct order from the top.",
+     "basis": "design",
+     "departs": true,
+     "cites": []
+    },
+    {
+     "rule": "tac.reserve",
+     "do": "Feed the reserve into a stalled attack rather than holding it back.",
+     "basis": "design",
+     "departs": true,
+     "cites": []
+    }
+   ],
+   "modern": [],
+   "lobby_note": "Larp lore, not doctrine: frontal and costly on purpose. Its own manuals asked for initiative; this persona plays the 1941 reputation."
+  },
+  {
+   "id": "su-1944-guards",
+   "title": "Soviet Guards rifle division, 1944",
+   "family": "su",
+   "date": 1944,
+   "armies": [
+    "rus_guard",
+    "rus"
+   ],
+   "fidelity": 0.7,
+   "temperament": {
+    "aggression": 0.8,
+    "reserve_share": 0.2,
+    "initiative": 0.7,
+    "caution": 0.4
+   },
+   "voice": "su",
+   "traits": [
+    {
+     "rule": "tac.main-effort",
+     "do": "Mass most forces and fire on the main blow where ground gives cover and observation.",
+     "basis": "claim",
+     "cites": [
+      "c-SU-2001"
+     ]
+    },
+    {
+     "rule": "tac.pursuit",
+     "do": "On finding a gap, leaders push through on their own, even off direction.",
+     "basis": "claim",
+     "cites": [
+      "c-SU-0018"
+     ]
+    },
+    {
+     "rule": "tac.town",
+     "do": "Fix a town frontally with part; send the main blow round to its rear.",
+     "basis": "claim",
+     "cites": [
+      "c-SU-3019"
+     ]
+    }
+   ],
+   "modern": [],
+   "lobby_note": "Heavy, fast main blow and bold exploitation."
+  },
+  {
+   "id": "jp-1942-infantry",
+   "title": "Japanese infantry, 1942 (reported doctrine)",
+   "family": "jp",
+   "date": 1942,
+   "armies": [
+    "jap"
+   ],
+   "fidelity": 0.8,
+   "temperament": {
+    "aggression": 0.9,
+    "reserve_share": 0.15,
+    "initiative": 0.7,
+    "caution": 0.2
+   },
+   "voice": "jp",
+   "traits": [
+    {
+     "rule": "tac.bait",
+     "do": "Fake strength in front with noise and automatic fire while the main force goes round a flank.",
+     "basis": "claim",
+     "cites": [
+      "c-JP-2003"
+     ]
+    },
+    {
+     "rule": "tac.infiltration",
+     "do": "Under a holding attack, send LMG and grenade patrols round the flanks into the rear.",
+     "basis": "claim",
+     "cites": [
+      "c-JP-2005"
+     ]
+    },
+    {
+     "rule": "tac.night",
+     "do": "Prefer attacks when vision is short.",
+     "basis": "claim",
+     "cites": [
+      "company.infantry.night"
+     ]
+    },
+    {
+     "rule": "tac.withdrawal",
+     "do": "When a group is losing, charge instead of falling back.",
+     "basis": "design",
+     "departs": true,
+     "cites": []
+    }
+   ],
+   "modern": [],
+   "lobby_note": "Flanking and night attacks; at high fidelity it charges when losing. All doctrine here is reported by the US and UK."
+  },
+  {
+   "id": "fi-1940-winter",
+   "title": "Finnish battalion, winter 1939-40",
+   "family": "fi",
+   "date": 1940,
+   "armies": [],
+   "fidelity": 0.8,
+   "temperament": {
+    "aggression": 0.6,
+    "reserve_share": 0.2,
+    "initiative": 0.9,
+    "caution": 0.6
+   },
+   "voice": "fi",
+   "traits": [
+    {
+     "rule": "tac.counter-sniper",
+     "do": "Use snipers heavily from hides, as reported of Finnish practice.",
+     "basis": "claim",
+     "cites": [
+      "c-FI-3001",
+      "c-FI-3002"
+     ]
+    },
+    {
+     "rule": "tac.ambush",
+     "do": "Ambush road-bound columns from the woods.",
+     "basis": "claim",
+     "cites": [
+      "company.infantry.ambush",
+      "battalion.infantry.winter"
+     ]
+    },
+    {
+     "rule": "tac.pursuit",
+     "do": "Cut a stalled column into pockets and destroy them one by one.",
+     "basis": "design",
+     "cites": []
+    }
+   ],
+   "modern": [],
+   "lobby_note": "Needs a mod with a Finnish army or a winter map; maps to no stock army. Finnish practice here is reported."
+  },
+  {
+   "id": "what-if-modern",
+   "title": "What-if: modern ideas on a WW2 force",
+   "family": "core",
+   "date": null,
+   "armies": [],
+   "fidelity": 0,
+   "temperament": {
+    "aggression": 0.6,
+    "reserve_share": 0.25,
+    "initiative": 0.9,
+    "caution": 0.5
+   },
+   "voice": "neutral",
+   "traits": [],
+   "modern": [
+    "m.ooda",
+    "m.mission-command",
+    "m.recon-pull",
+    "m.find-fix-finish",
+    "m.culmination"
+   ],
+   "lobby_note": "Not period play: re-plans on events, commits the reserve behind success. For comparison against period personas."
+  }
+ ],
+ "voices": [
+  {
+   "id": "neutral",
+   "register": "plain",
+   "lines": {
+    "contact": [
+     "{g}: contact front. Base of fire, then move."
+    ],
+    "objective_taken": [
+     "{g}: objective taken. Dig in, face the counterattack."
+    ],
+    "position_lost": [
+     "{g} lost {obj}. Reserve, counterattack from the flank."
+    ],
+    "withdraw": [
+     "{g}: fall back by bounds. Rear group covers."
+    ],
+    "reserve_committed": [
+     "Reserve to {obj}, behind the success."
+    ],
+    "smoke": [
+     "{g}: smoke on the open ground, move when it is thick."
+    ],
+    "tank_sighted": [
+     "Tank sighted. AT guns hold fire until it is close."
+    ],
+    "losing": [
+     "{g}: too weak to go on. Hold and consolidate."
+    ]
+   }
+  },
+  {
+   "id": "us",
+   "register": "US radio",
+   "lines": {
+    "contact": [
+     "{g}, contact. Mortars on it, then fire and maneuver.",
+     "{g}, base of fire up. Second squad, flank left."
+    ],
+    "objective_taken": [
+     "{g} on {obj}. Reorganize, get the MGs sited."
+    ],
+    "position_lost": [
+     "Lost {obj}. Reserve platoon, counterattack on my signal."
+    ],
+    "withdraw": [
+     "{g}, pull back to the next line. Leave a covering force."
+    ],
+    "reserve_committed": [
+     "Committing the reserve at {obj}."
+    ],
+    "smoke": [
+     "Smoke mission on {obj}. Move out when it builds."
+    ],
+    "tank_sighted": [
+     "Armor sighted. Bazooka teams, let it close."
+    ],
+    "losing": [
+     "{g} is spent. Holding where we are."
+    ],
+    "tac.fire-and-move": [
+     "{g}: one squad fires, one moves. Keep it rolling."
+    ]
+   }
+  },
+  {
+   "id": "uk",
+   "register": "British net",
+   "lines": {
+    "contact": [
+     "{g}, contact. Bren on it, sections forward.",
+     "{g}, fire plan first, then we go."
+    ],
+    "objective_taken": [
+     "{g} on {obj}. Consolidate, sentries out."
+    ],
+    "position_lost": [
+     "{obj} gone. Reserve company, counter-attack."
+    ],
+    "withdraw": [
+     "{g}, thin out by sections. Carriers cover."
+    ],
+    "reserve_committed": [
+     "Reserve company forward to {obj}."
+    ],
+    "smoke": [
+     "Two-inch smoke on {obj}. Wait for it to thicken."
+    ],
+    "tank_sighted": [
+     "Tanks. PIATs and six-pounders, hold your fire."
+    ],
+    "losing": [
+     "{g} has had it. We hold here."
+    ]
+   }
+  },
+  {
+   "id": "ger",
+   "register": "German, light flavour",
+   "lines": {
+    "contact": [
+     "{g}: Feindberuehrung. MG in Stellung, then forward.",
+     "{g}: Feuer frei on the flank."
+    ],
+    "objective_taken": [
+     "{g} holds {obj}. All-round defence, now."
+    ],
+    "position_lost": [
+     "{obj} lost. Gegenstoss, at once, from the flank."
+    ],
+    "withdraw": [
+     "{g}: Absetzen by bounds. Rearguard stays."
+    ],
+    "reserve_committed": [
+     "Reserve to the Schwerpunkt at {obj}."
+    ],
+    "smoke": [
+     "Nebel on {obj}. Go when it is thick."
+    ],
+    "tank_sighted": [
+     "Panzer! Panzerfaust teams, let it come close."
+    ],
+    "losing": [
+     "{g} is too weak. Hold and dig in."
+    ]
+   }
+  },
+  {
+   "id": "su",
+   "register": "Soviet, light flavour",
+   "lines": {
+    "contact": [
+     "{g}: contact. Machine guns, open fire. Forward!",
+     "{g}: find the gap, push through it."
+    ],
+    "objective_taken": [
+     "{g} holds {obj}. Dig in, prepare for the counterattack."
+    ],
+    "position_lost": [
+     "{obj} lost. Reserve, counterattack, flank and rear."
+    ],
+    "withdraw": [
+     "{g}: withdraw on the commander's order only, by bounds."
+    ],
+    "reserve_committed": [
+     "Second echelon to {obj}. Develop the success."
+    ],
+    "smoke": [
+     "Smoke on {obj}. Forward under the screen."
+    ],
+    "tank_sighted": [
+     "Tanks! Anti-tank riflemen and grenades, ready."
+    ],
+    "losing": [
+     "{g}: hold the line. Not a step back."
+    ]
+   }
+  },
+  {
+   "id": "jp",
+   "register": "Japanese, light flavour",
+   "lines": {
+    "contact": [
+     "{g}: noise and fire in front. Main body, go round.",
+     "{g}: knee mortars on their guns."
+    ],
+    "objective_taken": [
+     "{g} holds {obj}. Prepare for night."
+    ],
+    "position_lost": [
+     "{obj} lost. Retake it tonight."
+    ],
+    "withdraw": [
+     "{g}: leave a shell of automatic weapons, main body back."
+    ],
+    "reserve_committed": [
+     "Reserve round the flank to {obj}."
+    ],
+    "smoke": [
+     "Smoke on {obj}. Close in under it."
+    ],
+    "tank_sighted": [
+     "Tank. Mines and charges, close assault teams."
+    ],
+    "losing": [
+     "{g}: charge!"
+    ]
+   }
+  },
+  {
+   "id": "fi",
+   "register": "Finnish, light flavour",
+   "lines": {
+    "contact": [
+     "{g}: let them come. Fire only on my signal."
+    ],
+    "objective_taken": [
+     "{g} on {obj}. Back into the forest."
+    ],
+    "position_lost": [
+     "{obj} lost. Ski troops, round the flank."
+    ],
+    "withdraw": [
+     "{g}: into the woods. They won't follow off the road."
+    ],
+    "reserve_committed": [
+     "Reserve to cut the road behind {obj}."
+    ],
+    "smoke": [
+     "No smoke needed; the forest hides us."
+    ],
+    "tank_sighted": [
+     "Tank on the road. Bundle charges, from the side."
+    ],
+    "losing": [
+     "{g}: break contact, regroup in the trees."
+    ]
+   }
+  }
+ ],
+ "missions": [
+  {
+   "id": "hedgerow",
+   "title": "Hedgerow fields, Normandy 1944",
+   "cells": [
+    "company.tank.attack",
+    "company.infantry.attack"
+   ],
+   "rules": [
+    "tac.tank-infantry",
+    "tac.fire-and-move",
+    "tac.assault-gun"
+   ],
+   "map": [
+    "small fields",
+    "hedges",
+    "sunken lanes"
+   ],
+   "attacker": {
+    "persona": "us-1944-rifle",
+    "shape": "company"
+   },
+   "defender": {
+    "persona": "ger-1944-kampfgruppe",
+    "shape": "platoon"
+   },
+   "win": "Attacker takes three field flags in turn before time runs out.",
+   "teaches": "Tanks and infantry clear one field at a time, each covering the other.",
+   "image": "f-tank-attack"
+  },
+  {
+   "id": "ridge",
+   "title": "Hold the reverse slope",
+   "cells": [
+    "company.infantry.reverse-slope",
+    "company.infantry.counterattack"
+   ],
+   "rules": [
+    "tac.reverse-slope",
+    "tac.counterattack",
+    "tac.mg-defense"
+   ],
+   "map": [
+    "ridge",
+    "open forward slope"
+   ],
+   "attacker": {
+    "persona": "ger-1944-kampfgruppe",
+    "shape": "company"
+   },
+   "defender": {
+    "persona": "uk-1944-infantry",
+    "shape": "platoon"
+   },
+   "win": "Defender holds the crest-line flag to the end.",
+   "teaches": "Defend behind the crest and counterattack troops that come over it.",
+   "image": "f-reverse-slope"
+  },
+  {
+   "id": "motti",
+   "title": "Forest road in winter",
+   "cells": [
+    "battalion.infantry.winter",
+    "company.infantry.ambush"
+   ],
+   "rules": [
+    "tac.ambush",
+    "tac.winter",
+    "tac.counter-sniper"
+   ],
+   "map": [
+    "snow",
+    "dense forest",
+    "one road"
+   ],
+   "attacker": {
+    "persona": "su-1941-rifle",
+    "shape": "company"
+   },
+   "defender": {
+    "persona": "fi-1940-winter",
+    "shape": "platoon"
+   },
+   "win": "The column reaches the far road flag, or the defender cuts it into two or more pieces.",
+   "teaches": "A road-bound force in forest is ambushed in pieces.",
+   "image": "f-ambush"
+  },
+  {
+   "id": "town-ring",
+   "title": "Encircle the town, 1944",
+   "cells": [
+    "platoon.infantry.town",
+    "company.assault-gun.attack"
+   ],
+   "rules": [
+    "tac.town",
+    "tac.assault-gun",
+    "tac.main-effort"
+   ],
+   "map": [
+    "town",
+    "open approaches",
+    "roads behind"
+   ],
+   "attacker": {
+    "persona": "su-1944-guards",
+    "shape": "battalion"
+   },
+   "defender": {
+    "persona": "ger-1944-kampfgruppe",
+    "shape": "company"
+   },
+   "win": "The attacker takes the road flag behind the town and the town centre.",
+   "teaches": "Fix the town frontally and send the main blow round it.",
+   "image": "f-town"
+  },
+  {
+   "id": "jungle-flank",
+   "title": "Noise in front, attack on the flank, 1942",
+   "cells": [
+    "company.infantry.deception",
+    "company.infantry.infiltration"
+   ],
+   "rules": [
+    "tac.bait",
+    "tac.infiltration",
+    "tac.reserve"
+   ],
+   "map": [
+    "jungle or dense woods",
+    "one track"
+   ],
+   "attacker": {
+    "persona": "jp-1942-infantry",
+    "shape": "company"
+   },
+   "defender": {
+    "persona": "uk-1944-infantry",
+    "shape": "platoon"
+   },
+   "win": "The attacker takes the rear flag.",
+   "teaches": "Don't swing the whole defence to face the noise; keep a reserve for the flank.",
+   "image": "f-infiltration"
+  },
+  {
+   "id": "bunker-line",
+   "title": "Break a bunker line",
+   "cells": [
+    "company.engineer.assault",
+    "company.infantry.smoke"
+   ],
+   "rules": [
+    "tac.pillbox",
+    "tac.smoke",
+    "tac.assault-timing"
+   ],
+   "map": [
+    "bunkers",
+    "wire",
+    "open ground"
+   ],
+   "attacker": {
+    "persona": "us-1944-rifle",
+    "shape": "company"
+   },
+   "defender": {
+    "persona": "ger-1944-kampfgruppe",
+    "shape": "platoon"
+   },
+   "win": "The attacker destroys or takes two of three bunkers.",
+   "teaches": "Fire on the embrasures and smoke the bunker's neighbours while engineers close in.",
+   "image": "f-pillbox"
+  },
+  {
+   "id": "river",
+   "title": "Force a river line",
+   "cells": [
+    "company.infantry.river"
+   ],
+   "rules": [
+    "tac.crossing",
+    "tac.smoke",
+    "tac.consolidate"
+   ],
+   "map": [
+    "river",
+    "one bridge",
+    "fords"
+   ],
+   "attacker": {
+    "persona": "su-1944-guards",
+    "shape": "company"
+   },
+   "defender": {
+    "persona": "ger-1944-kampfgruppe",
+    "shape": "platoon"
+   },
+   "win": "The attacker holds a far-bank flag for the last third of the match.",
+   "teaches": "Cross wide on a screened front and dig in on the far bank before the counterattack.",
+   "image": "f-river"
+  },
+  {
+   "id": "lost-village",
+   "title": "Retake the village at dawn",
+   "cells": [
+    "company.infantry.counterattack",
+    "company.infantry.defense"
+   ],
+   "rules": [
+    "tac.counterattack",
+    "tac.consolidate",
+    "tac.reserve"
+   ],
+   "map": [
+    "village",
+    "orchards"
+   ],
+   "attacker": {
+    "persona": "ger-1944-kampfgruppe",
+    "shape": "company"
+   },
+   "defender": {
+    "persona": "us-1944-rifle",
+    "shape": "company"
+   },
+   "win": "The defender has just taken the village. The attacker must retake it, and the defender must consolidate in time.",
+   "teaches": "Consolidate quickly, and counterattack before the enemy has.",
+   "image": "f-counterattack"
+  },
+  {
+   "id": "night-raid",
+   "title": "Night attack on a perimeter",
+   "cells": [
+    "company.infantry.night"
+   ],
+   "rules": [
+    "tac.night",
+    "tac.mg-defense"
+   ],
+   "map": [
+    "night or fog",
+    "perimeter",
+    "scrub"
+   ],
+   "attacker": {
+    "persona": "jp-1942-infantry",
+    "shape": "company"
+   },
+   "defender": {
+    "persona": "us-1944-rifle",
+    "shape": "platoon"
+   },
+   "win": "The attacker takes the command-post flag.",
+   "teaches": "Short vision favours whoever is closest and quietest. MGs on fixed lines hold the perimeter.",
+   "image": "f-night"
+  },
+  {
+   "id": "breakout",
+   "title": "Pursue a withdrawing enemy",
+   "cells": [
+    "company.infantry.pursuit",
+    "company.infantry.withdrawal"
+   ],
+   "rules": [
+    "tac.pursuit",
+    "tac.withdrawal"
+   ],
+   "map": [
+    "open country",
+    "crossroads",
+    "a delay line"
+   ],
+   "attacker": {
+    "persona": "what-if-modern",
+    "shape": "company"
+   },
+   "defender": {
+    "persona": "ger-1944-kampfgruppe",
+    "shape": "company"
+   },
+   "win": "The defender gets half its force past the crossroads flag.",
+   "teaches": "Push a fast group past the rearguard. The withdrawal is always ordered, not left to auto-move.",
+   "image": "f-pursuit"
+  }
+ ],
+ "profiles": [
+  {
+   "id": "robz",
+   "range_median_m": {
+    "at_rocket": 45,
+    "gun_large": 200,
+    "mg": 150,
+    "gun_small": 170,
+    "gun_medium": 190,
+    "rifle": 75,
+    "smg": 90
+   },
+   "sight_vs_infantry_m": {
+    "open_standing": 123.8,
+    "cover_standing": 66,
+    "cover_squat": 49.5,
+    "cover_crawl": 33,
+    "open_squat": 74.3,
+    "open_crawl": 66,
+    "open_crawl_still": 57.7,
+    "still": 78.4
+   },
+   "stamina_max": 100,
+   "recognize_time_s": 0.01,
+   "ai_auto_move_only": {
+    "retreat_ratio": 0,
+    "advance_ratio": 10,
+    "no_retreat": 1,
+    "move_radius": 50
+   },
+   "smoke": {
+    "grenade_throw_m": 32,
+    "life": {
+     "grenade_s": 90,
+     "mortar_s": 60,
+     "wp_s": "40-60",
+     "big_s": 120
+    }
+   },
+   "armies": {
+    "eng": "uk",
+    "ger": "german",
+    "ger2": "german",
+    "jap": "japan",
+    "rus": "soviet",
+    "usa": "us",
+    "axis_minor": "universal",
+    "ger_ss": "german",
+    "rus_guard": "soviet"
+   }
+  },
+  {
+   "id": "vanilla",
+   "range_median_m": {
+    "at_rocket": 30,
+    "gun_large": 150,
+    "gun_small": 100,
+    "mg": 100,
+    "gun_medium": 120,
+    "rifle": 70,
+    "smg": 50
+   },
+   "sight_vs_infantry_m": {
+    "open_standing": 52.5,
+    "cover_standing": 42,
+    "cover_squat": 31.5,
+    "cover_crawl": 21,
+    "open_squat": 42,
+    "open_crawl": 31.5,
+    "open_crawl_still": 21,
+    "still": 47.3
+   },
+   "stamina_max": 100,
+   "recognize_time_s": 0.25,
+   "ai_auto_move_only": {
+    "retreat_ratio": 2,
+    "advance_ratio": 2,
+    "no_retreat": 0,
+    "move_radius": 7
+   },
+   "smoke": {
+    "grenade_throw_m": 25,
+    "life": {
+     "grenade_s": 60,
+     "mortar_s": 60
+    }
+   },
+   "armies": {
+    "eng": "uk",
+    "ger": "german",
+    "ger2": "german",
+    "jap": "japan",
+    "rus": "soviet",
+    "usa": "us"
+   }
+  }
+ ],
+ "modern": [
+  {
+   "id": "m.ooda",
+   "title": "Decision cycle (OODA)",
+   "idea": "Shorten your own loop; lengthen the enemy's with surprise, deception and multiple threats.",
+   "game_use": "Re-plan on events (contact, loss, flag change), not on a fixed timer. Two simultaneous threats cost the opposing bot more than one strong one.",
+   "caution": "A faster loop with bad orientation just makes mistakes quicker; keep the scouting step.",
+   "ww2_link": [
+    "company.infantry.deception",
+    "company.infantry.infiltration",
+    "company.infantry.pursuit"
+   ]
+  },
+  {
+   "id": "m.mission-command",
+   "title": "Mission command",
+   "idea": "Intent survives contact; detailed plans do not.",
+   "game_use": "Team or bot level issues an objective plus purpose (seize, fix, screen); the group layer chooses its path and may exploit a gap inside that purpose.",
+   "caution": "Needs a shared rule for when a group may abandon its task; otherwise groups drift.",
+   "ww2_link": [
+    "company.infantry.attack",
+    "battalion.infantry.attack"
+   ]
+  },
+  {
+   "id": "m.maneuver",
+   "title": "Maneuver warfare",
+   "idea": "Win by dislocation and collapse, not by attrition of every unit.",
+   "game_use": "Score sectors by enemy density; route the main effort at low-density sectors toward flags or guns behind the line.",
+   "caution": "Small AS2 maps often have no real gap; fall back to fix-and-flank.",
+   "ww2_link": [
+    "company.infantry.infiltration",
+    "battalion.tank.attack",
+    "company.infantry.pursuit"
+   ]
+  },
+  {
+   "id": "m.recon-pull",
+   "title": "Recon-pull and surfaces and gaps",
+   "idea": "Commit reserves where things are going well, not where they are failing.",
+   "game_use": "Keep the reserve uncommitted until scout reports or early progress pick an axis; send it after success, not to rescue a stalled attack.",
+   "caution": "Needs live scouting; without it this is a guess.",
+   "ww2_link": [
+    "platoon.recon.recon",
+    "company.infantry.approach",
+    "battalion.infantry.attack"
+   ]
+  },
+  {
+   "id": "m.bounding-overwatch",
+   "title": "Movement techniques",
+   "idea": "Movement speed is traded for security as contact gets closer.",
+   "game_use": "Three movement modes keyed to distance from last known enemy (in profile vision ratios): column move, one-up-one-watching, alternate bounds.",
+   "caution": "Bounding is slow; on tight timers use it only inside likely-contact range.",
+   "ww2_link": [
+    "squad.infantry.attack",
+    "platoon.infantry.attack",
+    "company.tank.attack"
+   ]
+  },
+  {
+   "id": "m.suppression",
+   "title": "Suppression as an effect",
+   "idea": "Suppression is a time window, not a damage total.",
+   "game_use": "Tie the assault group's go signal to support fire actually landing; if the game has no suppression model, use smoke and fire volume as the proxy.",
+   "caution": "Stock AS2 morale follows health, so the effect is weaker than doctrine assumes.",
+   "ww2_link": [
+    "company.mg.attack",
+    "company.mortar.attack",
+    "squad.infantry.assault",
+    "company.infantry.smoke"
+   ]
+  },
+  {
+   "id": "m.defeat-mechanisms",
+   "title": "Defeat mechanisms",
+   "idea": "Choose the mechanism before choosing the units.",
+   "game_use": "Plan label for a bot: destroy (trade), dislocate (flank past), isolate (cut a sector off and take its flags).",
+   "caution": "Labels only help if they change buys and routes.",
+   "ww2_link": [
+    "battalion.infantry.attack",
+    "company.infantry.ambush",
+    "battalion.at.defense"
+   ]
+  },
+  {
+   "id": "m.culmination",
+   "title": "Tempo and culmination",
+   "idea": "Know when to switch from attack to defense.",
+   "game_use": "Track own strength against the start of the push; under a threshold, switch the group to consolidate and dig in on the gained flag.",
+   "caution": "Threshold is a design value, not a source value.",
+   "ww2_link": [
+    "squad.infantry.assault",
+    "company.infantry.counterattack",
+    "company.infantry.pursuit"
+   ]
+  },
+  {
+   "id": "m.find-fix-finish",
+   "title": "Find, fix, finish",
+   "idea": "A clean sequence for any echelon's attack.",
+   "game_use": "Group state machine: scout until contact, support group fixes, assault group finishes, reserve exploits.",
+   "caution": "Fixing needs a real base of fire; with too few MGs, use mortar or tank fire.",
+   "ww2_link": [
+    "company.infantry.attack",
+    "platoon.infantry.attack",
+    "company.assault-gun.attack"
+   ]
+  },
+  {
+   "id": "m.combined-arms",
+   "title": "Combined arms dilemma",
+   "idea": "Pose a dilemma, not a single threat.",
+   "game_use": "Attack groups pair tanks with infantry and indirect fire; count it as a pitfall when a group attacks with one arm only.",
+   "caution": "Coordination is the hard part; a pairing that moves at different speeds breaks apart.",
+   "ww2_link": [
+    "battalion.tank.attack",
+    "squad.infantry.tank-hunting",
+    "battalion.at.defense",
+    "company.tank.attack"
+   ]
+  }
+ ]
+}

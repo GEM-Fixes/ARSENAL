@@ -1,0 +1,14 @@
+{
+  "name": "unit-clone",
+  "desc": "QUICKSTART 1: new mod, clone a vanilla weapon, add loc key, lint gates, mp-load scenario",
+  "steps": [
+    { "tool": "newmod", "argv": ["$MOD", "--name", "E2E Chain", "--game", "$GAME", "$TARGETOPT"] },
+    { "tool": "clone-entity", "argv": ["--game", "$GAME", "--out", "$MOD", "--stuff", "rifle g43", "--tags", "chain_g43", "--name", "Chain G43", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "lng-add", "argv": ["$MOD", "--file", "#e2e_chain.lng", "--key", "chain/test", "--text", "Chain test"] },
+    { "tool": "keylint", "argv": ["$MOD", "--game", "$GAME", "--summary", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "refcheck", "argv": ["$GAME", "--mods", "$MODNAME", "--scope", "mod", "--summary", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "doctor", "argv": ["$MOD", "--game", "$GAME", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "build", "argv": ["$MOD", "--game", "$GAME", "$EXEOPT"], "exit": [0, 1], "match": "\\S" },
+    { "tool": "testrun", "argv": ["--scenario", "tools/testrun/scenarios/mp-load.json", "--exe", "$GAME/$EXEFILE", "--mods", "$MODNAME"], "match": "VERDICT PASS", "reject": "VERDICT FAIL" }
+  ]
+}

@@ -1,0 +1,3 @@
+{"form":"nativerules/1","rules":[
+{"id":"volume-01","key":"entity/volume/material","class":"*","act":"keep","why":"as64 volume reader takes material; wood and sand shield names exist","tag":"I"}
+]}

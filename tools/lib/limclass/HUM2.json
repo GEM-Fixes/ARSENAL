@@ -1,0 +1,132 @@
+{
+  "form": "limclass/1",
+  "area": "HUM2",
+  "rows": {
+    "HUM-19": {
+      "chk": "never",
+      "class": "silent",
+      "why": "other breed tags ignored by engine",
+      "tool": "humlint",
+      "how": "breed tags other than kamikaze",
+      "never": "vanilla breeds use other tags (officer, stealth) as selectors"
+    },
+    "HUM-20": {
+      "chk": "built",
+      "class": "silent",
+      "why": "global filling.max rewrite unnoticed",
+      "tool": "humlint",
+      "how": "breed filled N on a stuff shared by other breeds"
+    },
+    "HUM-21": {
+      "chk": "built",
+      "class": "silent",
+      "why": "item dropped silently",
+      "tool": "humlint",
+      "how": "breed in_hands index beyond number of item blocks"
+    },
+    "HUM-22": {
+      "chk": "never",
+      "class": "silent",
+      "why": "armor not equipped, log line only",
+      "never": "needs armor holder fit resolution at runtime"
+    },
+    "HUM-23": {
+      "chk": "built",
+      "class": "silent",
+      "why": "warning only, stack amount ignored"
+    },
+    "HUM-24": {
+      "chk": "never",
+      "class": "info",
+      "why": "holder design fact",
+      "never": "design fact about armor holders"
+    },
+    "HUM-25": {
+      "chk": "built",
+      "class": "silent",
+      "why": "second weapon ignored",
+      "tool": "humlint",
+      "how": "two items on one weapon holder place in a breed"
+    },
+    "HUM-26": {
+      "chk": "built",
+      "class": "crash",
+      "why": "unknown fsm: stuff load error"
+    },
+    "HUM-27": {
+      "chk": "built",
+      "class": "silent",
+      "why": "weapon treated as item, no message",
+      "tool": "humlint",
+      "how": "stuff with weapon type tag but no weapon tag"
+    },
+    "HUM-28": {
+      "chk": "never",
+      "class": "silent",
+      "why": "cannot go prone, no message",
+      "never": "runtime FSM state"
+    },
+    "HUM-29": {
+      "chk": "built",
+      "class": "silent",
+      "why": "load warnings, broken graph"
+    },
+    "HUM-30": {
+      "chk": "never",
+      "class": "info",
+      "why": "animation names fixed in C++",
+      "never": "engine design fact"
+    },
+    "HUM-31": {
+      "chk": "built",
+      "class": "crash",
+      "why": "invalid duration error at load"
+    },
+    "HUM-32": {
+      "chk": "never",
+      "class": "silent",
+      "why": "wrong run animation, no message",
+      "never": "runtime animation choice"
+    },
+    "HUM-33": {
+      "chk": "never",
+      "class": "info",
+      "why": "boarding rules, runtime",
+      "never": "runtime order behaviour"
+    },
+    "HUM-34": {
+      "chk": "never",
+      "class": "silent",
+      "why": "gunner may take gunner2, no message",
+      "never": "runtime seat choice"
+    },
+    "HUM-35": {
+      "chk": "never",
+      "class": "info",
+      "why": "emit order behaviour, runtime",
+      "never": "runtime order behaviour"
+    },
+    "HUM-36": {
+      "chk": "built",
+      "class": "silent",
+      "why": "slow units, no message"
+    },
+    "HUM-37": {
+      "chk": "built",
+      "class": "crash",
+      "why": "breed load error"
+    },
+    "HUM-38": {
+      "chk": "never",
+      "class": "silent",
+      "why": "soldier waits, no message",
+      "never": "runtime AI heal behaviour, depends on selection"
+    },
+    "HUM-39": {
+      "chk": "built",
+      "class": "silent",
+      "why": "recoil/sway keys have no AS2 reader (unverified)"
+    }
+  },
+  "dead": []
+}

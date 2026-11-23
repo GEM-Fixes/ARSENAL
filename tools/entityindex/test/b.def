@@ -1,0 +1,4 @@
+{game_entity
+	{Extension "a.mdl"}
+	{extender "enumerator" {digit_folder "ger"}}
+}

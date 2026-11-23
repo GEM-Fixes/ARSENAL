@@ -1,0 +1,244 @@
+{
+ "form": "limmap/1",
+ "part": "keylint",
+ "codes": {
+  "ACCURACY_BY_MOTION": {
+   "tool": "keylint",
+   "sev": "review",
+   "lim": [
+    "KEY-18"
+   ],
+   "at": "tools/keylint/rules.js:108",
+   "class": "silent",
+   "why": "by* value above 1 is invalid"
+  },
+  "BOOL_BAD_TOKEN": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "SDL-32"
+   ],
+   "at": "tools/keylint/keylint.js:195",
+   "class": "silent",
+   "why": "string/float after bool: true plus Unread data"
+  },
+  "BOOL_NO_IS_TRUE": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "SDL-32"
+   ],
+   "at": "tools/keylint/keylint.js:194",
+   "class": "silent",
+   "why": "bool no/off reads as true"
+  },
+  "COLLIDER_UNKNOWN": {
+   "tool": "keylint",
+   "sev": "review",
+   "lim": [
+    "KEY-22"
+   ],
+   "at": "tools/keylint/rules.js:119",
+   "class": "silent",
+   "why": "unknown collider profile falls to default"
+  },
+  "DAMAGE_BLASTWAVE_KEY": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "KEY-02"
+   ],
+   "at": "tools/keylint/rules.js:45",
+   "class": "silent",
+   "why": "only energy/area read in blastwave"
+  },
+  "DAMAGE_NUMBER": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "KEY-13"
+   ],
+   "at": "tools/keylint/rules.js:54",
+   "class": "crash",
+   "why": "number is not an effect name: fatal at load"
+  },
+  "DAMAGE_UNKNOWN": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "KEY-13"
+   ],
+   "at": "tools/keylint/rules.js:41",
+   "class": "crash",
+   "why": "unknown damage effect name errors"
+  },
+  "DAMAGE_UNSUPPORTED": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "KEY-13"
+   ],
+   "at": "tools/keylint/rules.js:40",
+   "class": "crash",
+   "why": "projective/health registered but rejected"
+  },
+  "ENUM_UNKNOWN": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "SDL-37"
+   ],
+   "at": "tools/keylint/keylint.js:226",
+   "class": "silent",
+   "why": "unknown enum name reads invalid silently"
+  },
+  "IK_ZERO_SPEED": {
+   "tool": "keylint",
+   "sev": "crash",
+   "lim": [
+    "KEY-06"
+   ],
+   "at": "tools/keylint/rules.js:71",
+   "class": "crash",
+   "why": "bone speed under 1e-5 errors"
+  },
+  "KEYLINT_PAKS_READ": {
+   "tool": "keylint",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/keylint/keylint.js:286",
+   "class": "tool",
+   "why": "info: GoH pak entries read directly"
+  },
+  "KEY_FATAL": {
+   "tool": "keylint",
+   "sev": "crash",
+   "lim": [
+    "KEY-33"
+   ],
+   "at": "tools/keylint/keylint.js:253",
+   "class": "crash",
+   "why": "unknown key in blow block fails load"
+  },
+  "KEY_REPEAT": {
+   "tool": "keylint",
+   "sev": "review",
+   "lim": [
+    "SDL-46"
+   ],
+   "at": "tools/keylint/keylint.js:270",
+   "class": "cosmetic",
+   "why": "repeated scalar key: last wins"
+  },
+  "LOOSE_PATCH": {
+   "tool": "keylint",
+   "sev": "review",
+   "lim": [
+    "KEY-01"
+   ],
+   "at": "tools/keylint/keylint.js:329",
+   "class": "silent",
+   "why": "loose .patch never read"
+  },
+  "NO_CALIBRE": {
+   "tool": "keylint",
+   "sev": "review",
+   "lim": [
+    "KEY-10"
+   ],
+   "at": "tools/keylint/rules.js:92",
+   "class": "silent",
+   "why": "non-bulletNN filling lacks calibre: wrong overmatch"
+  },
+  "PARAM_WHOLE_WEAPON": {
+   "tool": "keylint",
+   "sev": "review",
+   "lim": [
+    "KEY-09"
+   ],
+   "at": "tools/keylint/rules.js:87",
+   "class": "silent",
+   "why": "those keys apply to whole weapon, not per ammo"
+  },
+  "PATHER_UNKNOWN": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "KEY-22"
+   ],
+   "at": "tools/keylint/rules.js:121",
+   "class": "crash",
+   "why": "unknown PatherID errors"
+  },
+  "QUANT_FLOAT": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "SDL-42"
+   ],
+   "at": "tools/keylint/keylint.js:208",
+   "class": "crash",
+   "why": "float in quant tick is fatal"
+  },
+  "TIMESPAN_TRUNC": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "SDL-41"
+   ],
+   "at": "tools/keylint/keylint.js:207",
+   "class": "silent",
+   "why": "seconds truncate to ms"
+  },
+  "VALUE_MISSING": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "SDL-36"
+   ],
+   "at": "tools/keylint/keylint.js:187",
+   "class": "crash",
+   "why": "missing value makes reader throw"
+  },
+  "VALUE_SURPLUS": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "SDL-35"
+   ],
+   "at": "tools/keylint/keylint.js:190",
+   "class": "silent",
+   "why": "extra tokens dropped with warning"
+  },
+  "VOLUME_NO_BLAST": {
+   "tool": "keylint",
+   "sev": "review",
+   "lim": [
+    "KEY-03"
+   ],
+   "at": "tools/keylint/rules.js:59",
+   "class": "silent",
+   "why": "volume without able blast takes no blast damage"
+  },
+  "WARN_DEAD_KEY": {
+   "tool": "keylint",
+   "sev": "silent",
+   "lim": [
+    "KEY-12"
+   ],
+   "at": "tools/keylint/rules.js:96",
+   "class": "silent",
+   "why": "ability reload key is not read"
+  },
+  "WARN_RICOCHET_CLAMP": {
+   "tool": "keylint",
+   "sev": "review",
+   "lim": [
+    "KEY-04"
+   ],
+   "at": "tools/keylint/rules.js:66",
+   "class": "silent",
+   "why": "ricochet out>in clamped to in"
+  }
+ }
+}

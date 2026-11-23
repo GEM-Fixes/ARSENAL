@@ -1,0 +1,10 @@
+{game_entity
+	{volume "x"
+		{thickness 30}
+	}
+	{damage 70 0.75 0.75}
+	{weight 900}
+	{## volume "off"
+		{nosuch 1}
+	}
+}

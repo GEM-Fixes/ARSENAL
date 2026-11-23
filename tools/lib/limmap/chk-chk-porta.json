@@ -1,0 +1,31 @@
+{"form":"limmap/1","part":"chk-chk-porta","codes":{
+"PORTA_TEXTURE_MISSING":{"tool":"portasset","sev":"crash","lim":["PORT-114","PORT-152","PORT-160"],"at":"tools/portasset/portasset.js:133","class":"crash","why":"mtl texture name, spaces kept, resolves in neither mod nor vanilla"},
+"WARN_PORTA_MTL_PATH":{"tool":"portasset","sev":"crash","lim":["PORT-115"],"at":"tools/portasset/portasset.js:144","class":"crash","why":"mdl or ply names mtl path; mod holds same name elsewhere"},
+"PORTA_MODEL_REF_MISSING":{"tool":"portasset","sev":"crash","lim":["PORT-119"],"at":"tools/portasset/portasset.js:145","class":"crash","why":"mdl names ply anm mtl, or ply names mtl, found nowhere"},
+"PORTA_VOL_MISSING":{"tool":"portasset","sev":"crash","lim":["PORT-120"],"at":"tools/portasset/portasset.js:139","class":"crash","why":"mdl polyhedron vol, key any case, in neither mod nor vanilla"},
+"PORTA_EBM_FRAME_MISSING":{"tool":"portasset","sev":"crash","lim":["PORT-139","PORT-142"],"at":"tools/portasset/portasset.js:161","class":"crash","why":"ebm Frame texture resolves in neither mod nor vanilla paks"},
+"PORTA_DDS_FORMAT":{"tool":"portasset","sev":"crash","lim":["PORT-143"],"at":"tools/portasset/portasset.js:175","class":"crash","why":"mod dds fourcc ATI2 or BC5U, AS2 loader rejects the format"},
+"WARN_PORTA_SPRITE_MTL_MISSING":{"tool":"portasset","sev":"crash","lim":["PORT-172"],"at":"tools/portasset/portasset.js:168","class":"crash","why":"def Sprite names an mtl absent from mod and vanilla"},
+"WARN_PORTA_TEXTURE_CLASH":{"tool":"portasset","sev":"silent","lim":["PORT-144","PORT-161"],"at":"tools/portasset/portasset.js:193","class":"silent","why":"mod texture at a vanilla key holds other bytes, replaces it"},
+"PORTA_MAP_ENV_MISSING":{"tool":"portasset","sev":"silent","lim":["PORT-167"],"at":"tools/portasset/portasset.js:182","class":"silent","why":"mi Environment id has no set/environment preset in mod or vanilla"},
+"WARN_PORTA_SHADER_PARTIAL":{"tool":"portasset","sev":"cosmetic","lim":["PORT-163"],"at":"tools/portasset/portasset.js:203","class":"cosmetic","why":"mod swaps some AS2 shader files but lacks others of the folder"},
+"PORTA_LAND_TEXTURE_MISSING":{"tool":"portasset","sev":"cosmetic","lim":["PORT-164"],"at":"tools/portasset/portasset.js:132","class":"cosmetic","why":"map mtl land texture resolves in neither mod nor vanilla"},
+"PORTA_MAP_MTL_MISSING":{"tool":"portasset","sev":"cosmetic","lim":["PORT-168"],"at":"tools/portasset/portasset.js:189","class":"cosmetic","why":"map .materials entry mtlN has no mtlN.mtl beside it"}
+},"result":{
+"PORT-114":{"state":"built","code":"PORTA_TEXTURE_MISSING"},
+"PORT-115":{"state":"built","code":"WARN_PORTA_MTL_PATH"},
+"PORT-119":{"state":"built","code":"PORTA_MODEL_REF_MISSING"},
+"PORT-120":{"state":"built","code":"PORTA_VOL_MISSING"},
+"PORT-139":{"state":"built","code":"PORTA_EBM_FRAME_MISSING"},
+"PORT-142":{"state":"built","code":"PORTA_EBM_FRAME_MISSING"},
+"PORT-143":{"state":"built","code":"PORTA_DDS_FORMAT"},
+"PORT-172":{"state":"built","code":"WARN_PORTA_SPRITE_MTL_MISSING"},
+"PORT-144":{"state":"built","code":"WARN_PORTA_TEXTURE_CLASH"},
+"PORT-152":{"state":"built","code":"PORTA_TEXTURE_MISSING"},
+"PORT-160":{"state":"built","code":"PORTA_TEXTURE_MISSING"},
+"PORT-161":{"state":"built","code":"WARN_PORTA_TEXTURE_CLASH"},
+"PORT-167":{"state":"built","code":"PORTA_MAP_ENV_MISSING"},
+"PORT-163":{"state":"built","code":"WARN_PORTA_SHADER_PARTIAL"},
+"PORT-164":{"state":"built","code":"PORTA_LAND_TEXTURE_MISSING"},
+"PORT-168":{"state":"built","code":"PORTA_MAP_MTL_MISSING"}
+}}

@@ -1,0 +1,23 @@
+{
+ "games": [
+  {
+   "errors": [
+    "[00:00:36] can't spawn entity uk-staghound (/map/multi/edrun_test/combat.mi, 84)"
+   ],
+   "marks": {
+    "start": 0,
+    "clock 0": 0,
+    "ctlpz arm": 39.5,
+    "di_stag arm": 39.6,
+    "ctlpz shooterready": 39.7,
+    "di_stag shooterready": 39.9,
+    "ctlpz order": 40.2,
+    "ctlpz foeready": 40.5
+   }
+  }
+ ],
+ "pairs": [
+  { "name": "ctlpz", "shooter": "pz6bh", "foe": "t34_0", "verdict": "PASS", "game": 0 },
+  { "name": "di_stag", "shooter": "pz6bh", "foe": "uk-staghound", "verdict": "NOSPAWN", "countReason": "not spawned: uk-staghound", "game": 0 }
+ ]
+}

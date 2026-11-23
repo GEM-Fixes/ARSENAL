@@ -1,0 +1,10 @@
+{"name":"reply-ok","rows":["TST-13"],"mode":"mp","map":"mp_test","players":2,"steps":[{"cmd":"echo hello world"}],"verdict":[
+{"reply":"echo hello world","match":"^hello w","label":"echo"},
+{"reply":"echo hello","match":"zzz","want":false},
+{"reply":"nosuch","match":"^ERR atom not found : .nosuch.$"},
+{"reply":"mp_state","path":"sides.0.unitsAlive","op":">","value":3},
+{"reply":"mp_state","path":"players.1.ai","op":"==","value":true},
+{"reply":"mp_state","path":"sides.1.unitsAlive","op":"<","value":1},
+{"reply":"mp_state","path":"sides.1.unitsAlive","op":">","value":3,"want":false},
+{"event":"loaded","want":true},
+{"event":"session_failed","want":false}]}

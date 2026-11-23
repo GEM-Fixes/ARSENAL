@@ -1,0 +1,449 @@
+{
+ "form": "limmap/1",
+ "part": "goh2as2-3",
+ "codes": {
+  "WARN_PORT_DEFINE_UNCHECKED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/goh2as2.js:1207",
+   "class": "tool",
+   "why": "no AS2 dir given, define check skipped"
+  },
+  "WARN_PORT_DONOR_ABSPATH": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "TST-99"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1194",
+   "class": "crash",
+   "why": "path to moved donor folder dangles at load"
+  },
+  "WARN_PORT_DONOR_AMBIGUOUS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/goh2as2.js:835",
+   "class": "tool",
+   "why": "tool picked first of several same-name defs"
+  },
+  "WARN_PORT_DONOR_NO_BONES": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/goh2as2.js:1488",
+   "class": "tool",
+   "why": "rep mdl unreadable, tool skipped its own rule"
+  },
+  "WARN_PORT_EBM_DROPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-142",
+    "PORT-139"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1177",
+   "class": "crash",
+   "why": "all frame textures missing: ebm not written"
+  },
+  "WARN_PORT_EBM_FRAME_DROPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-142"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1179",
+   "class": "crash",
+   "why": "frame texture in neither game: frame line removed"
+  },
+  "WARN_PORT_EBM_REF_MISSING": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-65"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1056",
+   "class": "crash",
+   "why": "ebm reference texture in no data fails at load"
+  },
+  "WARN_PORT_ENTITY_KEY": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-53"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:389",
+   "class": "crash",
+   "why": "GoH-only entity key has no AS2 reader"
+  },
+  "WARN_PORT_ENTITY_REDEF": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "SDL-60",
+    "TST-66"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1672",
+   "class": "cosmetic",
+   "why": "same entity title defined twice: game keeps one"
+  },
+  "WARN_PORT_FILLING_AP": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1462",
+   "class": "review",
+   "why": "donor keeps donor ammo; list only rep ammo",
+   "lim": [
+    "PORT-136"
+   ]
+  },
+  "WARN_PORT_FILLING_HE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-200"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1471",
+   "class": "review",
+   "why": "HE-first load may not kill armour"
+  },
+  "WARN_PORT_FX_TEX_MISSING": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1080",
+   "class": "cosmetic",
+   "why": "missing fx texture draws as checker, no log",
+   "lim": [
+    "VIS-29"
+   ]
+  },
+  "WARN_PORT_GUN_BASIS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-133"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1224",
+   "class": "silent",
+   "why": "towed gun with plain basis bone fires nothing"
+  },
+  "WARN_PORT_GUN_LIMITS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-201"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1227",
+   "class": "silent",
+   "why": "GoH limits wider than donor gave no kills"
+  },
+  "WARN_PORT_INCLUDE_MISSING": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "TST-99"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:884",
+   "class": "crash",
+   "why": "included file in neither game: dangles at load"
+  },
+  "WARN_PORT_INCLUDE_NOT_PULLED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "TST-99"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:883",
+   "class": "crash",
+   "why": "include target left out by file cap: dangles"
+  },
+  "WARN_PORT_INF_CLASS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-124"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1536",
+   "class": "review",
+   "why": "item class has no known stuff pattern: by hand"
+  },
+  "WARN_PORT_INF_GRENADE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-124"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1535",
+   "class": "review",
+   "why": "grenade stuff entry must be written by hand"
+  },
+  "WARN_PORT_INF_NATION": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-125"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1519",
+   "class": "crash",
+   "why": "no veterancy include for that nation: falls back to ger"
+  },
+  "WARN_PORT_INF_NO_STUFF": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-124"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1531",
+   "class": "review",
+   "why": "item has no GoH stuff: no entry written"
+  },
+  "WARN_PORT_INF_NO_TEMPLATE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/goh2as2.js:1551",
+   "class": "tool",
+   "why": "no --game given: built-in template used"
+  },
+  "WARN_PORT_LIGHT_EMPTIED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-171"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1202",
+   "class": "cosmetic",
+   "why": "GoH light extender fatal on as64: written empty"
+  },
+  "WARN_PORT_LIGHT_NOBONE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-186"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1203",
+   "class": "crash",
+   "why": "light extender without lamp_glass bone crashes on blast"
+  },
+  "WARN_PORT_LIMITS_ARITY": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-138"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:395",
+   "class": "crash",
+   "why": "bone limits with wrong value count: Number expected"
+  },
+  "WARN_PORT_LINK_TARGET": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/goh2as2.js:1255",
+   "class": "tool",
+   "why": "output path is a link: not written"
+  },
+  "WARN_PORT_LOCO_SPEED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1208",
+   "class": "crash",
+   "why": "GoH Locomotion speed keys fatal on as64",
+   "lim": [
+    "PORT-68"
+   ]
+  },
+  "WARN_PORT_MINWORKERS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-66"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1201",
+   "class": "crash",
+   "why": "minWorkers in seat list fatal at load"
+  },
+  "WARN_PORT_MISSING_REF": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-131"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1046",
+   "class": "crash",
+   "why": "ply names a material absent: load crash"
+  },
+  "WARN_PORT_MISSING_TEXTURE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-152"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1136",
+   "class": "silent",
+   "why": "unresolved texture draws as checker, no log"
+  },
+  "WARN_PORT_MORTAR150_SFH18": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1421",
+   "class": "silent",
+   "why": "no good vanilla mortar donor: gun class swapped",
+   "lim": [
+    "PORT-202"
+   ]
+  },
+  "WARN_PORT_MORTAR_LOCAL": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-112"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1443",
+   "class": "silent",
+   "why": "mortar calibre cannot be matched to a donor"
+  },
+  "WARN_PORT_MTL_FALLBACK": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-131"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1044",
+   "class": "crash",
+   "why": "ply material missing: donor or stub material written"
+  },
+  "WARN_PORT_NAMES_FAILED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "kind": "tool",
+   "at": "tools/goh2as2/goh2as2.js:1668",
+   "class": "tool",
+   "why": "unit names file not written"
+  },
+  "WARN_PORT_NONASCII_IDENT": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-15",
+    "SDL-13"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1186",
+   "class": "crash",
+   "why": "non-ASCII byte in identifier breaks parse"
+  },
+  "WARN_PORT_PATHER_MAP": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "KEY-30"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:250",
+   "class": "review",
+   "why": "unknown PatherID mapped to an as64 profile"
+  },
+  "WARN_PORT_PATHER_UNMAPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "KEY-30"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:246",
+   "class": "crash",
+   "why": "unknown PatherID: Wrong pather name at load"
+  },
+  "WARN_PORT_PLACE_MISSING": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-170"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1109",
+   "class": "crash",
+   "why": "place child def missing: parent fatal at spawn"
+  },
+  "WARN_PORT_PLAIN_BONE": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "FMT-05",
+    "PORT-127"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:394",
+   "class": "crash",
+   "why": "limits/speed on plain bone: unexpected token"
+  },
+  "WARN_PORT_SHADOWS_VANILLA": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "VFS-01",
+    "PORT-144"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1249",
+   "class": "silent",
+   "why": "same key as vanilla with other bytes replaces it"
+  },
+  "WARN_PORT_SHARED_PROPS": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-47"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1123",
+   "class": "crash",
+   "why": "shared props file not copied: include may dangle"
+  },
+  "WARN_PORT_SOUND_DROPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "GPL-15"
+   ],
+   "at": "tools/goh2as2/stuffnames.js:69",
+   "class": "silent",
+   "why": "sound name absent in as64: dropped"
+  },
+  "WARN_PORT_SPECULAR_DROPPED": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:1135",
+   "class": "cosmetic",
+   "why": "specular texture missing: line dropped, shine lost",
+   "lim": [
+    "VIS-30"
+   ]
+  },
+  "WARN_PORT_SPRITE_MISSING": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-172"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1093",
+   "class": "crash",
+   "why": "Sprite mtl absent: died in OnFrameChanged"
+  },
+  "WARN_PORT_STR_NOT_UTF8": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "lim": [
+    "PORT-15"
+   ],
+   "at": "tools/goh2as2/goh2as2.js:1187",
+   "class": "cosmetic",
+   "why": "cp1251 string shows U+FFFD"
+  },
+  "WARN_PORT_STUFF_ENTITY_MISSING": {
+   "tool": "goh2as2",
+   "sev": "review",
+   "at": "tools/goh2as2/goh2as2.js:980",
+   "class": "crash",
+   "why": "stuff entity with no def fails at spawn",
+   "lim": [
+    "PORT-203"
+   ]
+  }
+ }
+}

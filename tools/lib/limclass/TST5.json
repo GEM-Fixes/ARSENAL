@@ -1,0 +1,165 @@
+{
+ "form": "limclass/1",
+ "area": "TST5",
+ "rows": {
+  "TST-99": {
+   "chk": "built",
+   "class": "crash",
+   "tool": "refcheck",
+   "how": "def or mdl names ext/anm file absent in AS2 and mod",
+   "why": "def names file AS2 lacks; load stops"
+  },
+  "TST-100": {
+   "chk": "never",
+   "class": "info",
+   "never": "edrun behaviour fact",
+   "why": "superseded by TST-101; edrun dist default"
+  },
+  "TST-101": {
+   "chk": "never",
+   "class": "info",
+   "never": "tool fact",
+   "why": "edrun autoDist behaviour"
+  },
+  "TST-102": {
+   "chk": "todo",
+   "class": "silent",
+   "tool": "edrun-mindist",
+   "how": "pair dist below minimum x1.15 for fire shooter",
+   "why": "pair at exact minimum distance is coin toss"
+  },
+  "TST-103": {
+   "chk": "never",
+   "class": "silent",
+   "never": "kill reading needs game",
+   "why": "car survives with only fuel flag; edrun miscounts"
+  },
+  "TST-104": {
+   "chk": "built",
+   "class": "crash",
+   "tool": "sdllint",
+   "how": "damage key followed by a number rather than effect type in set/stuff",
+   "why": "damage <number> on set/stuff weapon is fatal"
+  },
+  "TST-105": {
+   "chk": "never",
+   "class": "review",
+   "never": "intent and path dependent",
+   "why": "def speed/turn edits show or not by test path"
+  },
+  "TST-106": {
+   "chk": "built",
+   "class": "silent",
+   "tool": "humlint",
+   "how": "vision_human radius at or under a few metres",
+   "why": "vision radius 1 stops all infantry kills"
+  },
+  "TST-107": {
+   "chk": "built",
+   "class": "silent",
+   "tool": "humlint",
+   "how": "properties/human.ext Health value far from stock",
+   "why": "human.ext Health scales infantry; rifle keys move nothing"
+  },
+  "TST-108": {
+   "chk": "built",
+   "class": "crash",
+   "tool": "refcheck",
+   "how": "include in set/breed file not resolving beside the file",
+   "why": "breed include missing is fatal File not found"
+  },
+  "TST-109": {
+   "chk": "never",
+   "class": "cosmetic",
+   "never": "edrun-only picture effect",
+   "why": "edrun mission lacks environment; haze irrelevant"
+  },
+  "TST-110": {
+   "chk": "never",
+   "class": "info",
+   "never": "test reading rule",
+   "why": "AP stops at fuel flag; report apart"
+  },
+  "TST-111": {
+   "chk": "never",
+   "class": "info",
+   "never": "test reading rule",
+   "why": "kill with 0 shots counts nothing"
+  },
+  "TST-112": {
+   "chk": "never",
+   "class": "info",
+   "never": "log fact",
+   "why": "no muzzle blast for small props; 0 shots"
+  },
+  "TST-113": {
+   "chk": "never",
+   "class": "info",
+   "never": "edrun behaviour",
+   "why": "edrun crew walk in; early kills outside"
+  },
+  "TST-114": {
+   "chk": "never",
+   "class": "info",
+   "never": "tool fact",
+   "why": "shots null for small muzzles"
+  },
+  "TST-115": {
+   "chk": "never",
+   "class": "info",
+   "never": "edrun usage fact",
+   "why": "arriveM metres x20; keep small"
+  },
+  "TST-116": {
+   "chk": "built",
+   "class": "crash",
+   "tool": "refcheck",
+   "how": "set/breed include path missing, or health percent above sane range",
+   "why": "breed include missing or 90000% health fatal at start"
+  },
+  "TST-117": {
+   "chk": "never",
+   "class": "info",
+   "never": "test limitation",
+   "why": "default camera too far to judge poses"
+  },
+  "TST-118": {
+   "chk": "never",
+   "class": "info",
+   "never": "test limitation",
+   "why": "edrun game loads no unit card art"
+  },
+  "TST-119": {
+   "chk": "never",
+   "class": "silent",
+   "never": "runtime damage",
+   "why": "early fire breaks fuel; NOORDER on truck foe"
+  },
+  "TST-120": {
+   "chk": "never",
+   "class": "info",
+   "never": "test reading rule",
+   "why": "slow gun can miss per run; judge per shot"
+  },
+  "TST-121": {
+   "chk": "never",
+   "class": "info",
+   "never": "test limitation",
+   "why": "no pair plays door/hatch anm; log proves load only"
+  },
+  "TST-122": {
+   "chk": "never",
+   "class": "silent",
+   "never": "gate unconfirmed, game only",
+   "why": "scenario camera from t=0 trigger did not move view"
+  },
+  "TST-123": {
+   "chk": "built",
+   "class": "silent",
+   "tool": "milint",
+   "how": "movement/pose command in a mission trigger at t=0 without delay",
+   "why": "pose set in first tick lost"
+  }
+ },
+ "dead": []
+}

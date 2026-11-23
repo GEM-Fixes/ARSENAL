@@ -1,0 +1,14 @@
+{
+  "name": "new-mode",
+  "desc": "QUICKSTART 4: mission-clone a new MP mode (with its mode card), diff/lint/view, place an entity, mp-load scenario on the new mode",
+  "steps": [
+    { "tool": "newmod", "argv": ["$MOD", "--name", "E2E Mode", "--game", "$GAME", "$TARGETOPT"] },
+    { "tool": "mission-clone", "argv": ["--game", "$GAME", "--map", "map/multi/1v1_road", "--from", "combat", "--to", "chainmode", "--out", "$MOD", "--with-mode", "chainmode", "--from-mode", "combat", "--title", "Chain Mode", "$TARGETOPT"], "exit": [0, 1], "match": "wrote:" },
+    { "tool": "misdiff", "argv": ["--game", "$GAME", "--mods", "$MODNAME", "--map", "1v1_road", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "milint", "argv": ["$MOD", "--game", "$GAME", "$EXEOPT"], "exit": [0, 1] },
+    { "tool": "mapview", "argv": ["--game", "$GAME", "--map", "multi/1v1_road", "--entities", "$EXEOPT"] },
+    { "tool": "place-entity", "argv": ["$MOD", "--game", "$GAME", "--map", "multi/1v1_road", "--entity", "wires_3m_human", "--pos", "100,100", "$EXEOPT"] },
+    { "tool": "build", "argv": ["$MOD", "--game", "$GAME", "$EXEOPT"], "exit": [0, 1], "match": "\\S" },
+    { "tool": "testrun", "argv": ["--scenario", "tools/testrun/scenarios/mp-load.json", "--exe", "$GAME/$EXEFILE", "--mods", "$MODNAME", "--map", "multi/1v1_road:chainmode"], "match": "VERDICT PASS", "reject": "VERDICT FAIL" }
+  ]
+}

@@ -1,0 +1,10 @@
+{from "pattern gun"
+{range 160 160}
+{rechargeTime 6}
+("speed" s(500))
+("damage_170" a(20) b(16) c(12) d(8) e(4) range(160))
+{parameters "apcr"
+("damage_170" a(24) b(20) c(16) d(12) e(8) range(160))
+}
+("accuracy_curve_1")
+}

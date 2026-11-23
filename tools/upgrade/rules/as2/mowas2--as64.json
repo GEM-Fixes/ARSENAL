@@ -1,0 +1,516 @@
+[
+ {
+  "id": "version",
+  "kind": "version",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "mod.info",
+  "action": "rewrite",
+  "evidence": ": legacy needs Min and Max holding 3.262, modern is Min >= 3.301 with no Max",
+  "tag": "V",
+  "origin": "manual",
+  "test": "L2 Mod: activate mod",
+  "classic": {
+   "min": "3.262",
+   "max": "3.262"
+  },
+  "enhanced": {
+   "min": "3.301",
+   "max": null
+  }
+ },
+ {
+  "id": "block-dll",
+  "kind": "block",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "*.dll",
+  "action": "block",
+  "evidence": " refuse list; a DLL calls one exe at fixed addresses",
+  "tag": "I",
+  "origin": "manual",
+  "test": "none: refused, listed in UPGRADE.md",
+  "why": "DLL left out: fixed to one exe build, no conversion",
+  "re": "\\.dll$"
+ },
+ {
+  "id": "aim-sequential",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "entity def keys",
+  "action": "warn",
+  "detect": {
+   "type": "text",
+   "files": "\\.(def|ext|inc|set|mdl)$",
+   "re": "\\bSequentialAim\\s+[1-9]",
+   "flags": "i"
+  },
+  "msg": "SequentialAim no longer waits joint by joint: joints arrive together (ik_syncJoints), upper body leads",
+  "since": "1401f019",
+  "evidence": "commits 1401f019 d989bb99 78c1b87b, ;",
+  "tag": "V",
+  "origin": "manual",
+  "test": "L3 one match: aim the gun at a moving target, compare traverse + time on target with the old exe (~10 min)"
+ },
+ {
+  "id": "anm-blend",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "mesh-frame .anm files",
+  "action": "warn",
+  "detect": {
+   "type": "anmmesh",
+   "files": "\\.anm$"
+  },
+  "msg": "mesh-frame .anm is blended each quant (anim_meshBlend 1): deliberately abrupt keys now smear. visual only",
+  "since": "87648f7b",
+  "evidence": "commits 87648f7b dc66605e, ;",
+  "tag": "V",
+  "origin": "manual",
+  "test": "L3 view the animation in a match or viewer (~5 min)"
+ },
+ {
+  "id": "shader-own",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "shader files",
+  "action": "warn",
+  "detect": {
+   "type": "path",
+   "re": "(^|/)shader/|\\.(hlsl|fx|fxh|psh|vsh|cso)$",
+   "flags": "i"
+  },
+  "msg": "mod ships a shader built for the vanilla constant layout: dx11 sources moved to as64/core, may break rendering; first match hitches",
+  "since": "8d52bc05",
+  "evidence": "commit 8d52bc05, AS64.md (risk accepted);",
+  "tag": "I",
+  "origin": "manual",
+  "test": "L2 boot + one map: look for black or missing surfaces, grep game.log for shader errors (~5 min)"
+ },
+ {
+  "id": "bot-lua",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "bot Lua",
+  "action": "warn",
+  "detect": {
+   "type": "path",
+   "re": "(^|/)script/multiplayer/bot[^/]*\\.lua$",
+   "flags": "i"
+  },
+  "msg": "a Lua error in the bot no longer aborts the game: logged \"Lua call failed\", bot goes idle. a broken script passes unseen",
+  "since": "6d9806ee",
+  "evidence": "commit 6d9806ee, ; lim MIS-33",
+  "tag": "V",
+  "origin": "manual",
+  "test": "L2 skirmish with bots, grep game.log for \"Lua call failed\" (~5 min)"
+ },
+ {
+  "id": "workshop-place",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "mod folder location",
+  "action": "warn",
+  "detect": {
+   "type": "modpath",
+   "re": "[\\\\/]workshop[\\\\/]content[\\\\/]|[\\\\/]mods[\\\\/]\\d{7,}$",
+   "flags": "i"
+  },
+  "msg": "mod sits in a Steam Workshop item folder or a stamped mods/<fileId> copy: as64 loads the item in place and ignores the mods/ copy (\"old copy\"), a hand fix there does not load",
+  "since": "d432d5ea",
+  "evidence": "commits d432d5ea 22863836, ;",
+  "tag": "V",
+  "origin": "manual",
+  "test": "L2 boot: log says which folder the mod loaded from (~2 min)"
+ },
+ {
+  "id": "switch-bug",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "mission scripts",
+  "action": "warn",
+  "detect": {
+   "type": "text",
+   "files": "\\.mi$|(^|/)(map|mission)/.*\\.inc$",
+   "re": "\\{\\s*\"switch\"",
+   "flags": "i"
+  },
+  "msg": "mission switch runs every case + default on builds before 3e19680e: exclusive menus and pool picks all fire. a build bug, not the mod",
+  "since": "3e19680e",
+  "bug": true,
+  "evidence": "commit 3e19680e, ; lim MIS-34",
+  "tag": "I",
+  "origin": "manual",
+  "test": "L4 one mission through the switch, see which cases fire (~10 min, in game)"
+ },
+ {
+  "id": "rejoin-script",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "mission or Lua scripts",
+  "action": "warn",
+  "detect": {
+   "type": "text",
+   "files": "\\.(mi|inc|lua)$",
+   "re": "player_?(left|returned)",
+   "flags": "i"
+  },
+  "msg": "match now waits up to 120 s on a drop and the player can return: logic on player-left can see TYPE_PLAYER_RETURNED",
+  "since": "f0fa9f51",
+  "evidence": "commits f0fa9f51 6b5b2a62 97968303 be545e76 74260f19, ;",
+  "tag": "I",
+  "origin": "manual",
+  "test": "L5 two instances, drop one and rejoin (~20 min, in game)"
+ },
+ {
+  "id": "vision-set",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "vision props (pose, still, stealth, firing, cover, custom terms) are cached once per quant pass: a custom rules/mods term that changes mid-pass reads stale until the next pass. no detector: stock vision files carry the same rules blocks",
+  "since": "a3847baa",
+  "evidence": "commit a3847baa;",
+  "tag": "I",
+  "origin": "manual",
+  "test": "L3 one match with a custom vision term, watch spotting"
+ },
+ {
+  "id": "mode-filter",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "Classic loads legacy mods only, Enhanced loads as64+ and modern only, never mixed; one mod.info cannot run in both modes. the version row picks one",
+  "since": "9a108776",
+  "evidence": "commits 9a108776 58826db6 418683a1, ; lim ENG-26 VFS-48",
+  "tag": "V",
+  "origin": "manual",
+  "test": "L2 boot in the mode of the written mod.info, log \"activate mod\""
+ },
+ {
+  "id": "mount-layers",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "as64/core and as64/plus (Enhanced) sit between base and mods: mods still override, but plus files shadow base in Enhanced even when the mod never asked",
+  "since": "fb230ef3",
+  "evidence": "commit fb230ef3, ",
+  "tag": "V",
+  "origin": "manual",
+  "test": "L2 compare a base-dependent file in both modes"
+ },
+ {
+  "id": "mp-modset",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "MP: as64+ always in the mod set, Classic never joins Enhanced; Workshop mods go by mods/<name>; mp_join refuses a mismatch naming the mods",
+  "since": "b1867afa",
+  "evidence": "commits 9a108776 b1867afa d79dca63, 362",
+  "tag": "V",
+  "origin": "manual",
+  "test": "L5 two instances join, same build, same mode"
+ },
+ {
+  "id": "exe-crc",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "MP: commit CRC must match on both ends (txt_exedesync), mp_allowDesync overrides",
+  "since": "42d0196f",
+  "evidence": "commit 42d0196f, ",
+  "tag": "V",
+  "origin": "manual",
+  "test": "L5 join with identical builds"
+ },
+ {
+  "id": "aim-ik-all",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "every weapon aims on a changed IK path (same data, other traverse path and time on target); cvars reach the sim, both MP ends need the same build",
+  "since": "1401f019",
+  "evidence": "commits 1401f019 d989bb99 78c1b87b;",
+  "tag": "V",
+  "origin": "manual",
+  "test": "L3 one match, compare aim on target"
+ },
+ {
+  "id": "quant-step",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "MP quant step and batch floors changed: quants per second differ, game time per quant formula same. scripts must not assume the 20-65 ms table (NET-12)",
+  "since": "e9f078e2",
+  "evidence": "commits e9f078e2 5e43e3be, 27",
+  "tag": "V",
+  "origin": "manual",
+  "test": "L5 MP match, compare quant rate"
+ },
+ {
+  "id": "frame-pacing",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "no FPS cap by default, SP carries sub-ms into the next quant: SP real-time timing runs faster than mowas_2 at high FPS",
+  "since": "5bd675e9",
+  "evidence": "commit 5bd675e9, ; lim ENG-08 ENG-20",
+  "tag": "I",
+  "origin": "manual",
+  "test": "L3 timed SP mission at 144+ FPS"
+ },
+ {
+  "id": "test-preset",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "a game mode without a test preset inherits the first loaded mode's test preset, read after map/mission .info",
+  "since": "22863836",
+  "evidence": "commit 22863836",
+  "tag": "I",
+  "origin": "manual",
+  "test": "L4 test every map once"
+ },
+ {
+  "id": "coop-leave",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "co-op leave sets  on quant: vanilla desync removed",
+  "since": "74260f19",
+  "evidence": "commit 74260f19",
+  "tag": "I",
+  "origin": "manual",
+  "test": "none: improvement"
+ },
+ {
+  "id": "squad-flags",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "squad inventory flags update every 0.5 s game time: squad bar icons lag after a scripted inventory change",
+  "since": "d1ab973a",
+  "evidence": "commit d1ab973a",
+  "tag": "I",
+  "origin": "manual",
+  "test": "L3 scripted inventory change, watch the bar"
+ },
+ {
+  "id": "ammo-scan",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "broken ammo data (ammo tag with no stuff): placeholder scan runs only when a reload or out-of-ammo announce needs it, error appears later or never. lint ammo data, do not rely on the load log",
+  "since": "32de520d",
+  "evidence": "commit 32de520d",
+  "tag": "I",
+  "origin": "manual",
+  "test": "tools check on ammo data, no game"
+ },
+ {
+  "id": "math-clamp",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "NaN from asin/acos/sqrt clamped, polygon winding by double area: data that crashes or NaNs on mowas_2 may pass on as64. test on both",
+  "since": "aa08a0fc",
+  "evidence": "commits aa08a0fc d9712694 ab406c6a (AS2_BUGFIX)",
+  "tag": "I",
+  "origin": "manual",
+  "test": "L3 same data on both exes"
+ },
+ {
+  "id": "hermite-y",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "Hermite curve end tangent y fixed: curve users shift slightly, callers not traced",
+  "since": "3bb877c0",
+  "evidence": "commit 3bb877c0 (AS2_BUGFIX)",
+  "tag": "I",
+  "origin": "manual",
+  "test": "L3 compare a curve user on both exes"
+ },
+ {
+  "id": "save-format",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "saves: x64 save crash and flash-blindness save fixed; whether 3.262 saves load is not settled",
+  "since": "b8b77bd0",
+  "evidence": "commits b8b77bd0 64048071",
+  "tag": "I",
+  "origin": "manual",
+  "test": "L4 save and load a mission on the target"
+ },
+ {
+  "id": "water-reflect",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "water reflects only tree/bush tag, lod class decor_big, bridge tag (r_reflectAll 1 restores): a mod prop without a tag or class is not reflected",
+  "since": "255c8b44",
+  "evidence": "commits 255c8b44 59a2ea84, 325",
+  "tag": "V",
+  "origin": "manual",
+  "test": "L3 view a water map with the mod props"
+ },
+ {
+  "id": "bug-repair",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "builds before 924475ad ff6939e2: UpdateRepair tag test inverted, repair stops or the crewman reboards. a build bug",
+  "since": "924475ad",
+  "bug": true,
+  "evidence": "commits 924475ad ff6939e2",
+  "tag": "I",
+  "origin": "manual",
+  "test": "L3 repair a vehicle"
+ },
+ {
+  "id": "bug-moves",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "builds before 8cb3562b 145198b4 641ed4d0: moves and turns may never end (upstream says the fatal form came after a later container swap, may not bite here)",
+  "since": "8cb3562b",
+  "bug": true,
+  "evidence": "commits 8cb3562b 145198b4 641ed4d0",
+  "tag": "I",
+  "origin": "manual",
+  "test": "L3 move and turn orders end"
+ },
+ {
+  "id": "bug-pathers",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "builds before b020ce28: a second scene loads 44 pathers and 8028 extra rand draws (OOS)",
+  "since": "b020ce28",
+  "bug": true,
+  "evidence": "commit b020ce28",
+  "tag": "I",
+  "origin": "manual",
+  "test": "L5 MP second scene, OOS dump"
+ },
+ {
+  "id": "bug-pushed-guns",
+  "kind": "warn",
+  "from": "mowas2",
+  "to": "as64",
+  "scope": "whole mod, no data signal",
+  "action": "warn",
+  "detect": {
+   "type": "none"
+  },
+  "msg": "builds before c46f2417 83af87a3: crew-pushed guns get height 0 (OOS)",
+  "since": "c46f2417",
+  "bug": true,
+  "evidence": "commits c46f2417 83af87a3",
+  "tag": "I",
+  "origin": "manual",
+  "test": "L5 MP push a gun"
+ }
+]
