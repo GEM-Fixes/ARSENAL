@@ -73,7 +73,7 @@ func symlink(in *inst, target, p string) error {
 	}
 	if st, err := os.Lstat(p); err == nil {
 		if st.Mode()&os.ModeSymlink == 0 {
-			return fmt.Errorf("%s is there already and is not a link", p)
+			return errT("%s is there already and is not a link", p)
 		}
 		os.Remove(p)
 	}

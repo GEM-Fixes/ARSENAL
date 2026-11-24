@@ -6,7 +6,6 @@
 package main
 
 import (
-	"errors"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -43,7 +42,7 @@ func installNodeSystem(in *inst, file, sha string) error {
 				return nil
 			}
 		}
-		return errors.New("the administrator prompt was declined, or the Node.js installer failed")
+		return errT("the administrator prompt was declined, or the Node.js installer failed")
 	}
 	return nil
 }

@@ -1,5 +1,7 @@
 # ARSENAL
 
+**English** | [Русский](README.ru.md) | [Українська](README.uk.md) | [中文](README.zh.md)
+
 A.R.S.E.N.A.L (All-in-one Resource SDK for Engine Assets & Levels): modding tools for Men of War: Assault Squad 2, its 64-bit build AS64 and Gates of Hell.
 
 This is a 3rd party tool that was made largely with AI. Use at your own risk.
@@ -69,7 +71,7 @@ and much more.
 
 ## Start
 
-Needs Node.js 18 or newer; the installer sets it up by itself. Game installs are read only; tools write only to a mod folder you name.
+Needs Node.js 18 or newer; the installer sets it up by itself. The installer and the window come in English, Russian, Ukrainian and Chinese; the installer picks the language of the system by itself. Game installs are read only; tools write only to a mod folder you name.
 
 ```bash
 node tools/gui/gui.js

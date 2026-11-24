@@ -16,7 +16,6 @@ import (
 	_ "embed"
 	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -107,7 +106,7 @@ type inst struct {
 }
 
 func (in *inst) say(kind, f string, a ...any) {
-	line := fmt.Sprintf("  %-5s %s", kind, fmt.Sprintf(f, a...))
+	line := fmt.Sprintf("  %-5s %s", kind, fmt.Sprintf(tr(f), a...))
 	in.mu.Lock()
 	in.lines = append(in.lines, line)
 	if kind == "no" {
@@ -119,7 +118,7 @@ func (in *inst) say(kind, f string, a ...any) {
 
 func (in *inst) setProg(label string, got, total int64) {
 	in.mu.Lock()
-	in.prog = progress{label, got, total}
+	in.prog = progress{tr(label), got, total}
 	in.mu.Unlock()
 }
 
@@ -151,23 +150,23 @@ func isDir(p string) bool { st, err := os.Stat(p); return err == nil && st.IsDir
 func (in *inst) checkDir() error {
 	d := in.dir
 	if !filepath.IsAbs(d) {
-		return fmt.Errorf("the install folder %q is not a full path", d)
+		return errT("the install folder %q is not a full path", d)
 	}
 	d = filepath.Clean(d)
 	if len(strings.Split(strings.Trim(filepath.ToSlash(d), "/"), "/")) < 2 {
-		return fmt.Errorf("%q is a drive or a top folder, not a place for a program", d)
+		return errT("%q is a drive or a top folder, not a place for a program", d)
 	}
 	low := strings.ToLower(filepath.ToSlash(d)) + "/"
 	if strings.Contains(low, "/steamapps/") {
-		return fmt.Errorf("%q is inside a Steam library. ARSENAL is never installed into a game folder", d)
+		return errT("%q is inside a Steam library. ARSENAL is never installed into a game folder", d)
 	}
 	if st, err := os.Stat(d); err == nil {
 		if !st.IsDir() {
-			return fmt.Errorf("%q is a file, not a folder", d)
+			return errT("%q is a file, not a folder", d)
 		}
 		ents, _ := os.ReadDir(d)
 		if len(ents) > 0 && !exists(filepath.Join(d, recName)) {
-			return fmt.Errorf("%q is not empty and holds no earlier ARSENAL install. Pick an empty or new folder", d)
+			return errT("%q is not empty and holds no earlier ARSENAL install. Pick an empty or new folder", d)
 		}
 	}
 	in.dir = d
@@ -200,7 +199,7 @@ func plainName(n string) bool {
 func (in *inst) extract() error {
 	zr, err := zip.NewReader(bytes.NewReader(payloadZip), int64(len(payloadZip)))
 	if err != nil {
-		return fmt.Errorf("the toolkit inside this installer cannot be read: %v", err)
+		return errT("the toolkit inside this installer cannot be read: %v", err)
 	}
 	if old, err := readRecord(in.dir); err == nil {
 		in.say("note", "an earlier ARSENAL install is there: its files are replaced")
@@ -216,7 +215,7 @@ func (in *inst) extract() error {
 		}
 	}
 	if err := os.MkdirAll(in.dir, 0o755); err != nil {
-		return fmt.Errorf("cannot make the install folder: %v", err)
+		return errT("cannot make the install folder: %v", err)
 	}
 	items := map[string]bool{}
 	var done, total int64
@@ -226,7 +225,7 @@ func (in *inst) extract() error {
 	n := 0
 	for _, f := range zr.File {
 		if !strings.HasPrefix(f.Name, in.cfg.Top) {
-			return fmt.Errorf("unexpected entry %q in the toolkit", f.Name)
+			return errT("unexpected entry %q in the toolkit", f.Name)
 		}
 		rel := strings.TrimPrefix(f.Name, in.cfg.Top)
 		if rel == "" || rel == "Install-ARSENAL.cmd" { // the zip's own script installer: this program takes its place
@@ -235,7 +234,7 @@ func (in *inst) extract() error {
 		parts := strings.Split(strings.TrimSuffix(rel, "/"), "/")
 		for _, p := range parts {
 			if !plainName(p) {
-				return fmt.Errorf("unsafe entry %q in the toolkit", f.Name)
+				return errT("unsafe entry %q in the toolkit", f.Name)
 			}
 		}
 		items[parts[0]] = true
@@ -261,7 +260,7 @@ func (in *inst) extract() error {
 		w, err := os.OpenFile(dest, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, mode)
 		if err != nil {
 			rc.Close()
-			return fmt.Errorf("cannot write %s: %v", dest, err)
+			return errT("cannot write %s: %v", dest, err)
 		}
 		_, err = io.Copy(w, rc)
 		rc.Close()
@@ -269,7 +268,7 @@ func (in *inst) extract() error {
 			err = e
 		}
 		if err != nil {
-			return fmt.Errorf("cannot write %s: %v", dest, err)
+			return errT("cannot write %s: %v", dest, err)
 		}
 		n++
 		done += int64(f.UncompressedSize64)
@@ -384,7 +383,7 @@ func (in *inst) download(url, dest, want, label string, resume bool) error {
 	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return fmt.Errorf("the download of %s failed: %v", url, err)
+		return errT("the download of %s failed: %v", url, err)
 	}
 	defer resp.Body.Close()
 	flags := os.O_CREATE | os.O_WRONLY | os.O_TRUNC
@@ -398,7 +397,7 @@ func (in *inst) download(url, dest, want, label string, resume bool) error {
 		os.Remove(dest)
 		return in.download(url, dest, want, label, false)
 	default:
-		return fmt.Errorf("the download of %s failed: the server answered %s", url, resp.Status)
+		return errT("the download of %s failed: the server answered %s", url, resp.Status)
 	}
 	f, err := os.OpenFile(dest, flags, 0o644)
 	if err != nil {
@@ -429,7 +428,7 @@ func (in *inst) download(url, dest, want, label string, resume bool) error {
 		}
 		if e != nil {
 			f.Close()
-			return fmt.Errorf("the download of %s stopped: %v", url, e)
+			return errT("the download of %s stopped: %v", url, e)
 		}
 	}
 	in.setProg("", 0, 0)
@@ -443,7 +442,7 @@ func (in *inst) download(url, dest, want, label string, resume bool) error {
 		}
 		if !strings.EqualFold(got, want) {
 			os.Remove(dest)
-			return fmt.Errorf("checksum mismatch for %s: want sha256 %s, got %s. The file was deleted", filepath.Base(dest), want, got)
+			return errT("checksum mismatch for %s: want sha256 %s, got %s. The file was deleted", filepath.Base(dest), want, got)
 		}
 	}
 	return nil
@@ -510,9 +509,9 @@ func (in *inst) setupNode() {
 	}
 	pin, ok := in.cfg.Node.Files[nodeKey()]
 	if !in.opt.Node || !ok {
-		why := "left out (--no-node)"
+		why := tr("left out (--no-node)")
 		if in.opt.Node {
-			why = "no Node.js installer is pinned for this system (" + nodeKey() + ")"
+			why = fmt.Sprintf(tr("no Node.js installer is pinned for this system (%s)"), nodeKey())
 		}
 		in.say("--", "Node.js for the whole computer: %s. ARSENAL downloads its own copy of Node.js %s on first start", why, in.cfg.Node.Version)
 		return
@@ -528,7 +527,7 @@ func (in *inst) setupNode() {
 	defer os.RemoveAll(tmp)
 	file := filepath.Join(tmp, pin.File)
 	in.say("--", "downloading Node.js %s (%s) from %s", in.cfg.Node.Version, pin.File, in.cfg.Node.Base)
-	if err := in.download(in.cfg.Node.Base+pin.File, file, pin.Sha256, "Downloading Node.js "+in.cfg.Node.Version, false); err != nil {
+	if err := in.download(in.cfg.Node.Base+pin.File, file, pin.Sha256, fmt.Sprintf(tr("Downloading Node.js %s"), in.cfg.Node.Version), false); err != nil {
 		in.say("no", "Node.js: %v. ARSENAL downloads its own copy on first start, or install Node.js %d or newer from https://nodejs.org", err, in.cfg.Node.MinMajor)
 		return
 	}
@@ -608,10 +607,10 @@ func (in *inst) histSource() (string, string) {
 func (in *inst) historical() error {
 	url, want := in.histSource()
 	if url == "" {
-		return errors.New("the historical index has no download link yet. A later ARSENAL Setup carries it; then run: " + setupName() + " --historical")
+		return errT("the historical index has no download link yet. A later ARSENAL Setup carries it; then run: %s --historical", setupName())
 	}
 	if !strings.HasPrefix(url, "https://") && !(in.testRoot != "" && strings.HasPrefix(url, "http://127.0.0.1")) {
-		return errors.New("the historical index link must start with https://")
+		return errT("the historical index link must start with https://")
 	}
 	dd := filepath.Join(in.dir, "ww2sources")
 	if err := os.MkdirAll(dd, 0o755); err != nil {
@@ -628,7 +627,7 @@ func (in *inst) historical() error {
 	}
 	part := filepath.Join(dd, "index.download")
 	in.say("--", "downloading the historical index from %s", url)
-	if err := in.download(url, part, "", "Downloading the historical index", true); err != nil {
+	if err := in.download(url, part, "", tr("Downloading the historical index"), true); err != nil {
 		return err
 	}
 	final := filepath.Join(dd, "index.sqlite")
@@ -644,14 +643,14 @@ func (in *inst) historical() error {
 		tmp := filepath.Join(dd, "index.unpack")
 		if err := unzipOne(part, "index.sqlite", tmp); err != nil {
 			os.Remove(tmp)
-			return fmt.Errorf("the downloaded zip holds no index.sqlite that can be read: %v", err)
+			return errT("the downloaded zip holds no index.sqlite that can be read: %v", err)
 		}
 		os.Remove(part)
 		part = tmp
 		in.setProg("", 0, 0)
 	default:
 		os.Remove(part)
-		return errors.New("the downloaded file is neither the index database nor a zip with it. It was deleted")
+		return errT("the downloaded file is neither the index database nor a zip with it. It was deleted")
 	}
 	if want != "" {
 		in.setProg("Checking the historical index", 0, 0)
@@ -662,7 +661,7 @@ func (in *inst) historical() error {
 		}
 		if !strings.EqualFold(got, want) {
 			os.Remove(part)
-			return fmt.Errorf("checksum mismatch for the historical index: want sha256 %s, got %s. The file was deleted", want, got)
+			return errT("checksum mismatch for the historical index: want sha256 %s, got %s. The file was deleted", want, got)
 		}
 	}
 	os.Remove(final)
@@ -701,7 +700,7 @@ func unzipOne(zipPath, base, dest string) error {
 			return err
 		}
 	}
-	return errors.New("no " + base + " inside")
+	return errT("no %s inside", base)
 }
 
 // ---- the whole install
@@ -720,7 +719,7 @@ func (in *inst) run() error {
 		} else if in.opt.Node {
 			in.say("dry", "would download Node.js %s from %s, check its sha256 and install it for the whole computer", in.cfg.Node.Version, in.cfg.Node.Base)
 		}
-		in.say("dry", "would make the application entry%s%s", map[bool]string{true: " and the Desktop icon"}[in.opt.Desktop], map[bool]string{true: ", and start ARSENAL at sign-in"}[in.opt.Autostart])
+		in.say("dry", "would make the application entry%s%s", map[bool]string{true: tr(" and the Desktop icon")}[in.opt.Desktop], map[bool]string{true: tr(", and start ARSENAL at sign-in")}[in.opt.Autostart])
 		if in.opt.Historical {
 			u, _ := in.histSource()
 			in.say("dry", "would download the historical index from %q", u)
@@ -746,7 +745,7 @@ func (in *inst) run() error {
 		in.say("no", "uninstall entry: %v", err)
 	}
 	if err := in.writeRecord(); err != nil {
-		return fmt.Errorf("cannot write the install record: %v", err)
+		return errT("cannot write the install record: %v", err)
 	}
 	if in.opt.Historical {
 		if err := in.historical(); err != nil {
@@ -773,7 +772,7 @@ func (in *inst) run() error {
 func (in *inst) uninstall(caches string, ask func(string, bool) bool) error {
 	rec, err := readRecord(in.dir)
 	if err != nil {
-		return fmt.Errorf("%q has no %s, so it was not made by ARSENAL Setup. Nothing was removed", in.dir, recName)
+		return errT("%q has no %s, so it was not made by ARSENAL Setup. Nothing was removed", in.dir, recName)
 	}
 	relayUninstall(in, caches, ask) // Windows, started from inside the install folder: hands over to a copy and ends here
 	removeIntegration(in, rec)
@@ -850,7 +849,7 @@ func askConsole(q string, def bool) bool {
 	if def {
 		d = "Y/n"
 	}
-	fmt.Printf("%s [%s]: ", q, d)
+	fmt.Printf("%s [%s]: ", tr(q), d)
 	s, err := bufio.NewReader(os.Stdin).ReadString('\n')
 	if err != nil && s == "" {
 		return def
@@ -859,11 +858,15 @@ func askConsole(q string, def bool) bool {
 	if s == "" {
 		return def
 	}
-	return s == "y" || s == "yes"
+	switch s {
+	case "y", "yes", "д", "да", "т", "так", "是":
+		return true
+	}
+	return false
 }
 
 func pause() {
-	fmt.Print("Press Enter to close. ")
+	fmt.Print(tr("Press Enter to close. "))
 	bufio.NewReader(os.Stdin).ReadString('\n')
 }
 
@@ -881,12 +884,14 @@ options: --dir <folder>        install there, not in the per-user programs folde
          --with-historical     also download the historical index
          --historical-url <u>  the link to download the historical index from
          --dry                 print every step, change nothing
+         --lang <en|ru|uk|zh>  the language of the texts (default: the language of the system)
          --version             print the version`
 
 func main() {
 	if len(os.Args) > 1 && os.Args[1] == "--root-node-install" {
 		os.Exit(rootNodeInstall(os.Args[2:]))
 	}
+	initLang()
 	in := &inst{phase: "ask", testRoot: os.Getenv("ARSENAL_SETUP_TEST_ROOT")}
 	if err := json.Unmarshal(configJSON, &in.cfg); err != nil {
 		fmt.Fprintln(os.Stderr, "ARSENAL Setup: this installer is damaged (config):", err)
@@ -908,10 +913,15 @@ func main() {
 	rmC := fs.Bool("remove-caches", false, "")
 	keepC := fs.Bool("keep-caches", false, "")
 	dry := fs.Bool("dry", false, "")
+	lng := fs.String("lang", "", "")
 	ver := fs.Bool("version", false, "")
 	help := fs.Bool("help", false, "")
 	if err := fs.Parse(os.Args[1:]); err != nil || fs.NArg() > 0 {
-		fmt.Fprintln(os.Stderr, "ARSENAL Setup: unknown option. --help lists them.")
+		fmt.Fprintln(os.Stderr, tr("ARSENAL Setup: unknown option. --help lists them."))
+		os.Exit(2)
+	}
+	if *lng != "" && !setLang(*lng) {
+		fmt.Fprintln(os.Stderr, tr("ARSENAL Setup: --lang takes en, ru, uk or zh."))
 		os.Exit(2)
 	}
 	if *help {
@@ -944,7 +954,7 @@ func main() {
 		} else if *keepC || *yes {
 			caches = "keep"
 		}
-		if !*yes && !askConsole("Remove ARSENAL from "+in.dir+"?", true) {
+		if !*yes && !askConsole(fmt.Sprintf(tr("Remove ARSENAL from %s?"), in.dir), true) {
 			return
 		}
 		if err := in.uninstall(caches, askConsole); err != nil {
@@ -958,7 +968,7 @@ func main() {
 	}
 	if *onlyHist {
 		if !exists(filepath.Join(in.dir, recName)) {
-			fmt.Fprintf(os.Stderr, "ARSENAL Setup: %q holds no ARSENAL install. Install first, or name the folder with --dir.\n", in.dir)
+			fmt.Fprintln(os.Stderr, fmt.Sprintf(tr("ARSENAL Setup: %q holds no ARSENAL install. Install first, or name the folder with --dir."), in.dir))
 			os.Exit(1)
 		}
 		if err := in.historical(); err != nil {
@@ -971,16 +981,18 @@ func main() {
 		if err := in.serve(); err == nil {
 			return
 		} else {
-			fmt.Println("The setup page could not be opened in a web browser (" + err.Error() + "). Asking here instead.")
+			fmt.Println(fmt.Sprintf(tr("The setup page could not be opened in a web browser (%s). Asking here instead."), err.Error()))
 		}
 		*console = true
 	}
 	if *console && !*yes {
-		fmt.Println("Install folder: " + in.dir)
+		fmt.Println(fmt.Sprintf(tr("Install folder: %s"), in.dir))
 		if p, v, _ := in.findNode(); p != "" {
-			fmt.Println("Node.js " + v + " is on this computer.")
+			fmt.Println(fmt.Sprintf(tr("Node.js %s is on this computer."), v))
+		} else if len(nodeGz) > 0 {
+			fmt.Println(fmt.Sprintf(tr("Node.js %s is inside this installer. Nothing is downloaded."), in.cfg.Node.Version))
 		} else {
-			fmt.Printf("Node.js %s will be downloaded from nodejs.org and installed for the whole computer (administrator prompt).\n", in.cfg.Node.Version)
+			fmt.Println(fmt.Sprintf(tr("Node.js %s will be downloaded from nodejs.org and installed for the whole computer (administrator prompt)."), in.cfg.Node.Version))
 		}
 		if !askConsole("Install ARSENAL?", true) {
 			return
@@ -994,7 +1006,7 @@ func main() {
 	}
 	err := in.run()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "ARSENAL Setup: "+err.Error()+". Nothing more was done.")
+		fmt.Fprintln(os.Stderr, fmt.Sprintf(tr("ARSENAL Setup: %s. Nothing more was done."), err.Error()))
 	}
 	if *console && !*yes {
 		pause()

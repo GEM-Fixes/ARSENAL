@@ -4,6 +4,7 @@
 package main
 
 import (
+	"bytes"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
@@ -44,7 +45,7 @@ func (in *inst) serve() error {
 	info := map[string]any{
 		"version": in.cfg.Version, "system": sysName() + " " + archName(), "dir": in.dir,
 		"nodeFound": nodePath != "", "nodeVersion": nodeVer, "nodeOld": nodeOld, "nodePin": in.cfg.Node.Version,
-		"historical": histURL != "", "historicalBytes": in.cfg.Historical.Bytes,
+		"historical": histURL != "", "historicalBytes": in.cfg.Historical.Bytes, "nodeInside": len(nodeGz) > 0,
 	}
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -53,7 +54,7 @@ func (in *inst) serve() error {
 		}
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; img-src data:")
-		w.Write(pageHTML)
+		w.Write(bytes.Replace(pageHTML, []byte("/*LANG*/{}"), pageLang(), 1))
 	})
 	mux.HandleFunc("/state", func(w http.ResponseWriter, r *http.Request) {
 		if !ok(w, r, "GET") {
@@ -103,6 +104,24 @@ func (in *inst) serve() error {
 		}()
 		w.Write([]byte("{}"))
 	})
+	// the language picked on the page: the lines of the install follow it (only before the install starts)
+	mux.HandleFunc("/lang", func(w http.ResponseWriter, r *http.Request) {
+		if !ok(w, r, "POST") {
+			return
+		}
+		var o struct {
+			Lang string `json:"lang"`
+		}
+		json.NewDecoder(http.MaxBytesReader(w, r.Body, 256)).Decode(&o)
+		in.mu.Lock()
+		ask := in.phase == "ask"
+		in.mu.Unlock()
+		if !ask || !setLang(o.Lang) {
+			http.Error(w, "refused", http.StatusConflict)
+			return
+		}
+		w.Write([]byte("{}"))
+	})
 	mux.HandleFunc("/close", func(w http.ResponseWriter, r *http.Request) {
 		if !ok(w, r, "POST") {
 			return
@@ -123,8 +142,8 @@ func (in *inst) serve() error {
 		srv.Close()
 		return err
 	}
-	fmt.Println("The setup page is open in your web browser. Keep this window open until the install is finished.")
-	fmt.Println("If the page did not open, go to: " + url)
+	fmt.Println(tr("The setup page is open in your web browser. Keep this window open until the install is finished."))
+	fmt.Println(fmt.Sprintf(tr("If the page did not open, go to: %s"), url))
 	// the page is gone: stop waiting (never while the install runs)
 	go func() {
 		for {

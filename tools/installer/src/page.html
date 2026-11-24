@@ -30,88 +30,115 @@ pre { margin:0; white-space:pre-wrap; overflow-wrap:anywhere; font:13px/1.55 ui-
 @keyframes slide { 0% { margin-left:-35%; } 100% { margin-left:100%; } }
 @media (prefers-reduced-motion: reduce) { .bar.busy i { animation:none; width:100%; opacity:.5; } }
 .plabel { color:var(--soft); font-size:14px; min-height:21px; }
+.top { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+select { font:inherit; padding:6px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--ink); }
 .end { font-weight:600; margin:0 0 12px; } .end.bad { color:var(--bad); } .end.good { color:var(--good); }
 [hidden] { display:none !important; }
 </style>
 </head>
 <body>
 <main>
-<h1>ARSENAL Setup</h1>
-<p class="sub" id="sub">Reading this computer&hellip;</p>
+<div class="top"><h1>ARSENAL Setup</h1><select id="lang" aria-label="Language"></select></div>
+<p class="sub" id="sub" data-t="reading">Reading this computer&hellip;</p>
 
 <section class="card" id="ask" hidden>
-  <h2>What will be set up</h2>
+  <h2 data-t="what">What will be set up</h2>
   <dl>
     <dt>ARSENAL</dt><dd id="i-dir"></dd>
     <dt>Node.js</dt><dd id="i-node"></dd>
-    <dt>Historical index</dt><dd id="i-hist"></dd>
+    <dt data-t="hist">Historical index</dt><dd id="i-hist"></dd>
   </dl>
 </section>
 
 <section class="card" id="opts" hidden>
-  <h2>Options</h2>
-  <label class="tick"><input type="checkbox" id="o-desktop" checked><span>Put an ARSENAL icon on the Desktop</span></label>
-  <label class="tick"><input type="checkbox" id="o-start" checked><span>Start ARSENAL when the install finishes</span></label>
-  <label class="tick"><input type="checkbox" id="o-autostart"><span>Start ARSENAL when I sign in<small>Its window opens in the web browser at every sign-in.</small></span></label>
-  <label class="tick" id="l-hist"><input type="checkbox" id="o-hist"><span>Download the historical index<small id="s-hist"></small></span></label>
-  <p style="margin:16px 0 0"><button id="go">Install</button></p>
+  <h2 data-t="options">Options</h2>
+  <label class="tick"><input type="checkbox" id="o-desktop" checked><span data-t="oDesktop">Put an ARSENAL icon on the Desktop</span></label>
+  <label class="tick"><input type="checkbox" id="o-start" checked><span data-t="oStart">Start ARSENAL when the install finishes</span></label>
+  <label class="tick"><input type="checkbox" id="o-autostart"><span><span data-t="oAuto">Start ARSENAL when I sign in</span><small data-t="oAutoSmall">Its window opens in the web browser at every sign-in.</small></span></label>
+  <label class="tick" id="l-hist"><input type="checkbox" id="o-hist"><span><span data-t="oHist">Download the historical index</span><small id="s-hist"></small></span></label>
+  <p style="margin:16px 0 0"><button id="go" data-t="install">Install</button></p>
 </section>
 
 <section class="card" id="run" hidden>
-  <h2 id="run-h">Installing</h2>
+  <h2 id="run-h" data-t="installing">Installing</h2>
   <p class="end" id="end" hidden></p>
   <div id="pwrap"><div class="bar busy" id="bar"><i></i></div><div class="plabel" id="plabel"></div></div>
   <pre id="log" aria-live="polite"></pre>
-  <p style="margin:16px 0 0" id="closep" hidden><button id="close">Close setup</button></p>
+  <p style="margin:16px 0 0" id="closep" hidden><button id="close" data-t="close">Close setup</button></p>
 </section>
 </main>
 <script>
 (function () {
   var t = new URLSearchParams(location.search).get('t'), $ = function (id) { return document.getElementById(id); };
-  var filled = false, closed = false, lastLen = -1;
+  var filled = false, closed = false, lastLen = -1, info = null, subKey = 'reading';
+  var LANG = /*LANG*/{}, order = LANG.order || ['en'], cur = LANG.cur || 'en';
+  // P: a text of the page in the language in use; {0} {1} are filled from the other arguments
+  function P(k) {
+    var row = (LANG.page || {})[k] || [], s = row[order.indexOf(cur)] || row[0] || k, a = arguments;
+    return s.replace(/\{(\d)\}/g, function (m, n) { return a[+n + 1]; });
+  }
+  function texts() {
+    document.documentElement.lang = cur;
+    var el = document.querySelectorAll('[data-t]');
+    for (var i = 0; i < el.length; i++) if (el[i].id !== 'sub' && el[i].id !== 'run-h') el[i].textContent = P(el[i].getAttribute('data-t'));
+    $('lang').setAttribute('aria-label', P('language'));
+    if (subKey) $('sub').textContent = P(subKey);
+    if (info) fill(info);
+    lastState && show(lastState);
+  }
+  var lastState = null;
+  (function () {
+    var sel = $('lang');
+    for (var i = 0; i < order.length; i++) { var o = document.createElement('option'); o.value = order[i]; o.textContent = (LANG.names || {})[order[i]] || order[i]; sel.appendChild(o); }
+    sel.value = cur;
+    sel.onchange = function () {
+      cur = sel.value; texts();
+      fetch('/lang?t=' + t, { method: 'POST', body: JSON.stringify({ lang: cur }) }).catch(function () {});
+    };
+  })();
   function mb(n) { return n >= 1073741824 ? (n / 1073741824).toFixed(1) + ' GB' : Math.round(n / 1048576) + ' MB'; }
   function fill(i) {
-    filled = true;
-    $('sub').textContent = 'Version ' + i.version + ' for ' + i.system;
-    $('i-dir').textContent = 'Installed for you only, in ' + i.dir;
-    $('i-node').textContent = i.nodeFound ? 'Version ' + i.nodeVersion + ' is already on this computer. Nothing to install.'
-      : (i.nodeOld ? 'Version ' + i.nodeOld + ' is too old. ' : '') + 'Version ' + i.nodePin + ' is downloaded from nodejs.org, checked, and installed for the whole computer. The system asks for an administrator once.';
+    filled = true; info = i; subKey = '';
+    $('sub').textContent = P('sub', i.version, i.system);
+    $('i-dir').textContent = P('dir', i.dir);
+    $('i-node').textContent = i.nodeInside ? P('nodeInside', i.nodePin) : i.nodeFound ? P('nodeFound', i.nodeVersion)
+      : (i.nodeOld ? P('nodeOld', i.nodeOld) : '') + P('nodeGet', i.nodePin);
     if (i.historical) {
-      $('i-hist').textContent = 'Not inside this installer. Tick the box below to download it now' + (i.historicalBytes ? ' (' + mb(i.historicalBytes) + ')' : '') + '.';
-      $('s-hist').textContent = 'A large download. It can also be fetched later.';
+      $('i-hist').textContent = i.historicalBytes ? P('histTickSize', mb(i.historicalBytes)) : P('histTick');
+      $('s-hist').textContent = P('histSmall');
     } else {
-      $('i-hist').textContent = 'Not inside this installer, and no download link is set yet.';
+      $('i-hist').textContent = P('histNone');
       $('o-hist').disabled = true; $('l-hist').className = 'tick off';
-      $('s-hist').textContent = 'Not available for download yet.';
+      $('s-hist').textContent = P('histNoneSmall');
     }
   }
   function show(s) {
+    lastState = s;
     if (!filled) fill(s.info);
     var ask = s.phase === 'ask';
+    $('lang').disabled = !ask;
     $('ask').hidden = !ask; $('opts').hidden = !ask; $('run').hidden = ask;
     if (ask) return;
     if (s.lines.length !== lastLen) { lastLen = s.lines.length; $('log').textContent = s.lines.join('\n'); $('log').scrollTop = $('log').scrollHeight; }
     var p = s.progress, running = s.phase === 'run';
     $('pwrap').hidden = !running;
     if (running) {
-      $('plabel').textContent = p.label ? p.label + (p.total > 0 ? ': ' + mb(p.got) + ' of ' + mb(p.total) : (p.got > 0 ? ': ' + mb(p.got) : '')) : 'Working';
+      $('plabel').textContent = p.label ? p.label + (p.total > 0 ? ': ' + P('of', mb(p.got), mb(p.total)) : (p.got > 0 ? ': ' + mb(p.got) : '')) : P('working');
       var known = p.total > 0;
       $('bar').className = known ? 'bar' : 'bar busy';
       $('bar').firstChild.style.width = known ? Math.min(100, 100 * p.got / p.total) + '%' : '';
     } else {
       var bad = s.phase === 'fail', e = $('end');
-      $('run-h').textContent = bad ? 'Not installed' : 'Installed';
+      $('run-h').textContent = P(bad ? 'notInstalled' : 'installed');
       e.hidden = false; e.className = 'end ' + (bad || s.problems ? 'bad' : 'good');
-      e.textContent = bad ? 'The install stopped. The last line below says why.'
-        : s.problems ? 'ARSENAL is installed, but ' + s.problems + ' step' + (s.problems > 1 ? 's' : '') + ' did not work. See the lines marked "no" below.'
-        : 'ARSENAL is installed.';
+      e.textContent = bad ? P('endFail') : s.problems ? P('endProblems', s.problems) : P('endOk');
       $('closep').hidden = false;
     }
   }
   function poll() {
     if (closed) return;
     fetch('/state?t=' + t).then(function (r) { return r.json(); }).then(show).catch(function () {
-      if (!closed) $('sub').textContent = 'ARSENAL Setup is no longer running. You can close this tab.';
+      if (!closed) { subKey = 'gone'; $('sub').textContent = P('gone'); }
     }).then(function () { setTimeout(poll, 600); });
   }
   $('go').onclick = function () {
@@ -121,10 +148,11 @@ pre { margin:0; white-space:pre-wrap; overflow-wrap:anywhere; font:13px/1.55 ui-
   $('close').onclick = function () {
     closed = true;
     fetch('/close?t=' + t, { method: 'POST' }).catch(function () {}).then(function () {
-      $('closep').hidden = true; $('sub').textContent = 'Setup is closed. You can close this tab.';
+      $('closep').hidden = true; subKey = 'closed'; $('sub').textContent = P('closed');
       window.close();
     });
   };
+  texts();
   poll();
 })();
 </script>

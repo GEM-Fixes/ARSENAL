@@ -68,7 +68,7 @@ else {
     const sum = fs.readFileSync(exe + '.sha256', 'utf8');
     ok(sum.startsWith(crypto.createHash('sha256').update(fs.readFileSync(exe)).digest('hex') + '  ARSENAL-Setup-9.9.9-' + T), '2 the .sha256 file matches the installer');
     const root = path.join(W, 'root'), dir = path.join(W, 'inst', 'ARSENAL');
-    const env = Object.assign({}, process.env, { ARSENAL_SETUP_TEST_ROOT: root, ARSENAL_SETUP_NO_BROWSER: '1' });
+    const env = Object.assign({}, process.env, { ARSENAL_SETUP_TEST_ROOT: root, ARSENAL_SETUP_NO_BROWSER: '1', ARSENAL_SETUP_LANG: 'en' });
     if (!WIN) Object.assign(env, { HOME: path.join(W, 'home'), XDG_DATA_HOME: '', XDG_CONFIG_HOME: '' });
     const run = a => { const x = spawnSync(exe, a, { encoding: 'utf8', env, timeout: 300000 }); return { rc: x.status, out: (x.stdout || '') + (x.stderr || '') }; };
     const tree = d => fs.existsSync(d) ? fs.readdirSync(d, { recursive: true }).map(String).map(s => s.replace(/\\/g, '/')).sort() : [];
@@ -76,6 +76,13 @@ else {
     x = run(['--nope']); ok(x.rc === 2, '2 unknown option: rc 2, got ' + x.rc);
     x = run(['--console', '--yes', '--dry', '--dir', dir, '--no-node', '--no-start']);
     ok(x.rc === 0 && !fs.existsSync(dir) && tree(root).length === 0, '2 --dry writes nothing (rc ' + x.rc + ')');
+    ok(x.out.includes('would copy the toolkit'), '2 ARSENAL_SETUP_LANG=en: English lines');
+    // languages: --lang wins over the variable, the variable over the system; a language the installer lacks is refused
+    for (const [l, word] of [['ru', 'набор инструментов'], ['uk', 'набір інструментів'], ['zh', '工具包']]) {
+      x = run(['--console', '--yes', '--dry', '--dir', dir, '--no-node', '--no-start', '--lang', l]);
+      ok(x.rc === 0 && x.out.includes(word) && !x.out.includes('would copy'), '2 --lang ' + l + ': the lines are in that language: ' + x.out.slice(0, 200));
+    }
+    x = run(['--dry', '--lang', 'xx']); ok(x.rc === 2, '2 --lang with an unknown language: rc 2, got ' + x.rc);
     x = run(['--console', '--yes', '--dir', path.join(W, 'steamapps', 'common', 'x'), '--no-node', '--no-start']);
     ok(x.rc !== 0 && !fs.existsSync(path.join(W, 'steamapps', 'common', 'x')), '2 a folder inside steamapps is refused');
     // a shortcut left by the older Install-ARSENAL.cmd carries the argument "gui"; the install must clear it (with an argument the launcher opens no browser)

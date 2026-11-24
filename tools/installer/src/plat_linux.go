@@ -5,7 +5,6 @@
 package main
 
 import (
-	"errors"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -45,11 +44,11 @@ func installNodeSystem(in *inst, file, sha string) error {
 		cmd = exec.Command("sudo", self, "--root-node-install", file, sha)
 		cmd.Stdin = os.Stdin
 	default:
-		return errors.New("no way to ask for administrator rights here (pkexec with a desktop, or sudo in a terminal)")
+		return errT("no way to ask for administrator rights here (pkexec with a desktop, or sudo in a terminal)")
 	}
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
 	if err := cmd.Run(); err != nil {
-		return errors.New("the administrator step was declined or failed")
+		return errT("the administrator step was declined or failed")
 	}
 	return nil
 }
@@ -115,10 +114,10 @@ func startApp(in *inst) error {
 
 func openBrowser(url string) error {
 	if !hasDisplay() {
-		return errors.New("no desktop session")
+		return errT("no desktop session")
 	}
 	if !hasCmd("xdg-open") {
-		return errors.New("xdg-open is missing")
+		return errT("xdg-open is missing")
 	}
 	return detached("xdg-open", os.Environ(), url)
 }

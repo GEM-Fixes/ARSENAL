@@ -67,7 +67,7 @@ func launchers(dir string) (string, string) {
 func ps(script string, env ...string) (string, error) {
 	exe := sys32(`WindowsPowerShell\v1.0\powershell.exe`)
 	if !exists(exe) {
-		return "", errors.New("Windows PowerShell is missing")
+		return "", errT("Windows PowerShell is missing")
 	}
 	cmd := exec.Command(exe, "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", script)
 	cmd.Env = append(os.Environ(), env...)
@@ -88,11 +88,11 @@ func installNodeSystem(in *inst, file, sha string) error {
 			in.say("note", "Node.js is installed; Windows wants a restart to finish it")
 			return nil
 		case 1602:
-			return errors.New("the Node.js installer was cancelled")
+			return errT("the Node.js installer was cancelled")
 		case 1:
-			return errors.New("the administrator prompt was declined, or the Node.js installer could not start")
+			return errT("the administrator prompt was declined, or the Node.js installer could not start")
 		}
-		return fmt.Errorf("the Node.js installer ended with code %d", ee.ExitCode())
+		return errT("the Node.js installer ended with code %d", ee.ExitCode())
 	}
 	return err
 }
@@ -110,7 +110,7 @@ func (in *inst) reg(args ...string) error {
 	cmd := exec.Command(sys32("reg.exe"), args...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	if out, err := cmd.CombinedOutput(); err != nil {
-		return fmt.Errorf("%v %s", err, strings.TrimSpace(string(out)))
+		return errT("%v %s", err, strings.TrimSpace(string(out)))
 	}
 	return nil
 }
@@ -129,7 +129,7 @@ func makeLinks(in *inst, desktop bool) error {
 		}
 		lnk, err := ps(script, env...)
 		if err != nil || lnk == "" || !exists(lnk) {
-			return fmt.Errorf("the %s shortcut could not be made (%v)", name, err)
+			return errT("the %s shortcut could not be made (%v)", name, err)
 		}
 		in.record("link", lnk)
 		in.say("ok", "%s shortcut: %s", name, lnk)
