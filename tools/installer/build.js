@@ -6,6 +6,8 @@
 //          [--historical-url U] [--historical-sha256 S] [--historical-bytes N] [-- <zip.js options>] | --describe <file> | --help
 //   --payload: the small package to carry. Without it: node tools/dist/zip.js --small --out-dir <work>/zip <zip.js options>.
 //   --out:     where the installers go (default <checkout>/../run/installer). --work: build folder (default <out>/work).
+//   --with-node dir: also build ARSENAL-Setup-<ver>-<target>-node, with the pinned Node.js program inside (no download at install).
+//              dir = cache of the pinned archives; a missing one is downloaded from nodejs.org and checked against the pin's sha256.
 //   --only:    targets, of windows-x64 windows-arm64 linux-x64 linux-arm64 macos-x64 macos-arm64 (default all six).
 //   --historical-*: the download link of the historical index, over tools/installer/config.json.
 //   --describe: print the sha256 and size of a file (the historical index to upload), for tools/installer/config.json.
@@ -27,6 +29,7 @@ function args(a) {
     else if (a[i] === '--payload') o.payload = path.resolve(v());
     else if (a[i] === '--out') o.out = path.resolve(v());
     else if (a[i] === '--work') o.work = path.resolve(v());
+    else if (a[i] === '--with-node') o.withNode = path.resolve(v());
     else if (a[i] === '--only') o.only = v().split(',').filter(Boolean);
     else if (a[i] === '--historical-url') o.hist.url = v();
     else if (a[i] === '--historical-sha256') o.hist.sha256 = v().toLowerCase();
@@ -85,6 +88,33 @@ function checkPayload(buf) {
   return n;
 }
 
+// nodeBin(target, cache) -> the Node.js program of the pin for that system, from <cache>/<pin key>/node[.exe]. A file that is not
+// there yet is taken from the pinned archive in <cache>, which is downloaded from the pin's base (nodejs.org) when absent; the
+// archive's sha256 must be the pin's, else nothing is used.
+const PINKEY = { 'windows-x64': 'win-x64', 'windows-arm64': 'win-arm64', 'linux-x64': 'linux-x64', 'linux-arm64': 'linux-arm64', 'macos-x64': 'darwin-x64', 'macos-arm64': 'darwin-arm64' };
+function nodeBin(t, cache) {
+  const pin = JSON.parse(fs.readFileSync(path.join(HERE, '..', 'dist', 'launch', 'node-pin.json'), 'utf8')), key = PINKEY[t], f = pin.files[key];
+  if (!f) die('no Node.js is pinned for ' + t + ' (tools/dist/launch/node-pin.json)');
+  const win = key.startsWith('win-'), dir = path.join(cache, pin.version, key), bin = path.join(dir, win ? 'node.exe' : 'node');
+  if (fs.existsSync(bin) && fs.statSync(bin).size > 1 << 20) return bin;
+  if (!pin.base.startsWith('https://nodejs.org/dist/v')) die('pin base ' + pin.base + ' is not https://nodejs.org/dist/v<version>/');
+  fs.mkdirSync(dir, { recursive: true });
+  const arc = path.join(cache, f.file);
+  if (!fs.existsSync(arc)) {
+    console.log('node: downloading ' + pin.base + f.file);
+    const curl = process.platform === 'win32' ? path.join(process.env.SystemRoot || 'C:/Windows', 'System32', 'curl.exe') : 'curl';
+    const r = spawnSync(curl, ['-fsSL', '--proto', '=https', '-o', arc + '.part', pin.base + f.file], { stdio: 'inherit' });
+    if (r.status !== 0) { fs.rmSync(arc + '.part', { force: true }); die('download of ' + f.file + ' failed', 1); }
+    fs.renameSync(arc + '.part', arc);
+  }
+  const sha = crypto.createHash('sha256').update(fs.readFileSync(arc)).digest('hex');
+  if (sha !== f.sha256) die(arc + ': sha256 ' + sha + ' is not the pinned ' + f.sha256 + ' (delete the file to fetch it again)', 1);
+  const stem = (f.file.endsWith('.zip') ? f.file.slice(0, -4) : f.file.slice(0, -7)), tar = process.platform === 'win32' ? path.join(process.env.SystemRoot || 'C:/Windows', 'System32', 'tar.exe') : 'tar';
+  const x = spawnSync(tar, win ? ['-xf', arc, '-C', dir, '--strip-components=1', stem + '/node.exe'] : ['-xf', arc, '-C', dir, '--strip-components=2', stem + '/bin/node'], { encoding: 'utf8' });
+  if (x.status !== 0 || !fs.existsSync(bin)) die('could not unpack the node program from ' + arc + ': ' + (x.stderr || ''), 1);
+  return bin;
+}
+
 // --describe <file>: the three values tools/installer/config.json wants for the historical index (name, sha256, bytes)
 function describe(file) {
   if (!file || !fs.existsSync(file)) die('--describe: no file ' + file);
@@ -118,7 +148,10 @@ function main(argv = process.argv.slice(2)) {
   console.log(gv.stdout.trim());
   fs.mkdirSync(o.out, { recursive: true });
   const env = Object.assign({}, process.env, { CGO_ENABLED: '0', GOFLAGS: '-buildvcs=false', GOCACHE: path.join(o.work, 'gocache'), GOTOOLCHAIN: 'local', GOTELEMETRY: 'off', GOPROXY: 'off' });
-  const vetted = new Set();
+  const priv = /-private.zip$/.test(o.payload);   // the private edition (zip.js --private-add): the installers say so in their name
+  const own = JSON.parse(fs.readFileSync(path.join(HERE, 'config.json'), 'utf8'));
+  const vetted = new Set(), zlib = require('zlib');
+  fs.writeFileSync(path.join(SRC, 'node.bin.gz'), Buffer.alloc(0));
   for (const t of o.only) {
     const [GOOS, GOARCH, ext] = TARGETS[t], e = Object.assign({}, env, { GOOS, GOARCH });
     if (!vetted.has(GOOS)) {
@@ -126,13 +159,22 @@ function main(argv = process.argv.slice(2)) {
       const v = spawnSync(go, ['vet', '.'], { cwd: SRC, env: e, encoding: 'utf8' });
       if (v.status !== 0) { process.stderr.write(v.stdout + v.stderr); die('go vet failed for ' + GOOS, 1); }
     }
-    const name = `ARSENAL-Setup-${cfg.version}-${t}${ext}`, outFile = path.join(o.out, name);
-    const b = spawnSync(go, ['build', '-trimpath', '-ldflags', '-s -w', '-o', outFile, '.'], { cwd: SRC, env: e, encoding: 'utf8' });
-    if (b.status !== 0) { process.stderr.write(b.stdout + b.stderr); die('go build failed for ' + t, 1); }
-    const sha = crypto.createHash('sha256').update(fs.readFileSync(outFile)).digest('hex');
-    fs.writeFileSync(outFile + '.sha256', `${sha}  ${name}\n`);
-    console.log(`wrote ${outFile} (${(fs.statSync(outFile).size / 1048576).toFixed(1)} MB) sha256 ${sha}`);
+    // each target: the small installer, and with --with-node a second one that carries Node.js inside (name ends in -node)
+    for (const withNode of (o.withNode ? [false, true] : [false])) {
+      fs.writeFileSync(path.join(SRC, 'node.bin.gz'), withNode ? zlib.gzipSync(fs.readFileSync(nodeBin(t, o.withNode)), { level: 9 }) : Buffer.alloc(0));
+      const name = `ARSENAL-Setup-${cfg.version}-${priv ? 'private-' : ''}${t}${withNode ? '-node' : ''}${ext}`, outFile = path.join(o.out, name);
+      // Windows: version, publisher, icon and manifest resources, linked from a .syso beside main.go (tools/installer/winres.js)
+      for (const f of fs.readdirSync(SRC)) if (/.syso$/.test(f)) fs.rmSync(path.join(SRC, f));
+      if (GOOS === 'windows') require('./winres.js').write(SRC, GOARCH, { version: cfg.version, name, description: 'ARSENAL Setup' + (priv ? ' (private edition)' : ''), product: 'ARSENAL', company: own.publisher || 'Imperator_Aug', copyright: own.copyright || 'Copyright Imperator_Aug. Apache License 2.0.', png: fs.readFileSync(path.join(SRC, 'icon.png')) });
+      const b = spawnSync(go, ['build', '-trimpath', '-ldflags', '-s -w', '-o', outFile, '.'], { cwd: SRC, env: e, encoding: 'utf8' });
+      if (b.status !== 0) { process.stderr.write(b.stdout + b.stderr); die('go build failed for ' + t, 1); }
+      const sha = crypto.createHash('sha256').update(fs.readFileSync(outFile)).digest('hex');
+      fs.writeFileSync(outFile + '.sha256', `${sha}  ${name}\n`);
+      for (const f of fs.readdirSync(SRC)) if (/.syso$/.test(f)) fs.rmSync(path.join(SRC, f));
+      console.log(`wrote ${outFile} (${(fs.statSync(outFile).size / 1048576).toFixed(1)} MB) sha256 ${sha}`);
+    }
   }
+  fs.writeFileSync(path.join(SRC, 'node.bin.gz'), Buffer.alloc(0));
 }
-module.exports = { main, config, checkPayload, zipTop, TARGETS };
+module.exports = { main, nodeBin, config, checkPayload, zipTop, TARGETS };
 if (require.main === module) main();

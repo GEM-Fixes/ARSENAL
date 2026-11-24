@@ -8,6 +8,7 @@
 package main
 
 import (
+	"compress/gzip"
 	"archive/zip"
 	"bufio"
 	"bytes"
@@ -32,6 +33,10 @@ import (
 
 //go:embed payload.zip
 var payloadZip []byte
+
+// node.bin.gz: the Node.js program for this system, gzipped; empty in the small installers (build.js --with-node fills it)
+//go:embed node.bin.gz
+var nodeGz []byte
 
 //go:embed config.json
 var configJSON []byte
@@ -457,7 +462,46 @@ func fileSha(p string) (string, error) {
 	return hex.EncodeToString(h.Sum(nil)), nil
 }
 
+func (in *inst) bundledNode() (string, error) {
+	name := "node"
+	if runtime.GOOS == "windows" {
+		name = "node.exe"
+	}
+	d := filepath.Join(in.dir, "node", in.cfg.Node.Version)
+	if err := os.MkdirAll(d, 0o755); err != nil {
+		return "", err
+	}
+	zr, err := gzip.NewReader(bytes.NewReader(nodeGz))
+	if err != nil {
+		return "", err
+	}
+	p := filepath.Join(d, name)
+	os.Remove(p)
+	w, err := os.OpenFile(p, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o755)
+	if err != nil {
+		return "", err
+	}
+	_, err = io.Copy(w, zr)
+	if e := w.Close(); err == nil {
+		err = e
+	}
+	if err != nil {
+		return "", err
+	}
+	in.record("item", "node")
+	return p, nil
+}
+
 func (in *inst) setupNode() {
+	if len(nodeGz) > 0 {
+		p, err := in.bundledNode()
+		if err == nil {
+			in.nodePath = p
+			in.say("ok", "Node.js %s came inside this installer (%s): nothing to download", in.cfg.Node.Version, p)
+			return
+		}
+		in.say("no", "the Node.js inside this installer could not be unpacked: %v", err)
+	}
 	p, v, old := in.findNode()
 	if p != "" {
 		in.nodePath = p
@@ -669,7 +713,9 @@ func (in *inst) run() error {
 	}
 	if in.opt.Dry {
 		in.say("dry", "would copy the toolkit into %s", in.dir)
-		if p, v, _ := in.findNode(); p != "" {
+		if len(nodeGz) > 0 {
+			in.say("dry", "would unpack the Node.js %s that is inside this installer: nothing to download", in.cfg.Node.Version)
+		} else if p, v, _ := in.findNode(); p != "" {
 			in.say("dry", "Node.js %s is there (%s): nothing to set up", v, p)
 		} else if in.opt.Node {
 			in.say("dry", "would download Node.js %s from %s, check its sha256 and install it for the whole computer", in.cfg.Node.Version, in.cfg.Node.Base)

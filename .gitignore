@@ -6,4 +6,3 @@ tools/*/test/got.txt
 tools/*/test/out*.txt
 *.out
 REPORT*.json
-guide/dist/

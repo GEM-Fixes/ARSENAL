@@ -73,11 +73,11 @@
 // Author: Imperator_Aug (ARSENAL, ia-613781d7)
 const fs = require('fs'), path = require('path'), zlib = require('zlib'), crypto = require('crypto'), os = require('os'), { spawnSync } = require('child_process');
 const TOOLS = path.join(__dirname, '..'), SRC = path.join(TOOLS, '..');
-const USAGE = 'usage: node tools/dist/zip.js [--small [--pin file]] [--ver V] [--out-dir D] [--exes dir] [--assets-root dir] [--add file]... [--date YYYY-MM-DD] [--check] [--workshop_gui dir | --no-workshop_gui] [--gemindex dir | --no-gemindex] [--ww2sources dir | --no-ww2sources] [--with-ww2db] [--pdf file | --no-pdf] [--no-whole | --whole-root dir] [--books-root dir] [--guide-dir dir]';
+const USAGE = 'usage: node tools/dist/zip.js [--small [--pin file]] [--ver V] [--out-dir D] [--exes dir] [--assets-root dir] [--add file]... [--date YYYY-MM-DD] [--check] [--workshop_gui dir | --no-workshop_gui] [--gemindex dir | --no-gemindex] [--ww2sources dir | --no-ww2sources] [--with-ww2db] [--pdf file | --no-pdf] [--no-whole | --whole-root dir] [--books-root dir] [--guide-dir dir] [--claude-root dir | --no-claude] [--private-add name=path]...';
 
 function args(a) {
-  const o = { ver: '0.1.0', outDir: path.resolve(SRC, '..', 'run', 'l7zip'), exes: null, assetsRoot: TOOLS, add: [], date: '2026-01-01', check: false, side: {}, noSide: new Set(), pdf: null, noPdf: false, noWhole: false, wholeRoot: null, booksRoot: null, guideDir: null, small: false, pin: null, withDb: false };
-  const val = { '--ver': 'ver', '--out-dir': 'outDir', '--exes': 'exes', '--assets-root': 'assetsRoot', '--date': 'date', '--pin': 'pin', '--whole-root': 'wholeRoot', '--books-root': 'booksRoot', '--guide-dir': 'guideDir' };
+  const o = { ver: require('./sea.js').buildVersion(), outDir: path.resolve(SRC, '..', 'run', 'l7zip'), exes: null, assetsRoot: TOOLS, add: [], date: '2026-01-01', check: false, side: {}, noSide: new Set(), pdf: null, noPdf: false, noWhole: false, wholeRoot: null, booksRoot: null, guideDir: null, small: false, pin: null, withDb: false, privateAdd: [] };
+  const val = { '--ver': 'ver', '--out-dir': 'outDir', '--exes': 'exes', '--assets-root': 'assetsRoot', '--date': 'date', '--pin': 'pin', '--whole-root': 'wholeRoot', '--books-root': 'booksRoot', '--guide-dir': 'guideDir', '--claude-root': 'claudeRoot' };
   for (let i = 0; i < a.length; i++) {
     const sc = /^--(no-)?([a-z][a-z0-9_]*)$/.exec(a[i] || ''), sn = sc && SIDECARS.find(s => s.name === sc[2]);
     if (a[i] === '--with-ww2db') o.withDb = true;
@@ -85,9 +85,11 @@ function args(a) {
     else if (sn && a[i + 1] !== undefined) o.side[sn.name] = a[++i];
     else if (val[a[i]] && a[i + 1] !== undefined) o[val[a[i]]] = a[++i];
     else if (a[i] === '--add' && a[i + 1] !== undefined) o.add.push(a[++i]);
+    else if (a[i] === '--private-add' && /^[^=]+=.+$/.test(a[i + 1] || '')) o.privateAdd.push(a[++i]);
     else if (a[i] === '--check') o.check = true;
     else if (a[i] === '--small') o.small = true;
     else if (a[i] === '--no-pdf') o.noPdf = true;
+    else if (a[i] === '--no-claude') o.noClaude = true;
     else if (a[i] === '--no-whole') o.noWhole = true;
     else if (a[i] === '--pdf' && a[i + 1] !== undefined) o.pdf = a[++i];
     else { console.error(USAGE); process.exit(2); }
@@ -442,7 +444,7 @@ function sideSummary(refused, top) {
 }
 
 // the four release names: ARSENAL-<ver>.zip, -small.zip, -ww2.zip, -small-ww2.zip
-const zipName = o => `ARSENAL-${o.ver}${o.small ? '-small' : ''}${o.withDb ? '-ww2' : ''}.zip`;
+const zipName = o => `ARSENAL-${o.ver}${o.small ? '-small' : ''}${o.withDb ? '-ww2' : ''}${o.privateAdd && o.privateAdd.length ? '-private' : ''}.zip`;
 // main(argv, test): test = launcher test settings ({sys, mach}, loopback pin allowed). Only tools/dist/test/smallbuild.js passes it;
 // the command line (below) never does, so a release build always gets the https://nodejs.org pin check.
 function main(argv = process.argv.slice(2), test = null) {
@@ -548,6 +550,17 @@ function main(argv = process.argv.slice(2), test = null) {
     for (const x of r.files) entries.push({ name: top + sc.name + '/' + x.rel, file: x.file });
     console.log(`${sc.name}: ${r.files.length} files, ${r.files.reduce((s, x) => s + fs.statSync(x.file).size, 0)} B from ${dir}`);
   }
+  // CLAUDE (owner 2026-11-23): the skills, .mcp.json and CLAUDE.md go into the package, through the gate like every text file.
+  // From --claude-root, else from the source tree when it is a public copy (it has .claude/skills and no limits/ notes). The working
+  // repo's own skills name the note folders, so they never go in this way (private edition: --private-add).
+  const cr = o.noClaude ? null : o.claudeRoot ? path.resolve(o.claudeRoot) : (fs.existsSync(path.join(SRC, '.claude', 'skills')) && !fs.existsSync(path.join(SRC, 'limits', 'INDEX.md')) ? SRC : null);
+  if (cr) {
+    if (!fs.existsSync(path.join(cr, '.claude', 'skills'))) { console.error(`error: --claude-root ${cr}: no .claude/skills in it`); process.exit(2); }
+    let n = 0; const cw = (rel, file) => { if (BAK.test(path.basename(file))) return; if (fs.statSync(file).isDirectory()) { for (const c of fs.readdirSync(file).sort()) cw(rel + '/' + c, path.join(file, c)); } else { entries.push({ name: top + rel, file }); n++; } };
+    cw('.claude/skills', path.join(cr, '.claude', 'skills'));
+    for (const x of ['.mcp.json', 'CLAUDE.md']) if (fs.existsSync(path.join(cr, x))) cw(x, path.join(cr, x));
+    console.log(`claude: ${n} files (skills, .mcp.json, CLAUDE.md) from ${cr}`);
+  } else console.log('claude: no skills in this package (' + (o.noClaude ? '--no-claude' : 'the source tree is not a public copy; --claude-root <public copy> adds them') + ')');
   for (const a of o.add) { if (!fs.existsSync(a)) { console.error(`error: --add ${a} missing`); process.exit(2); } entries.push({ name: top + path.basename(a), file: path.resolve(a) }); }
   entries.sort((x, y) => (x.name < y.name ? -1 : x.name > y.name ? 1 : 0));
   if (new Set(entries.map(e => e.name)).size !== entries.length) { console.error('error: two entries with one name'); process.exit(2); }
@@ -562,6 +575,19 @@ function main(argv = process.argv.slice(2), test = null) {
   // small: the tools files go in as tools/<key>, after the gate scanned them as the exe's embedded files
   const all = o.small ? [...entries, ...keys.map(k => ({ name: top + 'tools/' + k, file: path.join(root, k), tool: true }))].sort((x, y) => (x.name < y.name ? -1 : x.name > y.name ? 1 : 0)) : entries;
   if (new Set(all.map(e => e.name)).size !== all.length) { console.error('error: two entries with one name'); process.exit(2); }
+  // PRIVATE EDITION (owner 2026-11-23): --private-add name=path puts a folder or file into the zip AFTER the gate, unscanned, at <top>/name.
+  // A name the package already has is kept as the gated one. The zip is named -private and must never be published.
+  if (o.privateAdd.length) {
+    const have = new Set(all.map(e => e.name)); let n = 0;
+    const walk = (name, file) => {
+      const b = path.basename(file); if (BAK.test(b) || b === 'node_modules' || b === '.git') return;
+      if (fs.statSync(file).isDirectory()) { for (const c of fs.readdirSync(file).sort()) walk(name + '/' + c, path.join(file, c)); return; }
+      if (!have.has(top + name)) { have.add(top + name); all.push({ name: top + name, file, tool: true }); n++; }
+    };
+    for (const a of o.privateAdd) { const i = a.indexOf('='), name = a.slice(0, i).split('\\').join('/').split('/').filter(Boolean).join('/'), file = path.resolve(a.slice(i + 1)); if (!fs.existsSync(file)) { console.error(`error: --private-add ${a}: nothing at ${file}`); process.exit(2); } walk(name, file); }
+    all.sort((x, y) => (x.name < y.name ? -1 : x.name > y.name ? 1 : 0));
+    console.log(`PRIVATE EDITION: ${n} files added after the gate, not scanned (${o.privateAdd.map(a => a.split('=')[0]).join(', ')}). Never publish this zip.`);
+  }
   fs.mkdirSync(o.outDir, { recursive: true });
   const out = path.join(o.outDir, zipName(o)), tmp = out + '.part';
   try { writeZip(tmp, all, o.date); } catch (e) { fs.rmSync(tmp, { force: true }); console.error('error: ' + e.message); process.exit(2); }

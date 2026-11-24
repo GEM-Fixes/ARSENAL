@@ -3,3 +3,5 @@ config.json
 icon.ico
 icon.png
 icon.icns
+*.syso
+node.bin.gz

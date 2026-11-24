@@ -14,7 +14,7 @@ const opt = (n, d) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] :
 if (!['pre', 'post'].includes(phase) || !opt('--game') || !opt('--scratch')) { console.log('usage: node tools/dist/test/door.js pre|post --game <game folder> --scratch <dir> [--inst 2] [--port 47931]'); process.exit(2); }
 const G = path.resolve(opt('--game')), root = path.resolve(opt('--scratch')), inst = opt('--inst', '2'), port = Number(opt('--port', '47931'));
 const MOD = 't_door_1', modPath = path.join(G, 'mods', MOD), work = path.join(root, 'work');
-const top = path.join(root, 'release', 'ARSENAL-0.1.0'), exe = path.join(top, 'ARSENAL.exe'), guiExe = exe   /* one exe since W6 U1 */;
+const top = path.join(root, 'release', 'ARSENAL-' + require('../sea.js').buildVersion()), exe = path.join(top, 'ARSENAL.exe'), guiExe = exe   /* one exe since W6 U1 */;
 // the env of a first-time user without node: Windows folders only. HOME stays the real one (instance N logs and options live there).
 const sysRoot = process.env.SystemRoot || 'C:\\Windows';
 const PATH = [path.join(sysRoot, 'System32'), sysRoot].join(path.delimiter);
@@ -54,7 +54,7 @@ async function pre() {
   const b = spawnSync(process.execPath, [ZIP, '--out-dir', outDir], { encoding: 'utf8', maxBuffer: 1 << 26 });
   rec('1 build zip', 'node tools/dist/zip.js --out-dir <scratch>/zipout', b.status, first((b.stdout || '').trim().split('\n').slice(-1)[0] || b.stderr), b.status === 0);
   if (b.status !== 0) return;
-  unzip(path.join(outDir, 'ARSENAL-0.1.0.zip'), path.join(root, 'release'));
+  unzip(path.join(outDir, 'ARSENAL-' + require('../sea.js').buildVersion() + '.zip'), path.join(root, 'release'));
   rec('1 unzip', 'unzip ARSENAL-0.1.0.zip -> <scratch>/release', 0, 'ARSENAL.exe ' + fs.existsSync(exe) + ', ARSENAL-gui.cmd ' + fs.existsSync(path.join(top, 'ARSENAL-gui.cmd')) + ', START-HERE.md ' + fs.existsSync(path.join(top, 'START-HERE.md')), fs.existsSync(exe) && fs.existsSync(path.join(top, 'ARSENAL-gui.cmd')));
   const w = whereNode();
   rec('2 no node', 'where node   (PATH = ' + PATH + ')', w.status, w.status === 0 ? 'FOUND ' + first(w.stdout) : 'not found: ' + first(w.stderr || w.stdout), w.status !== 0);

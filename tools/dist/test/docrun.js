@@ -29,7 +29,7 @@ const giDone = (() => { try { return fs.readdirSync(gi).some(n => /manifest/i.te
 const ww = path.join(__dirname, '..', 'out', 'ww2sources'), wwDone = fs.existsSync(path.join(ww, 'ww2sources.json'));   // the same for ww2sources (its manifest is written last)
 const b = spawnSync(process.execPath, [ZIP, '--out-dir', outDir, ...(giDone ? [] : ['--no-gemindex']), ...(wwDone ? [] : ['--no-ww2sources'])], { encoding: 'utf8', maxBuffer: 1 << 26 });
 if (b.status !== 0) { console.log((b.stdout || '').split('\n').slice(-12).join('\n') + (b.stderr || '')); console.log('FAIL: zip.js rc ' + b.status); process.exit(1); }
-const zipFile = path.join(outDir, 'ARSENAL-0.1.0.zip');
+const zipFile = path.join(outDir, 'ARSENAL-' + require('../sea.js').buildVersion() + '.zip');
 function unzip(f, dest) {
   const buf = fs.readFileSync(f), e = buf.lastIndexOf(Buffer.from([0x50, 0x4b, 5, 6])), n = buf.readUInt16LE(e + 10);
   let p = buf.readUInt32LE(e + 16);
@@ -43,7 +43,7 @@ function unzip(f, dest) {
   }
 }
 unzip(zipFile, rel);
-const top = path.join(rel, 'ARSENAL-0.1.0'), exe = path.join(top, 'ARSENAL.exe');
+const top = path.join(rel, 'ARSENAL-' + require('../sea.js').buildVersion()), exe = path.join(top, 'ARSENAL.exe');
 if (!fs.existsSync(exe)) { console.log('FAIL: no ARSENAL.exe in the unzipped release'); process.exit(1); }
 
 // ---- 2 extract the ARSENAL lines

@@ -5,5 +5,7 @@
     "windows-arm64": { "file": "node-v26.13.0-arm64.msi", "sha256": "a9d7e34eaeeadd4ecbd9f0795f49f9d2c2625e63fc4e2f77709f039497f57033" },
     "darwin": { "file": "node-v26.13.0.pkg", "sha256": "445b202997c959dddbd54ad8c82956371b495b03c73d56044a6f82dfb3249c46" }
   },
+  "publisher": "Imperator_Aug",
+  "copyright": "Copyright Imperator_Aug. Apache License 2.0.",
   "historical": { "url": "", "sha256": "", "bytes": 0 }
 }
