@@ -2,6 +2,8 @@
 
 A.R.S.E.N.A.L (All-in-one Resource SDK for Engine Assets & Levels): modding tools for Men of War: Assault Squad 2, its 64-bit build AS64 and Gates of Hell.
 
+This is a 3rd party tool that was made largely with AI. Use at your own risk.
+
 **Open Beta - active development**
 
 ![Shooting at a model in the ballistic and explosive simulator](docs/img/shot-view.png)
