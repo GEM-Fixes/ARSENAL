@@ -21,6 +21,7 @@ const ALLOW = new Set([]);
 let fails = 0, passes = 0;
 const ok = (c, m, extra) => { if (c) passes++; else { fails++; console.log('FAIL ' + m + (extra !== undefined ? '\n  ' + String(extra).slice(0, 1500) : '')); } };
 const tick = () => new Promise(r => setImmediate(r));
+const W = require('../../lib/test/wait');
 const clone = o => JSON.parse(JSON.stringify(o));
 
 function boot(serverSettings, extra) {
@@ -45,7 +46,8 @@ function boot(serverSettings, extra) {
   vm.runInContext(/<script>([\s\S]*)<\/script>/.exec(html)[1], ctx, { filename: 'page.js:script' });
   return { doc, ctx, store, server, posts, confirms };
 }
-async function ready(P) { for (let i = 0; i < 400 && !P.ctx.__as2gui; i++) await tick(); if (!P.ctx.__as2gui) throw new Error('page did not finish building: ' + P.doc.getElementById('main').textContent.slice(0, 300)); }
+// by time, not by count (a busy PC needs more ticks): at least 60 s, then a WAIT line and the miss is reported
+async function ready(P) { const t0 = Date.now(); while (!P.ctx.__as2gui && Date.now() - t0 < W.COND_MS) await tick(); if (!P.ctx.__as2gui) { W.say('test-blocks', 'page build', W.COND_MS); throw new Error('page did not finish building: ' + P.doc.getElementById('main').textContent.slice(0, 300)); } }
 
 const isB = e => !!(e && e.dataset && e.dataset.blk != null);
 const isBox = e => isB(e) && e.classList.contains('blc');

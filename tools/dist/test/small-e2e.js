@@ -9,7 +9,7 @@
 // an icacls deny (create files / folders) for the current user on the scratch package folder, removed afterwards.
 // usage: node tools/dist/test/small-e2e.js [--scratch dir] [--keep]
 // Author: Imperator_Aug (ARSENAL, ia-eefe0639)
-const fs = require('fs'), os = require('os'), path = require('path'), zlib = require('zlib'), crypto = require('crypto'), { spawnSync, spawn } = require('child_process');
+const fs = require('fs'), os = require('os'), path = require('path'), zlib = require('zlib'), crypto = require('crypto'), { spawnSync, spawn } = require('child_process'), Wt = require('../../lib/test/wait');
 const DIST = path.join(__dirname, '..'), TOOLS = path.join(DIST, '..');
 const Z = require(path.join(DIST, 'zip.js')), L = require(path.join(DIST, 'launch.js')), SEA = require(path.join(DIST, 'sea.js'));
 const argv = process.argv.slice(2), opt = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : undefined; };
@@ -92,7 +92,7 @@ const NOPATH = [SYS32, SYSROOT];
 // cmd: the line a user types, through cmd.exe /d /s /c "<line>"
 function cmd(script, rawArgs, env, cwd) {
   const line = `"${script}"${rawArgs ? ' ' + rawArgs : ''}`;
-  const r = spawnSync(path.join(SYS32, 'cmd.exe'), ['/d', '/s', '/c', `"${line}"`], { env, cwd: cwd || S, encoding: 'utf8', windowsVerbatimArguments: true, timeout: 300000, maxBuffer: 1 << 26, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
+  const r = Wt.spawnSync(path.join(SYS32, 'cmd.exe'), ['/d', '/s', '/c', `"${line}"`], { env, cwd: cwd || S, encoding: 'utf8', windowsVerbatimArguments: true, timeout: 300000, maxBuffer: 1 << 26, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true }, 'dist small-e2e ' + path.basename(script));
   return { rc: r.status, out: r.stdout || '', err: r.stderr || '' };
 }
 const PRE = mk(path.join(S, 'pre', 'argv.js'), "process.stdout.write(JSON.stringify({ exec: process.execPath, argv: process.argv.slice(1) }) + '\\n'); process.exit(process.argv.includes('rc7') ? 7 : 0);\n");
@@ -106,11 +106,12 @@ const writable = dir => icacls(dir, ['/remove:d', WHO]);
 
 async function startServer() {
   server = spawn(process.execPath, [path.join(__dirname, 'fixserve.js'), SRV, LOG], { stdio: ['ignore', 'pipe', 'inherit'], windowsHide: true });
-  return new Promise((res, rej) => {
-    let buf = ''; const t = setTimeout(() => rej(new Error('fixture server did not start')), 15000);
-    server.stdout.on('data', d => { buf += d; const m = /port (\d+)/.exec(buf); if (m) { clearTimeout(t); res(Number(m[1])); } });
+  const up = new Promise((res, rej) => {
+    let buf = '';
+    server.stdout.on('data', d => { buf += d; const m = /port (\d+)/.exec(buf); if (m) res(Number(m[1])); });
     server.on('exit', c => rej(new Error('fixture server exited ' + c)));
   });
+  return Wt.late(up, { who: 'dist small-e2e', what: 'fixture server port line' }).then(p => p || Promise.reject(new Error('fixture server did not start')));
 }
 
 async function main() {
@@ -192,7 +193,7 @@ async function main() {
   const SHPATH = [gitUsr, gitMingw, SYS32, SYSROOT];
   const posix = p => fwd(p).replace(/^([A-Za-z]):/, (m, d) => '/' + d.toLowerCase());   // what HOME / XDG_DATA_HOME look like to a POSIX shell
   const sh = (args, env, cwd) => {
-    env = { ...env, HOME: posix(HOME), XDG_DATA_HOME: posix(XDG) }; const x = spawnSync(shExe, args, { env, cwd: cwd || S, encoding: 'utf8', timeout: 300000, maxBuffer: 1 << 26, windowsHide: true }); return { rc: x.status, out: x.stdout || '', err: x.stderr || '' }; };
+    env = { ...env, HOME: posix(HOME), XDG_DATA_HOME: posix(XDG) }; const x = Wt.spawnSync(shExe, args, { env, cwd: cwd || S, encoding: 'utf8', timeout: 300000, maxBuffer: 1 << 26, windowsHide: true }, 'dist small-e2e sh'); return { rc: x.status, out: x.stdout || '', err: x.stderr || '' }; };
   reset();
   for (const n of ['arsenal', 'arsenal-gui']) { r = sh(['-n', launcher(n)], baseEnv(SHPATH)); ok(r.rc === 0, `sh 0 sh -n ${n}: ${r.err}`); }
   const A = launcher('arsenal');

@@ -29,7 +29,7 @@ const front = args => {   // the front door as a user runs it: node tools/as2/as
   const sp = s => (s || '').split('\n').map(l => l.replace(/\r$/, '')).filter((l, i, a) => l !== '' || i < a.length - 1);
   return { code: r.status, out: sp(r.stdout), err: sp(r.stderr) };
 };
-const norm = l => l.replace(/check-ov-[A-Za-z0-9]+/g, 'check-ov-X').replace(/"ms": \d+/g, '"ms": <t>').replace(/\\\\/g, '/').replace(/\\/g, '/').replace(/\b\d+(\.\d+)? ?(ms|s)\b/g, '<t>').replace(/^PROGRESS .*$/, '');
+const norm = l => l.replace(/check-ov-[A-Za-z0-9]+/g, 'check-ov-X').replace(/"ms": \d+/g, '"ms": <t>').replace(/\\\\/g, '/').replace(/\\/g, '/').replace(/\b\d+(\.\d+)? ?(ms|s)\b/g, '<t>').replace(/^PROGRESS .*$/, '').replace(/^NOTE REUSED_CHECK .*$/, '');   // REUSED_CHECK: the second of two same checks replays the first (tools/check, lib/checkcache)
 const lines = (j, s) => j.lines.filter(l => l.s === s).map(l => l.line);
 function gold(name, j, c) {
   ok(j.code === c.code, name + ': exit ' + j.code + ' vs front door ' + c.code, lines(j, 'err').join('\n'));

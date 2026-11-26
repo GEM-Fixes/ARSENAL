@@ -21,6 +21,7 @@ EXT.push({ id: 'zzgame', routes: {
   'POST /api/x/zzgame/ctx': async (u, b, ctx) => ({ gameId: ctx.gameId(), exe: ctx.exe(), kind: ctx.kind(), gohDir: ctx.gohDir(), curDir: ctx.curDir(), game: ctx.game() }),
 } });
 const gui = require('../gui'), remote = require('../remote'), gamedir = require('../../lib/gamedir');
+const W = require('../../lib/test/wait');
 remote.ALLOW.add('GET /api/x/zzgame/ctx'); remote.ALLOW.add('POST /api/x/zzgame/ctx');
 const S = path.resolve(process.argv[2] || fs.mkdtempSync(path.join(os.tmpdir(), 'as2gui-games-')));
 fs.mkdirSync(S, { recursive: true });
@@ -147,15 +148,15 @@ const q = encodeURIComponent;
     ok(gui.worksOn('{MinGameVersion 3.301}').worksOn === 'as64' && gui.worksOn('{MinGameVersion 3.262}\n{MaxGameVersion 3.262}').worksOn === 'classic' && gui.worksOn('').worksOn === 'none', 'worksOn AS2 unchanged');
     if (defGoh) { const v = gui.gohVersion(defGoh); ok(v === null || /^1\.\d{3}$/.test(v), 'the real GoH exe version in the mod.info form (read only): ' + v); }
     // wave 3: the job list names the game of a running job (a sleeper child stands in for the tool)
-    const B = await gui.start({ port: 0, cwd: S, tmpRoot: TMP, spawnHook: () => ({ file: process.execPath, args: ['-e', 'setTimeout(function(){},20000)'] }) });
+    const B = await gui.start({ port: 0, cwd: S, tmpRoot: TMP, spawnHook: () => ({ file: process.execPath, args: ['-e', 'setTimeout(function(){},600000)'] }) });   // outlives a slow step; the test cancels it
     try {
       for (const [hdr, want] of [[{ 'x-arsenal-game': 'goh', 'x-arsenal-goh': q(GOH) }, 'goh'], [{ 'x-arsenal-game': 'mowas2' }, 'mowas2'], [{}, 'as64']]) {
         const hr = http.request({ host: '127.0.0.1', port: B.port, method: 'POST', path: '/api/run', headers: Object.assign({ host: '127.0.0.1:' + B.port, 'content-type': 'application/json' }, hdr) }, res => res.resume());
         hr.on('error', () => { /* cancelled */ }); hr.end(JSON.stringify({ cmd: 'check', input: { mod: GOH, fast: true } }));
-        let jl = []; for (let i = 0; i < 100 && !jl.length; i++) { await new Promise(d => setTimeout(d, 100)); jl = ((await req(B.port, 'GET', '/api/jobs')).j || {}).jobs || []; }
+        let jl = []; await W.until(async () => (jl = ((await req(B.port, 'GET', '/api/jobs')).j || {}).jobs || []).length, { who: 'test-games', what: 'the job under ' + want + ' is listed', step: 100 });
         ok(jl.length === 1 && jl[0].game === want && jl[0].cmd === 'check', '/api/jobs: a running job under ' + want + ' says game ' + want, JSON.stringify(jl));
         if (jl[0]) await req(B.port, 'POST', '/api/cancel', { body: { id: jl[0].id } });
-        for (let i = 0; i < 100; i++) { await new Promise(d => setTimeout(d, 100)); if (!(((await req(B.port, 'GET', '/api/jobs')).j || {}).jobs || []).length) break; }
+        await W.until(async () => !(((await req(B.port, 'GET', '/api/jobs')).j || {}).jobs || []).length, { who: 'test-games', what: 'the cancelled job under ' + want + ' leaves the list', step: 100 });
       }
     } finally { await B.close(); }
     // sweep: testprofile and testprofile-seed (modswitch) get --exe <game> when the game is not as64; the AS64 argv stays as it was.

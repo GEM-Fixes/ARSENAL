@@ -367,10 +367,10 @@ class FakeIO { constructor(cb, o) { this.cb = cb; this.o = o; this.el = null; IO
     ok(!!sk && sk.all().filter(e => e.tagName === 'BUTTON').length >= 2, 'kit: the search box has Browse and History buttons');
     ok(rowsOf(P.root).length === 100, 'kit: the first draw is 100 rows', rowsOf(P.root).length);
     const search = sk.all().find(e => e.tagName === 'INPUT');
-    search.value = 'brav'; search.fire('input'); await new Promise(r => setTimeout(r, 30)); await H.flush();
+    search.value = 'brav'; search.fire('input'); await H.until(() => JSON.stringify(keys(P.root)) === '["multi/bravo"]'); await H.flush();
     ok(JSON.stringify(keys(P.root)) === '["multi/bravo"]' && !sk.all().some(e => / sk-index/.test(' ' + e.className)), 'kit: typing filters the list under the box (no second index list)', keys(P.root));
     const got = []; P.V.on('map', d => got.push(d));
-    search.fire('keydown', { key: 'Enter' }); await new Promise(r => setTimeout(r, 30)); await H.flush();
+    search.fire('keydown', { key: 'Enter' }); await H.until(() => got.some(d => d.key === 'multi/bravo') && global.LS.m['sk.hist.mapviz.listSearch']); await H.flush();
     ok(got.some(d => d.key === 'multi/bravo') && global.LS.m['sk.hist.mapviz.listSearch'] && global.LS.m['sk.hist.mapviz.listSearch'][0] === 'brav', 'kit: Enter opens the match and the text is in the history', global.LS.m['sk.hist.mapviz.listSearch']);
     search.value = ''; search.fire('input'); await H.flush();
     search.fire('keydown', { key: 'ArrowDown' });
@@ -379,7 +379,7 @@ class FakeIO { constructor(cb, o) { this.cb = cb; this.o = o; this.el = null; IO
     sk.all().find(e => / sk-browse/.test(' ' + e.className)).click();
     const b0 = global.MVPICK.pop();
     ok(!!b0 && b0.spec.view === 'data' && b0.spec.start === 'map' && b0.spec.mode === 'dir', 'kit: Browse opens the picker in the game data at map/', b0 && b0.spec);
-    if (b0) { const got2 = []; P.V.on('map', d => got2.push(d)); b0.done('map/multi/z007/terrain', { view: 'data', path: 'map/multi/z007/terrain', name: 'terrain' }); await new Promise(r => setTimeout(r, 30)); await H.flush();
+    if (b0) { const got2 = []; P.V.on('map', d => got2.push(d)); b0.done('map/multi/z007/terrain', { view: 'data', path: 'map/multi/z007/terrain', name: 'terrain' }); await H.until(() => search.value === 'multi/z007' && got2.some(d => d.key === 'multi/z007')); await H.flush();
       ok(search.value === 'multi/z007' && got2.some(d => d.key === 'multi/z007'), 'kit: a Browse pick gives the listed map key and opens it', search.value); } }
   // the joined block rules on a list page (blocks, names in words)
   { const BC = require('../../../test/blockcheck'), { r } = stubRoutes({});

@@ -183,16 +183,16 @@ const notMade = () => Promise.reject(Object.assign(new Error('MV_NOT_FOUND'), { 
         ok(!!sk && sk.all().filter(e => e.tagName === 'BUTTON').length >= 2, T + 'kit: the find box has Browse and History buttons');
         const nm = K.S0.names();
         ok(nm.filter(x => x.label === 'fx_tree').length === 1 && nm.find(x => x.label === 'fx_tree').n === 3 && nm.find(x => x.label === 'fx_tree').group === en('mapviz.objects.cat.tree'), T + 'kit index: each name once with its count, by kind', nm.map(x => x.label + ':' + x.n));
-        const kf = sk.all().find(e => e.tagName === 'INPUT'); kf.value = 'fx_tr'; kf.fire('input'); await new Promise(r => setTimeout(r, 30)); await H.flush();
+        const kf = sk.all().find(e => e.tagName === 'INPUT'); kf.value = 'fx_tr'; kf.fire('input'); await H.until(() => sk.all().some(e => / sk-index/.test(' ' + e.className) && /fx_tree/.test(e.textContent))); await H.flush();
         const hit = sk.all().find(e => / sk-index/.test(' ' + e.className) && /fx_tree/.test(e.textContent));
         ok(!!hit, T + 'kit: typing offers the name from the index', sk.textContent);
-        if (hit) { hit.parentNode.fire('click', { target: hit }); await new Promise(r => setTimeout(r, 30)); await H.flush();
+        if (hit) { hit.parentNode.fire('click', { target: hit }); await H.until(() => kf.value === 'fx_tree' && H.blk(K.boxes.objects, 'mv.objects.hits').all().filter(e => e.tagName === 'BUTTON').length === 3 && (global.LS.m['sk.hist.mapviz.objectsFind'] || [])[0] === 'fx_tree'); await H.flush();
           ok(kf.value === 'fx_tree' && H.blk(K.boxes.objects, 'mv.objects.hits').all().filter(e => e.tagName === 'BUTTON').length === 3 && global.LS.m['sk.hist.mapviz.objectsFind'][0] === 'fx_tree', T + 'kit: a pick finds that name and is in the history'); }
         // Browse = the file picker in the game data at entity/, .def files; a pick gives the name without .def and finds it (seeded)
         global.MVPICK = []; sk.all().find(e => / sk-browse/.test(' ' + e.className)).click();
         const b0 = global.MVPICK.pop();
         ok(!!b0 && b0.spec.view === 'data' && b0.spec.start === 'entity' && (b0.spec.exts || []).join() === 'def', T + 'kit: Browse opens the picker in the game data at entity/ (.def)', b0 && b0.spec);
-        if (b0) { b0.done('entity/flora/fx_tree.def', { view: 'data', path: 'entity/flora/fx_tree.def', name: 'fx_tree.def' }); await new Promise(r => setTimeout(r, 30)); await H.flush();
+        if (b0) { b0.done('entity/flora/fx_tree.def', { view: 'data', path: 'entity/flora/fx_tree.def', name: 'fx_tree.def' }); await H.until(() => kf.value === 'fx_tree' && H.blk(K.boxes.objects, 'mv.objects.hits').all().filter(e => e.tagName === 'BUTTON').length === 3); await H.flush();
           ok(kf.value === 'fx_tree' && H.blk(K.boxes.objects, 'mv.objects.hits').all().filter(e => e.tagName === 'BUTTON').length === 3, T + 'kit: a Browse pick gives the def name and finds it', kf.value); } }
       const lg = lay.legend();
       ok(lg && lg.some(r => r.label === en('mapviz.objects.cat.wall') && r.color === PAL.objects.categories.wall.fill) && lg[lg.length - 1].label === en('mapviz.objects.legClick'), T + 'legend: the kinds on the map with their colours, then the click line', lg); }

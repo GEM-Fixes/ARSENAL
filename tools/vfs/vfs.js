@@ -6,13 +6,22 @@
 //   --exe: the game whose file set is shown (lib/games; mowas2 = mowas_2). none = as before: as64.exe in the folder -> as64,
 //     binaries/x64/call_to_arms.exe -> goh, else mowas_2. gameDir may be left out (or '-') with --exe: the install of that game
 //     (lib/games install: the AS2 install for as64/mowas_2, the GoH install for goh). GoH layout: lib/vfs (GHVFS-04).
+//   speed: each listed mod is listed once by lib/modtree (parallel, restore points left out: the game never mounts them) and
+//     mounted from that listing; the files VFS-35 searches are read many at a time (chk refTexts). Findings as before.
+//   main(argv, {ra}) = the CLI; ctx.js = the read-once module form for doctor (lib/modset, tools/lib/MODSET.md)
 // Author: Imperator_Aug (ARSENAL, ia-bbd48152)
 require('../lib/help')(__filename); // --help / -h: header usage, exit 0 (HELPFIX2)
-const path = require('path');
-const games = require('../lib/games');
-const { build } = require('../lib/vfs'), names = require('../lib/names'), { createReport, relPath } = require('../lib/report');
+const fs = require('fs'), path = require('path');
+const games = require('../lib/games'), modtree = require('../lib/modtree');
+const { build, listed, readModList } = require('../lib/vfs'), names = require('../lib/names'), { createReport, relPath } = require('../lib/report');
 
-const args = process.argv.slice(2), pos = [], o = {};
+// main(args, {ra}): the CLI (and ctx.js, the read-once module form: the pass's reader as ra, the files VFS-35 searches read
+// through it; the pass's scan of the mod folder is adopted, so listings() takes it instead of a walk). An error rejects.
+async function main(args, { ra } = {}) {
+try { return await cmdMain(args, ra); } finally { if (ra) ra.close(); }
+}
+async function cmdMain(args, ra) {
+const pos = [], o = {};
 for (let i = 0; i < args.length; i++) {
   const a = args[i];
   if (a === '--mods') o.mods = (args[++i] || '').split(',').map(s => s.trim()).filter(Boolean);
@@ -32,7 +41,29 @@ if (o.exe && (!pos.length || pos[0] === '-' || pos[0] === 'which' || pos[0] === 
 }
 if (!pos.length) { console.error('usage: vfs.js <gameDir> [--mods a,b] [--profile options.set] [--exe as64|mowas_2|goh] [--names] [-q] [which <path> | shadowed [--list]]'); process.exit(2); }
 const gameDir = pos[0], cmd = pos[1];
-const v = build({ gameDir, mods: o.mods, profile: o.profile, exe: o.exe, checkNames: o.checkNames });
+// GoH: the profile list is read at the GoH version (as lib/vfs build), else the AS2 3.262 default wipes a 1.0xx list
+const gohVer = () => { const pe = require('../lib/gamever').peVersion(path.join(gameDir, 'binaries', 'x64', 'call_to_arms.exe')), g = pe && /^(\d+)\.(\d)\.(\d)\.(\d)/.exec(pe); return g ? g[1] + '.' + g[2] + g[3] + g[4] : '1.067'; };
+// the listed mods: one lib/modtree scan each (listed and stat'ed in parallel, restore points left out: never mounted), handed to
+// build as listings (same records as its own walk with a sync stat per file). A folder that cannot be scanned is walked as before.
+async function listings() {
+  let mods = o.mods;
+  if (!mods && o.profile) {
+    const isGoh = o.exe ? o.exe === 'goh' : !fs.existsSync(path.join(gameDir, 'as64.exe')) && fs.existsSync(path.join(gameDir, 'binaries', 'x64', 'call_to_arms.exe'));
+    try { mods = readModList(o.profile, isGoh ? gohVer() : undefined).mods; } catch { mods = null; }
+  }
+  if (!mods || !mods.length) return [];
+  let ls = []; try { ls = listed({ gameDir, mods, exe: o.exe }); } catch { return []; }
+  const out = [];
+  for (const m of ls) {
+    // a scan this process already has of that very folder (in the read-once pass: the pass's, adopted): the same records
+    const T = modtree.fresh(m.dir);
+    if (T && T.dir === path.resolve(m.dir)) { out.push(T); continue; }
+    try { out.push(await modtree.scan(m.dir)); } catch { /* walked by build */ }
+  }
+  return out;
+}
+
+const v = build({ gameDir, mods: o.mods, profile: o.profile, exe: o.exe, checkNames: o.checkNames, listings: await listings() });
 
 const desc = r => r.deleted ? `DELETED by ${r.layer} (${r.how})` : `[${r.layer}] ${r.source} ${r.container}${r.source === 'pak' ? ' :: ' : ' / '}${r.entry}`;
 const isBaseRec = r => r.layer === 'base' || /^patch \d+$/.test(r.layer);
@@ -73,10 +104,14 @@ if (cmd === 'which') {
     (p.level === 'info' ? rep.info : rep.add).call(rep, where, 0, p.code, p.msg);
   }
   // CHK-VFS static checks (chk.js): VFS-35, 53, 57, 58
-  // GoH: the profile list is read at the GoH version (as lib/vfs build), else the AS2 3.262 default wipes a 1.0xx list
-  const gohVer = () => { const pe = require('../lib/gamever').peVersion(path.join(gameDir, 'binaries', 'x64', 'call_to_arms.exe')), g = pe && /^(\d+)\.(\d)\.(\d)\.(\d)/.exec(pe); return g ? g[1] + '.' + g[2] + g[3] + g[4] : '1.067'; };
-  const list = o.mods || (o.profile ? require('../lib/vfs').readModList(o.profile, v.exe === 'goh' ? gohVer() : undefined).mods : []);
-  for (const p of require('./chk').checks(v, { list })) rep.add(p.where || '.', 0, p.code, p.msg);
+  const list = o.mods || (o.profile ? readModList(o.profile, v.exe === 'goh' ? gohVer() : undefined).mods : []);
+  // = chk.checksAsync(v, { list }); with ra the reader closes once the texts are read (or at once: no delete, nothing to read)
+  const chk = require('./chk'), pre = await chk.refTexts(v, { list, ra });
+  if (ra) ra.close();
+  for (const p of chk.checks(v, { list }, pre)) rep.add(p.where || '.', 0, p.code, p.msg);
   rep.info('.', 0, 'STATS', `exe ${v.exe}, mode ${v.mode || 'n/a'}, ${v.files.size} entries, ${v.shadows.length} shadow events, mods: ${v.mods.join(', ') || 'none'}, ${v.ms} ms`);
   rep.print({ byCode: true, showInfo: !o.q });
 }
+}
+module.exports = { main };
+if (require.main === module) main(process.argv.slice(2)).catch(e => { console.error(e && e.stack || e); process.exit(1); });

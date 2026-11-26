@@ -91,9 +91,10 @@ const flush = () => new Promise(r => setImmediate(r));
   const calls = []; let busy = 0;
   const api = (url, body) => { calls.push([url, body]); busy++; return route(url, JSON.parse(JSON.stringify(body || {}))).finally(() => { busy--; }).then(x => JSON.parse(JSON.stringify(x))); };
   // settle: wait until no route call is running and the page's follow-up code has run (a fixed number of turns is too few on a
-  // loaded machine, where the routes' file reads and writes take longer); gives up after 30 s so a real hang still fails
-  const settle = async () => { const end = Date.now() + 30000; let quiet = 0;
-    while (quiet < 3) { await flush(); if (busy) { quiet = 0; await new Promise(r => setTimeout(r, 5)); } else quiet++; if (Date.now() > end) throw new Error('settle: a route call never ended'); } };
+  // loaded machine, where the routes' file reads and writes take longer); backup, never a hang: after 60 s a WAIT line and it goes
+  // on, so the check after it reports what is missing
+  const settle = async () => { const end = Date.now() + 60000; let quiet = 0;
+    while (quiet < 3) { await flush(); if (busy) { quiet = 0; await new Promise(r => setTimeout(r, 5)); } else quiet++; if (Date.now() > end) { process.stderr.write('WAIT models doc test: a route call not ended after 60 s; settle goes on\n'); return; } } };
   const node = tag => ({ tagName: String(tag).toUpperCase(), kids: [], attrs: {}, style: {}, className: '', textContent: '', hidden: false, disabled: false, isConnected: true, listeners: {},
     get firstChild() { return this.kids[0] || null; }, appendChild(c) { if (c && typeof c === 'object') this.kids.push(c); return c; },
     removeChild(c) { this.kids.splice(this.kids.indexOf(c), 1); return c; }, setAttribute(k, v) { this.attrs[k] = v; if (k === 'hidden') this.hidden = true; },

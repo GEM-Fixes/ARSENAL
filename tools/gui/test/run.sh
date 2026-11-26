@@ -11,6 +11,8 @@ node test-pages.js "$T/pg" > "$G/.got" 2>&1 || { tail -n 8 "$G/.got"; rm -f "$G/
 node test-lang.js "$T/lang" > "$G/.got" 2>&1 || { tail -n 8 "$G/.got"; rm -f "$G/.got"; rm -rf "$T"; echo FAIL; exit 1; }
 node test-ext.js "$T/ext" > "$G/.got" 2>&1 || { tail -n 20 "$G/.got"; rm -f "$G/.got"; rm -rf "$T"; echo FAIL; exit 1; }
 node test-wizard.js "$T/wz" > "$G/.got" 2>&1 || { tail -n 8 "$G/.got"; rm -f "$G/.got"; rm -rf "$T"; echo FAIL; exit 1; }
+node test-eta.js "$T/eta" > "$G/.got" 2>&1 || { tail -n 8 "$G/.got"; rm -f "$G/.got"; rm -rf "$T"; echo FAIL; exit 1; }   # the mod check's expected wait (checketa.js, GET /api/check/eta, wz.eta, time left)
+node test-modwatch.js "$T/mw" > "$G/.got" 2>&1 || { tail -n 12 "$G/.got"; rm -f "$G/.got"; rm -rf "$T"; echo FAIL; exit 1; }   # X8: the watch of the picked mod (modwatch.js): listing = a fresh scan, withheld until changes settle, off switch, check --listing, prio low
 node test-limit.js "$T/lim" > "$G/.got" 2>&1 || { tail -n 12 "$G/.got"; rm -f "$G/.got"; rm -rf "$T"; echo FAIL; exit 1; }
 node test-theme.js > "$G/.got" 2>&1 || { tail -n 12 "$G/.got"; rm -f "$G/.got"; rm -rf "$T"; echo FAIL; exit 1; }
 node test-header.js > "$G/.got" 2>&1 || { tail -n 12 "$G/.got"; rm -f "$G/.got"; rm -rf "$T"; echo FAIL; exit 1; }   # the header: game folder warning + Settings card, mod pill, Quick Guided Task fold, row lines

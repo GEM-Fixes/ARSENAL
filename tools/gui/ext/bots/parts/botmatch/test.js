@@ -12,6 +12,7 @@ const work = path.resolve(process.argv[2] || fs.mkdtempSync(path.join(require('o
 require('../../../../../lib/testscratch').guard(work);   // never wipe a shared root, the repo, a game or a mod
 fs.rmSync(work, { recursive: true, force: true }); fs.mkdirSync(work, { recursive: true });
 const P = require('./index'), L = require('./lib'), check = require('../index').check;
+const WT = require('../../../../../lib/test/wait');
 const TOOLS = path.join(__dirname, '..', '..', '..', '..', '..');
 let bad = 0;
 const ok = (c, m) => { if (!c) { bad++; console.log('FAIL ' + m); } };
@@ -81,7 +82,7 @@ const SETS = ['("squad_with3types" side(ger) name(smgs) c(30) g(squad_2) c1(squa
   // ---- the real testrun --dry on the generated scenario (returns before any spawn)
   const game = path.join(work, 'game'), mod = path.join(game, 'mods', 'my_mod'), logdir = path.join(work, 'log'); modInfo(mod);
   fs.mkdirSync(mod, { recursive: true }); fs.mkdirSync(logdir, { recursive: true }); fs.writeFileSync(path.join(game, 'as64.exe'), '');
-  const dryRun = args => { if (!args.includes('--dry')) throw new Error('test runner: only --dry runs here'); const r = cp.spawnSync(process.execPath, [path.join(TOOLS, 'testrun', 'testrun.js')].concat(args), { encoding: 'utf8', timeout: 60000, env: process.env }); return { code: r.status, stdout: r.stdout, stderr: r.stderr, timedOut: false }; };
+  const dryRun = args => { if (!args.includes('--dry')) throw new Error('test runner: only --dry runs here'); const r = WT.spawnSync(process.execPath, [path.join(TOOLS, 'testrun', 'testrun.js')].concat(args), { encoding: 'utf8', timeout: 60000, env: process.env }, 'botmatch test'); return { code: r.status, stdout: r.stdout, stderr: r.stderr, timedOut: false }; };
   const scf = path.join(work, 'sc.json'); fs.writeFileSync(scf, JSON.stringify(team.scenario));
   const dr = dryRun(['--scenario', scf, '--exe', path.join(game, 'as64.exe'), '--inst', '1', '--logdir', logdir, '--dry']);
   ok(dr.code === 0 && /nothing launched/.test(dr.stdout), 'testrun --dry accepts the scenario: ' + (dr.stdout + dr.stderr).slice(0, 300));
@@ -161,7 +162,7 @@ const SETS = ['("squad_with3types" side(ger) name(smgs) c(30) g(squad_2) c1(squa
   // maps: the Maps page's list (mocked mission-clone) cut to the modes that allow bots
   const mapsCtx = Object.assign({}, ctx, { runTool: async (tool, entry, args) => (tool === 'mission-clone' ? { code: 0, stdout: 'map/multi/2v2_farmstead: battle_zones captureflag\nmap/multi/1v1_cf: captureflag\n', stderr: '' } : mockRun(tool, entry, args)) });
   let mp = await R['GET /api/x/bots/botmatch/maps'](U('mod=' + encodeURIComponent(mod)), null, mapsCtx);
-  for (let i = 0; i < 100 && mp.state === 'running'; i++) { await new Promise(r => setTimeout(r, 30)); mp = await R['GET /api/x/bots/botmatch/maps'](U('mod=' + encodeURIComponent(mod)), null, mapsCtx); }
+  if (mp.state === 'running') mp = await WT.until(async () => { const x = await R['GET /api/x/bots/botmatch/maps'](U('mod=' + encodeURIComponent(mod)), null, mapsCtx); return x.state !== 'running' ? x : null; }, { who: 'botmatch test', what: 'the map list', step: 30 }) || mp;
   ok(mp.state === 'done' && mp.maps.length === 1 && mp.maps[0].key === 'map/multi/2v2_farmstead' && mp.maps[0].modes.join() === 'battle_zones' && mp.maps[0].armyMode.battle_zones === 'team' && mp.all === 2, 'maps: only modes that allow bots: ' + JSON.stringify(mp).slice(0, 300));
   // plan: scenario written, testrun --dry run through ctx.runTool
   const req = { mod, map: 'map/multi/2v2_farmstead', mode: 'battle_zones', armyA: 'rus', armyB: 'ger', difficulty: 'hard', bots: 2, minutes: 3, players: 4 };
@@ -219,7 +220,9 @@ const SETS = ['("squad_with3types" side(ger) name(smgs) c(30) g(squad_2) c1(squa
   await R['POST /api/x/bots/botmatch/start'](null, req, hang);
   await refuse(req, hang, 'bots.botmatch.e.busy', 409);
   ok((await R['GET /api/x/bots/botmatch/status'](U(''), null, hang)).state === 'running', 'status: running while the run is out');
-  release({ code: 1, stdout: 'TESTRUN_NO_PIPE no pipe', stderr: '' }); for (let i = 0; i < 4; i++) await new Promise(r => setImmediate(r));
+  // a run that came back: wait for the status to leave running (by time, 60 s backstop: WAIT, the check after it reports), not a tick count
+  const ended = c => WT.until(async () => (await R['GET /api/x/bots/botmatch/status'](U(''), null, c)).state !== 'running', { who: 'botmatch test', what: 'the run state after its end' });
+  release({ code: 1, stdout: 'TESTRUN_NO_PIPE no pipe', stderr: '' }); for (let i = 0; i < 4; i++) await new Promise(r => setImmediate(r)); await ended(hang);
   const js2 = await R['GET /api/x/bots/botmatch/status'](U(''), null, hang);
   ok(js2.state === 'done' && js2.report && !js2.report.pipe && js2.report.run.some(r => r.k === 'bots.botmatch.run.nopipe'), 'a run with no pipe: report says so');
 
@@ -251,7 +254,7 @@ const SETS = ['("squad_with3types" side(ger) name(smgs) c(30) g(squad_2) c1(squa
     running = true;   // a game is still seen running after the kill: said on the card
     const sp = await R['POST /api/x/bots/botmatch/stop'](null, {}, jctx);
     ok(sp.ok && sp.asked === true && kids[0].killed, 'stop route: the registry cancel kills the test run (and with its tree the game)');
-    for (let i = 0; i < 4; i++) await new Promise(r => setImmediate(r));
+    for (let i = 0; i < 4; i++) await new Promise(r => setImmediate(r)); await ended(jctx);
     running = false;
     const s2 = await R['GET /api/x/bots/botmatch/status'](U(''), null, jctx);
     ok(s2.state === 'stopped' && s2.report === null && s2.error === null && s2.gameUp === true, 'stop: the status is the plain state stopped, no report, no error: ' + JSON.stringify(s2));
@@ -263,16 +266,16 @@ const SETS = ['("squad_with3types" side(ger) name(smgs) c(30) g(squad_2) c1(squa
     const s3 = await R['POST /api/x/bots/botmatch/start'](null, req, jctx);
     ok(s3.ok && s3.job.state === 'running', 'a new match can be started after a stop (not busy)');
     ok(reg.cancel(s3.id) === true && kids[1].killed, 'job list Cancel: the same registry cancel kills the run');
-    for (let i = 0; i < 4; i++) await new Promise(r => setImmediate(r));
+    for (let i = 0; i < 4; i++) await new Promise(r => setImmediate(r)); await ended(jctx);
     const s4 = await R['GET /api/x/bots/botmatch/status'](U(''), null, jctx);
     ok(s4.state === 'stopped' && s4.gameUp === false && reg.get(s3.id).state === 'cancelled', 'job list Cancel: stopped, the job ended: ' + JSON.stringify(s4).slice(0, 200));
     // a full run in the registry ends as done, a crash as failed; neither stays running
     const s5 = await R['POST /api/x/bots/botmatch/start'](null, req, jctx);
     kids[2].finish({ code: 1, stdout: 'TESTRUN_NO_PIPE no pipe' });
-    for (let i = 0; i < 4; i++) await new Promise(r => setImmediate(r));
+    for (let i = 0; i < 4; i++) await new Promise(r => setImmediate(r)); await ended(jctx);
     ok((await R['GET /api/x/bots/botmatch/status'](U(''), null, jctx)).state === 'done' && reg.get(s5.id).state === 'done', 'jobs: a finished run ends its job as done');
     const s6 = await R['POST /api/x/bots/botmatch/start'](null, req, Object.assign({}, jctx, { runTool: () => Promise.reject(new Error('spawn failed')) }));
-    for (let i = 0; i < 4; i++) await new Promise(r => setImmediate(r));
+    for (let i = 0; i < 4; i++) await new Promise(r => setImmediate(r)); await ended(jctx);
     ok((await R['GET /api/x/bots/botmatch/status'](U(''), null, jctx)).state === 'error' && reg.get(s6.id).state === 'failed', 'jobs: a run that throws ends its job as failed');
     // Preview stopped from the job list: the route returns at once
     const pc = await R['POST /api/x/bots/botmatch/plan'](null, req, Object.assign({}, ctx, { runTool: async () => ({ code: null, stdout: 'x', stderr: '', timedOut: false, cancelled: true }) }));

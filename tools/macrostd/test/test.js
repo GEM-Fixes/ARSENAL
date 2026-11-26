@@ -113,7 +113,7 @@ ok(has('INCLUDE_MISSING', /nope\.inc/), 'lint INCLUDE_MISSING nope.inc');
 // ---- plan writes nothing
 const tsv = path.join(base, 'plan.tsv');
 r = run('plan', mod, ...G, '--only', 'fmt,indent,dead,names', '--tsv', tsv);
-ok(r.rc === 0 && sameTree(h0, hashTree(mod)) && !fs.existsSync(path.join(mod, '.arsenal-undo')), 'plan writes nothing to the mod');
+ok(r.rc === 0 && sameTree(h0, hashTree(mod)) && !fs.existsSync(path.join(mod, '.arsenal-undo')) && !fs.existsSync(mod + '.arsenal-undo'), 'plan writes nothing to the mod');
 const rows = fs.readFileSync(tsv, 'latin1').split('\r\n').slice(1).filter(Boolean).map(l => l.split('\t'));
 ok(rows.some(x => x[0] === 'fmt' && x[1] === 'resource/entity/b/b.def' && x[3] === 'eol'), 'plan fmt: b.def LF -> CRLF row');
 ok(rows.some(x => x[0] === 'indent' && x[3] === 'CASE' && /d\.def/.test(x[4])), 'plan indent: unbalanced d.def is a case');
@@ -142,7 +142,7 @@ const b = get('resource/entity/b/b.def').toString('latin1');
 ok(!/[^\r]\n/.test(b) && !/[ \t]\r\n/.test(b) && b.endsWith('}\r\n'), 'fmt: b.def CRLF, no trailing blanks, final newline');
 ok(get('resource/entity/c/c.def').includes(Buffer.from([0xe0, 0xe1, 0xe2])), 'cp1251 comment bytes kept');
 ok(get('resource/entity/d/d.def').equals(fs.readFileSync(path.join(before, 'resource/entity/d/d.def'))), 'unbalanced d.def untouched');
-ok(fs.existsSync(path.join(mod, '.arsenal-undo')) && fs.readdirSync(path.join(mod, '.arsenal-undo')).some(d => /^macrostd-\d{8}$/.test(d)), 'undo folder made');
+ok(fs.existsSync(mod + '.arsenal-undo') && fs.readdirSync(mod + '.arsenal-undo').some(d => /^macrostd-\d{8}$/.test(d)) && !fs.existsSync(path.join(mod, '.arsenal-undo')), 'undo folder made beside the mod (<mod>.arsenal-undo), nothing inside it');
 
 // ---- verify SAME
 const vj = path.join(base, 'verify.json');
@@ -170,6 +170,16 @@ fs.writeFileSync(cpath, cKeep);
 for (const s of ['index', 'names', 'dead', 'indent', 'fmt']) { r = run('undo', mod, '--step', s); if (r.rc) console.log(r.out); }
 ok(!fs.existsSync(path.join(mod, 'MACROS.md')), 'undo index deleted the created MACROS.md');
 ok(sameTree(h0, hashTree(mod)), 'undo restores every byte');
+
+// ---- an old restore point inside the mod (<mod>/.arsenal-undo/macrostd-<day>, written by older versions) is still undone
+r = run('apply', mod, ...G, '--only', 'fmt');
+{ const day = fs.readdirSync(mod + '.arsenal-undo').find(d => fs.existsSync(path.join(mod + '.arsenal-undo', d, 'fmt')));
+  const old = path.join(mod, '.arsenal-undo', 'macrostd-20200101');
+  fs.mkdirSync(old, { recursive: true }); fs.renameSync(path.join(mod + '.arsenal-undo', day, 'fmt'), path.join(old, 'fmt'));
+  ok(r.rc === 0 && !sameTree(h0, hashTree(mod)), 'legacy: fmt applied again, its copies moved into <mod>/.arsenal-undo (the old form)');
+  r = run('undo', mod, '--step', 'fmt');
+  ok(r.rc === 0 && sameTree(h0, hashTree(mod)) && fs.readdirSync(old).some(d => /^fmt\.undone-/.test(d)), 'legacy: undo without --undo finds the inside restore point and restores every byte');
+}
 
 // ---- contract guard
 const core = require('../macrostd');

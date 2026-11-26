@@ -3,7 +3,7 @@
 // No game, no network, nothing written outside the scratch dir.
 // Author: Imperator_Aug (ARSENAL, ia-a9a15cbb)
 'use strict';
-const fs = require('fs'), path = require('path'), vm = require('vm'), cp = require('child_process');
+const fs = require('fs'), path = require('path'), vm = require('vm'), cp = require('child_process'), W = require('../../../lib/test/wait');
 const work = path.resolve(process.argv[2] || fs.mkdtempSync(path.join(require('os').tmpdir(), 'prox-')));
 require('../../../lib/testscratch').guard(work);   // never wipe a shared root, the repo, a game or a mod
 fs.rmSync(work, { recursive: true, force: true }); fs.mkdirSync(work, { recursive: true });
@@ -11,14 +11,15 @@ let bad = 0;
 const ok = (c, m) => { if (!c) { bad++; console.log('FAIL ' + m); } };
 const TOOLS = path.resolve(__dirname, '..', '..', '..');
 // overdiff / misdiff fixtures are made by their own mkfixture.js (git-ignored output): made here when a copy comes without them
-for (const [d, f] of [['overdiff', 'game/mods/m/mod.info'], ['misdiff', 'a/map.info']]) if (!fs.existsSync(path.join(TOOLS, d, 'test', 'fixture', f))) cp.spawnSync(process.execPath, [path.join(TOOLS, d, 'test', 'mkfixture.js')], { stdio: 'ignore' });
+for (const [d, f] of [['overdiff', 'game/mods/m/mod.info'], ['misdiff', 'a/map.info']]) if (!fs.existsSync(path.join(TOOLS, d, 'test', 'fixture', f))) W.spawnSync(process.execPath, [path.join(TOOLS, d, 'test', 'mkfixture.js')], { stdio: 'ignore' }, 'pro test');
 const ext = require('./index'), P = require('./policy'), C = require('./catalog'), R = require('./routes');
 const routes = ext.routes;
 const calls = [];
 function runTool(tool, entry, args, o) {
   calls.push({ tool, entry, args, cwd: o && o.cwd });
-  return new Promise(res => cp.execFile(process.execPath, [path.join(TOOLS, entry)].concat(args), { cwd: (o && o.cwd) || work, timeout: (o && o.timeoutMs) || 120000, maxBuffer: 64 << 20, encoding: 'utf8' },
-    (e, so, se) => res({ code: e ? (typeof e.code === 'number' ? e.code : 1) : 0, stdout: so || '', stderr: se || '', timedOut: !!(e && e.killed) })));
+  // limit at least 5 min (a busy PC), killed -> WAIT and one rerun with twice the limit (lib/test/wait)
+  return new Promise(res => W.execFile(process.execPath, [path.join(TOOLS, entry)].concat(args), { cwd: (o && o.cwd) || work, timeout: (o && o.timeoutMs) || 120000, maxBuffer: 64 << 20, encoding: 'utf8' },
+    (e, so, se) => res({ code: e ? (typeof e.code === 'number' ? e.code : 1) : 0, stdout: so || '', stderr: se || '', timedOut: !!(e && e.killed) }), 'pro test'));
 }
 const tmpRoot = path.join(work, 'tmp');
 const ctx = { gamedir: null, tools: TOOLS, tmpRoot, runTool, game: () => null, allowLaunch: false };
@@ -146,7 +147,7 @@ function put(root, rel, lines) { const f = path.join(root, rel); fs.mkdirSync(pa
   r = await post('run', { tool: 'conflicts', args: '--game {game} --mods ma,mb --allow-launch', game });
   ok(!r.ok && !r.ran && r.flag === '--allow-launch' && calls.length === n0, 'run refused, nothing spawned');
   if (byName('uidrive')) { r = await post('run', { tool: 'uidrive', args: '' }); ok(!r.ran && r.why === 'block.launch' && calls.length === n0, 'uidrive refused'); }
-  r = await post('run', { tool: 'conflicts', args: '--game {game} --mods ma,mb', game, timeoutSec: 60 });
+  r = await post('run', { tool: 'conflicts', args: '--game {game} --mods ma,mb', game, timeoutSec: 300 });
   ok(r.ran && /hp/.test(r.stdout) && calls[calls.length - 1].cwd.startsWith(path.join(tmpRoot, 'as2gui-pro')), 'run ok in scratch cwd: ' + (r.stderr || '').slice(0, 200));
   r = await post('help', { tool: 'conflicts' });
   ok(r.from === 'source' && r.text.length > 20, 'help from source');

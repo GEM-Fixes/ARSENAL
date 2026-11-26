@@ -34,11 +34,29 @@ out=$(node ../doctor.js "$B" --only sdllint,binhdr --locs 2 --locs-json "$X/locs
 node -e "const j=require(process.argv[1]),t=j.tools;let n=0,cap=1;for(const k in t)for(const c in t[k].samples){const a=t[k].samples[c];n+=a.length;if(a.length>2)cap=0;if(!a.every(s=>s.file&&'msg' in s))cap=0}
 if(!n)throw 'no samples';if(!cap)throw 'cap or shape';if(!Object.values(t).some(x=>Object.values(x.samples).flat().some(s=>s.line>0)))throw 'no line numbers'" "$X/locs.json" || { echo "FAIL: --locs samples: $(cat "$X/locs.json")"; fail=1; }
 grep -q '^PROGRESS start sdllint' "$X/prog.txt" && grep -q '^PROGRESS done binhdr' "$X/prog.txt" || { echo "FAIL: --progress: $(cat "$X/prog.txt")"; fail=1; }
+# --reuse-dir: sdllint output from a wouldload pass file when the arguments are the same, else run here (REUSE_MISS)
+r=$(node reuse-test.js "$B" "$X" 2>&1); echo "$r" | tail -1 | grep -q PASS || { echo "$r"; fail=1; }
 out=$(DOCTOR_TEST_OOM=binhdr node ../doctor.js "$B" --only binhdr,modinfo --locs 5 --locs-json "$X/locs2.json" --out "$X/out")
 echo "$out" | grep -qF 'RERAN binhdr alone after exit 134 (out of memory): ok' || { echo "FAIL: OOM rerun note: $out"; fail=1; }
 echo "$out" | grep -qE '^binhdr +[1-9]' || { echo "FAIL: rerun findings missing: $out"; fail=1; }
 out=$(DOCTOR_TEST_OOM='binhdr!' node ../doctor.js "$B" --only binhdr --out "$X/out")
 echo "$out" | grep -qF 'failed again' && echo "$out" | grep -qF 'binhdr    ERROR out of memory also when run alone' || { echo "FAIL: OOM twice: $out"; fail=1; }
+# MEM-PLAN: RAM plan (jobs.js) with faked free RAM. tiny: one tool at a time (start/done alternate), biggest estimate first (sdllint), JOBS note
+# names the plan; plenty: no JOBS note, more than one at once; same findings either way (only the JOBS note differs)
+j=$(node jobs-test.js 2>&1); echo "$j" | tail -1 | grep -q PASS || { echo "FAIL: jobs-test"; echo "$j"; fail=1; }
+out1=$(DOCTOR_TEST_FREEMEM=1 node ../doctor.js "$B" -j 8 --no-read-once --progress --locs-json "$X/lj1.json" --out "$X/out" 2>"$X/p1.txt")
+echo "$out1" | grep -qE '^JOBS up to 1 at once by RAM \(asked -j 8; .*MB per tool: sdllint [0-9]+, ' || { echo "FAIL: JOBS plan note: $(echo "$out1" | grep JOBS)"; fail=1; }
+grep '^PROGRESS start' "$X/p1.txt" | head -1 | grep -qE 'start (binhdr|sdllint)' || { echo "FAIL: binhdr (disk) then biggest first: $(head -3 "$X/p1.txt")"; fail=1; }
+grep -E '^PROGRESS (start|done)' "$X/p1.txt" | awk '{print $2}' | paste -sd' ' | grep -qE '^(start done ?)+$' || { echo "FAIL: tiny RAM ran two at once: $(cat "$X/p1.txt")"; fail=1; }
+out2=$(DOCTOR_TEST_FREEMEM=1000000 node ../doctor.js "$B" -j 8 --no-read-once --locs-json "$X/lj2.json" --out "$X/out")
+echo "$out2" | grep -q '^JOBS' && { echo "FAIL: JOBS note with plenty of RAM: $out2"; fail=1; }
+node -e "const a=require(process.argv[1]).j,b=require(process.argv[2]).j;if(a!==1||!(b>1))throw 'j '+a+' '+b" "$X/lj1.json" "$X/lj2.json" || { echo "FAIL: locs-json j (most at once)"; fail=1; }
+[ "$(echo "$out1" | grep -vE '^JOBS ' | sed -E 's/\([0-9]+s\)$//; s/[0-9]+ notes/N notes/')" = "$(echo "$out2" | sed -E 's/\([0-9]+s\)$//; s/[0-9]+ notes/N notes/')" ] || { echo "FAIL: findings differ by plan:"; echo "$out1"; echo "$out2"; fail=1; }
+# read once (lib/modset): same outputs as --no-read-once, ARSENAL_READ_ONCE=0, forced-failure fallback, module form vs CLI on own fixtures
+r=$(node readonce-test.js "$B" "$X" 2>&1); echo "$r" | tail -1 | grep -q PASS || { echo "$r"; fail=1; }
+# tiny RAM with the shared pass: it runs alone (one job), findings as with plenty
+out3=$(DOCTOR_TEST_FREEMEM=1 node ../doctor.js "$B" -j 8 --out "$X/out")
+[ "$(echo "$out3" | grep -vE '^JOBS ' | sed -E 's/\([0-9]+s\)$//; s/[0-9]+ notes/N notes/')" = "$(node ../doctor.js "$B" -j 8 --out "$X/out" | grep -vE '^JOBS ' | sed -E 's/\([0-9]+s\)$//; s/[0-9]+ notes/N notes/')" ] || { echo "FAIL: read-once findings differ by plan"; fail=1; }
 node mkrelease.js; out=$(node ../doctor.js "$W/rel/m" --release)
 for p in '\.git/: REL_STRAY_FILE' 'Thumbs\.db: REL_STRAY_FILE' 'a\.bak: REL_STRAY_FILE' 'b\.orig: REL_STRAY_FILE' 'hero\.psd: WARN_REL_STRAY_FILE' 'notes\.txt: WARN_REL_STRAY_FILE' 'dup\.def: WARN_REL_PAK_LOOSE_DUP' 'REL_NET_SIZE_ONLY 4 files.*\.mtl×1 \.ply×1 \.anm×1 \.vol×1' 'resource/empty/: REL_EMPTY_DIR' '^7 findings'; do
   echo "$out" | grep -qE "$p" || { echo "FAIL: release $p"; fail=1; }

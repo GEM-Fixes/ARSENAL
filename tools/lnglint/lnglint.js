@@ -57,9 +57,9 @@ function incOpts(root, file) {
 }
 const INC_CODE = { INCLUDE_MISSING: 'LNG_INCLUDE_MISSING', INCLUDE_CYCLE: 'LNG_INCLUDE_CYCLE', INCLUDE_DEPTH: 'LNG_INCLUDE_CYCLE', INCLUDE_FATAL: 'ENC_BOM' };
 
-function lintFile(rep, file, root, ctx) {
+function lintFile(rep, file, root, ctx, buf) {
   const rel = relPath(root, file);
-  const r = readText(file, 'utf8');
+  const r = readText(buf !== undefined ? buf : file, 'utf8');
   if (r.fatal) return rep.add(rel, 1, 'ENC_BOM', r.fatal);
   for (const ln of r.badLines) rep.add(rel, ln, 'ENC_UTF8', 'invalid UTF-8 bytes (cp1251 saved by mistake?)');
   if (!ctx || !hasInclude(r.lines)) return lintLines(rep, rel, r.lines, file);
@@ -238,10 +238,22 @@ function poEntries(buf) {
 }
 
 // run({folder, gameDir?, mods?, exe?}) -> report (no printing). exe: vfs exe of the vanilla compare ('as64'|'mowas_2'|'goh'; none = the vfs pick)
-function run(opts) {
+// runAsync(opts, ra) -> Promise<report>: the same, the .lng files read through ra (a readAhead stand-in: the lib/modset read-once
+// pass, ctx.js), each added in walk order; ra closed at the end. A file ra does not give is read here as in run
+function run(opts) { const g = body(opts, null); let r = g.next(); while (!r.done) r = g.next(); return r.value; }
+async function runAsync(opts, ra) {
+  try { const g = body(opts, ra); let r = g.next(); while (!r.done) { if (r.value) await r.value; r = g.next(); } return r.value; } finally { if (ra) ra.close(); }
+}
+function* body(opts, ra) {
   const rep = createReport();
   const ctx = { seen: new Set(), parts: new Set(), included: new Set(), textDirs: new Set() };
-  each(walkFiles(opts.folder, /.lng$/i), opts.folder, rep, f => lintFile(rep, f, opts.folder, ctx));
+  const files = walkFiles(opts.folder, /.lng$/i);
+  if (ra) for (const f of files) ra.add(f, f);
+  for (const f of files) {
+    let b;
+    if (ra) { const w = ra.wait(f); if (w) yield w; b = ra.take(f); }
+    each([f], opts.folder, rep, f => lintFile(rep, f, opts.folder, ctx, b));
+  }
   unusedParts(rep, opts.folder, ctx);
   for (const p of poFiles(opts.folder)) { try { lintPo(rep, p.rel, p.read()); } catch (e) { rep.add(p.rel, 0, 'CRASH', e.message); } }
   if (opts.gameDir) require('./vcompare').compare(rep, opts);
@@ -249,15 +261,20 @@ function run(opts) {
 }
 
 // exports set before the CLI runs: vcompare requires this file back (poEntries, poFiles) while the CLI is main
-module.exports = { run, lintBuffer, poEntries, poFiles, incOpts, hasInclude };
+module.exports = { run, runAsync, main, lintBuffer, poEntries, poFiles, incOpts, hasInclude };
 // --exe as64|mowas_2|mowas2|goh (lib/cli common): the game of the vanilla compare. goh with no --game: the GoH install (lib/gamedir goh)
-if (require.main === module) cli.run(() => {
+// main(argv, {ra}): the CLI (sync, as before) and ctx.js, the read-once module form (ra = the pass's reader: a promise that
+// rejects on an error, so the pass runs lnglint as a program instead)
+function main(argv, { ra } = {}) {
   // --no-game: no vanilla compare even when an install is known (lib/cli fills --game from AS2_GAME / as2.json): the report of
   // run({folder}) alone, which is what the GUI's text task asks for in a child process
-  const o = cli.parse(process.argv.slice(2), { flags: ['--no-game'] });
+  const o = cli.parse(argv, { flags: ['--no-game'] });
   if (!o.pos[0]) { console.error('usage: node lnglint.js <folder> [--game <dir> [--mods a,b] [--exe as64|mowas_2|mowas2|goh] | --no-game] [-q] [--format text|json|sarif] [-o file]'); process.exit(0); }
-  cli.printReport(run({ folder: o.pos[0], gameDir: o.x['no-game'] ? undefined : o.gameDir, mods: o.mods, exe: o.exe }), o, { tool: 'lnglint' });
-});
+  const opts = { folder: o.pos[0], gameDir: o.x['no-game'] ? undefined : o.gameDir, mods: o.mods, exe: o.exe };
+  if (!ra) return cli.printReport(run(opts), o, { tool: 'lnglint' });
+  return runAsync(opts, ra).then(rep => cli.printReport(rep, o, { tool: 'lnglint' }));
+}
+if (require.main === module) cli.run(() => main(process.argv.slice(2)));
 // lintBuffer(rel, text) -> [{ line, code, msg, info }]   one .lng text that is not on disk (the Editor's buffer); rel names the file
 function lintBuffer(rel, text) {
   const out = [], rep = { add: (r, line, code, msg) => out.push({ line, code, msg, info: false }), info: (r, line, code, msg) => out.push({ line, code, msg, info: true }) };

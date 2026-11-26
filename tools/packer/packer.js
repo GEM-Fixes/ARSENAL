@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 // packer: plan + pre-flight checks + write role paks from a mod's loose resource/ files. rows VFS-04,39 SDL-53
-// usage: node tools/packer/packer.js <modDir> [--out <dir>] [--dry] [--allow-private] [-q] [--summary]   (--help: usage, exit 0, no side effects)
+// usage: node tools/packer/packer.js <modDir> [--out <dir>] [--dry] [--no-speed] [--allow-private] [-q] [--summary]   (--help: usage, exit 0, no side effects)
 //   default = --dry (plan + checks, writes nothing). --out writes <role>.pak ONLY into <dir>; refused inside a game install.
 //   packs <modDir>/resource/<top>/** by role: gamelogic=set,properties,script; entity; map;
 //   interface; texture; sound; music; shader goes to gamelogic (vanilla gamelogic.pak holds shader/). other files (resource/difficulties, top-level
 //   loose files) stay loose: --out copies them to <dir>/<path under resource/> (LOOSE_COPIED), so <dir> is a whole resource/ folder. entry name = path under resource/ (as vanilla paks).
 // --package (with --out): writes <dir>/<mod folder name>/ as a ready mod folder (mod.info, other top-level files, resource/<role>.pak,
 //   the mod's own resource/*.pak, loose files) that works when dropped into <game>/mods. codes PACK_NO_MODINFO WARN_PACK_PAK_CLASH; info PACKAGE PACKAGE_WROTE
+// speed layout, the default (owner 2026-11-26; --no-speed = the old layout): fastest game load and mod check: deflate text (.lng, SDL text) and map .net/.grs (any role), store the rest
+//   (.dds .wav .ply .anm .ogg ...: unpacking costs more than the smaller read saves); in each pak text entries first (path order), then
+//   the rest in path order (a unit's files stay together). info PACK_SPEED_LAYOUT. --no-speed: every file by role, path order, byte-identical to before. --speed still accepted.
 // codes: ZIP_NAME_TOO_LONG (VFS-04) LNG_NOT_UTF8 WARN_TEXT_BOM WARN_STR_NOT_UTF8 WARN_TEXT_NONASCII_IDENT WARN_TEXT_NOT_CRLF WARN_LOOSE_SHADOWS_PAK
 //        WARN_PACK_DUP_NAME PACK_ENTRY_TOO_BIG (VFS-39) PACK_ROUNDTRIP ; info: PLAN MOD_DELETE EXCLUDED UNPACKED
 // GoH guard (gohguard.js, rev-port #3): PACK_GOH_ORIGIN PACK_GOH_RENAMED PACK_PRIVATE -> nothing written, exit 1.
@@ -132,13 +135,21 @@ function plan(modDir) {
   return { rep, roles };
 }
 
-function write(roles, outDir, rep, tag = '') {
+// --speed layout: map .net / .grs deflate too (7% / 11% of size, fast to unpack); text entries first, then the rest, each in path order
+const SPEED_DEFLATE = /\.(net|grs)$/i;
+function speedOrder(arr) {
+  const byPath = (a, b) => (a.rel < b.rel ? -1 : a.rel > b.rel ? 1 : 0);
+  return arr.filter(e => e.text).sort(byPath).concat(arr.filter(e => !e.text).sort(byPath));
+}
+function write(roles, outDir, rep, tag = '', speed = false) {
   fs.mkdirSync(outDir, { recursive: true });
   if (tag) fs.writeFileSync(path.join(outDir, 'PRIVATE-GOH-README.txt'), 'PRIVATE: these paks hold GoH-origin bytes (GOH-ORIGIN.tsv). Local use only. Never publish, upload or share.\r\n');
   const when = new Date();   // entry dates = time of packing (GT-08)
   for (const [role, arr] of roles) {
     const out = path.join(outDir, role + tag + '.pak');
-    writeZip(out, arr.map(e => [e.name, () => fs.readFileSync(e.file), e.text]), { date: when });   // streamed; zip64 past 4 GB
+    const ents = speed ? speedOrder(arr).map(e => [e.name, () => fs.readFileSync(e.file), e.text || SPEED_DEFLATE.test(e.rel)])
+      : arr.map(e => [e.name, () => fs.readFileSync(e.file), e.text]);
+    writeZip(out, ents, { date: when });   // streamed; zip64 past 4 GB
     const got = pak.list(out).filter(e => !e.name.endsWith('/')).map(e => e.name).sort();
     const want = arr.map(e => e.name).sort();
     let ok = got.length === want.length && got.every((n, i) => n === want[i]);
@@ -180,14 +191,14 @@ function packagePlan(modDir, roles, rep) {
   rep.info(name, 0, 'PACKAGE', `mod folder ${name}: mod.info + ${other.length} file(s) outside resource/, ${paks.length} pak(s) of its own, ${roles.size} pak(s) made from loose files`);
   return { name, other, paks, rename };
 }
-function writePackage(modDir, roles, outDir, rep, pp, tag = '') {
+function writePackage(modDir, roles, outDir, rep, pp, tag = '', speed = false) {
   const dest = path.join(outDir, pp.name), res = path.join(dest, 'resource');
   fs.mkdirSync(res, { recursive: true });
   for (const o of pp.other) { const d = path.join(dest, o.rel); fs.mkdirSync(path.dirname(d), { recursive: true }); fs.copyFileSync(o.file, d); }
   for (const nm of pp.paks) fs.copyFileSync(path.join(modDir, 'resource', nm), path.join(res, nm));
   const named = new Map(); for (const [role, arr] of roles) named.set(pp.rename.get(role) || role, arr);
   named.loose = roles.loose;
-  write(named, res, rep, tag);
+  write(named, res, rep, tag, speed);
   rep.info(pp.name, 0, 'PACKAGE_WROTE', fwd(dest));
   return dest;
 }
@@ -204,14 +215,15 @@ function gohCheck(modDir, rep, pkg) {
   if (pkg && GOH_BAD_NAME.test(path.basename(modDir))) rep.add(path.basename(modDir), 0, 'WARN_PACK_GOH_NAME', `Gates of Hell skips a mod folder named "${path.basename(modDir)}" (space, non-ASCII or one of <>+()[]{}!@#$%^&*-=;:\\|'", GHVFS-27); rename the folder before packaging`);
 }
 
-const USAGE = 'usage: node tools/packer/packer.js <modDir> [--out <dir>] [--package] [--dry] [--allow-private] [--goh | --exe as64|mowas_2|goh] [-q] [--summary]';
+const USAGE = 'usage: node tools/packer/packer.js <modDir> [--out <dir>] [--package] [--dry] [--no-speed] [--allow-private] [--goh | --exe as64|mowas_2|goh] [-q] [--summary]';
 if (require.main === module) {
-  const args = process.argv.slice(2), o = {}, pos = [];
-  if (args.includes('--help') || args.includes('-h')) { console.log(USAGE + '\n  default --dry: plan + checks, writes nothing. GoH guard: a mod with GOH-ORIGIN.tsv bytes still in it is refused (exit 1);\n  --allow-private packs it anyway as <role>-PRIVATE.pak, local only, never publish.'); process.exit(0); }
+  const args = process.argv.slice(2), o = { speed: true }, pos = [];
+  if (args.includes('--help') || args.includes('-h')) { console.log(USAGE + '\n  default --dry: plan + checks, writes nothing. GoH guard: a mod with GOH-ORIGIN.tsv bytes still in it is refused (exit 1);\n  --allow-private packs it anyway as <role>-PRIVATE.pak, local only, never publish.\n  default layout = fastest game load and check: text and map .net/.grs compressed, the rest stored, text entries first in each pak.\n  --no-speed: the old layout (every file by role, path order).'); process.exit(0); }
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (a === '--out') o.out = args[++i]; else if (a === '--dry') o.dry = true; else if (a === '-q') o.q = true; else if (a === '--summary') o.summary = true;
     else if (a === '--allow-private') o.priv = true; else if (a === '--package') o.pkg = true;
+    else if (a === '--speed') o.speed = true; else if (a === '--no-speed') o.speed = false;
     else if (a === '--goh') o.goh = true;
     else if (a === '--exe') { const g = require('../lib/games').get(args[++i]); if (!g) { console.error('--exe must be as64, mowas_2 (mowas2) or goh\n' + USAGE); process.exit(2); } if (g.id === 'goh') o.goh = true; }
     else if (a[0] === '-' && a.length > 1) { console.error(`unknown arg ${a}\n` + USAGE); process.exit(2); }
@@ -228,11 +240,12 @@ if (require.main === module) {
   if (o.goh) { gohCheck(modDir, rep, o.pkg); rep.info('.', 0, 'GOH_GUARD_NA', 'GoH-origin guard not run: it keeps GoH assets out of AS2 mods, this is a Gates of Hell mod'); }
   const refused = o.goh ? false : guard(modDir, rep, o.priv);
   const pp = o.pkg ? packagePlan(modDir, roles, rep) : null, noInfo = !!(pp && !fs.existsSync(path.join(modDir, 'mod.info')));
+  if (o.speed) rep.info('.', 0, 'PACK_SPEED_LAYOUT', 'speed layout: text and map .net/.grs deflated, the rest stored, text entries first in each pak');
   if (o.out && !o.dry) {
     if (refused) rep.info('GOH-ORIGIN.tsv', 0, 'PACK_REFUSED', 'nothing written: GoH-origin bytes in the mod (--allow-private packs a local-only PRIVATE pak)');
     else if (noInfo) rep.info('mod.info', 0, 'PACK_REFUSED', 'nothing written: no mod.info');
-    else if (pp) writePackage(modDir, roles, path.resolve(o.out), rep, pp, o.priv ? '-PRIVATE' : '');
-    else write(roles, path.resolve(o.out), rep, o.priv ? '-PRIVATE' : '');
+    else if (pp) writePackage(modDir, roles, path.resolve(o.out), rep, pp, o.priv ? '-PRIVATE' : '', o.speed);
+    else write(roles, path.resolve(o.out), rep, o.priv ? '-PRIVATE' : '', o.speed);
   }
   rep.print({ showInfo: !o.q, byCode: true, summary: o.summary });
   if (refused || noInfo) process.exitCode = 1;
@@ -249,4 +262,4 @@ function guard(modDir, rep, allowPrivate) {
   for (const h of g.hits) rep.add(h.rel, 0, h.code, h.msg);
   return true;
 }
-module.exports = { JUNK_FILE, TOOL_MARKER, plan, write, inGameInstall, guard, dosStamp, packagePlan, writePackage, gohCheck };
+module.exports = { JUNK_FILE, TOOL_MARKER, plan, write, inGameInstall, guard, dosStamp, packagePlan, writePackage, gohCheck, speedOrder, SPEED_DEFLATE };

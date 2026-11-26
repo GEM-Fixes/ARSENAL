@@ -1,6 +1,6 @@
 // jobs test harness: scratch dir, ARSENAL_CACHE inside it, check counting, the PASS / FAIL last line (README 9.4).
 // harness(name) -> {W, ok(cond, what), eq(a, b, what), throwsCode(fn, code, what), rejectsCode(promise, code, what), skip(what),
-//   note(text), end(), sleep(ms), flush(), until(fn, ms) -> Promise<bool>}
+//   note(text), end(), sleep(ms), flush(), until(fn, ms) -> Promise<bool> (backstop at least 60 s, WAIT line on stderr)}
 // Author: Imperator_Aug (ARSENAL, ia-c0e3e761)
 'use strict';
 const fs = require('fs'), path = require('path'), os = require('os');
@@ -32,10 +32,14 @@ module.exports = function harness(name) {
     note(t) { console.log(t); },
     sleep: ms => new Promise(r => setTimeout(r, ms)),
     async flush() { for (let i = 0; i < 4; i++) await new Promise(r => setImmediate(r)); },
+    // until: by time, backstop at least 60 s whatever ms the caller names (a busy PC); then a WAIT line and the caller's check
+    // reports. Never a hang.
     async until(fn, ms) {
-      const end = Date.now() + (ms || 5000);
+      const lim = Math.max(ms || 0, 60000), end = Date.now() + lim;
       while (Date.now() < end) { if (fn()) return true; await new Promise(r => setTimeout(r, 10)); }
-      return !!fn();
+      if (fn()) return true;
+      process.stderr.write('WAIT mapviz ' + name + ': not met after ' + lim / 1000 + ' s: ' + String(fn).replace(/\s+/g, ' ').slice(0, 120) + '\n');
+      return false;
     },
     end() {
       if (fail) { console.log('FAIL mapviz ' + name + ': ' + fail + ' of ' + (pass + fail) + ' checks failed'); process.exit(1); }

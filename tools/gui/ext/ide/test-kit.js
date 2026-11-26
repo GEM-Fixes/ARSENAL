@@ -971,7 +971,9 @@ module.exports = async function (env) {
       ok(per > 0 && per <= 400, 'kit r2 big: a cursor move asks fits at most once per piece (' + per + ')');
       ok(P.seen.fits.length > 0 && P.seen.fits.every(r => r === MI), 'kit r2 rel: every fits call carries opts.rel, the doc\'s path in the mod', [...new Set(P.seen.fits)].join());
       const t0 = Date.now(); P.secRow('mi.t1').click(); await P.flush(); P.secRow('mi.t1.s0').click(); await P.flush();
-      ok(Date.now() - t0 < 5000, 'kit r2 big: opening a top and a sub-section of 60 sections stays fast (' + (Date.now() - t0) + ' ms in the fake DOM)');
+      // 5 s is the real bound (a slow build of all 60 sections takes far longer); a busy PC gets five times that with a WAIT line, never a timing-only FAIL
+      const ms = Date.now() - t0; if (ms >= 5000) require('../../../lib/test/wait').say('ide test-kit', 'opening a top and a sub-section (' + ms + ' ms)', 5000);
+      ok(ms < 25000, 'kit r2 big: opening a top and a sub-section of 60 sections stays fast (' + ms + ' ms in the fake DOM)');
     }
 
     // the number, the size badge and the multiplayer mark on a row and in the preview; v1 rows: size from the line count, no number

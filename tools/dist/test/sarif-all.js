@@ -21,7 +21,7 @@ const args = {
 let fail = 0;
 for (const t of reg.TOOLS) {
   if (!t.format || !t.rc) { console.log(`SKIP ${t.name} (${!t.format ? 'no --format' : 'no --no-rc'})`); continue; }
-  const r = cp.spawnSync(process.execPath, [path.join(tools, t.entry), ...(args[t.name] || [mod]), '--format', 'sarif', '--no-rc'], { encoding: 'utf8', timeout: 60000 });
+  const r = require('../../lib/test/wait').spawnSync(process.execPath, [path.join(tools, t.entry), ...(args[t.name] || [mod]), '--format', 'sarif', '--no-rc'], { encoding: 'utf8' }, 'dist sarif-all ' + t.name);
   let ok = false, why = '';
   const s = r.stdout || '', i = s.indexOf('{\n');
   const e0 = s.indexOf('\n}', i); // tolerate pre/post text lines around the JSON object

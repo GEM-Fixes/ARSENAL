@@ -16,15 +16,15 @@ const { W, ok, eq, throwsCode, flush, until, sleep } = h;
 const fakeCli = v => ({ version: v, run() { return 0; }, commands: {} });
 const PARTS = [{ part: 'fa', id: 'MV-FA', wave: 'A', dir: 'fa', load: () => fakeCli(3) }, { part: 'fb', id: 'MV-FB', wave: 'A', dir: 'fb', load: () => fakeCli(5) }];
 const T = {
-  maps: { part: 'fa', cmd: 'maps', heavy: false, timeoutS: 30, needs: [], keys: [], products: ['maps.json'] },
-  g: { part: 'fa', cmd: 'g', heavy: false, timeoutS: 30, needs: [], keys: ['mode'], products: ['g'] },
-  d: { part: 'fa', cmd: 'd', heavy: false, timeoutS: 30, needs: [], keys: [], products: ['d.json'] },
-  t: { part: 'fb', cmd: 't', heavy: true, timeoutS: 30, needs: ['g'], keys: [], products: ['t'] },
-  w: { part: 'fb', cmd: 'w', heavy: true, timeoutS: 30, needs: ['d', 'g'], keys: ['mode'], products: ['w', 'w.labels'] },
-  p: { part: 'fb', cmd: 'p', heavy: true, timeoutS: 30, needs: ['g', 't'], keys: ['mode', 'kind'], products: ['pass.<kind>'] },
-  x: { part: 'fb', cmd: 'x', heavy: true, timeoutS: 30, needs: ['nope'], keys: [], products: ['x'] },
+  maps: { part: 'fa', cmd: 'maps', heavy: false, timeoutS: 300, needs: [], keys: [], products: ['maps.json'] },
+  g: { part: 'fa', cmd: 'g', heavy: false, timeoutS: 300, needs: [], keys: ['mode'], products: ['g'] },
+  d: { part: 'fa', cmd: 'd', heavy: false, timeoutS: 300, needs: [], keys: [], products: ['d.json'] },
+  t: { part: 'fb', cmd: 't', heavy: true, timeoutS: 300, needs: ['g'], keys: [], products: ['t'] },
+  w: { part: 'fb', cmd: 'w', heavy: true, timeoutS: 300, needs: ['d', 'g'], keys: ['mode'], products: ['w', 'w.labels'] },
+  p: { part: 'fb', cmd: 'p', heavy: true, timeoutS: 300, needs: ['g', 't'], keys: ['mode', 'kind'], products: ['pass.<kind>'] },
+  x: { part: 'fb', cmd: 'x', heavy: true, timeoutS: 300, needs: ['nope'], keys: [], products: ['x'] },
   s: { part: 'fb', cmd: 's', heavy: true, timeoutS: 0.3, needs: [], keys: ['size'], products: ['s'] },
-  l: { part: 'fa', cmd: 'l', heavy: false, timeoutS: 30, needs: [], keys: ['size'], products: ['l'] },
+  l: { part: 'fa', cmd: 'l', heavy: false, timeoutS: 300, needs: [], keys: ['size'], products: ['l'] },
 };
 const G = path.join(W, 'game');
 fs.mkdirSync(G, { recursive: true });
@@ -192,7 +192,7 @@ const jobOf = (r, what) => [...r.list().running, ...r.list().queued].find(j => j
     const a = await r.wait(r.submit(req('s', { size: 100 })).id);
     const dt = Date.now() - t0;
     ok(a.state === 'timeout' && a.error.code === 'MV_CANCELLED' && /timed out after 0.3 s/.test(a.error.msg), 'timeout: flag written, child exits 5, state timeout (' + JSON.stringify(a.error) + ')');
-    ok(dt >= 280 && dt < 2000, 'timeout after about timeoutS (' + dt + ' ms)');
+    ok(dt >= 280 && dt < 60000, 'timeout after about timeoutS (' + dt + ' ms)');   // upper bound loose: a busy PC is late, never early
     ok(!f.calls[0].killed, 'a child that stops on the flag is not killed');
     f.mode.s = undefined;   // hangs: never looks at the flag
     const t1 = Date.now();
@@ -235,10 +235,10 @@ const jobOf = (r, what) => [...r.list().running, ...r.list().queued].find(j => j
     f.mode.g = 'ok';
     const other = cache.at(r.cache.root).lock('heavy', { what: 'other process' });
     const sx = r.submit(req('t', { map: 'multi/h' }));
-    await sleep(150);
+    await until(() => r.status(sx.id).stage === 'wait'); await sleep(50);   // 50 ms: room for a start that must not come
     ok(r.status(sx.id).state === 'queued' && r.status(sx.id).stage === 'wait' && !f.find('t'), 'a heavy job waits while another process holds the heavy slot');
     other.release();
-    await until(() => f.find('t'), 1000);
+    await until(() => f.find('t'));
     ok(!!f.find('t'), 'it starts once the slot is free');
     f.find('t').finish(0);
     ok((await r.wait(sx.id)).state === 'done', 'and ends done');
@@ -334,8 +334,8 @@ const jobOf = (r, what) => [...r.list().running, ...r.list().queued].find(j => j
   {
     const P2 = PARTS.concat([{ part: 'fc', id: 'MV-FC', wave: 'B', dir: 'fc', load: () => null }]);
     const T2 = Object.assign({}, T, {
-      nb: { part: 'fc', cmd: 'nb', heavy: false, timeoutS: 30, needs: [], keys: [], products: ['nb'] },
-      q: { part: 'fb', cmd: 'q', heavy: true, timeoutS: 30, needs: ['t', 'nb'], keys: [], products: ['q'] },
+      nb: { part: 'fc', cmd: 'nb', heavy: false, timeoutS: 300, needs: [], keys: [], products: ['nb'] },
+      q: { part: 'fb', cmd: 'q', heavy: true, timeoutS: 300, needs: ['t', 'nb'], keys: [], products: ['q'] },
     });
     const f = makeFake(), r = mk(f, { jobs: T2, parts: P2 });
     f.mode.g = 'ok'; f.mode.t = 'ok';
@@ -393,8 +393,8 @@ const jobOf = (r, what) => [...r.list().running, ...r.list().queued].find(j => j
     eq(ev.length, n1, 'watch: nothing after unwatch');
     // a refused submit tells nothing of the needs it took back
     const P2 = PARTS.concat([{ part: 'fc', id: 'MV-FC', wave: 'B', dir: 'fc', load: () => null }]);
-    const T2 = Object.assign({}, T, { nb: { part: 'fc', cmd: 'nb', heavy: false, timeoutS: 30, needs: [], keys: [], products: ['nb'] },
-      q: { part: 'fb', cmd: 'q', heavy: true, timeoutS: 30, needs: ['t', 'nb'], keys: [], products: ['q'] } });
+    const T2 = Object.assign({}, T, { nb: { part: 'fc', cmd: 'nb', heavy: false, timeoutS: 300, needs: [], keys: [], products: ['nb'] },
+      q: { part: 'fb', cmd: 'q', heavy: true, timeoutS: 300, needs: ['t', 'nb'], keys: [], products: ['q'] } });
     const f2 = makeFake(), r2 = mk(f2, { jobs: T2, parts: P2 }), ev2 = [];
     r2.watch(e => ev2.push(e));
     try { r2.submit(req('q')); } catch (e) { /* MV_NOT_BUILT */ }

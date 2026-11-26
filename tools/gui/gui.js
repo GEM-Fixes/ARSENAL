@@ -11,7 +11,10 @@
 //   GET  /api/installed           mods in <game>/mods; marked = put there by ARSENAL install
 //   GET  /api/commands            the contract: every command with its input fields
 //   GET  /api/game[?game=DIR]     tools/lib/gamedir.resolve -> {dir, source, tried?, exes, codes}   ?kind=goh: gamedir.goh -> {dir, source, ok, exe, codes}
-//   POST /api/run[?stream=0|1]    {cmd, input, timeoutSec?} -> NDJSON events (default) or one buffered JSON object
+//   POST /api/run[?stream=0|1]    {cmd, input, timeoutSec?, prio?} -> NDJSON events (default) or one buffered JSON object. prio 'low' =
+//                                 the child below normal priority; cmd check of the watched mod: + --listing <its current scan> (modwatch.js)
+//   POST /api/modwatch {dir}      the picked mod ('' = none): the one watch of it follows (off: setting as2gui.modwatch false, ARSENAL_MODWATCH=0)
+//   GET  /api/modwatch/status?dir=  {enabled, dir, watching, ready, sid, gen, err}   gen: changes seen since watch sid began
 //   POST /api/cancel              {id}   any job of GET /api/jobs (README.md JOBS: run, extension request, background); 404 none, 409 key job.e.nostop
 //   GET  /api/jobs                {jobs:[{id, kind, what, whatP, page, game, state, stage, done, total, startedMs, endedMs, canCancel, writes, cmd, interactive}]}
 //   GET  /api/limit?codes=A,B     {codes:{CODE:{lim:[ids],kind,class}|null}}   GET /api/limit?id=AREA-NN  {id,class,row:{subject,limit,effect,tag}|null} (row null when limits/ is absent)
@@ -32,6 +35,7 @@
 const http = require('http'), fs = require('fs'), os = require('os'), path = require('path'), cp = require('child_process');
 const contract = require('./contract');
 const settings = require('./settings');
+const checketa = require('./checketa');
 const gamedir = require('../lib/gamedir');
 const TOOLS = path.join(__dirname, '..');
 const VERSION = 1;
@@ -131,6 +135,7 @@ function run(cmd, input, opt, emit) {
   // not as64 only: the AS64 argument list stays as it is). modswitch refuses --inst/--seed for mowas_2 (TST-19) and goh (GHVFS-13)
   // with one plain line, exit 2, which the run shows as it is.
   if (GAME_EXE_CMDS.has(cmd) && opt.gameId && opt.gameId !== 'as64' && GAME_T[opt.gameId] && !a.includes('--exe')) a = [...a, '--exe', GAME_T[opt.gameId].exe];
+  if (cmd === 'check' && opt.listingFile) a = [...a, '--listing', opt.listingFile];   // X8: the GUI's current scan of the mod (modwatch.js)
   if (c.result === 'jsonfile') { tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'as2gui-')); a = [...a, c.jsonFlag, path.join(tmp, 'result.json')]; }
   let cc = childCmd(c, a);
   // spawnHook (in-process tests only, never reachable from HTTP or the CLI): sees the real child command line and may replace it
@@ -147,6 +152,7 @@ function run(cmd, input, opt, emit) {
     try { child = cp.spawn(cc.file, cc.args, { shell: false, windowsHide: true, stdio: [c.interactive ? 'pipe' : 'ignore', 'pipe', 'pipe'], env: cleanEnv(), cwd: opt.cwd || process.cwd() }); }
     catch (e) { emit({ t: 'err', line: 'spawn failed: ' + e.message }); finish(2, null, '', e.message); return; }
     handle.child = child;
+    if (opt.lowPrio) { try { os.setPriority(child.pid, os.constants.priority.PRIORITY_BELOW_NORMAL); } catch (e) { /* normal priority */ } }
     if (c.interactive && child.stdin) {
       child.stdin.on('error', () => { /* child gone */ });
       handle.answer = obj => { if (!child.stdin.writable) return false; child.stdin.write(JSON.stringify(obj) + '\n'); return true; };
@@ -187,7 +193,7 @@ run.n = 0; run.launching = null;
 
 // ---- HTTP
 let PAGE = require('./page');
-const remote = require('./remote'), liveLib = require('./live');
+const remote = require('./remote'), liveLib = require('./live'), modwatch = require('./modwatch');
 // --dev: which loaded files only build the page (page.js, strings, client scripts = modules that export a string) and which are server code
 const lowp = f => (process.platform === 'win32' ? String(f).toLowerCase() : String(f));
 const GUI_DIR = lowp(__dirname + path.sep), EXT_DIR = lowp(path.join(__dirname, 'ext') + path.sep), PAGE_FILE = lowp(require.resolve('./page'));
@@ -687,6 +693,40 @@ function start(opt = {}) {
   // a Gates of Hell mod that ARSENAL did not make may be written directly (owner 2026-11-15)
   const syncAdv = () => { process.env.ARSENAL_ADVANCED = SETTINGS.get()['as2gui.adv'] === true ? '1' : '0'; };
   syncAdv();
+  // X8 (modwatch.js): one watch of the picked mod keeps its listing warm; a check started here is handed it (check --listing). Off: the
+  // window setting as2gui.modwatch false (Settings > Watch the picked mod), env ARSENAL_MODWATCH=0; opt.modwatchSettleMs for tests
+  const MW = modwatch.create({ modtree: modtreeLib, enabled: SETTINGS.get()['as2gui.modwatch'] !== false, settleMs: opt.modwatchSettleMs });
+  const mwOn = () => MW.enable(SETTINGS.get()['as2gui.modwatch'] !== false);
+  // the mod check's expected wait (checketa.js): the times of the last checks of this PC, in check-times.json beside the settings file
+  // (per user, never in a mod or the game); opt.etaFile for tests; no settings file = memory only. etaCounts: files and bytes per mod
+  // folder as the last GET /api/check/eta counted them, so the check that follows is recorded with them without another walk
+  const ETA = checketa.store(opt.etaFile !== undefined ? opt.etaFile : opt.settingsFile ? path.join(path.dirname(opt.settingsFile), 'check-times.json') : null), etaCounts = new Map();
+  // the file count: the page's own (GET /api/mod, capped at 5000 files) unless capped; then the shared walk (lib/modtree, async)
+  async function checkEta(u, G) {
+    const sp = u.searchParams, dir = path.resolve(requireAbs(sp.get('dir'), 'dir')), key = lowp(dir), on = k => sp.get(k) === '1' || sp.get(k) === 'true';
+    let files = Math.max(0, Math.round(+sp.get('files') || 0)), bytes = Math.max(0, Math.round(+sp.get('bytes') || 0)), walked = false;
+    if (sp.get('trunc') === '1' || !sp.get('files')) {
+      let T = modtreeLib.fresh(dir), c = T ? null : etaCounts.get(key);
+      if (c && !c.walked) c = null;   // a count the page sent is below the cap: not the count of a capped folder
+      if (!T && !c) { T = modtreeLib.last(dir); if (!T) { try { T = await modtreeLib.ensure(dir, { maxAgeMs: Infinity }); } catch (e) { T = null; } } }
+      if (T) c = { files: T.count, bytes: T.bytes };
+      if (c) { files = c.files; bytes = c.bytes; walked = true; }
+    }
+    etaCounts.set(key, { files, bytes, walked });
+    const q = { game: G.id, kind: G.kind, mode: checketa.modeOf({ fast: on('fast'), noload: on('noload') }), allgames: on('allgames'), restorepoints: on('restorepoints'), files, drive: checketa.driveOf(dir) };
+    return Object.assign({ files, bytes, mode: q.mode }, checketa.estimate(ETA.rows(), q));
+  }
+  // a check that ended with a result (exit 0, or 1 with findings) is one more row; a re-check with a patch or of one tool is not
+  function noteCheck(inp, G, ev) {
+    try {
+      if (!inp || typeof inp.mod !== 'string' || !path.isAbsolute(inp.mod) || inp.with || inp.only || !ev || !(ev.code === 0 || (ev.code === 1 && ev.result != null)) || !(ev.ms > 0)) return;
+      const dir = path.resolve(inp.mod), put = c => ETA.add({ game: G.id, kind: G.kind, mode: checketa.modeOf({ fast: !!inp.fast, noload: !!inp.noload }), allgames: !!inp.allgames || /,/.test(String(inp.exe || '')),
+        restorepoints: !!inp.restorepoints, files: c.files, bytes: c.bytes, sec: ev.ms / 1000, drive: checketa.driveOf(dir), at: Date.now() });
+      const c = etaCounts.get(lowp(dir)), T = c ? null : modtreeLib.fresh(dir);
+      if (c) put(c); else if (T) put({ files: T.count, bytes: T.bytes });
+      else modtreeLib.ensure(dir, { maxAgeMs: Infinity }).then(t => put({ files: t.count, bytes: t.bytes }), () => { /* folder gone: not recorded */ });
+    } catch (e) { /* not recorded */ }
+  }
   const live = liveLib.createLive(require('crypto').randomBytes(6).toString('hex'));
   // LAN Remote (remote.js): R.on = listening on the LAN; the key lives in the settings file (server only)
   // the key is made (and saved) the first time LAN Remote is used, so a plain start never writes the settings file
@@ -828,6 +868,11 @@ function start(opt = {}) {
       if (req.method === 'GET' && u.pathname === '/api/ls') return send(res, 200, apiLs(u.searchParams.get('dir'), u.searchParams.get('game'), u.searchParams.get('files') === '1', u.searchParams.get('for') === 'out', reqGame(u, null, req)));
       if (req.method === 'GET' && u.pathname === '/api/mods') return send(res, 200, await apiMods(u.searchParams.get('dir'), reqGame(u, null, req)));
       if (req.method === 'GET' && u.pathname === '/api/mod') return send(res, 200, await apiMod(u.searchParams.get('dir'), reqGame(u, null, req)));
+      // the mod check's expected wait: ?dir= &files= &bytes= &trunc=1 (the page's GET /api/mod answer) &fast= &noload= &allgames= &restorepoints= (1)
+      // -> {sec, basis: guess | history, n, files, bytes, mode}
+      if (req.method === 'GET' && u.pathname === '/api/check/eta') return send(res, 200, await checkEta(u, reqGame(u, null, req)));
+      // the watch of the picked mod (modwatch.js): ?dir= -> {enabled, dir, watching, ready, sid, gen, err} (the Check page's re-check box)
+      if (req.method === 'GET' && u.pathname === '/api/modwatch/status') return send(res, 200, MW.status(u.searchParams.get('dir') || ''));
       if (req.method === 'GET' && u.pathname === '/api/peek') return send(res, 200, apiPeek(u.searchParams.get('path'), u.searchParams.get('line')));
       if (req.method === 'GET' && u.pathname === '/api/explain') return send(res, 200, apiExplain(u.searchParams.get('codes'), u.searchParams.get('lang')));
       if (req.method === 'GET' && u.pathname === '/api/limit') return send(res, 200, apiLimit(u.searchParams.get('codes'), u.searchParams.get('id')));
@@ -891,9 +936,14 @@ function start(opt = {}) {
         if (u.pathname === '/api/spec') return send(res, 200, apiSpec(body, opt.tmpRoot));
         if (u.pathname === '/api/settings') {
           const r = SETTINGS.set(body.set);
-          syncAdv();
+          syncAdv(); mwOn();
           if (!r.ok) return send(res, r.status || 400, { error: r.error, key: r.key, params: r.params });
           return send(res, 200, { ok: true });
+        }
+        // the mod the page has picked: {dir} (absolute; '' = none) -> the watch follows it (modwatch.js), answers its status
+        if (u.pathname === '/api/modwatch') {
+          if (typeof body.dir !== 'string' || (body.dir && !path.isAbsolute(body.dir))) return fail(res, 400, 'dir: an absolute folder or empty');
+          return send(res, 200, MW.set(body.dir));
         }
         if (u.pathname === '/api/run') {
           if (typeof body.cmd !== 'string' || !Object.prototype.hasOwnProperty.call(contract.COMMANDS, body.cmd)) return fail(res, 400, 'unknown cmd');
@@ -902,13 +952,19 @@ function start(opt = {}) {
           let endEv = null;
           const emit = e => { if (e.t === 'end') endEv = e; if (stream) { if (!res.headersSent) res.writeHead(200, { 'content-type': 'application/x-ndjson; charset=utf-8', 'cache-control': 'no-store' }); res.write(JSON.stringify(e) + '\n'); } else events.push(e); };
           const RG = reqGame(u, body, req);
-          try { outGuard(body.cmd, body.input, opt.cwd); r = run(body.cmd, body.input, { allowLaunch: state.allowLaunch, cwd: opt.cwd, gameKind: RG.kind, gameId: RG.id, timeoutSec: body.timeoutSec, spawnHook: opt.spawnHook || (opt.demoXlate ? demoHook : undefined) }, emit); }
-          catch (e) { return fail(res, e instanceof contract.InputError ? 400 : e.status || 500, e.message); }
+          // a check of the watched mod gets its current listing (check --listing; none = the check lists the mod, as before); prio 'low':
+          // the Check page's re-check after a change runs below normal priority (its tools inherit it)
+          const isChk = body.cmd === 'check' && body.input && typeof body.input.mod === 'string' && body.input.mod;
+          const lf = isChk ? await MW.listingFile(path.resolve(opt.cwd || process.cwd(), body.input.mod), path.join(opt.tmpRoot || path.join(os.tmpdir(), 'arsenal-gui'), 'modwatch')) : null;
+          try { outGuard(body.cmd, body.input, opt.cwd); r = run(body.cmd, body.input, { allowLaunch: state.allowLaunch, cwd: opt.cwd, gameKind: RG.kind, gameId: RG.id, timeoutSec: body.timeoutSec, listingFile: lf, lowPrio: body.prio === 'low', spawnHook: opt.spawnHook || (opt.demoXlate ? demoHook : undefined) }, emit); }
+          catch (e) { modwatch.drop(lf); return fail(res, e instanceof contract.InputError ? 400 : e.status || 500, e.message); }
+          r.done.then(() => modwatch.drop(lf));
           r.handle.gid = RG.id;   // game parity: the job list says which game a running job is for
           runs.set(r.handle.id, r.handle);
           const rj = jobs.add({ id: r.handle.id, kind: 'run', what: '', game: RG.id, canCancel: true, cancel: r.handle.cancel, cmd: r.handle.cmd || body.cmd, interactive: !!r.handle.interactive, startedMs: r.handle.started, keepMs: 0 });
           res.on('close', () => { if (!res.writableEnded) r.handle.cancel(); });
           await r.done; runs.delete(r.handle.id);
+          if (body.cmd === 'check' && !r.handle.cancelled && !r.handle.timedOut) noteCheck(body.input, RG, endEv);
           rj.end(r.handle.cancelled ? 'cancelled' : r.handle.timedOut ? 'timeout' : endEv && endEv.code !== 0 ? 'failed' : 'done');
           if (R.on) live.send('follow', { screen: R.follow ? R.follow.screen : null, ev: 'run', cmd: body.cmd }, m => m.remote);   // a run ended: remote pages draw their screen again
           if (stream) return res.end();
@@ -943,7 +999,7 @@ function start(opt = {}) {
       }
       resolve({
         server, port, url: `http://127.0.0.1:${port}/`, token: session.token, changed, edited, setRemote, remoteInfo, live,
-        close: () => new Promise(r => { closed = true; if (portTimer) clearInterval(portTimer); dropPortFile(); if (watcher) watcher.close(); live.close(); jobs.cancelAll(); for (const c of [...kids]) killTree(c);
+        close: () => new Promise(r => { closed = true; if (portTimer) clearInterval(portTimer); dropPortFile(); if (watcher) watcher.close(); MW.close(); live.close(); jobs.cancelAll(); for (const c of [...kids]) killTree(c);
           for (const s of R.servers) { s.close(); if (s.closeAllConnections) s.closeAllConnections(); } R.servers = [];
           server.close(() => r()); if (server.closeAllConnections) server.closeAllConnections(); }),
       });
@@ -1001,9 +1057,9 @@ if (require.main === module) {
   }, e => { console.error('gui: ' + e.message); process.exit(1); });
 }
 // every route of the server (core + ext): the remote test walks it (each one not on remote.ALLOW must answer 403 to a phone)
-const CORE_ROUTES = ['GET /', 'GET /console', 'GET /api/jobs', 'GET /api/ls', 'GET /api/mods', 'GET /api/mod', 'GET /api/peek', 'GET /api/explain', 'GET /api/limit',
+const CORE_ROUTES = ['GET /', 'GET /console', 'GET /api/jobs', 'GET /api/ls', 'GET /api/mods', 'GET /api/mod', 'GET /api/check/eta', 'GET /api/modwatch/status', 'GET /api/peek', 'GET /api/explain', 'GET /api/limit',
   'GET /api/text', 'GET /api/health', 'GET /api/installed', 'GET /api/settings', 'GET /api/commands', 'GET /api/game', 'GET /api/live', 'GET /api/remote',
-  'POST /api/cancel', 'POST /api/answer', 'POST /api/launch', 'POST /api/remote', 'POST /api/remote/newkey', 'POST /api/follow', 'POST /api/follow/remote', 'POST /api/spec', 'POST /api/settings', 'POST /api/run'];
+  'POST /api/cancel', 'POST /api/answer', 'POST /api/launch', 'POST /api/remote', 'POST /api/remote/newkey', 'POST /api/follow', 'POST /api/follow/remote', 'POST /api/spec', 'POST /api/settings', 'POST /api/modwatch', 'POST /api/run'];
 const routeTable = () => CORE_ROUTES.concat(Object.keys(EXT_ROUTES));
 module.exports = { start, run, childCmd, demoHook, apiLimit, VERSION, routeTable, rebuildPage, SCREEN_IDS, rawHead, SANDBOX_CSP, worksOn, gohVersion, GAME_T };
 module.exports._wire = { send, sendPage, wantGzip };   // tests (test/test-wire.js): the functions that write an answer

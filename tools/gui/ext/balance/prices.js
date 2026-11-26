@@ -1,6 +1,7 @@
 // Server side of the Balance page's price calculator (tools/pricecalc, called as a library: no child process per request).
 // Model, Breeds and Cards views (+ prices/names: the in-game card and breed names, read only when the page asks). Reads the mod (and the game for what the mod does not ship); writes only the model file
-// (price_model.inc, included by nothing) and `;{price ...}` comment lines, each write with an undo copy under <mod>/.arsenal-undo/<tag>/.
+// (price_model.inc, included by nothing) and `;{price ...}` comment lines, each write with an undo copy under <mod>.arsenal-undo/<tag>/ BESIDE the mod
+// (tools/pricecalc: lib/modwrite restoreRoot; older copies left in <mod>/.arsenal-undo/<tag>/ are still found by Undo and check).
 // AS2 / AS64 prices themselves (level_N, cost(N)) are never changed from here: the retail 32-bit game keeps reading the mod as it was
 // (Gates of Hell: see below, the breed cost(N) numbers of the mod's own rows are).
 // CACHE (gui README, contract 1). A session (mod + game read once, about 15 s on a big mod) holds the open file source, maps and

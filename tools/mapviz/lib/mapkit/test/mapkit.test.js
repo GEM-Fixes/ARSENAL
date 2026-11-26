@@ -7,7 +7,7 @@
 // usage: node tools/mapviz/lib/mapkit/test/mapkit.test.js [scratch dir]
 // Author: Imperator_Aug (ARSENAL, ia-f952f417)
 'use strict';
-const fs = require('fs'), path = require('path'), os = require('os'), cp = require('child_process');
+const fs = require('fs'), path = require('path'), os = require('os'), cp = require('../../../../lib/test/wait');   // wait.js spawnSync: limit at least 5 min, killed by it -> WAIT and one rerun with twice the limit
 
 const W = path.resolve(process.argv[2] || fs.mkdtempSync(path.join(os.tmpdir(), 'mapviz-mapkit-')));
 fs.mkdirSync(W, { recursive: true });

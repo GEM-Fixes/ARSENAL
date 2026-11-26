@@ -113,7 +113,8 @@ const code = async p => { try { await p; return 0; } catch (e) { return e.status
   h2.querySelectorAll('tr.vw-mi-go')[0].fire('click'); await flush();
   ok(/does not read \.zip/.test(h2.querySelector('div.vw-mi-msg').textContent) && opened.length === 1, 'page: a .zip entry says why it cannot open');
   const h3 = doc.createElement('div'); doc.body.appendChild(h3);
-  box.VIEW.mount(h3, { mod, rel: 'resource/gamelogic.pak:\x3ainner.zip' }, 'inner.zip', { kind: 'misc' }); for (let i = 0; i < 20 && !/inside a pak/.test(h3.textContent); i++) { await flush(); await new Promise(r => setTimeout(r, 20)); }
+  box.VIEW.mount(h3, { mod, rel: 'resource/gamelogic.pak:\x3ainner.zip' }, 'inner.zip', { kind: 'misc' });
+  await require('../../../../lib/test/wait').until(async () => { await flush(); return /inside a pak/.test(h3.textContent); }, { who: 'misc kind test', what: 'the inside-a-pak line', step: 20 });   // by time: 60 s + WAIT, then the check reports
   ok(/inside a pak/.test(h3.textContent) && !h3.querySelectorAll('tr.vw-mi-go').length && /zip64/.test(h3.textContent), 'page nested: listed, not clickable, zip64 shown');
 
   // ---- optional sweep of the game's paks (the list only, plus a few refs)

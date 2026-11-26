@@ -108,7 +108,9 @@ function req(port, method, p, o = {}) {
 }
 const events = res => { const evs = []; let buf = ''; res.setEncoding('utf8'); res.on('data', d => { buf += d; let i; while ((i = buf.indexOf('\n\n')) >= 0) { const blk = buf.slice(0, i); buf = buf.slice(i + 2); const ev = /^event: (.*)$/m.exec(blk), da = /^data: (.*)$/m.exec(blk); if (ev) evs.push({ ev: ev[1], data: da ? JSON.parse(da[1]) : null }); } }); return evs; };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-async function until(f, ms = 3000) { const t0 = Date.now(); while (Date.now() - t0 < ms) { if (f()) return true; await sleep(30); } return false; }
+const WT = require('../../lib/test/wait');
+// backstop at least 60 s (WAIT line), then false and the caller's check reports. Backup, never a hang
+async function until(f, ms = 3000) { return !!(await WT.until(f, { who: 'test-remote', ms, step: 30 })); }
 
 (async () => {
   const LAN = '10.9.8.7', setFile = path.join(S, 'settings.json');

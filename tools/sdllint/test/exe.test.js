@@ -1,6 +1,6 @@
 // sdllint --exe test: a made-up folder (no game) with a {## disabled tag. With no --exe and --exe as64/mowas_2 it is info SDL_DISABLED_TAG
 // (as before); --exe goh picks the GoH rules (SDL_GOH_DISABLED_TAG) though no GoH exe is beside it; --exe bogus exits 2. Exits 1 on a difference.
-// Author: Imperator_Aug (ARSENAL, ia-3b9d40e2)
+// Author: Imperator_Aug (ARSENAL, ia-051771bf)
 const fs = require('fs'), path = require('path'), { spawnSync } = require('child_process');
 const W = process.env.TEST_WORK || path.join(__dirname, 'fixture'), d = path.join(W, 'exe-folder');
 fs.rmSync(d, { recursive: true, force: true });

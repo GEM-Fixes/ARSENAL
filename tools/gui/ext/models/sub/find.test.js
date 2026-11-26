@@ -37,7 +37,7 @@ const TOOLS = path.resolve(__dirname, '..', '..', '..', '..');
   const runTool = (tool, entry, args, o) => new Promise(res => {
     calls++;
     assert.strictEqual(tool, 'soedit'); assert.strictEqual(entry, 'soedit/soedit.js'); assert.ok(o && o.timeoutMs > 0, 'timeout given');
-    const go = () => cp.execFile(process.execPath, [path.join(TOOLS, entry), ...args], { encoding: 'utf8', env: process.env }, (err, stdout, stderr) => res({ code: err ? err.code || 1 : 0, stdout, stderr }));
+    const go = () => require('../../../../lib/test/wait').execFile(process.execPath, [path.join(TOOLS, entry), ...args], { encoding: 'utf8', env: process.env, timeout: o.timeoutMs }, (err, stdout, stderr) => res({ code: err ? err.code || 1 : 0, stdout, stderr }), 'models find test');
     if (gate) gate.then(go); else go();
   });
   const ctx = { game: () => game, runTool, findWaitMs: 20, modAgeMs: 0 };   // modAgeMs 0: the mod is walked for every request (lib/modtree)
@@ -100,8 +100,8 @@ const TOOLS = path.resolve(__dirname, '..', '..', '..', '..');
   assert.ok(j.total === 0 && j.didYouMean.some(r => r.name === 't99' && r.byTitle), 'didYouMean knows display names ' + JSON.stringify(j.didYouMean));
   ok('find: a display name (.lng, the mod\'s wins, markup cut) finds the unit with its id (byTitle), an id query still works, a name no .lng holds falls back to file names, file names before display names');
   // the soedit CLI find prints the display name at the end of the row (its own cache folder, so the server's cache stays as it is)
-  const cl = cp.spawnSync(process.execPath, [path.join(TOOLS, 'soedit', 'soedit.js'), 'find', 'tiger', '--game', game, '--mod', mod],
-    { encoding: 'utf8', env: Object.assign({}, process.env, { ARSENAL_CACHE: path.join(root, 'cache-cli') }) });
+  const cl = require('../../../../lib/test/wait').spawnSync(process.execPath, [path.join(TOOLS, 'soedit', 'soedit.js'), 'find', 'tiger', '--game', game, '--mod', mod],
+    { encoding: 'utf8', env: Object.assign({}, process.env, { ARSENAL_CACHE: path.join(root, 'cache-cli') }) }, 'models find test');
   assert.ok(cl.status === 0 && /^1 found/.test(cl.stdout) && /t99\.def {2}in game: "Tiger Nine"/.test(cl.stdout), 'CLI find: ' + cl.stdout + cl.stderr);
   ok('soedit find (CLI) prints the display name: in game: "Tiger Nine"');
 

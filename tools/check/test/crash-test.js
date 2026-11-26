@@ -6,7 +6,7 @@ const fs = require('fs'), path = require('path'), cp = require('child_process'),
 const here = __dirname, CR = path.join(here, 'cr'), G = path.join(CR, 'game'), CHECK = path.join(here, '..', 'check.js');
 const fails = [], known = [];
 const fail = m => fails.push(m);
-const run = (args) => cp.spawnSync(process.execPath, [CHECK, ...args], { encoding: 'utf8', cwd: here, timeout: 600000 });
+const run = (args) => require('../../lib/test/wait').spawnSync(process.execPath, [CHECK, ...args], { encoding: 'utf8', cwd: here, timeout: 600000 }, 'check crash-test');
 
 cp.execFileSync(process.execPath, [path.join(here, 'mkcrash.js'), CR]);
 // edge folders for the plain errors

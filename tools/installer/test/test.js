@@ -31,6 +31,28 @@ ok(cfg.version === '9.9.9' && cfg.top === P && cfg.node.minMajor >= 26 && /^http
 for (const k of ['windows-x64', 'windows-arm64', 'darwin', 'linux-x64', 'linux-arm64']) ok(cfg.node.files[k] && cfg.node.files[k].file.includes('v' + cfg.node.version) && /^[0-9a-f]{64}$/.test(cfg.node.files[k].sha256), '1 config: Node.js file and sha256 for ' + k);
 ok(cfg.node.files['windows-x64'].file.endsWith('.msi') && cfg.node.files.darwin.file.endsWith('.pkg') && cfg.node.files['linux-x64'].file.endsWith('.tar.gz'), '1 config: msi on Windows, pkg on macOS, tar.gz on Linux');
 ok(cfg.historical.url === '' || /^https:\/\//.test(cfg.historical.url), '1 config: the historical link is empty or https');
+// --stock-index: shipped stock index files are checked, then added to the payload after its entries (stored, readable)
+{ const zl = require('zlib'), { VERSION } = require('../../entityindex/index.js'), SD = path.join(W, 'stock'), BD = path.join(W, 'stock-bad');
+  const gz = (meta, extra) => zl.gzipSync(JSON.stringify(Object.assign({ meta: Object.assign({ version: VERSION, exe: 'as64', fp: 'ab'.repeat(20), mods: [] }, meta), entities: {}, stuff: {}, models: {} }, extra || {})));
+  fs.mkdirSync(SD, { recursive: true }); fs.mkdirSync(BD, { recursive: true });
+  fs.writeFileSync(path.join(SD, 'vanilla.as64.' + 'ab'.repeat(6) + '.json.gz'), gz({}));
+  fs.writeFileSync(path.join(SD, 'notes.txt'), 'not an index');
+  const st = B.stockFiles(SD);
+  ok(st.length === 1 && st[0][0] === 'vanilla.as64.abababababab.json.gz', '1 stockFiles takes the index files of the folder');
+  const big = B.addFiles(mk(), st.map(([n, b]) => [P + 'tools/entityindex/shipped/' + n, b]));
+  ok(B.checkPayload(big) === base.length + 1 && B.zipTop(big) === P, '1 addFiles: one more entry, the payload still passes its checks');
+  const ents = require('../../lib/pak.js').list((() => { const f = path.join(W, 'big.zip'); fs.writeFileSync(f, big); return f; })());
+  const e = ents.find(x => x.name === P + 'tools/entityindex/shipped/vanilla.as64.abababababab.json.gz');
+  ok(e && e.size === st[0][1].length && ents.length === base.length + 1, '1 addFiles: the added entry is listed whole beside the old ones');
+  const refuse2 = (nm, buf, re) => { fs.rmSync(BD, { recursive: true, force: true }); fs.mkdirSync(BD); fs.writeFileSync(path.join(BD, nm), buf);
+    const r = spawnSync(process.execPath, ['-e', `require(${JSON.stringify(path.join(__dirname, '..', 'build.js'))}).stockFiles(${JSON.stringify(BD)})`], { encoding: 'utf8' });
+    ok(r.status === 2 && re.test(r.stderr), `1 stockFiles refuses ${nm}: ${r.stderr.slice(0, 160)}`); };
+  refuse2('vanilla.as64.abababababab.json.gz', gz({ game: 'X:/games/as2' }), /game folder/);
+  refuse2('vanilla.as64.abababababab.json.gz', gz({ exe: 'goh' }), /does not match the name/);
+  refuse2('vanilla.as64.abababababab.json.gz', gz({}, { files: ['C:\\Users\\USER\\x'] }), /user folder/);
+  refuse2('vanilla.as64.abababababab.json.gz', Buffer.from('plain'), /not a gzip/);
+  refuse2('other.json.gz', gz({}), /not a name/);
+  refuse2('readme.txt', 'x', /no vanilla/); }
 const build = a => spawnSync(process.execPath, [path.join(__dirname, '..', 'build.js'), ...a], { encoding: 'utf8' });
 const refuse = (name, extra, re) => {
   const f = path.join(W, name + '.zip'); fs.writeFileSync(f, Array.isArray(extra) ? mk(extra) : extra);
@@ -70,7 +92,7 @@ else {
     const root = path.join(W, 'root'), dir = path.join(W, 'inst', 'ARSENAL');
     const env = Object.assign({}, process.env, { ARSENAL_SETUP_TEST_ROOT: root, ARSENAL_SETUP_NO_BROWSER: '1', ARSENAL_SETUP_LANG: 'en' });
     if (!WIN) Object.assign(env, { HOME: path.join(W, 'home'), XDG_DATA_HOME: '', XDG_CONFIG_HOME: '' });
-    const run = a => { const x = spawnSync(exe, a, { encoding: 'utf8', env, timeout: 300000 }); return { rc: x.status, out: (x.stdout || '') + (x.stderr || '') }; };
+    const run = a => { const x = require('../../lib/test/wait').spawnSync(exe, a, { encoding: 'utf8', env, timeout: 300000 }, 'installer test'); return { rc: x.status, out: (x.stdout || '') + (x.stderr || '') }; };
     const tree = d => fs.existsSync(d) ? fs.readdirSync(d, { recursive: true }).map(String).map(s => s.replace(/\\/g, '/')).sort() : [];
     let x = run(['--version']); ok(x.rc === 0 && /9\.9\.9/.test(x.out), '2 --version ' + x.out.slice(0, 80));
     x = run(['--nope']); ok(x.rc === 2, '2 unknown option: rc 2, got ' + x.rc);

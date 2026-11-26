@@ -134,10 +134,13 @@ async function modCheck(args, ctx) {
   const as2 = ctx.game({ game: 'as64' }).dir, goh = ctx.game({ game: 'goh' }).dir;
   if (!g.dir) U.need(ctx, g);
   const f = U.tmpFile('check'), fast = args.full !== true;
-  const argv = [mod, '--target', g.id, '--exe', g.id, '--json', f];
+  // the game of the call only (check's default too); allGames = every game build (others as info), restorePoints = also <mod>/.arsenal-undo
+  const argv = [mod, '--target', g.id, ...(args.allGames === true ? ['--all-games'] : ['--exe', g.id]), '--json', f];
+  if (args.restorePoints === true) argv.push('--restore-points');
   if (as2) argv.push('--game', as2);
   if (goh) argv.push('--goh', goh);
   if (fast) argv.push('--fast');
+  if (args.noLoad === true) argv.push('--no-load-check');
   const only = U.names(ctx, args.only, 'only'); if (only.length) argv.push('--only', only.join(','));
   if (args.with) argv.push('--with', U.dirArg(ctx, args.with, 'with'));
   const r = await run(ctx, 'check', argv, { timeout: (fast ? 20 : 90) * 60000 });
@@ -156,6 +159,8 @@ async function modCheck(args, ctx) {
   for (const c of L.rows) t.push('- ' + (c.severity ? '[' + c.severity + '] ' : '') + c.code + ' x' + c.n + ': ' + c.first.msg + (c.first.file ? '  (' + c.first.file + (c.first.line ? ':' + c.first.line : '') + ')' : ''));
   for (const x of (j.toolIssues || []).slice(0, 5)) t.push('! ' + U.short(typeof x === 'string' ? x : (x.tool || '') + ' ' + (x.msg || x.why || JSON.stringify(x)), 200));
   t.push(fast ? 'Quick check (slow linters left out). full: true runs every linter; that can take many minutes on a big mod.' : 'Full check.');
+  if (j.loadSkipped) t.push('The load check was skipped (noLoad): there is no "would it load" verdict.');
+  if (j.restoreLeftOut) t.push('Restore points inside the mod (.arsenal-undo) were left out; restorePoints: true checks them too.');
   t.push('The files were checked, the game was not run. Fix plan: mow_mod_fix.');
   return { text: lines(t), data: { game: g.id, mod: fwd(mod), fast, verdict: v, verdicts: j.verdicts || null, overall: j.overall || null, findings: all.length, kinds: L.rows, more: L.more, read: j.read ? j.read[g.id] : null } };
 }
@@ -649,19 +654,21 @@ async function modPack(args, ctx) {
     ctx.guard.write(out); argv.push('--out', out);
     if (args.package === true) argv.push('--package');
   } else argv.push('--dry');
+  if (args.speed === false) argv.push('--no-speed');   // speed layout is the packer default (text + map .net/.grs deflated, the rest stored, text first); false = old layout
   const r = await run(ctx, 'packer', argv, { timeout: 60 * 60000, max: 400000 });
   const bad = failed(ctx, r, 'packer') || usage(ctx, r, 'packer'); if (bad) return bad;
   const ls = String(r.stdout).split(/\r?\n/).filter(Boolean);
   const plan = ls.filter(l => /\bPLAN\b|\.pak\b/.test(l)).slice(0, 14).map(l => U.short(l.trim(), 240));
-  const prob = ls.filter(l => /\b(WARN_[A-Z_]+|ZIP_NAME_TOO_LONG|LNG_NOT_UTF8|PACK_[A-Z_]+)\b/.test(l) && !/\bPLAN\b/.test(l));
+  const prob = ls.filter(l => /\b(WARN_[A-Z_]+|ZIP_NAME_TOO_LONG|LNG_NOT_UTF8|PACK_[A-Z_]+)\b/.test(l) && !/\bPLAN\b|\bPACK_SPEED_LAYOUT\b/.test(l));
   const counts = {}; for (const l of prob) { const m = /\b(WARN_[A-Z_]+|ZIP_NAME_TOO_LONG|LNG_NOT_UTF8|PACK_[A-Z_]+)\b/.exec(l); counts[m[1]] = (counts[m[1]] || 0) + 1; }
   const L = U.list(prob.map(l => U.short(l.trim(), 240)), args.limit || 15);
   const last = U.tail(r.stdout, 2).join(' ');
   const t = [(writing ? (r.code === 0 ? 'Packed ' : 'Packing stopped for ') : 'Pack plan for ') + path.basename(mod) + ' (' + gameWord(g) + ')' + (writing ? ' into ' + fwd(out) : '') + ': ' + last,
     ...plan.map(l => '  ' + l), Object.keys(counts).length ? 'Checks: ' + Object.entries(counts).map(([k, n]) => k + ' ' + n).join(', ') : 'Checks: nothing found.',
     ...L.rows.map(l => '- ' + l), L.more ? '(' + L.more + ' more)' : null,
+    args.speed !== false ? 'Speed layout: text and map .net/.grs compressed, the rest stored, text entries first in each pak.' : null,
     g.kind === 'goh' ? 'GoH: only resource/, N.pat and localizations/ of a mod are read; localizations/ text stays loose.' : null, writing ? null : previewNote(ctx, out || path.join(path.dirname(mod), path.basename(mod) + '_packed'))];
-  return { text: lines(t), isError: writing && r.code !== 0, data: { game: g.id, mod: fwd(mod), out: out ? fwd(out) : null, written: writing && r.code === 0, plan, counts, problems: L, exit: r.code } };
+  return { text: lines(t), isError: writing && r.code !== 0, data: { game: g.id, mod: fwd(mod), out: out ? fwd(out) : null, written: writing && r.code === 0, speed: args.speed !== false, plan, counts, problems: L, exit: r.code } };
 }
 
 // ---------- which file wins, entity ----------
@@ -961,7 +968,7 @@ const tools = [
     inputSchema: schema({ dir: { type: 'string', description: 'Full path of the new folder (must not exist or be empty)' }, name: { type: 'string', description: 'Shown name of the mod' }, deps: { type: 'array', items: { type: 'string' }, description: 'Mods it needs (Require)' }, description: { type: 'string', description: 'Shown description' }, write: P.write }, ['dir', 'name']), handler: modNew },
   { name: 'mow_mod_check', group: 'mod', title: 'Check a mod', kind: 'read', games: ALL, wraps: 'check (wouldload + doctor linters)',
     description: 'Use to find why a mod crashes, does not load or misbehaves: one call runs the load verdict and the linters for the game and answers plain lines, the verdict and the worst finding kinds with one example each. Default is the quick check (under a minute on a small mod); full: true runs every linter (minutes on a big mod). Files only, the game is not run. All three games; the verdict is per game.',
-    inputSchema: schema({ mod: P.mod, full: { type: 'boolean', description: 'true = every linter (slow)' }, only: { type: 'array', items: { type: 'string' }, description: 'Only these linters (tool names such as sdllint, refcheck, lnglint)' }, with: { type: 'string', description: 'Full path of a patch mod to check together with the mod' }, limit: P.limit }, ['mod']), handler: modCheck },
+    inputSchema: schema({ mod: P.mod, full: { type: 'boolean', description: 'true = every linter (slow)' }, noLoad: { type: 'boolean', description: 'true = skip the load check (no load verdict); for a mod on which that pass does not end' }, allGames: { type: 'boolean', description: 'true = the load check reads every game build (others as info); default the game of the call only' }, restorePoints: { type: 'boolean', description: 'true = also check restore points kept inside the mod (<mod>/.arsenal-undo); left out by default' }, only: { type: 'array', items: { type: 'string' }, description: 'Only these linters (tool names such as sdllint, refcheck, lnglint)' }, with: { type: 'string', description: 'Full path of a patch mod to check together with the mod' }, limit: P.limit }, ['mod']), handler: modCheck },
   { name: 'mow_mod_fix', group: 'mod', title: 'Fix a mod into a patch mod', kind: 'write', games: ALL, wraps: 'fix',
     description: 'Use after mow_mod_check: plans the fixes the kit can make by itself (text encoding, merged text files, missing includes and macros, repointed paths, syntax slips) and, with write: true, writes them into a NEW patch mod folder loaded after the mod. The mod itself is never changed. Answers the files fixed and what could not be fixed. goh: GoH rules and .pot merge; mowas2: the 32-bit view.',
     inputSchema: schema({ mod: P.mod, out: { type: 'string', description: 'Full path of the patch mod folder to make (new, beside the mod)' }, only: { type: 'array', items: { type: 'string' }, description: 'Only these fixers: lng repoint set include macro enc spell syntax asread stubmtl botkeys lngdup' }, mods: P.mods, write: P.write, limit: P.limit }, ['mod', 'out']), handler: modFix },
@@ -1013,8 +1020,8 @@ const tools = [
     description: 'Use to upgrade a classic MoW:AS2 mod to AS64 (game: as64) or to move a mod to another game, after mow_port_plan: writes a converted copy of the mod for the target game (game) into a new folder and checks it again. The source mod is never changed. Preview unless write: true. Answers the changes, what was left out and the static verdict; no game is run. To goh: text becomes .pot; to as64 or mowas2: the AS2 forms.',
     inputSchema: schema({ mod: P.mod, out: { type: 'string', description: 'Full path of the new folder for the copy' }, from: { type: 'string', description: 'Game the mod is for now; default from its mod.info' }, write: P.write }, ['mod', 'out']), handler: portCopy },
   { name: 'mow_mod_pack', group: 'mod', title: 'Pack a mod', kind: 'write', games: ALL, wraps: 'packer',
-    description: 'Use before sharing a mod: plans its .pak files by role (gamelogic, entity, map, interface, texture, sound) and runs the pack checks (name length, text encoding, loose files that shadow a pak). write: true with out writes the paks into another folder (package: true = a ready mod folder); the mod itself is not changed. goh: localizations/ text stays loose.',
-    inputSchema: schema({ mod: P.mod, out: { type: 'string', description: 'Full path of the folder for the paks (outside the mod)' }, package: { type: 'boolean', description: 'true = write a ready mod folder' }, write: P.write, limit: P.limit }, ['mod']), handler: modPack },
+    description: 'Use before sharing a mod: plans its .pak files by role (gamelogic, entity, map, interface, texture, sound) and runs the pack checks (name length, text encoding, loose files that shadow a pak). write: true with out writes the paks into another folder (package: true = a ready mod folder; speed: true = the fastest-load layout); the mod itself is not changed. goh: localizations/ text stays loose.',
+    inputSchema: schema({ mod: P.mod, out: { type: 'string', description: 'Full path of the folder for the paks (outside the mod)' }, package: { type: 'boolean', description: 'true = write a ready mod folder' }, speed: { type: 'boolean', description: 'default true = pack for the fastest game load and mod check: text and map .net/.grs compressed, the rest stored, text first in each pak; false = the old layout (every file compressed)' }, write: P.write, limit: P.limit }, ['mod']), handler: modPack },
   { name: 'mow_file_which', group: 'mod', title: 'Which file wins', kind: 'read', games: ALL, wraps: 'vfs which',
     description: 'Use to see which copy of a game file the game reads with a given mod list: the winning source (game pak, loose file or mod) and the copies it shadows. path as the game sees it (resource/set/... or set/...). All three games; mowas2 reads without as64/core.',
     inputSchema: schema({ path: { type: 'string', description: 'File path as the game sees it' }, mods: P.mods }, ['path']), handler: fileWhich },

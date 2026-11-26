@@ -155,7 +155,7 @@ t('MG: NOKILL with no hit/HEALTH -> fireUnmeasured', () => {
 
 // --- CLI
 const ed = path.join(__dirname, '..', 'edrun.js');
-const run = args => cp.spawnSync(process.execPath, [ed, ...args], { encoding: 'utf8' });
+const run = args => require('../../lib/test/wait').spawnSync(process.execPath, [ed, ...args], { encoding: 'utf8' }, 'speedb3-test');   // backstop 5 min, killed: once more (never a hang)
 t('cli: --insts 0 exits 2; --insts without --list exits 2; --list + --pairs exits 2', () => {
   const md = path.join(tmp, 'one.md');
   fs.writeFileSync(md, `node tools/edrun/edrun.js --pairs ${pairsA} --out ${tmp}/d1\n`);

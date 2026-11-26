@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 // keylint: data-key / typed-value linter for SDL data (def ext set mdl mi ...). assumes the file parses (sdllint does syntax).
-//   node keylint.js <mod folder> [--game <gameDir>] [--exe as64|mowas_2|mowas2|goh] [--mods a,b] [--vocab file] [--time] [-q] [--summary]
+//   node keylint.js <mod folder> [--game <gameDir>] [--exe as64|mowas_2|mowas2|goh] [--mods a,b] [--vocab file] [--time] [-q] [--summary] [--restore-points]
+//   --restore-points: also read <mod folder>/.arsenal-undo (restore points; the game never mounts them, so off by default)
+//   CLI reads the folder through the thread pool (checkAsync: listing + read-ahead); check() = same findings, one file at a time
+//   main(argv, {ra, listing}) = the CLI; ctx.js = the read-once module form for doctor (lib/modset, tools/lib/MODSET.md)
 //   node keylint.js --vfs --game <gameDir> [--exe ...]   check every vanilla file against the vocab learned from it (consistency)
 //   --exe: the game (lib/cli common). mowas_2 mounts the shared install without as64/core and picks vocab.mowas2.json; goh picks
 //   vocab.goh.json and fieldtypes/fields.goh.json (no --game: the GoH install). None: as before (GoH by the exe in --game, else AS2)
@@ -20,7 +23,8 @@
 require('../lib/help')(__filename); // --help / -h: header usage, exit 0 (HELPFIX2)
 const fs = require('fs'), path = require('path');
 const sdlset = require('../lib/sdlset'), sdlx = require('../lib/sdlx');
-const { createReport, walkFiles, relPath } = require('../lib/report'), cli = require('../lib/cli');
+const { createReport, relPath } = require('../lib/report'), cli = require('../lib/cli');
+const { bomKind } = require('../lib/enc');
 const M = require('./model'), R = require('./rules');
 
 const MIN_N = 12;                              // key evidence needed for learned value checks
@@ -34,7 +38,7 @@ const NUMS =new Set(['I', 'F', 'X']);
 // engine type of every same-named key agrees with it. typeAt -> { t, src } for value position i, or null
 // GoH: fields.goh.json + fields.goh.scope.json (gen.js run on GoH, [I]: static parse of an unfinished
 // GoH) when present, else the AS2 table as before. useFields(goh) switches the tables for the walk that follows.
-let FIELDS = null, SCOPE = null;
+let FIELDS = null, SCOPE = null, TMEMO = null;
 const FT = new Map();
 function useFields(goh) {
   const k = goh && fs.existsSync(path.join(__dirname, '..', 'fieldtypes', 'fields.goh.json')) ? 'goh' : 'as2';
@@ -42,10 +46,20 @@ function useFields(goh) {
     const ld = (f, p) => { try { return require('../fieldtypes/' + f)[p]; } catch (e) { return {}; } };
     FT.set(k, k === 'goh' ? { f: ld('fields.goh.json', 'keys'), s: ld('fields.goh.scope.json', 'kinds') } : { f: ld('fields.json', 'keys'), s: ld('scope.json', 'kinds') });
   }
-  const t = FT.get(k); FIELDS = t.f; SCOPE = t.s; return k;
+  const t = FT.get(k); FIELDS = t.f; SCOPE = t.s; TMEMO = t.m || (t.m = [new Map(), new Map()]); return k;
 }
+// typeAt is pure in (field table, FILE_FX, kind, key, i): kept per table while M.fast() (KEYLINT_FAST, default on)
 function typeAt(key, i, kind) {
   if (FIELDS === null) useFields(false);
+  if (!M.fast()) return typeAt0(key, i, kind);
+  const fx = FILE_FX ? 1 : 0;   // nested maps (fx, kind, key) -> [by i]: no key string built per call
+  let m = TMEMO[fx].get(kind); if (!m) TMEMO[fx].set(kind, m = new Map());
+  let a = m.get(key); if (!a) m.set(key, a = []);
+  let r = a[i];
+  if (r === undefined) { r = typeAt0(key, i, kind); a[i] = r; }
+  return r;
+}
+function typeAt0(key, i, kind) {
   const r = FIELDS[key]; if (!r) return null;
   // position-wise: every concrete engine reader of this key that has a value at position i must agree on its type
   // (readers of other arity, e.g. float vs float(float float), do not veto each other). entries narrowed to the file's engine scope
@@ -126,7 +140,7 @@ function makeCtx(opts) {
   const gohGame = gameOf(opts) === 'goh', goh = gohGame;
   let mods = opts.mods;
   if (!mods && opts.folder && opts.gameDir && path.basename(path.dirname(path.resolve(opts.folder))).toLowerCase() === 'mods') mods = [path.basename(path.resolve(opts.folder))];   // mod dir under <game>/mods: mount it (its paks are checked too)
-  const src = sdlset.createSource({ gameDir: opts.gameDir, mods, folder: opts.folder, ...(opts.exe ? { exe: opts.exe } : {}) });
+  const src = sdlset.createSource({ gameDir: opts.gameDir, mods, folder: opts.folder, ...(opts.exe ? { exe: opts.exe } : {}), ...(opts.restorePoints != null ? { restorePoints: !!opts.restorePoints } : {}), ...(opts.listing ? { listing: opts.listing } : {}) });
   const vfsMode = !!opts.vfs;
   const mine = new Set(); for (const f of src.local.values()) mine.add(relPath(src.folder, f));
   const pakItems = !mods && !vfsMode && opts.folder && gohGame ? gohPakItems(src) : [];   // GOHMOD-3
@@ -196,6 +210,24 @@ function makeCtx(opts) {
     }
   };
 
+  // per-block hand-outs (the same for every block: made once, not per child)
+  const emitW = (a, code, msg) => push(false, a, 'WARN_' + code, msg);
+  const xEmit = (a, code, msg) => push(false, a, code, msg), xInfo = (a, code, msg) => push(true, a, code, msg);
+  const xDead = (a, msg) => push(vfsMode, a, 'DEAD_KEY', msg), xWarnDead = (a, msg) => push(false, a, 'WARN_DEAD_KEY', msg);
+  // M.fast() (KEYLINT_FAST, default on): pure lookups kept for the run. near(scope, name, cands)
+  // = M.nearest(name, cands()) per (scope, name), scope naming the candidate list: a string (schema keys, vocab block keys of a
+  // kind + path) or the key stats object whose enum words are the list
+  const nears = new Map(), nearsOf = new WeakMap();
+  const near = (scope, name, cands) => {
+    if (!M.fast()) return M.nearest(name, cands());
+    let m = nears, k = name;
+    if (typeof scope === 'string') k = scope + '\0' + name; else if (!(m = nearsOf.get(scope))) nearsOf.set(scope, m = new Map());
+    let r = m.get(k);
+    if (r === undefined) { r = M.nearest(name, cands()); m.set(k, r); }
+    return r;
+  };
+  const onlyNumOf = p => !M.fast() ? [...p.set].every(x => NUMS.has(x)) : p._num !== undefined ? p._num : (p._num = [...p.set].every(x => NUMS.has(x)));
+
   // ---- learned value checks for one child block c with parts cp against key stats ks
   function valueChecks(cp, ks, c, kind, key, emitW) {
     const a = analyze(ks), toks = cp.toks, sg = toks.map(M.sigOf);
@@ -216,7 +248,7 @@ function makeCtx(opts) {
       else if (t0.k === 'STRING' || t0.k === 'FLOAT') E(t0, 'BOOL_BAD_TOKEN', `{${key} ${t0.k === 'STRING' ? '"' + t0.text + '"' : t0.text}}: bool does not consume ${t0.k} -> true + 'Unread data detected' (SDL-32)`);
     }
     // SDL-39 colour
-    const colorKey = key[0] !== '*' && key[0] !== '#' && ks.col >= 3 && ks.col >= 0.8 * ks.n, nameKey = /colou?r$/.test(key);
+    const colorKey = key[0] !== '*' && key[0] !== '#' && ks.col >= 3 && ks.col >= 0.8 * ks.n, nameKey = key.endsWith('color') || key.endsWith('colour');   // = /colou?r$/
     if (colorKey || nameKey) for (const t of toks) if (t.k === 'STRING') {
       const s = t.value.trim();
       if (/^(0x)?[0-9a-f]+$/i.test(s) && !COLOR_NAMES.has(s.toLowerCase()) && !M.hexColor(s))
@@ -231,7 +263,7 @@ function makeCtx(opts) {
     for (let i = 0; i < toks.length; i++) {
       const p = a.pos[i]; if (!a.mono || !p || p.n < MIN_N) continue;
       const t = toks[i], st = sg[i], S = p.set;
-      const onlyI = S.size === 1 && S.has('I'), onlyNum = [...S].every(x => NUMS.has(x)), onlyS = S.size === 1 && S.has('S');
+      const onlyI = S.size === 1 && S.has('I'), onlyNum = onlyNumOf(p), onlyS = S.size === 1 && S.has('S');
       const ei = typeAt(key, i, kind), engInt = ei && ei.t === 'int', engStr = ei && ei.t === 'resource';
       // learned + engine agree -> error; engine reads a float -> vanilla ints were style, no hint
       const sure = (ok, code, msg) => ok ? push(false, t, code, msg + at(ei)) : ei && ei.t === 'float' ? null : hint(t, code, msg);
@@ -243,38 +275,47 @@ function makeCtx(opts) {
     }
     // SDL-37 enum
     if (t0 && t0.k === 'IDENT' && toks.length === 1 && ks.n >= 20 && a.enum && a.cov >= 0.95 && ks.v && !ks.v[t0.text.toLowerCase()] && !a.bool && !(R.ENGINE_ENUMS[key] || []).includes(t0.text.toLowerCase())) {
-      const dym = M.nearest(t0.text.toLowerCase(), Object.keys(ks.v));
+      const dym = near(ks, t0.text.toLowerCase(), () => Object.keys(ks.v));
       (dym && Object.keys(ks.v).length <= 12 ? emitW : (an, code, msg) => push(true, an, code, msg))(t0, 'ENUM_UNKNOWN', `{${key} ${t0.text}}: not among the ${Object.keys(ks.v).length} values seen in vanilla (${Object.keys(ks.v).slice(0, 8).join(' ')}${Object.keys(ks.v).length > 8 ? ' ...' : ''})${dym ? '; did you mean "' + dym + '"?' : ''} (unknown enum name reads as invalid, silently) (SDL-37)`);
     }
   }
 
   // ---- tree walk
-  function walk(b, p, kind, isRoot, depth, st, pcp, pkey) {
+  // M.fast(): block paths as a kept tree of nodes per kind, { p, vp, use, sch, kids: Map key -> node }: a child's path string, vocab
+  // entry and schema are looked up once per (kind, path) for the run, not built and hashed again for every block
+  const pathRoots = new Map();
+  const pathNode = (kind, p) => {
     const vp = (vocab.kinds[kind] || {})[p];
     const use = vp && vp.n >= 10 && (vp._open === undefined ? (vp._open = Object.keys(vp.k).length > 150) : vp._open) === false;
-    const pc = M.parts(b, isRoot);
+    return { p, vp, use, sch: undefined, ks: undefined, kids: new Map() };
+  };
+  const rootNode = (kind, p) => {
+    let m = pathRoots.get(kind); if (!m) pathRoots.set(kind, m = new Map());
+    let n = m.get(p); if (!n) m.set(p, n = pathNode(kind, p));
+    return n;
+  };
+  const kidNode = (N, kind, key) => { let n = N.kids.get(key); if (!n) N.kids.set(key, n = pathNode(kind, M.childPath(N.p, key))); return n; };
+  function walk(b, p, kind, isRoot, depth, st, pcp, pkey, N) {
+    if (!N && M.fast()) N = rootNode(kind, p);
+    const vp = N ? N.vp : (vocab.kinds[kind] || {})[p];
+    const use = N ? N.use : vp && vp.n >= 10 && (vp._open === undefined ? (vp._open = Object.keys(vp.k).length > 150) : vp._open) === false;
+    const pc = isRoot ? M.parts(b, true) : M.partsM(b);
     const seen = new Map();
+    // AI-19 / GPL-08: engine-derived key sets (rules.js SCHEMAS) judge these blocks; the learned vocab stays silent there
+    // goh: the schemas are AS2 engine reads, the GoH vocab judges instead
+    const sch = FILE_FX || goh ? null : N ? (N.sch !== undefined ? N.sch : (N.sch = R.schemaFor(kind, p))) : R.schemaFor(kind, p);
     pc.kids.forEach((c, i) => {
-      const cp = M.parts(c, false);
+      const cp = M.partsM(c);
       if (cp.keyTok && cp.keyTok.k === 'IDENT' && cp.keyTok.text[0] === '%') return;
-      const key = cp.key, ks = vp && vp.k[key], tail = M.childPath(p, key);
-      const emitW = (a, code, msg) => push(false, a, 'WARN_' + code, msg);
-      const x = {
-        kind, path: p, key, tail, cp, pcp: pc, pkey, c, fs: st.fs, env, goh,
-        emit: (a, code, msg) => push(false, a, code, msg),
-        info: (a, code, msg) => push(true, a, code, msg),
-        warn: emitW,
-        dead: (a, msg) => push(vfsMode, a, 'DEAD_KEY', msg),
-        warnDead: (a, msg) => push(false, a, 'WARN_DEAD_KEY', msg),
-      };
-      // AI-19 / GPL-08: engine-derived key sets (rules.js SCHEMAS) judge these blocks; the learned vocab stays silent there
-      const sch = FILE_FX || goh ? null : R.schemaFor(kind, p);   // goh: the schemas are AS2 engine reads, the GoH vocab judges instead
+      const key = cp.key, CN = N ? kidNode(N, kind, key) : null, tail = CN ? CN.p : M.childPath(p, key);
+      const ks = CN ? (CN.ks !== undefined ? CN.ks : (CN.ks = vp && vp.k[key])) : vp && vp.k[key];   // the key's stats in its parent's vocab entry
+      const x = { kind, path: p, key, tail, cp, pcp: pc, pkey, c, fs: st.fs, env, goh, emit: xEmit, info: xInfo, warn: emitW, dead: xDead, warnDead: xWarnDead };
       if (sch && cp.keyTok && cp.keyTok.k === 'IDENT' && !sch.keys.has(key)) {
-        const dym = M.nearest(key, [...sch.keys]);
+        const dym = near('s' + kind + '\0' + p, key, () => [...sch.keys]);
         push(false, c, sch.row === 'FATAL' ? 'KEY_FATAL' : 'UNKNOWN_KEY', `unknown key "${cp.keyTok.text}" in ${sch.label} block "${p}"` + (dym ? `; did you mean "${dym}"?` : '') +
           ` (engine reads only: ${[...sch.keys].join(' ')}; ${sch.row === 'AI-19' ? 'no effect / reader logs "unexpected token"' : sch.row === 'FATAL' ? 'reader hits ERROR_MSG: the file fails to load' : 'DDA skips unknown fields silently'}) [${sch.src}] (${sch.row})`);
       } else if (!sch && use && !ks && cp.keyTok && cp.keyTok.k === 'IDENT' && !(R.ENGINE_KEYS[p] || []).includes(key)) {
-        const cands = Object.keys(vp.k), dym = M.nearest(key, cands), elsewhere = (idxOf(kind).get(key) || []).filter(q => q !== p);
+        const dym = near('v' + kind + '\0' + p, key, () => Object.keys(vp.k)), elsewhere = (idxOf(kind).get(key) || []).filter(q => q !== p);
         (dym && !elsewhere.length ? emitW : (an, code, msg) => push(true, an, code, msg))(c, 'UNKNOWN_KEY', `unknown key "${cp.keyTok.text}" in ${kind} block "${p || '(file)'}"` +
           (dym ? `; did you mean "${dym}"?` : '') + (elsewhere.length ? `; "${key}" is valid under: ${elsewhere.join(', ')}` : '') + ' (engine skips unknown keys silently) (SDL-34)');
       }
@@ -285,20 +326,91 @@ function makeCtx(opts) {
         }
         valueChecks(cp, ks, c, kind, key, emitW);
         // SDL-46 repeated scalar
-        const gk = pc.groups[i] + '|' + (STRICT_KINDS.has(kind) && cp.keyTok && cp.keyTok.k === 'IDENT' ? cp.keyTok.text : key);   // DDA: keys differing in case are different keys
-        seen.set(gk, (seen.get(gk) || 0) + 1);
-        if (seen.get(gk) === 2 && use && ks.n >= 100 && !ks.dup && !dupAnywhere.has(key) && !ks.kids && cp.toks.length && !cp.kids.length)
+        const gn = STRICT_KINDS.has(kind) && cp.keyTok && cp.keyTok.k === 'IDENT' ? cp.keyTok.text : key;   // DDA: keys differing in case are different keys
+        let sm = seen, gk = gn;   // fast: Map group -> Map name (no "group|name" string per block); else the joined key as before
+        if (N) { sm = seen.get(pc.groups[i]); if (!sm) seen.set(pc.groups[i], sm = new Map()); } else gk = pc.groups[i] + '|' + gn;
+        sm.set(gk, (sm.get(gk) || 0) + 1);
+        if (sm.get(gk) === 2 && use && ks.n >= 100 && !ks.dup && !dupAnywhere.has(key) && !ks.kids && cp.toks.length && !cp.kids.length)
           emitW(c, 'KEY_REPEAT', `{${key}} repeated in one block; vanilla never repeats it (${ks.n} uses); scalar: last wins (SDL-46)`);
       }
       R.onBlock(x);
-      if (depth < M.MAX_DEPTH) walk(c, tail, kind, false, depth + 1, st, pc, key);
+      if (depth < M.MAX_DEPTH) walk(c, tail, kind, false, depth + 1, st, pc, key, CN);
     });
   }
 
   return { rep, src, mods, vfsMode, pakItems, walk, gohGame, setCur: v => { cur = v; }, getCur: () => cur, setBuf: k => { bufKey = k; }, noteOverlaps };
 }
 
-function check(opts) {
+// KEY-01 listing: every *.patch and N.pat file below the folder, each list sorted as report.walkFiles gives it (full path text).
+// One walk for both (before: two report.walkFiles of the whole folder); folders named .arsenal-undo (restore points, never
+// mounted) are not entered unless rp. Sync walk, or (async) folders listed through the thread pool, WALK_WIN at a time.
+const UNDO = '.arsenal-undo', WALK_WIN = 32;
+const rpDefault = () => { const was = sdlset.restorePoints(false); sdlset.restorePoints(was); return was; };   // the process default of lib/sdlset
+const PAT_RE = /^[0-9]+\.pat$/i, PATCH_RE = /\.patch$/i;
+function patchFiles(root, rp) {
+  const pats = [], patches = [];
+  (function walk(d) {
+    for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+      const p = path.join(d, e.name);
+      if (e.isDirectory()) { if (rp || e.name.toLowerCase() !== UNDO) walk(p); }
+      else { if (PAT_RE.test(e.name)) pats.push(p); if (PATCH_RE.test(e.name)) patches.push(p); }
+    }
+  })(root);
+  return { pats: pats.sort(), patches: patches.sort() };
+}
+// the same lists from a lib/modtree scan T of root (no readdir): its listed files, plus what the scan left out (a folder it
+// does not enter is walked as above; a link or other entry is one name, as walkFiles' Dirent saw it)
+function patchFilesOf(T, root, rp) {
+  const pats = [], patches = [];
+  const undoIn = rel => { const l = '/' + rel.toLowerCase() + '/'; return l.includes('/' + UNDO + '/'); };
+  const name = (p, nm) => { if (PAT_RE.test(nm)) pats.push(p); if (PATCH_RE.test(nm)) patches.push(p); };
+  for (const r of T.files) { if (!rp && undoIn(r[0])) continue; name(path.join(root, r[0]), r[0].slice(r[0].lastIndexOf('/') + 1)); }
+  for (const rel of T.left) {
+    if (!rp && undoIn(rel)) continue;
+    const p = path.join(root, rel); let st; try { st = fs.lstatSync(p); } catch (e) { continue; }
+    if (st.isDirectory()) { const sub = patchFiles(p, rp); pats.push(...sub.pats); patches.push(...sub.patches); }
+    else name(p, rel.slice(rel.lastIndexOf('/') + 1));
+  }
+  return { pats: pats.sort(), patches: patches.sort() };
+}
+// listFolder(root, rp) -> Promise<T>: the folder listed through the thread pool, WALK_WIN folders at a time, names only (no stat
+// per file: lib/modtree scan stats each one and took 128 s on the 112k-file mod on a USB hard disk, three sync walks ~45 s).
+// T has the lib/modtree scan shape lib/sdlset createSource takes as o.listing: { dir, files: [[rel]], left: [rel] }, rel with
+// forward slashes; left = links and entries that are neither file nor folder (read from the disk where needed, as with a scan).
+// Folders named .arsenal-undo are not entered unless rp (nothing reads them then: sdlset keepOf, its pak walk, KEY-01).
+// An unreadable folder rejects (the caller then walks as before, which fails the same way it always did).
+async function listFolder(root, rp) {
+  const files = [], left = [], queue = [''];
+  let flying = 0, failed = false;
+  await new Promise((resolve, reject) => {
+    const pump = () => {
+      if (failed) return;
+      if (!queue.length && !flying) return resolve();
+      while (queue.length && flying < WALK_WIN) {
+        const rel = queue.pop(); flying++;
+        fs.promises.readdir(rel ? path.join(root, rel) : root, { withFileTypes: true }).then(ents => {
+          for (const e of ents) {
+            const r = rel ? rel + '/' + e.name : e.name;
+            if (e.isDirectory()) { if (rp || e.name.toLowerCase() !== UNDO) queue.push(r); }
+            else if (e.isFile()) files.push([r]);
+            else left.push(r);
+          }
+          flying--; pump();
+        }, err => { failed = true; reject(err); });
+      }
+    };
+    pump();
+  });
+  return { dir: root, files, left: left.sort() };
+}
+
+// the check as steps: yields a Promise only when io.ra (a lib/sdlset readAhead, async run) has a file read still running;
+// the sync driver (check) never gets one. Same files, same order, same findings either way.
+//   - each todo file is read once: its bytes feed the SDL walk and the CHK-KEY armor text pass (before: read twice)
+//   - includes are read once per run (open results kept by key; before: an include was read again by every file using it)
+//   - KEY-01: one walk of the folder for N.pat and .patch (from opts.listing when given, else a sync walk), without .arsenal-undo unless rp
+function* steps(opts, io) {
+  const rp = opts.restorePoints != null ? !!opts.restorePoints : rpDefault();
   const { rep, src, mods, vfsMode, pakItems, walk, setCur, noteOverlaps, gohGame } = makeCtx(opts);
   const fields = useFields(gohGame);   // 'goh' | 'as2': the engine field table used (returned for tests)
   let cur = null;
@@ -306,17 +418,40 @@ function check(opts) {
   let todo = opts.vfs ? src.vfsItems() : src.folderItems();
   if (!opts.vfs && mods) { const have = new Set(todo.map(t => t.key)); todo = todo.concat(src.modItems().filter(t => !have.has(t.key))); }
   if (pakItems.length) { todo = todo.concat(pakItems); rep.info(opts.folder, 0, 'KEYLINT_PAKS_READ', `GoH mod not mounted: ${pakItems.length} SDL entries of its resource paks read directly (pak order = name order [I])`); }
+  const CK = require('./chkkey');
+  const ARMOR_RE = /\.(def|ext|inc|def1|mdl)$/i, armor = new Map(), armorSeen = new Set();
+  // include resolver over src.open, each (kind, key) opened once; a kept answer still marks the key included (src.included)
+  const incs = new Map();
+  const openC = (r, from) => {
+    const k = r.kind + '\0' + r.key;
+    if (incs.has(k)) { src.included.add(r.key); return incs.get(k); }
+    const f = src.open(r, from); incs.set(k, f); return f;
+  };
+  const ra = io && io.ra;
+  if (ra) for (const t of todo) if (t.path) ra.add(t.key, t.path);
   const reads = []; let skipped = 0;
   for (const t of todo) {
+    if (ra) { const p = ra.wait(t.key); if (p) yield p; }
     try {
       cur = []; setCur(cur);
-      const r = src.read(t, () => {});
-      if (!r) { skipped++; continue; }
-      FILE_FX = scopeKey(t.key); noteOverlaps(r);
-      walk(r.root, '', M.kindOf(t.key), true, 0, { fs: new Map() }, null, '');
+      let b = ra && t.path ? ra.take(t.key) : undefined;
+      if (b === undefined) b = t.get();
+      if (ARMOR_RE.test(t.key) && !armorSeen.has(t.key)) { armorSeen.add(t.key); if (b) armor.set(t.key, CK.armorText(b.toString('latin1'))); }
+      // = src.read(t): null for binary
+      if (b.includes(0) && !bomKind(b)) { skipped++; continue; }
+      const lint = () => {
+        const r = sdlx.read(b, { file: t.file, key: t.key, open: openC, onError() {}, preInclude: src.preInclude(t.key) });
+        FILE_FX = scopeKey(t.key); noteOverlaps(r);
+        walk(r.root, '', M.kindOf(t.key), true, 0, { fs: new Map() }, null, '');
+      };
+      // speed-ups (M.fast) on: a file whose walk throws is walked again the old way before it counts as a CRASH
+      if (!M.fast()) lint();
+      else try { lint(); } catch (e) { cur = []; setCur(cur); const was = M.memo(false); try { lint(); } finally { M.memo(was); } }
       reads.push({ key: t.key, list: cur });
     } catch (e) { rep.add(t.file, 0, 'CRASH', e.stack.split('\n').slice(0, 3).join(' | ')); }
+    finally { if (ra) ra.drop(t.key); }
   }
+  incs.clear();
   const seen = new Set(), infoN = {}, INFO_CAP = +process.env.KEYLINT_INFO_CAP || 40; let n = 0;
   for (const r of reads) {
     if (src.included.has(r.key)) continue;
@@ -330,12 +465,14 @@ function check(opts) {
   }
   for (const [c, k] of Object.entries(infoN)) if (k > INFO_CAP) rep.info('keylint', 0, c, `... ${k - INFO_CAP} more ${c} hints hidden (${k} total)`);
   // CHK-KEY: TST-80 armor macro arg counts (raw text of own entity files), AI-12 / AI-15 bot Lua (not SDL, so outside the walk)
-  const CK = require('./chkkey'), seenT = new Set();
+  // (the armor findings were taken from each file's bytes in the walk above; emitted here, in the order they always were)
+  const seenT = new Set();
   for (const t of todo) {
-    if (!/\.(def|ext|inc|def1|mdl)$/i.test(t.key) || seenT.has(t.key)) continue; seenT.add(t.key);
-    let b; try { b = t.get(); } catch (e) { continue; } if (!b) continue;
-    for (const f of CK.armorText(b.toString('latin1'))) rep.add(t.file, f.line, 'ARMOR_MACRO_ARGS', f.msg);
+    if (!ARMOR_RE.test(t.key) || seenT.has(t.key)) continue; seenT.add(t.key);
+    const fl = armor.get(t.key); if (!fl) continue;
+    for (const f of fl) rep.add(t.file, f.line, 'ARMOR_MACRO_ARGS', f.msg);
   }
+  armor.clear();
   const luaKeys = new Set();
   for (const k of src.local.keys()) if (CK.isBotLua(k)) luaKeys.add(k);
   if (src.v) for (const k of src.v.files.keys()) if (CK.isBotLua(k) && (vfsMode || mods && src.isModKey(k))) luaKeys.add(k);
@@ -345,8 +482,11 @@ function check(opts) {
   }
   // KEY-01: loose .patch files are never read
   if (src.folder && fs.statSync(src.folder).isDirectory()) {
-    const pats = walkFiles(src.folder, /^[0-9]+\.pat$/i).map(f => fs.statSync(f).mtimeMs);
-    for (const f of walkFiles(src.folder, /\.patch$/i)) {
+    let pl = null;
+    if (opts.listing && path.resolve(opts.listing.dir) === src.folder) pl = patchFilesOf(opts.listing, src.folder, rp);
+    else pl = patchFiles(src.folder, rp);
+    const pats = pl.pats.map(f => fs.statSync(f).mtimeMs);
+    for (const f of pl.patches) {
       const rel = relPath(src.folder, f), st = fs.statSync(f).mtimeMs;
       if (!pats.length) rep.add(rel, 0, 'LOOSE_PATCH', '.patch outside an N.pat archive is never read by the engine (no N.pat in the mod); pack it into N.pat');
       else if (st > Math.max(...pats) + 1000) rep.add(rel, 0, 'LOOSE_PATCH', 'loose .patch is newer than every N.pat: edits are not in the mounted archive (engine never reads the loose file); repack N.pat');
@@ -356,19 +496,59 @@ function check(opts) {
   return { rep, files: n, skipped, fields, exe: src.v ? src.v.exe : null };
 }
 
+// check(opts) -> { rep, files, skipped, fields, exe }   sync, files read one at a time
+// opts: { folder|vfs, gameDir, mods, vocab, exe, restorePoints (also read <folder>/.arsenal-undo, off by default) }
+function check(opts) {
+  const g = steps(opts, null);
+  for (;;) { const r = g.next(); if (r.done) return r.value; }
+}
+// checkAsync(opts, { window = 128, maxBytes = 128 MB }) -> Promise<same as check>: the folder's SDL files read through the
+// thread pool ahead of the walk (lib/sdlset readAhead), the KEY-01 walk lists folders in parallel. Same findings, same order.
+// ao.ra: a readAhead stand-in to read through instead (lib/modset read-once pass, ctx.js), closed at the end. ao.listing: the
+// pass's lib/modtree scan of the folder, taken instead of listFolder when it is that folder and restore points are left out
+// (the scan leaves them out too; a folder it does not enter is in its left list, read from the disk as with listFolder)
+async function checkAsync(opts, ao = {}) {
+  const ra = ao.ra || sdlset.readAhead({ window: ao.window || 128, maxBytes: ao.maxBytes || 128 * 1024 * 1024 });
+  const io = { ra };
+  // the folder listed once, through the thread pool (listFolder): the source's loose map and pak walk and the KEY-01 lists come
+  // from it (before: three sync walks of the folder). Not listed (--vfs, a given listing, a folder that cannot be read): as before
+  let T = null;
+  if (opts.folder && !opts.vfs && !opts.listing) {
+    const rp = opts.restorePoints != null ? !!opts.restorePoints : rpDefault();
+    try {
+      const d = path.resolve(opts.folder), L = ao.listing;
+      if (L && !rp && !L.names && path.resolve(L.dir) === d) T = L;
+      else if (fs.statSync(d).isDirectory()) T = await listFolder(d, rp);
+    } catch (e) { T = null; }
+  }
+  const g = steps(T ? { ...opts, listing: T } : opts, io);
+  try {
+    let r = g.next();
+    while (!r.done) { await r.value; r = g.next(); }
+    return r.value;
+  } finally { ra.close(); }
+}
+
 // run(opts) -> report (no printing); opts as check: {folder|vfs, gameDir, mods, vocab, exe}
 function run(opts) { return check(opts).rep; }
 
-if (require.main === module) cli.run(() => {
-  const o = cli.parse(process.argv.slice(2), { flags: ['--vfs', '--time'], values: ['--vocab'] });
+// thread pool 16 (libuv default 4) unless set: more reads queued at the disk at once; 112k-file mod on a USB hard disk,
+// window 128: 101 s with 16 vs 112-118 s with 4 (busy PC) [I: one run each]
+if (require.main === module && !process.env.UV_THREADPOOL_SIZE) process.env.UV_THREADPOOL_SIZE = '16';
+// main(argv, {ra, listing}): the CLI (and ctx.js, the read-once module form: the pass's reader as ra and its listing; an error
+// rejects, so the pass runs keylint as a program instead)
+async function main(argv, { ra, listing } = {}) {
+  const o = cli.parse(argv, { flags: ['--vfs', '--time', '--restore-points'], values: ['--vocab'] });
   const opts = { gameDir: o.gameDir, mods: o.mods.length ? o.mods : undefined, vfs: o.x.vfs, folder: o.pos[0], vocab: o.x.vocab, exe: o.exe };
+  if (o.x['restore-points']) opts.restorePoints = true;
   if (!opts.folder && !opts.vfs || opts.vfs && !opts.gameDir) { console.error('usage: keylint <mod folder> [--game dir] [--exe as64|mowas_2|mowas2|goh] [--mods a,b] [--vocab file] [--time] [-q] [--summary] [--format text|json|sarif] [-o file] | --vfs --game dir'); process.exit(2); }
   const t0 = Date.now();
-  const { rep, files, skipped } = check(opts);
+  const { rep, files, skipped } = await checkAsync(opts, ra ? { ra, listing } : {});
   cli.printReport(rep, o, { tool: 'keylint' });
   const line = `${files} files (${skipped} binary skipped)${o.x.time ? ` in ${Date.now() - t0} ms` : ''}`;   // DET-FIX: clock values only with --time
   if (o.format === 'text' && !o.output) console.log(line); else console.error(line);
-});
+}
+if (require.main === module) cli.run(() => main(process.argv.slice(2)));
 // ---- lintBuffer: live linting of one in-memory file. The context (vocab, fields.json, vfs/source, env sets) is built on the
 // first call per (gameDir, mods, vocab) and reused; later calls cost the one file. Includes resolve through the vfs, not the buffer.
 // lintBuffer({ key, text|buf, gameDir?, mods?, vocab?, folder?, exe?, info? }) -> [{ line, code, msg, sev: 'error'|'warn'|'info' }]
@@ -416,4 +596,4 @@ function lintBuffer(o) {
   }
   return out;
 }
-module.exports = { check, run, lintBuffer, invalidate, vocabPath, memoHold };
+module.exports = { check, checkAsync, run, lintBuffer, invalidate, vocabPath, memoHold, main };

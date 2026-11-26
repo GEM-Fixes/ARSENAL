@@ -157,22 +157,25 @@ t('reproof1 b: pipeMissedOf', () => {
 });
 
 // reproof1 (b): the pipe opens late (a slow load). A fixed short cap (the old 60 s against a 64 s load, scaled down) gives up; the alive predicate keeps trying and gets the replies
+// the pipe opens only after the capped try gave up (by the event, not a race against a timer); the alive predicate's 60 s and the reply wait
+// are backstops (WAIT line, then the asserts report)
 async function lateServer() {
-  const net = require('net'), name = '\\\\.\\pipe\\edrun-revharness-' + process.pid;
-  let srv = null;
-  const open = setTimeout(() => {
+  const net = require('net'), Wt = require('../../lib/test/wait'), name = '\\\\.\\pipe\\edrun-revharness-' + process.pid;
+  let srv = null, open = null;
+  const listen = () => {
     srv = net.createServer(c => {
       let b = '';
       c.on('data', d => { b += d; let i; while ((i = b.indexOf('\n')) >= 0) { const j = JSON.parse(b.slice(0, i)); b = b.slice(i + 1); c.write(JSON.stringify({ type: 'reply', id: j.id, ok: true, output: [j.cmd + ' = 1'] }) + '\n'); } });
     }).listen(name);
-  }, 1200);
+  };
   try {
     const capped = await e.pipeTalk(['s_version'], () => {}, 300, { name });
     assert.strictEqual(capped, null, 'seeded defect: the short cap gives up before the pipe opens');
+    open = setTimeout(listen, 900);
     const lines = [], t0 = Date.now();
-    const s = await e.pipeTalk(['s_version', 'dbg_blast 1'], l => lines.push(l), () => Date.now() - t0 < 6000, { name });
+    const s = await e.pipeTalk(['s_version', 'dbg_blast 1'], l => lines.push(l), () => Date.now() - t0 < 60000 || (Wt.say('edrun revharness', 'late pipe connect', 60000), false), { name });
     assert.ok(s, 'alive predicate connects once the pipe opens');
-    for (let i = 0; i < 40 && lines.length < 2; i++) await new Promise(r => setTimeout(r, 50));
+    await Wt.until(() => lines.length >= 2, { who: 'edrun revharness', what: '2 pipe replies' });
     s.destroy();
     assert.deepStrictEqual(e.pipeMissedOf(['dbg_blast 1'], lines), [], lines.join('|'));
     n++;

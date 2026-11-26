@@ -11,13 +11,16 @@ const port = Number(process.argv[4] || 47913), modDir = process.argv[5] ? path.r
 if (!process.argv[3] || !fs.existsSync(exe)) { console.error('usage: node test-exe.js <ARSENAL-gui.exe> <cleanRoot> [port] [mod]'); process.exit(2); }
 let pass = 0, fail = 0;
 const ok = (c, m) => { c ? pass++ : fail++; console.log((c ? 'ok   ' : 'FAIL ') + m); };
-const get = (p, method, body) => new Promise((res, rej) => {
+const W = require('../../lib/test/wait');
+const get1 = (p, method, body, lim) => new Promise((res, rej) => {
   const data = body === undefined ? null : JSON.stringify(body);
   const r = http.request({ host: '127.0.0.1', port, path: p, method: method || 'GET', headers: data ? { 'content-type': 'application/json', 'content-length': Buffer.byteLength(data) } : {} }, s => {
     const b = []; s.on('data', d => b.push(d)); s.on('end', () => res({ status: s.statusCode, text: Buffer.concat(b).toString('utf8') }));
   });
-  r.on('error', rej); r.setTimeout(modDir ? 600000 : 60000, () => r.destroy(new Error('timeout'))); if (data) r.write(data); r.end();
+  r.on('error', rej); r.setTimeout(lim, () => r.destroy(Object.assign(new Error('timeout'), { code: 'TESTTIMEOUT' }))); if (data) r.write(data); r.end();
 });
+// at least 5 min idle (with [mod] longer than the check's own 30 min limit); past it a WAIT line and the ask once more with twice the limit
+const get = (p, method, body) => { const lim = modDir ? 1900000 : W.CHILD_MS; return get1(p, method, body, lim).catch(e => { if (e.code !== 'TESTTIMEOUT') throw e; W.say('test-exe', p, lim); return get1(p, method, body, 2 * lim); }); };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 (async () => {
@@ -35,7 +38,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   let out = '', err = ''; child.stdout.on('data', d => out += d); child.stderr.on('data', d => err += d);
   let exited = null; child.on('exit', c => exited = c);
   try {
-    for (let i = 0; i < 50 && !/gui: http/.test(out) && exited === null; i++) await sleep(200);
+    await W.until(() => /gui: http/.test(out) || exited !== null, { who: 'test-exe', what: 'the exe prints its URL', step: 50 });
     ok(/gui: http:\/\/127\.0\.0\.1:\d+/.test(out), 'exe printed its URL: ' + out.trim());
     const h = await get('/api/health'); const hj = JSON.parse(h.text);
     ok(h.status === 200 && hj.sea === true, '/api/health says sea:true (running as the exe)');
@@ -53,7 +56,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     if (rj.code !== 0) console.log('  stderr: ' + String(rj.stderr || err).slice(0, 400));
     // L7-CLEAN: optional [mod] = full `check` as an exe child; check's doctor/wouldload spawn refcheck, sdllint ... as children of the same exe
     if (modDir) {
-      const c = await get('/api/run?stream=0', 'POST', { cmd: 'check', input: { mod: modDir }, timeoutSec: 600 });
+      const c = await get('/api/run?stream=0', 'POST', { cmd: 'check', input: { mod: modDir }, timeoutSec: 1800 });
       const cj = JSON.parse(c.text), so = String(cj.stdout || '');
       ok(c.status === 200 && cj.code === 0 && /^VERDICT as64: /m.test(so), 'check ran as a child of the exe: code ' + cj.code + ', ' + ((/^VERDICT as64: \S+/m.exec(so) || ['no verdict'])[0]));
       ok(/^DOCTOR: mounted /m.test(so) && !/^ERROR: /m.test(so), 'check children (doctor, wouldload, refcheck ...) ran with no tool ERROR' + ((/^ERROR: .*/m.exec(so) || [''])[0] ? ': ' + /^ERROR: .*/m.exec(so)[0] : ''));
@@ -61,7 +64,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   } catch (e) { ok(false, 'exception: ' + e.message); console.log('  exe stderr: ' + err.slice(0, 400)); }
   child.kill();
   spawnKill(child.pid);
-  await sleep(500);
+  await W.until(() => exited !== null, { who: 'test-exe', what: 'the exe exits after the kill', step: 50 });
   ok(exited !== null || child.killed, 'exe stopped');
   console.log(pass + ' passed, ' + fail + ' failed');
   process.exit(fail ? 1 : 0);

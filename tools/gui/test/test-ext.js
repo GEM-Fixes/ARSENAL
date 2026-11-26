@@ -5,6 +5,7 @@ const fs = require('fs'), path = require('path'), cp = require('child_process'),
 const work = path.resolve(process.argv[2] || fs.mkdtempSync(path.join(require('os').tmpdir(), 'gx-')));
 fs.mkdirSync(work, { recursive: true });
 const EXT = require('../ext');
+const W = require('../../lib/test/wait');
 const contract = require('../contract');
 let bad = 0;
 const fail = m => { bad++; console.log('FAIL ' + m); };
@@ -34,7 +35,7 @@ for (const m of page.matchAll(/<script>([\s\S]*?)<\/script>/g)) { try { new vm.S
 for (const x of EXT) {
   const t = path.join(__dirname, '..', 'ext', x.id, 'test.js');
   if (!fs.existsSync(t)) continue;
-  const r = cp.spawnSync(process.execPath, [t, path.join(work, x.id)], { encoding: 'utf8', timeout: 300000 });
+  const r = W.spawnSync(process.execPath, [t, path.join(work, x.id)], { encoding: 'utf8', timeout: 600000 }, 'test-ext ' + x.id);   // some ext tests are long: 10 min, then once more with 20
   if (r.status !== 0) fail(x.id + ': ext test\n' + String(r.stdout + r.stderr).split('\n').slice(-12).join('\n'));
 }
 console.log(bad ? bad + ' failures' : 'ext ' + EXT.length + ' PASS');

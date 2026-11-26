@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 // ialint: interaction data linter (entity.set + interaction_terrain/effects.set trees, includes expanded)
-//   node ialint.js <mod folder> [--game dir] [--exe as64|mowas_2|mowas2|goh] [--mods a,b] [-q] [--summary] | --vfs --game dir [--exe ..] | --vfs --exe goh
+//   node ialint.js <mod folder> [--game dir] [--exe as64|mowas_2|mowas2|goh] [--mods a,b] [--restore-points] [-q] [--summary] | --vfs --game dir [--exe ..] | --vfs --exe goh
+//   --restore-points: also read <mod>/.arsenal-undo (restore points, never mounted; left out by default, lib/sdlset)
+//   speed: the folder and the listed mods are listed once (lib/modtree, parallel), the def files of the place check read many at a time
 //   --exe: the game (vfs exe; no --exe: as before, as64.exe first, a GoH install found by its exe). AS64 and MoW:AS2 share the AS2 install:
 //     --exe mowas_2 mounts it without as64/core. --exe goh with no --game: the GoH install (lib/games install).
 //   GoH (--exe goh or a GoH install): the event set adds destroy (GHINT-17), blast_wreaked, animation_event "name", hatch open|close (GHINT-45) [V];
@@ -21,7 +23,7 @@
 // lib gap: none; the block/token shape comes from lib/sdlx via keylint/model.parts (MOD forms transparent).
 // Author: Imperator_Aug (ARSENAL, ia-97bd3896)
 require('../lib/help')(__filename); // --help / -h: header usage, exit 0 (HELPFIX2)
-const sdlset = require('../lib/sdlset'), sdlx = require('../lib/sdlx');
+const sdlset = require('../lib/sdlset'), sdlx = require('../lib/sdlx'), modtree = require('../lib/modtree');
 const { createReport, relPath } = require('../lib/report');
 const M = require('../keylint/model');
 
@@ -37,12 +39,47 @@ const VANILLA_PLACES = new Set('charge flamer1 flamer2 flamer3 flamer4 flamer5 g
 const tokText = t => t.k === 'STRING' ? t.value : t.k === 'IDENT' ? t.text : null;
 const lc = t => { const s = tokText(t); return s === null ? null : s.toLowerCase(); };
 
+// check(opts) sync as before; checkAsync(opts) the same findings with the folder listed once (lib/modtree) and the def files of
+// the place check read many at a time. Both drive run(): it yields {add: items} once, then {want: item} per def file, and takes
+// the bytes back (undefined = read it itself, as before)
+// checkAsync(opts, ra0): ra0 = a readAhead stand-in to read through (lib/modset read-once pass, ctx.js), closed at the end; a
+// folder this thread already has a fresh scan of (the pass's, adopted) is not scanned again
 function check(opts) {
+  const g = run(opts);
+  let r = g.next();
+  while (!r.done) r = g.next(undefined);
+  return r.value;
+}
+async function checkAsync(opts, ra0) {
+  const path = require('path');
+  let ra = null;
+  try {
+    // one scan per folder this run mounts (the folder, the listed mods): lib/sdlset and lib/gameview take it (modtree fresh)
+    const dirs = new Map(), add = d => { if (d) dirs.set(path.resolve(d).toLowerCase(), d); };
+    if (!opts.vfs) add(opts.folder);
+    if (opts.gameDir && opts.mods && opts.mods.length) { try { for (const m of require('../lib/vfs').listed({ gameDir: opts.gameDir, mods: opts.mods, exe: opts.exe })) add(m.dir); } catch (x) { /* walked as before */ } }
+    for (const d of dirs.values()) { try { if (!(ra0 && modtree.fresh(d))) await modtree.scan(d); } catch (x) { /* walked as before */ } }
+    const g = run(opts);
+    let r = g.next();
+    while (!r.done) {
+      const y = r.value;
+      if (y.add) { ra = ra0 || sdlset.readAhead({ window: Number(process.env.ARSENAL_READ_WINDOW) || 32 }); for (const it of y.add) ra.add(it.path, it.path); r = g.next(undefined); continue; }
+      const it = y.want, w = ra && ra.wait(it.path);
+      if (w) await w;
+      const b = ra ? ra.take(it.path) : undefined;
+      if (ra) ra.drop(it.path);
+      r = g.next(b);
+    }
+    return r.value;
+  } finally { if (ra) ra.close(); if (ra0 && ra0 !== ra) ra0.close(); }
+}
+
+function* run(opts) {
   const rep = createReport();
   let mods = opts.mods;
   const path = require('path');
   if (!mods && opts.folder && opts.gameDir && path.basename(path.dirname(path.resolve(opts.folder))).toLowerCase() === 'mods') mods = [path.basename(path.resolve(opts.folder))];
-  const src = sdlset.createSource({ gameDir: opts.gameDir, mods, folder: opts.folder, exe: opts.exe });
+  const src = sdlset.createSource({ gameDir: opts.gameDir, mods, folder: opts.folder, exe: opts.exe, restorePoints: opts.restorePoints });
   const game = opts.exe || (src.v && src.v.exe) || null, goh = game === 'goh';
   const EV = goh ? EVENTS_GOH : EVENTS;
   const vfsMode = !!opts.vfs;
@@ -214,9 +251,11 @@ function check(opts) {
   // GoH: the AS2 place list does not apply; the places come from the mounted GoH vanilla data (--game), none known without it: no check
   if (fires.length && !vfsMode && (!goh || vanFires)) {
     const places = new Set(goh ? vanFires : VANILLA_PLACES);
-    for (const it of src.folderItems()) {
-      if (!/\.(def|ext|inc)$/i.test(it.key)) continue;
-      try { const t = sdlx.read(it.get(), { file: it.file, key: it.key, open: src.open, onError() {} }); const w = n => { const p = M.parts(n, false); if (p.keyTok && p.keyTok.k === 'IDENT' && p.keyTok.text.toLowerCase() === 'place' && p.toks[0] && p.toks[0].k === 'STRING') places.add(p.toks[0].value.toLowerCase()); for (const k of p.kids) w(k); }; if (t && t.root) w(t.root); } catch (x) { /* unreadable def: its places stay unknown */ }
+    const defs = src.folderItems().filter(it => /\.(def|ext|inc)$/i.test(it.key));
+    yield { add: defs };
+    for (const it of defs) {
+      const b = yield { want: it };
+      try { const t = sdlx.read(b !== undefined ? b : it.get(), { file: it.file, key: it.key, open: src.open, onError() {} }); const w = n => { const p = M.parts(n, false); if (p.keyTok && p.keyTok.k === 'IDENT' && p.keyTok.text.toLowerCase() === 'place' && p.toks[0] && p.toks[0].k === 'STRING') places.add(p.toks[0].value.toLowerCase()); for (const k of p.kids) w(k); }; if (t && t.root) w(t.root); } catch (x) { /* unreadable def: its places stay unknown */ }
     }
     for (const f of fires) if (!places.has(f.nm)) emit(f.node, 'WARN_FIRE_PLACE', `{on fire "${f.nm}"}: no weapon place of that name is known (vanilla places + the places in this folder's defs); the owner's fires table is looked up by place name, a wrong name never fires`);
   }
@@ -235,22 +274,27 @@ function check(opts) {
 
 // .lintrc + --format wiring (own arg parser): rc from --rc FILE, else nearest .lintrc walking up from `start`; --no-rc disables
 const { rcPrint } = require('../lib/cli'), games = require('../lib/games');
-if (require.main === module) {
-  const args = process.argv.slice(2), o = {}, pos = [];
+// main(args, {ra, onError}): the CLI (and ctx.js, the read-once module form: the pass's reader as ra, no onError = the error
+// rejects the promise and the pass runs ialint as a program instead)
+function main(args, { ra, onError } = {}) {
+  const o = {}, pos = [];
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (a === '--game') o.gameDir = args[++i];
     else if (a === '--exe') { const x = args[++i], g = games.get(x); if (!g || /\.exe$/i.test(String(x))) { console.error('ialint: --exe must be one of as64|mowas_2|mowas2|goh'); process.exit(2); } o.exe = g.exe; }
     else if (a === '--mods') o.mods = args[++i].split(',').filter(Boolean);
+    else if (a === '--restore-points') o.restorePoints = true;
     else if (a === '--vfs') o.vfs = true; else if (a === '--rc') o.rcFile = args[++i]; else if (a === '--no-rc') o.noRc = true; else if (a === '--format') o.format = args[++i]; else if (a === '-o') o.output = args[++i]; else if (a === '-q') o.q = true; else if (a === '--summary') o.summary = true; else pos.push(a);
   }
   o.folder = pos[0];
   if (!o.gameDir && o.exe === 'goh') o.gameDir = games.install('goh').dir || undefined;   // --exe goh with no --game: the GoH install (folder and --vfs mode)
   if (!o.folder && !o.vfs || o.vfs && !o.gameDir) { if (o.vfs && !o.gameDir && o.exe === 'goh') console.error('ialint: no GoH install found (set GOH_GAME or give --game)'); console.error('usage: ialint <mod folder> [--game dir] [--exe as64|mowas_2|mowas2|goh] [--mods a,b] [-q] [--summary] | --vfs --game dir [--exe ..] | --vfs --exe goh'); process.exit(2); }
-  const { rep, files, local } = check(o);
-  // no-data notice (COV-LINT: was silent on an empty folder): roots loaded + interaction files the folder itself provides
-  console.error(!files ? 'ialint: 0 files read (no entity.set / effects.set found: give --game, or a folder with resource/set/)'
-    : `ialint: ${files} root files read, ${o.vfs ? 'vanilla baseline' : local + ' interaction files from the folder'}${!o.vfs && !local ? ' (0 files from the folder: nothing of the mod linted)' : ''}`);
-  rcPrint(rep, o, o.folder || o.gameDir, 'ialint', { showInfo: !o.q, byCode: true, summary: o.summary });
+  return checkAsync(o, ra).then(({ rep, files, local }) => {
+    // no-data notice (COV-LINT: was silent on an empty folder): roots loaded + interaction files the folder itself provides
+    console.error(!files ? 'ialint: 0 files read (no entity.set / effects.set found: give --game, or a folder with resource/set/)'
+      : `ialint: ${files} root files read, ${o.vfs ? 'vanilla baseline' : local + ' interaction files from the folder'}${!o.vfs && !local ? ' (0 files from the folder: nothing of the mod linted)' : ''}`);
+    rcPrint(rep, o, o.folder || o.gameDir, 'ialint', { showInfo: !o.q, byCode: true, summary: o.summary });
+  }, onError);
 }
-module.exports = { check, EVENTS, EVENTS_GOH, VANILLA_PLACES };
+if (require.main === module) main(process.argv.slice(2), { onError: e => { console.error(e && e.stack || e); process.exit(1); } });
+module.exports = { check, checkAsync, main, EVENTS, EVENTS_GOH, VANILLA_PLACES };

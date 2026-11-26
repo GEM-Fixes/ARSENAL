@@ -35,7 +35,7 @@ function same(name, j, c, norm) {
   const n0 = norm || (x => x);
   // run-to-run noise that is not output of the contract: "43 s" timings, / vs \ in paths
   const n = l => n0(l).replace(/"ms": \d+/g, '"ms": <t>').replace(/\\\\/g, '/').replace(/\\/g, '/').replace(/\b\d+(\.\d+)? ?(ms|s)\b/g, '<t>');
-  const np = x => !/^PROGRESS /.test(x);   // GUI-LOC: per-tool start/done lines come in pool order, checked in tools/check/test
+  const np = x => !/^PROGRESS /.test(x) && !/^NOTE REUSED_CHECK /.test(x);   // REUSED_CHECK: the second of two same checks replays the first (lib/checkcache)   // GUI-LOC: per-tool start/done lines come in pool order, checked in tools/check/test
   const diff = (a, b) => { a = a.filter(np).map(n); b = b.filter(np).map(n); if (a.length !== b.length) return `${a.length} vs ${b.length} lines`; const i = a.findIndex((x, k) => x !== b[k]); return i < 0 ? null : `line ${i}: ${a[i]} | ${b[i]}`; };
   ok(j.code === c.code, name + ': exit code ' + j.code + ' vs CLI ' + c.code, lines(j, 'err').join('\n'));
   const d1 = diff(lines(j, 'out'), c.out), d2 = diff(lines(j, 'err'), c.err);
@@ -44,7 +44,8 @@ function same(name, j, c, norm) {
 
 // first difference of two parsed results, after the same noise rules as the line compare; null = equal
 function jdiff(a, b, norm) {
-  const fix = (k, v) => (typeof v === 'string' ? (norm ? norm(v) : v).replace(/\\\\|\\/g, '/').replace(/check-ov-[A-Za-z0-9]+/g, 'check-ov-X').replace(/\b\d+(\.\d+)? ?(ms|s)\b/g, '<t>') : (/^(ms|secs|elapsed|time|date|at)$/i.test(k) && typeof v === 'number' ? 0 : v));
+  // reusedCheck: a check the same as one just run is replayed (tools/check, lib/checkcache) and says so in this field only
+  const fix = (k, v) => k === 'reusedCheck' ? undefined : (typeof v === 'string' ? (norm ? norm(v) : v).replace(/\\\\|\\/g, '/').replace(/check-ov-[A-Za-z0-9]+/g, 'check-ov-X').replace(/\b\d+(\.\d+)? ?(ms|s)\b/g, '<t>') : (/^(ms|secs|elapsed|time|date|at)$/i.test(k) && typeof v === 'number' ? 0 : v));
   const x = JSON.stringify(a, fix), y = JSON.stringify(b, fix);
   if (x === y) return null;
   let i = 0; while (x[i] === y[i]) i++;

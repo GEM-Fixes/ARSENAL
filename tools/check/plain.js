@@ -2,6 +2,8 @@
 // game build. No rule codes, no limit ids, no engine file names, no tags. Used by check.js --plain and written to --json as `plain` + `overall`.
 //   overall(R, target, n) -> {target, verdict: 'ok'|'crash'|'refused'|'unfinished', crash, silent, text}
 //   lines(R, target, opt) -> [overall text, finding lines..., other build lines..., quick-check line?]
+//   opt.targetOnly: only the target build was checked (check's default): one line says the others were not, no verdict claimed for them.
+//   opt.restoreLeftOut: the mod holds restore points (.arsenal-undo) that were not read: one line says so
 // Author: Imperator_Aug (ARSENAL, ia-34bf5eb6)
 'use strict';
 const { explain } = require('../lib/explain');
@@ -40,6 +42,12 @@ function counts(R) {
 function overall(R, target) {
   const v = (R.verdicts || {})[target], n = counts(R), g = name(target);
   const base = { target, crash: n.crash, silent: n.silent };
+  // --no-load-check: no verdict of wouldload by the user's choice; the linters' findings alone decide, and the text says what was left out
+  if (R.loadSkipped && !(R.errors || []).length) {
+    const left = ' The load check was skipped, so whether the game accepts the mod at all (its version lines, files it cannot read) was not judged.';
+    return n.crash ? { ...base, verdict: 'crash', text: `Not ready for ${g}: ${plural(n.crash, 'problem', 'problems')} that can crash the game. Fix ${n.crash === 1 ? 'it' : 'them'} before you play.` + left }
+      : { ...base, verdict: 'ok', text: `No known crash problem found by the linters for ${g}.` + left + ' Play the mod to be sure.' };
+  }
   if ((R.errors || []).length || !v || v.verdict === 'UNKNOWN')
     return { ...base, verdict: 'unfinished', text: `The check did not finish for ${g}${v && v.verdict === 'UNKNOWN' ? ': ' + why(v) : ''}. Fix the problem named below and run it again.` };
   if (v.verdict === 'REFUSED')
@@ -73,6 +81,8 @@ function lines(R, target, opt = {}) {
     const w = v.verdict === 'LOADS_STATIC' ? 'no known crash problem' : 'would not work: ' + why(v);
     out.push(`Other game, ${name(k)}: ${w}.`);
   }
+  if (opt.targetOnly) out.push(`Only ${name(target)} was checked; the other game builds were not.`);
+  if (opt.restoreLeftOut) out.push('Restore points kept inside the mod were not checked.');
   if (opt.fast) out.push('Quick check: some slow checks were skipped. Run the full check before you share the mod.');
   return out.map(l => l.replace(/\s{2,}/g, ' '));
 }

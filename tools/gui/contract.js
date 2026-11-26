@@ -68,7 +68,9 @@ const COMMANDS = {
   check: {
     summary: 'Run every static check on a mod folder.', tool: 'check', entry: 'check/check.js', result: 'jsonfile', jsonFlag: '--json', noTimeout: true,
     fields: [f('mod', null, 'path', 'mod folder, anywhere', { pos: 0, req: true }), f('with', '--with', 'path', 'fix/upgrade patch folder'), f('exe', '--exe', 'list', 'as64,mowas2,goh'),
-      GAME, f('goh', '--goh', 'path', 'GoH install'), f('only', '--only', 'list', 'tools to run'), f('fast', '--fast', 'bool', 'skip the slow tools'), f('jobs', '-j', 'int', 'parallel jobs'),
+      GAME, f('goh', '--goh', 'path', 'GoH install'), f('only', '--only', 'list', 'tools to run'), f('fast', '--fast', 'bool', 'skip the slow tools'), f('noload', '--no-load-check', 'bool', 'skip the load check (wouldload)'),
+      f('allgames', '--all-games', 'bool', 'check every game build (default: the target game only)'), f('restorepoints', '--restore-points', 'bool', 'also check restore points inside the mod (.arsenal-undo)'),
+      f('target', '--target', 'enum', 'the game the exit code follows (default: --exe, else mod.info)', { values: ['as64', 'mowas2', 'goh'] }), f('jobs', '-j', 'int', 'parallel jobs'),
       f('locs', '--locs', 'int', 'file:line samples kept per code (default 50)'), f('timing', '--timing', 'bool', 'print timing'), f('quiet', '-q', 'bool', 'less output')],
   },
   fix: {

@@ -113,7 +113,7 @@ ok(/--exe/.test(fixSrc) && /--game-version/.test(fixSrc), 'fix.js takes --exe an
 // 5b. (sweep) contract play, install, uninstall, probe, e2e, dev-loop take target as64|mowas2|goh; without it the AS64 argv is as before;
 // the front door refuses GoH at the start (exit 2, one plain line) and MoW:AS2 runs dry only. Only refusals run here: nothing is started.
 {
-  const cp = require('child_process');
+  const WT = require('../../lib/test/wait');   // a child limit of 5 min, killed: once more with 10
   const as2 = path.join(__dirname, '..', '..', 'as2', 'as2.js');
   const IN = { play: { mod, dry: true, game: gd }, install: { mod, dry: true, game: gd }, uninstall: { name: 'm', game: gd }, probe: { dry: true, game: gd },
     e2e: { mod, map: 'x', dry: true, game: gd }, 'dev-loop': { mod, map: 'x', dry: true, game: gd } };
@@ -125,12 +125,12 @@ ok(/--exe/.test(fixSrc) && /--game-version/.test(fixSrc), 'fix.js takes --exe an
     const a1 = contract.buildArgv(cmd, Object.assign({ target: 'goh' }, inp)).args;
     ok(a1.join(' ').endsWith('--target goh'), cmd + ': target goh gives --target goh', a1.join(' '));
     { let e = null; try { contract.buildArgv(cmd, Object.assign({ target: 'mowas_2' }, inp)); } catch (x) { e = x; } ok(e instanceof contract.InputError, cmd + ': an unknown target is refused'); }
-    const r = cp.spawnSync(process.execPath, [as2, ...a1], { encoding: 'utf8', timeout: 60000, env: Object.assign({}, process.env, { AS2_GAME: gd }) });
+    const r = WT.spawnSync(process.execPath, [as2, ...a1], { encoding: 'utf8', env: Object.assign({}, process.env, { AS2_GAME: gd }) }, 'test-tabs');
     ok(r.status === 2 && /not available for GoH: .*\(.+\)/.test(r.stderr + r.stdout), cmd + ' --target goh: exit 2 with the plain line and its row', r.status + ' ' + (r.stderr + r.stdout).slice(-300));
   }
   fs.writeFileSync(path.join(gd, 'mowas_2.exe'), 'x');
   const pm = contract.buildArgv('play', { mod, game: gd, target: 'mowas2' }).args;
-  const r = cp.spawnSync(process.execPath, [as2, ...pm], { encoding: 'utf8', timeout: 60000 });
+  const r = WT.spawnSync(process.execPath, [as2, ...pm], { encoding: 'utf8' }, 'test-tabs');
   ok(r.status === 2 && /not available for MoW:AS2: .*TST-19/.test(r.stderr + r.stdout), 'play --target mowas2 without dry: exit 2 citing TST-19', r.status + ' ' + (r.stderr + r.stdout).slice(-300));
 }
 

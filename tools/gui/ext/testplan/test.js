@@ -26,8 +26,8 @@ put(path.join(gohMod, 'mod.info'), '{mod}\r\n');
 
 const jobs = [];
 const runTool = (tool, entry, args, o = {}) => new Promise(res => {
-  cp.execFile(process.execPath, [path.join(TOOLS, entry)].concat(args), { encoding: 'utf8', maxBuffer: 64 << 20, timeout: o.timeoutMs || 60000, windowsHide: true },
-    (e, stdout, stderr) => res({ code: e ? (typeof e.code === 'number' ? e.code : 2) : 0, stdout: stdout || '', stderr: stderr || '', timedOut: false, cancelled: false }));
+  require('../../../lib/test/wait').execFile(process.execPath, [path.join(TOOLS, entry)].concat(args), { encoding: 'utf8', maxBuffer: 64 << 20, timeout: o.timeoutMs || 60000, windowsHide: true },
+    (e, stdout, stderr) => res({ code: e ? (typeof e.code === 'number' ? e.code : 2) : 0, stdout: stdout || '', stderr: stderr || '', timedOut: false, cancelled: false }), 'testplan test');
 });
 const mk = (gid, dir) => ({ gameId: () => gid, game: () => dir, curDir: () => dir, gohDir: () => dir, tools: TOOLS, tmpRoot: path.join(work, 'tmp-' + gid), runTool,
   jobs: { add: o => { const h = Object.assign({ cancelled: false, set(x) { Object.assign(h, x); }, end(s) { h.ended = s; } }, o); jobs.push(h); return h; } } });

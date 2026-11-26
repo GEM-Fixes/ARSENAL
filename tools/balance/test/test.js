@@ -77,7 +77,7 @@ ok('change plans: percent, mixed resources refused, special points on their own,
 
 // ---- CLI on the units fixture game
 const { game, mod } = require('../../gui/ext/units/fixture').make(scratch);
-const run = (...a) => cp.spawnSync(process.execPath, [path.join(TOOLS, 'balance/balance.js'), game, '--tmp', path.join(scratch, 'tmp'), ...a], { encoding: 'utf8', timeout: 240000 });
+const run = (...a) => require('../../lib/test/wait').spawnSync(process.execPath, [path.join(TOOLS, 'balance/balance.js'), game, '--tmp', path.join(scratch, 'tmp'), ...a], { encoding: 'utf8' }, 'balance test');
 let r = run(); assert.strictEqual(r.status, 0, r.stderr); assert.ok(/unit\(s\) in the buy panel/.test(r.stdout) && /wait at start = cooldown x factor/.test(r.stdout), r.stdout);
 r = run('--sheet', 'csv', '--cols', 'id,res,cost,charge,fore,wait', '--where', 'id=t34_3'); assert.ok(/t34_3,mp,450,120,0.5,60/.test(r.stdout), r.stdout + r.stderr);
 r = run('--where', 'nosuch=1'); assert.strictEqual(r.status, 2);

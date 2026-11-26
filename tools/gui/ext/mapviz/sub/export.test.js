@@ -661,7 +661,6 @@ async function page() {
       'GET previews/run': () => (runQ.length > 1 ? runQ.shift() : runQ[0]),
       'POST previews/undo': b => { undoB = b; return { id: 'prv-u', state: 'running' }; },
     };
-    const wait = ms => new Promise(r => setTimeout(r, ms));
     // no mod folder: the button is off, the words say to choose a mod, a press asks nothing
     { const N0 = load(), NR = stubV(N0, { routes: dr, q: { mod: null } }); N0.part.init(NR.V); NR.V.emit('map', {}); await H.flush();
       const db = blkOf(NR.boxes.export, 'mv.export.deploy'), b0 = btn(db, en('mapviz.export.deploy'));
@@ -699,8 +698,8 @@ async function page() {
     ok(pa && pa.b.all === true && !pa.b.targets && wr && wr.b.all === true && wr.b.planHash === 'dddddddd22222222' && wr.b.set['preview.compose'] === 'crop', 'then one plan and one write with all:true and the plan hash, the choices kept', [pa && pa.b, wr && wr.b]);
     dt = txt(dblk);
     ok(dt.indexOf(en('mapviz.export.fstate.composed')) >= 0 && dt.indexOf(en('mapviz.export.fstate.compose')) >= 0 && dt.indexOf(en('mapviz.export.fstate.wait')) >= 0, 'per-file progress while it runs', dt);
-    // the deploy ends after several polls: wait for the summary itself (up to 3 s), not for a fixed time
-    for (let i = 0; i < 60; i++) { await wait(50); await H.flush(); dt = txt(dblk); if (dt.indexOf(en('mapviz.export.deployDone', { w: 3, s: 1, f: 1, n: 7 })) >= 0) break; }
+    // the deploy ends after several polls: wait for the summary itself (backstop 60 s, then the check reports), not for a fixed time
+    await H.until(() => txt(dblk).indexOf(en('mapviz.export.deployDone', { w: 3, s: 1, f: 1, n: 7 })) >= 0); await H.flush(); dt = txt(dblk);
     ok(dt.indexOf(en('mapviz.export.deployDone', { w: 3, s: 1, f: 1, n: 7 })) >= 0 && dt.indexOf(en('mapviz.export.prv.PRV_FILE_FAILED')) >= 0 && dt.indexOf(en('mapviz.export.fstate.failed')) >= 0 && dt.indexOf(en('mapviz.export.fstate.written')) >= 0,
       'summary: written, skipped, failed with why', dt);
     btn(dblk, en('mapviz.export.deployUndo')).click(); await H.flush();
@@ -754,7 +753,7 @@ async function polls() {
     const rc = () => calls(rec, 'GET', 'previews/run').length, done = en('mapviz.export.written', { n: 2, b: 1, w: 7 });
     await H.until(() => rc() >= 3, 3000);
     ok(rc() >= 3 && !!btn(box, en('mapviz.export.cancel')), 'poll (' + how + '): on screen a running write is read again and again', rc());
-    hide(true); await wait(40); const n1 = rc(); await wait(120);
+    hide(true); await wait(40); const n1 = rc(); await wait(120);   // room for a request that must not come
     ok(rc() === n1, 'poll (' + how + ' hidden): no previews/run request while the write runs', [n1, rc()]);
     ok(txt(blkOf(box, 'mv.export.status')).indexOf(done) < 0, 'poll (' + how + ' hidden): the run is still shown as running');
     ans = { id: 'prv-1', state: 'done', result: { written: ['a', 'b'], backups: ['a'], entry: { n: 7 } } };

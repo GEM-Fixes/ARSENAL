@@ -1,6 +1,6 @@
 // modtree: one walk of a mod folder for everybody (gui README, CACHE contract 1). Every page that asks "did the mod change?"
 // takes its answer from here instead of walking the mod itself (units modSig, balance modSig, soedit treeSig, buycheck sig).
-//   scan(modDir, {onProgress, signal}) -> Promise<T>   a walk that starts now. Async: folders are listed and files stat'ed
+//   scan(modDir, {onProgress, signal, names, conc, restorePoints}) -> Promise<T>   a walk that starts now. Async: folders are listed and files stat'ed
 //     through the thread pool, 32 at a time, so the loop only takes the answers; the sort and the hashing give the loop a turn
 //     (setImmediate) every few thousand rows. onProgress({count}) every 200 files and at the end; signal (AbortSignal) rejects
 //     with an AbortError (code ABORT_ERR). A missing or unreadable modDir rejects; an unreadable folder below it, or a file
@@ -16,8 +16,14 @@
 //     resource/set/** set, resource/entity/** entity, resource/map/** map, resource/properties/** properties,
 //     resource/interface/** interface, resource/script/** script; *.lng and localization/** -> text; the rest other.
 //     (N.pat is not in the contract text: it is a pak the game mounts, so it is counted with them, not in other.)
-//   Left out of the walk: folders .git, .svn, .arsenal, node_modules (any depth, any case) and every symbolic link or junction
-//     (never followed, never listed). The old walkers skip at most .git/.svn/.arsenal, so nothing they see as mod data is lost.
+//   Left out of the walk: folders .git, .svn, .arsenal, node_modules, .arsenal-undo (restore points, never mounted) (any depth,
+//     any case) and every symbolic link or junction (never followed, never listed). The old walkers skip at most .git/.svn/.arsenal,
+//     so nothing they see as mod data is lost. A left-out folder is in `left`, so lib/vfs and lib/sdlset still read it from disk.
+//   scan opts (both off by default; such a T is returned only: never kept, never given by ensure, fresh or last):
+//     restorePoints: true  .arsenal-undo is walked too
+//     names: true          names only: folders listed N at a time (conc, default 32), no stat per file. files rows are
+//       [rel, -1, -1], bytes 0, the signatures hash the sorted rel names, T.names = true. No sizes: not for lib/vfs listings
+//       (record sizes); fine for lib/sdlset createSource o.listing (names only).
 //   ensure(modDir, {maxAgeMs = 15000, onProgress, signal}) -> Promise<T>   the last scan when younger than maxAgeMs and not
 //     touched since, else one scan; callers at the same time share it. A caller's signal takes only that caller out: the
 //     shared scan stops when every caller that waits for it has stopped.
@@ -25,6 +31,8 @@
 //     is younger than maxAgeMs; never the one kept in the store. For sync callers that cannot await ensure (gameview.withModsSync).
 //   last(modDir) -> T | null   sync, whatever is known: the last scan of this process, else the one kept in the store
 //     (a kept one is never taken as fresh: the first ensure walks again).
+//   adopt(T) -> bool   T (a full scan made by another thread or the parent process of this run) becomes this process's fresh
+//     scan of T.dir, unless this process has a newer one; names-only T refused. Not stored.
 //   touch(modDir)   the next ensure scans again, also when a scan is running now (it may have read the folder before the
 //     write). Call after any write into the mod.
 //   stamps(T, areas) -> {'mod:set': sig, ...}   for lib/cachestore. areas: area names and/or 'all'; none given = {'mod:all'};
@@ -32,6 +40,11 @@
 //   Store: the last T of each mod is kept in lib/cachestore (section 'modtree', parts {mod}), written only when `all` moved.
 //     cachestore is required inside a try: missing or throwing = memory only. A test process (and what it starts) gets a
 //     scratch store, never the user's (cachestore open).
+//   Native listing: on Windows, when tools/scan/bin/arscan.exe is built (node tools/scan/build.js), the listing comes from it
+//     (one FindFirstFileExW per folder, no stat per file), same rows, so T is the same byte for byte; on any failure of it the
+//     node walk runs. Names-only scans always walk with node (no stat to save). ARSENAL_NATIVE_SCAN=0 = the node walk only.
+//     The node walk starts first and hands over at 3000 files (ARSENAL_NATIVE_MIN, 0 = native at once): starting the helper costs
+//     about 30 ms, more than a whole small mod's walk.
 //   AREAS, VER; _reset({store}) for tests (store: null = memory only, an object = that store, absent = the real one again).
 // Author: Imperator_Aug (ARSENAL, ia-f2171acf)
 'use strict';
@@ -39,8 +52,8 @@ const fs = require('fs'), path = require('path'), crypto = require('crypto');
 
 const AREAS = ['set', 'entity', 'map', 'properties', 'interface', 'script', 'text', 'pak', 'other'];
 const RES = new Set(['set', 'entity', 'map', 'properties', 'interface', 'script']);
-const SKIP_DIR = new Set(['.git', '.svn', '.arsenal', 'node_modules']);
-const VER = 1, SECTION = 'modtree', MAX_DEPTH = 64, RUN_N = 200, CONC = 32;
+const SKIP_DIR = new Set(['.git', '.svn', '.arsenal', 'node_modules']), UNDO = '.arsenal-undo';
+const VER = 1, SECTION = 'modtree', MAX_DEPTH = 64, RUN_N = 200, CONC = 32, NATIVE_MIN = 3000;
 // loaded here, not at the first store use: a test process then names its scratch store (cachestore testRoot) before it starts
 // any child, so no child writes a T into the user's store. Still inside a try: missing or throwing = memory only.
 try { require('./cachestore'); } catch (e) { /* memory only */ }
@@ -59,14 +72,17 @@ const sha = () => crypto.createHash('sha1');
 
 // list + stat through the thread pool, CONC at a time (stat is the slow part on Windows: 112k files took 10 s one by one on
 // the loop, 3.4 s this way, and the loop stays free). rows: [row text, [rel, size, mtimeMs]] in arrival order.
-function collect(dir, signal, onProgress) {
+// o.names: no stat, a file is a row as soon as its folder is listed; o.conc: reads at a time; o.restorePoints: walk .arsenal-undo
+function collect(dir, signal, onProgress, o = {}) {
+  const conc = Math.max(1, Number(o.conc) || CONC), names = !!o.names, rp = !!o.restorePoints;
   return new Promise((res, rej) => {
     const rows = [], dirs = [['', 0]], files = []; rows.left = [];
     let live = 0, done = false, count = 0, since = 0;
     const end = (err) => { if (done) return; done = true; if (signal) signal.removeEventListener('abort', onAbort); if (err) rej(err); else res(rows); };
     const onAbort = () => end(abortErr());
+    const skip = nm => { const l = nm.toLowerCase(); return SKIP_DIR.has(l) || (!rp && l === UNDO); };
     const pump = () => {
-      while (!done && live < CONC) {
+      while (!done && live < conc) {
         if (files.length) {
           const rel = files.pop(); live++;
           fs.stat(path.join(dir, rel), (err, st) => {
@@ -82,9 +98,11 @@ function collect(dir, signal, onProgress) {
             for (const e of es) {
               const rel = rd ? rd + '/' + e.name : e.name;
               if (e.isSymbolicLink()) { rows.left.push(rel); continue; }
-              if (e.isDirectory()) { if (!SKIP_DIR.has(e.name.toLowerCase()) && depth < MAX_DEPTH) dirs.push([rel, depth + 1]); else rows.left.push(rel); }
-              else if (e.isFile()) files.push(rel);
-              else rows.left.push(rel);
+              if (e.isDirectory()) { if (!skip(e.name) && depth < MAX_DEPTH) dirs.push([rel, depth + 1]); else rows.left.push(rel); }
+              else if (e.isFile()) {
+                if (!names) files.push(rel);
+                else { rows.push([rel, [rel, -1, -1]]); count++; if (++since >= RUN_N) { since = 0; if (onProgress) onProgress({ count }); } }
+              } else rows.left.push(rel);
             }
             pump();
           });
@@ -97,13 +115,41 @@ function collect(dir, signal, onProgress) {
   });
 }
 
+// the listing: tools/scan's native lister (Windows, when built) gives the same rows as collect; any failure of it = collect.
+// ARSENAL_NATIVE_SCAN=0 = collect only. Progress counts never go back when the node walk takes over part way.
+let NATIVE;
+function native() { if (NATIVE === undefined) { try { NATIVE = require('../scan/native.js'); } catch (e) { NATIVE = null; } } return NATIVE; }
+async function list(dir, signal, onProgress, o) {
+  const nat = native();
+  let top = 0;
+  const prog = onProgress && (p => { if (p.count >= top) { top = p.count; onProgress(p); } });
+  if (!(nat && !o.names && nat.available())) return collect(dir, signal, prog, o);   // names only: no stat to save, the node walk is faster
+  // the node walk first: a small tree is done before a child program would have started (about 1.5 ms against 30 ms for a few
+  // files); a tree past NATIVE_MIN files stops it and lists again with the native lister. ARSENAL_NATIVE_MIN=<n>, 0 = native at once
+  const min = /^\d+$/.test(process.env.ARSENAL_NATIVE_MIN || '') ? +process.env.ARSENAL_NATIVE_MIN : NATIVE_MIN;
+  if (min > 0) {
+    if (signal && signal.aborted) throw abortErr();
+    const ac = new AbortController(), outer = () => ac.abort();
+    let big = false;
+    if (signal) signal.addEventListener('abort', outer);
+    try {
+      return await collect(dir, ac.signal, p => { if (prog) prog(p); if (!big && p.count >= min) { big = true; ac.abort(); } }, o);
+    } catch (e) {
+      if (!big || (signal && signal.aborted)) throw e;
+    } finally { if (signal) signal.removeEventListener('abort', outer); }
+  }
+  try { const rows = await nat.collect(dir, { signal, onProgress: prog, names: o.names, restorePoints: o.restorePoints, maxDepth: MAX_DEPTH, runN: RUN_N, abortErr }); nat.stats.native++; return rows; }
+  catch (e) { if (e && e.code === 'ABORT_ERR') throw e; nat.stats.fallback++; nat.stats.why = String(e && e.message || e); }
+  return collect(dir, signal, prog, o);
+}
+
 async function walk(dir, o) {
   const signal = o.signal, onProgress = typeof o.onProgress === 'function' ? o.onProgress : null;
   const stop = () => { if (signal && signal.aborted) throw abortErr(); };
   const step = async () => { await turn(); stop(); };
-  const rows = await collect(dir, signal, onProgress);
+  const rows = await list(dir, signal, onProgress, o);
   const count = rows.length; let bytes = 0;
-  for (const r of rows) bytes += r[1][1];
+  if (!o.names) for (const r of rows) bytes += r[1][1];
   // sort in slices (a 100k-row sort in one go holds the loop too long), then merge them
   const SL = 4096, parts = [];
   for (let i = 0; i < rows.length; i += SL) { parts.push(rows.slice(i, i + SL).sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))); await step(); }
@@ -133,7 +179,9 @@ async function walk(dir, o) {
   const areas = {};
   for (const a of AREAS) areas[a] = hs[a].digest('hex');
   if (onProgress) onProgress({ count });
-  return { dir, at: Date.now(), count, bytes, all: all.digest('hex'), areas, files, left: rows.left.sort() };
+  const T = { dir, at: Date.now(), count, bytes, all: all.digest('hex'), areas, files, left: rows.left.sort() };
+  if (o.names) T.names = true;
+  return T;
 }
 
 // ---------- what is known per mod
@@ -169,7 +217,7 @@ function keep(e, T, gen) {
 async function scan(modDir, o = {}) {
   const e = ent(modDir), gen = e.gen;
   const T = await walk(e.dir, o);
-  keep(e, T, gen);
+  if (!o.names && !o.restorePoints) keep(e, T, gen);   // another shape than ensure's: not kept
   return T;
 }
 
@@ -211,6 +259,17 @@ function fresh(modDir, maxAgeMs = Infinity) {
   return e && e.t && e.tGen === e.gen && Date.now() - e.t.at < maxAgeMs ? e.t : null;
 }
 function touch(modDir) { if (modDir) ent(modDir).gen++; }
+// a scan made elsewhere in the same run (another thread or a parent process that scanned the folder just before, e.g. a
+// lib/sdlset o.listing, a --listing file) taken as this process's fresh scan of T.dir, so fresh() and gameview find it
+// instead of walking again. A names-only T is refused (no sizes); a newer scan of this process is kept. Never stored.
+function adopt(T) {
+  if (!T || typeof T !== 'object' || !T.dir || T.names || !isT(T) || !Array.isArray(T.left)) return false;
+  if (!T.files.every(r => Array.isArray(r) && typeof r[1] === 'number' && r[1] >= 0)) return false;   // a names-only shape without the flag
+  const e = ent(T.dir);
+  if (e.t && e.tGen === e.gen && e.t.at > T.at) return false;
+  e.t = T; e.tGen = e.gen;
+  return true;
+}
 
 function stamps(T, areas) {
   const out = {};
@@ -227,4 +286,4 @@ function _reset(o = {}) {
   if ('store' in o) { STORE = o.store; FIXED = true; } else { STORE = undefined; FIXED = false; }
 }
 
-module.exports = { scan, ensure, last, fresh, touch, stamps, areaOf, AREAS, VER, _reset };
+module.exports = { scan, ensure, last, fresh, touch, adopt, stamps, areaOf, AREAS, VER, _reset };

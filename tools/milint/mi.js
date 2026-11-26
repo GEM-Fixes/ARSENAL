@@ -47,6 +47,7 @@ const vocab = (game) => {
   return VOC[g];
 };
 const lc = s => (s == null ? '' : String(s)).toLowerCase();
+const FAST = process.env.MILINT_FAST !== '0';
 const BLOCKS = new Set(['if', 'while', 'loop', 'switch', 'case', 'default', 'select', 'thread']);   // statements whose children are statements
 const COND_KEYS = new Set(['terms', 'expression', 'type', 'term']);
 // keys that are structure, not engine fields: selector contents (filter terms), old-format inline terms
@@ -55,7 +56,8 @@ const val0 = n => (n.vals.length ? String(n.vals[0].value) : null);
 function lintMi(o) {
   const { k, top, add, hint } = o, goh = o.game === 'goh', V = vocab(o.game);
   const none = { ids: new Set(), mids: new Set() }, mp = () => (o.mapIds ? o.mapIds() : none);
-  const kid = (n, name) => n.kids.find(c => lc(c.name) === lc(name));
+  // milint's lite nodes carry ln = lc(name) (other callers' nodes do not: lc as before); MILINT_FAST=0: lc both sides per child
+  const kid = FAST ? (n, name) => { const l = lc(name); return n.kids.find(c => (c.ln !== undefined ? c.ln : lc(c.name)) === l); } : (n, name) => n.kids.find(c => lc(c.name) === lc(name));
   const helpers = top.kids.find(c => lc(c.name) === 'helpers');
 
   // ---- entity ids / MIDs

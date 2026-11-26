@@ -11,11 +11,11 @@ All three game tabs hold the same pages; a part a game cannot run says so on the
 
 ## Pages and routes (generated)
 <!-- gen:pages -->
-registry sig 58a557fd8c410eb876fa3fccb81441e14bf1b5af · 31 pages · 447 routes · 23 commands
+registry sig f76ba94e969bfbc6ebeed080ddd6cb3679c4399d · 31 pages · 450 routes · 23 commands
 
 ### Routes of what sits above the tabs
 `/api/x/<id>/` + name. G = GET, P = POST. After a name: `+write` (or another word) = previews unless that body field is true; `+dry` = writes unless `dry` is true; `!` = always writes; `^` = starts the game; `#` = refused; `?` = the scan could not tell, read the route with `gui_routes` first.
-- `core`: G / /console /api/jobs /api/ls /api/mods /api/mod /api/peek /api/explain /api/limit /api/text /api/health /api/installed /api/settings /api/commands /api/game /api/live /api/remote /api/cache · P /api/cancel /api/answer /api/launch^ /api/remote# /api/remote/newkey# /api/follow /api/follow/remote# /api/spec! /api/settings! /api/run
+- `core`: G / /console /api/jobs /api/ls /api/mods /api/mod /api/check/eta /api/modwatch/status /api/peek /api/explain /api/limit /api/text /api/health /api/installed /api/settings /api/commands /api/game /api/live /api/remote /api/cache · P /api/cancel /api/answer /api/launch^ /api/remote# /api/remote/newkey# /api/follow /api/follow/remote# /api/spec! /api/settings! /api/modwatch? /api/run
 - `view`: G bytes info hex hex/find sound/plan sound/pcm sound/name sound/burst picture/info picture/image model/owner map/info video/info video/audio video/frame font/info font/page shader/info misc/list misc/ref · P video/play+dry
 - `task`: G catalogue recipe drafts draft lookup values external r/vehicle/crew r/text/missing r/text/lint r/text/extract r/text/table r/text/find r/model/set r/model/names r/x-thing/entities r/x-limits/find · P draft/new? draft/save? draft/delete? draft/child? upload? plan write? check external/open+dry external/back? r/vehicle/gohcard? r/squad/gohcard? r/item/gohgive? r/skin/gametex? r/army/flag+write r/army/text? r/army/gohcards? r/army/gohmake? r/army/gohadopt? r/army/gohbudget? r/map/goh? r/mission/goh? r/bots/buy+write r/bots/gohbuy? r/text/goh? r/model/edit+write r/model/gohvol? r/armour/goh? r/gohunit/dir? r/gohunit/scan r/gohunit/stage? r/fixmod/scan r/fixmod/stage? r/release/check
 - `/api/run` commands: game new play^ install uninstall probe^ e2e^ dev-loop^ upgrade check fix gen prove^ translate edrun^ mapshot^ testprofile testprofile-seed soeditlocate soeditstage soeditopen soeditcheck gohport

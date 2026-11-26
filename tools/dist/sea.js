@@ -14,7 +14,8 @@ const SKIPFILE = /^(package(-lock)?|REPORT(-[\w.-]+)?)\.json$/; // REPORT.json, 
 // test files that sit outside a test/ folder: any *.test.js (GUI ext sub-part tests, recipe tests, cards.test.js) and a GUI
 // ext's own top-level test.js and its parts test-<name>.js (gui/ext/<id>/test.js, gui/ext/<id>/test-games.js: test.js runs them as
 // child processes and they may require gui/test/ helpers, which are never embedded). Nothing requires them at run time; the exe never runs them.
-const SKIPTEST = (rel, name) => /\.test\.js$/.test(name) || (/^test(-[\w.-]+)?\.js$/.test(name) && /^gui\/ext\/[^/]+\/$/.test(rel));
+// also a part's test.js deeper down (gui/ext/bots/parts/<p>/test.js) and testgames.js: they require lib/test/wait.js, never embedded
+const SKIPTEST = (rel, name) => /\.test\.js$/.test(name) || (/^test(-[\w.-]+)?\.js$/.test(name) && /^gui\/ext\/[^/]+\/(parts\/[^/]+\/)?$/.test(rel)) || (name === 'testgames.js' && /^gui\/ext\/[^/]+\/$/.test(rel));
 
 // BAK: backup copies (a `.bak` folder such as rows/.bak, any *.bak folder or file) are never shipped, in the exe nor the small package
 const BAK = /\.bak$/i;

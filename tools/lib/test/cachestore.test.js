@@ -281,10 +281,15 @@ t('two processes writing one identity 50 times each leave a readable entry', asy
     const ch = cp.spawn(process.execPath, [__filename, 'child', root, who, '50'], { stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
     let out = '', err = '';
     ch.stdout.on('data', d => { out += d; }); ch.stderr.on('data', d => { err += d; });
+    // watchdog 5 min (WAIT line): a stuck child ends the step as failed, never a hang (no rerun: the two children must race together)
+    const dog = setTimeout(() => { require('./wait').say('cachestore test', 'writer child ' + who, 300000); ch.kill(); }, 300000);
     ch.on('error', rej);
+    ch.on('close', code => clearTimeout(dog));
     ch.on('close', code => code === 0 ? res(JSON.parse(out.trim().split('\n').pop())) : rej(new Error('child ' + who + ' exit ' + code + ': ' + err)));
   });
-  const [a, b] = await Promise.all([run('A'), run('B')]);
+  let [a, b] = await Promise.all([run('A'), run('B')]);
+  // a get that lands in the other writer's rename window can miss on a busy PC (a miss is only a cache miss): race once more before failing
+  if (a.miss + b.miss) { require('./wait').say('cachestore test', 'a race without a missed get ('+ JSON.stringify([a, b]) + '), races once more', 0); [a, b] = await Promise.all([run('A'), run('B')]); }
   assert.equal(a.miss + b.miss, 0, 'a get between the writes missed: ' + JSON.stringify([a, b]));
   const S = cs.open({ root, release: REL });
   const g = S.get('race', 1, RACE.parts, RACE.stamps);
@@ -390,7 +395,7 @@ t('a test process never opens the user store', () => {
   assert.ok(!cs.isTestMain(''));
   const env = Object.assign({}, process.env); delete env.ARSENAL_CACHE; delete env.ARSENAL_TEST_STORE;
   const real = path.resolve(require('../toolcache').dir('store', { env }));
-  const ask = (script, e) => cp.spawnSync(process.execPath, [script], { encoding: 'utf8', env: e, windowsHide: true }).stdout.trim();
+  const ask = (script, e) => require('./wait').spawnSync(process.execPath, [script], { encoding: 'utf8', env: e, windowsHide: true }, 'cachestore test').stdout.trim();
   const body = 'const cs = require(' + JSON.stringify(path.resolve(__dirname, '..', 'cachestore.js')) + '); console.log(cs.open().root);';
   const plainJs = path.join(base, 'tool.js'), testJs = path.join(base, 'test.js'), parentJs = path.join(base, 'x.test.js');
   fs.writeFileSync(plainJs, body); fs.writeFileSync(testJs, body);

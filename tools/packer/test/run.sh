@@ -17,4 +17,5 @@ grep -q 'PACK_ROUNDTRIP' out2.txt && { echo "FAIL: roundtrip"; exit 1; }
 node check.js || exit 1
 g=$(node guard.js) || { echo "$g"; echo "FAIL: GoH guard (guard.js)"; exit 1; }
 g=$(node goh.js) || { echo "$g"; echo "FAIL: GoH mod (goh.js)"; exit 1; }
+g=$(node speed.js) || { echo "$g"; echo "FAIL: speed layout (speed.js)"; exit 1; }
 echo PASS

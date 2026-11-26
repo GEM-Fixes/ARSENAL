@@ -131,7 +131,7 @@ ARSENAL release-check --publish "G/mods/mymod"
 
 **`build`** runs the whole linting pipeline (see [chapter 19](19-toolchain.md)) and, only if it passes, writes the paks to the `--out` folder. With `--strict`, warnings count as failures too. The tool refuses to write paks inside a game install, so keep `--out` somewhere else. After writing, it reads each pak back to confirm it is valid.
 
-**`packer --dry`** shows the plan: which loose files would go into which role pak, plus any encoding or name warnings. It also warns when a loose file would shadow an entry in a pak you are shipping. `packer <mod folder> --out <folder>` writes the package.
+**`packer --dry`** shows the plan: which loose files would go into which role pak, plus any encoding or name warnings. It also warns when a loose file would shadow an entry in a pak you are shipping. `packer <mod folder> --out <folder>` writes the package in the speed layout, the default (the "Pack for speed" box of the Share page) for the fastest game load and mod check: text and map `.net` and `.grs` files compressed, the rest stored, text entries first in each pak. `--no-speed` writes the old layout: only text compressed, files in folder order.
 
 **`doctor --release`** is the ship checklist. It looks for stray development files and root notes, loose files that duplicate pak entries, a missing `mod.info`, empty folders, unusually large files (use `--big MB` to set the limit), and files that the multiplayer check compares only by size.
 

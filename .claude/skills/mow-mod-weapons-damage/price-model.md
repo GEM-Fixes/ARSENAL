@@ -14,7 +14,7 @@ game word: MCP `game` = `as64|mowas2` (goh answers why not) · CLI has no game w
    | `calc` | per breed: class, tier, level, veterancy, price parts, calc / mod mp cp cw; per squad card: rule, add-on, member sum, calc / current cost. `--review tiers`, `--review grenades` |
    | `fit` | exact / within 2% / off, biggest gaps, findings |
    | `plan` / `apply` | apply writes `;{price ...}` COMMENT lines above each breed row and priced card; prices change only with `--set-prices` (OFF by default) |
-   | `undo --undo tag` / `check` | restores byte for byte from `<mod>/.arsenal-undo/<tag>/`; check proves the data is unchanged and a second apply changes nothing |
+   | `undo --undo tag` / `check` | restores byte for byte from `<mod>.arsenal-undo/<tag>/` beside the mod (old copies inside `<mod>/.arsenal-undo/` still read); check proves the data is unchanged and a second apply changes nothing |
 5. GUI: Units & Balance tab > Balance > Price calculator. routes `balance/prices/calc`, `prices/try`, `prices/plan`, `prices/apply`, `prices/undo` via `gui_routes` / `gui_call`
 6. after a real price change: lint `node tools/check/check.js <mod>` and a balance pass
 

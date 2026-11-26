@@ -2,12 +2,15 @@
 //   rule ctx: { kind, path, key, tail, cp (parts of the block), pcp (parts of its parent) , pkey, c (block), fs (per-file state Map),
 //               emit(anchor, code, msg), info(anchor, code, msg) }
 // Author: Imperator_Aug (ARSENAL, ia-3ef59635)
-const M = require('./model');
+const M = require('./model'), CK = require('./chkkey');
+// seg(p, s) = /(^|\/)s$/.test(p) for a plain s (no regex per block). The tail always ends with the key (M.childPath), so a key
+// test first (key ends with the last part of s) leaves the tail string alone for every other block
+const seg = (p, s) => p === s || p.length > s.length && p.endsWith(s) && p.charCodeAt(p.length - s.length - 1) === 47;
 
 const ENT = new Set(['def', 'ext', 'inc', 'def1', 'mdl']);
 const num = t => t && (t.k === 'INTEGER' || t.k === 'FLOAT');
 const txt = t => t.k === 'STRING' ? t.value : t.text;
-const kidKeys = cp => cp.kids.map(k => M.parts(k, false).key);
+const kidKeys = cp => cp.kids.map(k => M.partsM(k).key);
 const DAMAGE_KNOWN = new Set(['blastwave', 'fire', 'flash', 'cumulative']);
 const DAMAGE_REJECTED = new Set(['projective', 'health']);
 const WHOLE_WEAPON = new Set(['calibre', 'aimtype', 'burst', 'disablericochet', 'zeroingaccuracy']);
@@ -41,7 +44,7 @@ function onBlock(x) {
     else if (eff && !DAMAGE_KNOWN.has(eff)) emit(c, 'DAMAGE_UNKNOWN', `unknown damage effect "${eff}": ERROR "Unknown damage effect type" (blastwave fire flash cumulative)`);
     if (eff === 'blastwave' && !x.goh) {   // GoH reads more keys here (ground_interaction_radius in 148 vanilla blocks)
       for (const k of cp.kids) {
-        const kk = M.parts(k, false).key;
+        const kk = M.partsM(k).key;
         if (kk !== 'energy' && kk !== 'area') emit(k, 'DAMAGE_BLASTWAVE_KEY', `"${kk}" inside damage blastwave: only energy and area are read (ERROR unexpected token)`);
       }
     }
@@ -59,9 +62,9 @@ function onBlock(x) {
     !x.fs.nb && (x.fs.nb = 1) && info(c, 'VOLUME_NO_BLAST', 'volume `able clear` without {blast}: takes no blastwave damage (first in file)');
 
   // KEY-04: ricochet angle table rows {in out}: out <= in
-  if (/(^|\/)ricochet\/angle$/.test(tail)) {
+  if (key.endsWith('angle') && seg(tail, 'ricochet/angle')) {
     for (const r of cp.kids) {
-      const rp = M.parts(r, false);
+      const rp = M.partsM(r);
       if (num(rp.keyTok) && num(rp.toks[0]) && rp.toks[0].value > rp.keyTok.value)
         emit(r, 'WARN_RICOCHET_CLAMP', `ricochet angle row {${rp.keyTok.text} ${rp.toks[0].text}}: out > in: engine logs WARNING Invalid ricochet angle and clamps out = in`);
     }
@@ -84,7 +87,7 @@ function onBlock(x) {
 
   // KEY-09 weapon parameters "tags": whole-weapon keys
   if (key === 'parameters' && t0 && t0.k === 'STRING' && stuff) {
-    for (const k of cp.kids) { const kk = M.parts(k, false).key; if (WHOLE_WEAPON.has(kk)) info(k, 'PARAM_WHOLE_WEAPON', `"${kk}" inside parameters "..." applies to the whole weapon, not per ammo`); }
+    for (const k of cp.kids) { const kk = M.partsM(k).key; if (WHOLE_WEAPON.has(kk)) info(k, 'PARAM_WHOLE_WEAPON', `"${kk}" inside parameters "..." applies to the whole weapon, not per ammo`); }
   }
 
   // KEY-10 calibre: weapon stuff filling a non-bulletNN ammo without calibre
@@ -92,7 +95,7 @@ function onBlock(x) {
     !x.fs.nc && (x.fs.nc = 1) && info(c, 'NO_CALIBRE', `filling "${t0.value}" has no bulletNN tag: set {calibre mm} explicitly (overmatch)`);
 
   // KEY-11 / KEY-12 / KEY-20: dead keys
-  if (/(^|\/)ballistics\/damping$/.test(tail)) x.dead(c, 'ballistics "damping" is loaded but never read');
+  if (key.endsWith('damping') && seg(tail, 'ballistics/damping')) x.dead(c, 'ballistics "damping" is loaded but never read');
   if (kind === 'set/ability.set' && key === 'reload') x.warnDead(c, 'ability weapon reload is written under key "aim_range"; there is no "reload" key [T]');
   if (kind.startsWith('set/target') && (key === 'in_ik_range' || cp.toks.some(t => t.k === 'IDENT' && t.text.toLowerCase() === 'in_ik_range'))) x.dead(c, 'target term in_ik_range is always false');
 
@@ -128,7 +131,7 @@ function onBlock(x) {
     if (ks.includes('projectiledamagetable'))
       cp.kids.forEach((k, i) => { if (ks[i] === 'curve' || ks[i] === 'projectiledamage') info(k, 'DEAD_KEY', `"${ks[i]}" does not affect armor penetration while projectileDamageTable is present (still used for health damage vs infantry)`); });
   }
-  require('./chkkey').onBlock(x);   // CHK-KEY rows (SDL-61 SDL-43 PORT-88 PORT-92 AI-01 AI-05)
+  CK.onBlock(x);   // CHK-KEY rows (SDL-61 SDL-43 PORT-88 PORT-92 AI-01 AI-05)
 }
 
 module.exports = { onBlock, BUILTIN_EXTENDERS, ENGINE_KEYS, ENGINE_ENUMS };

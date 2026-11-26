@@ -192,7 +192,7 @@ const get = (name, q, c) => ext.routes['GET /api/x/view/' + name](U('/api/x/view
   // ---- each kind's own test
   const kdir = path.join(__dirname, 'kinds');
   for (const f of fs.readdirSync(kdir).filter(x => x.endsWith('.test.js')).sort()) {
-    const r = cp.spawnSync(process.execPath, [path.join(kdir, f), path.join(work, 'k-' + f.replace(/\W+/g, '_'))], { encoding: 'utf8', shell: false, timeout: 300000 });
+    const r = require('../../../lib/test/wait').spawnSync(process.execPath, [path.join(kdir, f), path.join(work, 'k-' + f.replace(/\W+/g, '_'))], { encoding: 'utf8', shell: false, timeout: 300000 }, 'view test');   // killed: once more with twice the limit
     const lines = String(r.stdout || '').trim().split(/\r?\n/), last = lines[lines.length - 1];
     ok(r.status === 0 && /PASS$/.test(last || ''), 'kind test ' + f + ': ' + (last || '') + (r.status ? '\n' + lines.slice(-12).join('\n') + String(r.stderr || '').slice(-800) : ''));
   }

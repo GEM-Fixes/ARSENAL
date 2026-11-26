@@ -746,26 +746,27 @@ const checkScreen = sec => (sec.all().filter(isB).length < 10 ? ['fewer than 10 
       const errOf = async p => { try { await p; return null; } catch (e) { return e; } };
       const viewsBefore = (await XJ.heavy('stats', {})).views;
       const cA = jctx(sctx), cB = jctx(sctx), cC = jctx(sctx), t0 = Date.now();
-      const pA = errOf(XJ.heavy('nap', { ms: 30000 }, cA)), pB = XJ.heavy('stats', {}, cB), pC = errOf(XJ.heavy('nap', { ms: 30000 }, cC));
+      let tA = 0;   // the nap is the worker's longest (60 s): A ending before that is the proof the stop cut it, however busy the PC
+      const pA = errOf(XJ.heavy('nap', { ms: 60000 }, cA)).then(e => { tA = Date.now() - t0; return e; }), pB = XJ.heavy('stats', {}, cB), pC = errOf(XJ.heavy('nap', { ms: 30000 }, cC));
       ok(cA.job.canCancel && cB.job.canCancel && cC.job.canCancel && XJ.queue().running === 'nap' && XJ.queue().waiting === 2, 'jobs: a call on the worker and the calls waiting for it can be stopped ' + JSON.stringify(XJ.queue()));
       ok(JL.cancel(cC.job.id), 'jobs: cancel of a waiting call is taken');
       const eC = await pC;
       ok(eC && eC.cancelled === true && XJ.queue().waiting === 1 && XJ.queue().running === 'nap' && !cC.job.canCancel, 'jobs: a waiting call that is stopped leaves the queue at once, the running one goes on ' + JSON.stringify(XJ.queue()));
       JL.cancel(cA.job.id);
       const eA = await pA, sB = await pB;
-      ok(eA && eA.cancelled === true && sB && sB.views === 0 && viewsBefore > 0 && Date.now() - t0 < 20000 && !cA.job.canCancel && !cB.job.canCancel,
-        'jobs: the running call that is stopped ends with its worker; the call behind it runs on a fresh worker ' + JSON.stringify([eA && eA.message, sB, viewsBefore, Date.now() - t0]));
+      ok(eA && eA.cancelled === true && sB && sB.views === 0 && viewsBefore > 0 && tA < 60000 && !cA.job.canCancel && !cB.job.canCancel,
+        'jobs: the running call that is stopped ends with its worker; the call behind it runs on a fresh worker ' + JSON.stringify([eA && eA.message, sB, viewsBefore, tA]));
       ok(!(await errOf(XJ.heavy('nap', { ms: 1 }, cA))) === false, 'jobs: a stopped request starts no further worker call');
       const tree0 = JSON.stringify(snap(spMod)), undo0 = XJ.UNDO.size, wBody = () => ({ mod: spMod, spec: JSON.parse(JSON.stringify(st.templates[0].spec)) });
       // a Preview behind another call: stopped while it waits
       const napP = XJ.heavy('nap', { ms: 400 }), cP = jctx(sctx), pP = errOf(R['POST /api/x/missions/sp/preview'](null, wBody(), cP));
-      await new Promise(r => setTimeout(r, 20));
+      await require('../../../lib/test/wait').until(() => cP.job.canCancel && cP.job.what, { who: 'missions test', what: 'the Preview job is named' });
       ok(cP.job.canCancel && cP.job.what === 'job.w.spmis' && !cP.job.writes, 'jobs: a Preview is named and can be stopped while it waits');
       JL.cancel(cP.job.id); const eP = await pP;
       ok(eP && eP.cancelled === true, 'jobs: a stopped Preview ends as stopped'); await napP;
       // a Write stopped before its first file (the plan waits behind another call)
       const napW = XJ.heavy('nap', { ms: 400 }), cW = jctx(sctx), pW = errOf(R['POST /api/x/missions/sp/write'](null, wBody(), cW));
-      await new Promise(r => setTimeout(r, 20));
+      await require('../../../lib/test/wait').until(() => cW.job.canCancel && cW.job.writes, { who: 'missions test', what: 'the Write job is marked as writing' });
       ok(cW.job.canCancel && cW.job.writes === true && cW.job.what === 'job.w.spmis', 'jobs: a Write is named, marked as writing, and can be stopped');
       JL.cancel(cW.job.id); const eW = await pW; await napW;
       ok(eW && eW.cancelled === true && JSON.stringify(snap(spMod)) === tree0 && XJ.UNDO.size === undo0, 'jobs: a Write stopped before its first file wrote nothing');
@@ -815,7 +816,9 @@ const checkScreen = sec => (sec.all().filter(isB).length < 10 ? ['fewer than 10 
     // -- the page: five Nexts, Preview, Write, Undo, check, reopen, rewrite, Undo, remove
     const spApi = c => (u, b) => { const [p, q] = u.split('?'); const k = (b === undefined ? 'GET ' : 'POST ') + p; return R[k](U(q || ''), b, c); };
     const apiS = (u, b) => (u.startsWith('/api/x/missions/sp/') ? spApi(sctx)(u, b) : api(u, b));
-    const until = async (f, n = 400) => { for (let i = 0; i < n && !f(); i++) await new Promise(r => setTimeout(r, 5)); return f(); };
+    // by time, not by count (400 x 5 ms ran out under a loaded full GUI run). Backup, never a hang: after ms (60 s) it says WAIT on
+    // stderr and returns f() (the check after it reports what is missing)
+    const until = async (f, n = 400, ms = 60000) => { const t0 = Date.now(); for (let i = 0; !f(); i++) { if (i >= n && Date.now() - t0 >= ms) { process.stderr.write('WAIT missions test: not met after ' + ms / 1000 + ' s: ' + String(f).slice(0, 120) + '\n'); break; } await new Promise(r => setTimeout(r, 5)); } return f(); };
     const shaB = b => require('crypto').createHash('sha1').update(b).digest('hex');
     const before = snap(spMod);
     const PS = page('en', apiS, { mod: spMod }, { newModAt: p => PS.box.newMod.push(p), newMod: [] });

@@ -3,7 +3,7 @@
 // Each carries the small ARSENAL package (tools, launchers, guide, indexes; NO Node.js, NO historical document database) and
 // sets Node.js up on the user's computer from nodejs.org with a pinned sha256.
 // usage: node tools/installer/build.js [--payload ARSENAL-<ver>-small.zip] [--out dir] [--work dir] [--only t,t]
-//          [--historical-url U] [--historical-sha256 S] [--historical-bytes N] [-- <zip.js options>] | --describe <file> | --help
+//          [--historical-url U] [--historical-sha256 S] [--historical-bytes N] [--stock-index dir] [-- <zip.js options>] | --describe <file> | --help
 //   --payload: the small package to carry. Without it: node tools/dist/zip.js --small --out-dir <work>/zip <zip.js options>.
 //   --out:     where the installers go (default <checkout>/../run/installer). --work: build folder (default <out>/work).
 //   --with-node dir: also build ARSENAL-Setup-<ver>-<target>-node, with the pinned Node.js program inside (no download at install).
@@ -11,6 +11,10 @@
 //   --only:    targets, of windows-x64 windows-arm64 linux-x64 linux-arm64 macos-x64 macos-arm64 (default all six).
 //   --historical-*: the download link of the historical index, over tools/installer/config.json.
 //   --describe: print the sha256 and size of a file (the historical index to upload), for tools/installer/config.json.
+//   --stock-index dir: the stock game index files (vanilla.<exe>.<fp12>.json.gz, node tools/entityindex/ship.js --game <install>
+//              --out dir) go into the payload at <top>/tools/entityindex/shipped/, after the payload gate; each is checked here
+//              (name, gzip, index meta, no game folder, no user folder path). Not given: one line says so, none carried, and the
+//              first mod check on a user's PC builds the index (~7 min).
 // Needs the Go toolchain (the build machine only): ARSENAL_GO=<path to go>, else `go` on PATH. Nothing is downloaded.
 // Output: ARSENAL-Setup-<ver>-<target>[.exe] and a .sha256 beside each.
 // Author: Imperator_Aug (ARSENAL, ia-e2ff1872)
@@ -30,6 +34,7 @@ function args(a) {
     else if (a[i] === '--out') o.out = path.resolve(v());
     else if (a[i] === '--work') o.work = path.resolve(v());
     else if (a[i] === '--with-node') o.withNode = path.resolve(v());
+    else if (a[i] === '--stock-index') o.stockIndex = path.resolve(v());
     else if (a[i] === '--only') o.only = v().split(',').filter(Boolean);
     else if (a[i] === '--historical-url') o.hist.url = v();
     else if (a[i] === '--historical-sha256') o.hist.sha256 = v().toLowerCase();
@@ -88,6 +93,49 @@ function checkPayload(buf) {
   return n;
 }
 
+// stockFiles(dir) -> [[name, Buffer]]: the shipped stock index files of dir, each checked; anything wrong stops the build
+const STOCK_RE = /^vanilla\.(as64|mowas_2|goh)\.([0-9a-f]{12})\.json\.gz$/;
+function stockFiles(dir) {
+  if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) die('--stock-index: no folder ' + dir);
+  const { VERSION } = require('../entityindex/index.js'), out = [], bad = [];
+  for (const n of fs.readdirSync(dir).sort()) {
+    const m = STOCK_RE.exec(n);
+    if (!m) { if (/\.gz$/.test(n)) bad.push(n + ': not a name ship.js writes (vanilla.<exe>.<fp12>.json.gz)'); continue; }
+    const b = fs.readFileSync(path.join(dir, n));
+    let d = null, text = '';
+    try { text = require('zlib').gunzipSync(b).toString('utf8'); d = JSON.parse(text); } catch (e) { bad.push(n + ': not a gzip of an index'); continue; }
+    const mt = d && d.meta;
+    if (!mt || !d.entities) bad.push(n + ': no index meta');
+    else if (mt.version !== VERSION) bad.push(`${n}: index version ${mt.version}, this entityindex reads ${VERSION} (run ship.js again)`);
+    else if (mt.exe !== m[1] || !String(mt.fp || '').startsWith(m[2]) || mt.partial) bad.push(n + ': meta does not match the name (exe, fingerprint) or is partial');
+    else if ('game' in mt || mt.folder || (mt.mods && mt.mods.length)) bad.push(n + ': holds a game folder, a folder or mods');
+    else if (/[a-z]:(?:\\\\|\/)users(?:\\\\|\/)|"\/home\/|"\/users\//i.test(text)) bad.push(n + ': holds a user folder path');
+    else out.push([n, b]);
+  }
+  if (bad.length) die('--stock-index ' + dir + ':\n       ' + bad.join('\n       '));
+  if (!out.length) die('--stock-index ' + dir + ': no vanilla.<exe>.<fp12>.json.gz in it (node tools/entityindex/ship.js writes them)');
+  return out;
+}
+
+// addFiles(zip, [[name, Buffer]]) -> the zip with those entries added (stored, after the old ones), central directory rewritten
+function addFiles(buf, files) {
+  const { zip } = require('../lib/zipwrite.js'), eocdAt = b => b.lastIndexOf(Buffer.from([0x50, 0x4b, 0x05, 0x06]));
+  const e = eocdAt(buf);
+  if (e < 0) die('the payload zip has no end record');
+  const n = buf.readUInt16LE(e + 10), cdSize = buf.readUInt32LE(e + 12), cdOff = buf.readUInt32LE(e + 16);
+  const names = new Set();
+  for (let p = cdOff, i = 0; i < n; i++) { names.add(buf.toString('utf8', p + 46, p + 46 + buf.readUInt16LE(p + 28))); p += 46 + buf.readUInt16LE(p + 28) + buf.readUInt16LE(p + 30) + buf.readUInt16LE(p + 32); }
+  for (const [nm] of files) if (names.has(nm)) die('the payload already holds ' + nm);
+  const mini = zip(files.map(([nm, b]) => [nm, b, false]), { date: new Date(2026, 0, 1) }), me = eocdAt(mini);
+  const mn = mini.readUInt16LE(me + 10), mSize = mini.readUInt32LE(me + 12), mOff = mini.readUInt32LE(me + 16);
+  const locals = mini.subarray(0, mOff), cen = Buffer.from(mini.subarray(mOff, mOff + mSize));
+  for (let p = 0, i = 0; i < mn; i++) { cen.writeUInt32LE(cen.readUInt32LE(p + 42) + cdOff, p + 42); p += 46 + cen.readUInt16LE(p + 28) + cen.readUInt16LE(p + 30) + cen.readUInt16LE(p + 32); }
+  if (cdOff + locals.length + cdSize + mSize >= 0xffffffff || n + mn >= 0xffff) die('the payload with the stock index would need zip64');
+  const end = Buffer.alloc(22); end.writeUInt32LE(0x06054b50, 0);
+  end.writeUInt16LE(n + mn, 8); end.writeUInt16LE(n + mn, 10); end.writeUInt32LE(cdSize + mSize, 12); end.writeUInt32LE(cdOff + locals.length, 16);
+  return Buffer.concat([buf.subarray(0, cdOff), locals, buf.subarray(cdOff, cdOff + cdSize), cen, end]);
+}
+
 // nodeBin(target, cache) -> the Node.js program of the pin for that system, from <cache>/<pin key>/node[.exe]. A file that is not
 // there yet is taken from the pinned archive in <cache>, which is downloaded from the pin's base (nodejs.org) when absent; the
 // archive's sha256 must be the pin's, else nothing is used.
@@ -140,7 +188,13 @@ function main(argv = process.argv.slice(2)) {
     if (!fs.existsSync(o.payload)) { const z = fs.readdirSync(zd).filter(f => /-small\.zip$/.test(f)).sort().pop(); if (!z) die('zip.js wrote no small zip into ' + zd, 1); o.payload = path.join(zd, z); }
   }
   if (/-ww2\.zip$/.test(o.payload)) die('the payload ' + path.basename(o.payload) + ' is a build with the historical database; the installer carries the plain small package');
-  const buf = fs.readFileSync(o.payload), count = checkPayload(buf), top = zipTop(buf), cfg = config(top, o.hist);
+  let buf = fs.readFileSync(o.payload);
+  const count = checkPayload(buf), top = zipTop(buf), cfg = config(top, o.hist);
+  if (o.stockIndex) {
+    const st = stockFiles(o.stockIndex);
+    buf = addFiles(buf, st.map(([n, b]) => [top + 'tools/entityindex/shipped/' + n, b]));
+    console.log(`stock index: ${st.length} file(s) added (${st.map(([n, b]) => `${n} ${(b.length / 1048576).toFixed(1)} MB`).join(', ')})`);
+  } else console.log('stock index: none (no --stock-index <dir>): the first mod check on a user\'s PC builds it (~7 min)');
   fs.writeFileSync(path.join(SRC, 'payload.zip'), buf);
   fs.writeFileSync(path.join(SRC, 'config.json'), JSON.stringify(cfg, null, 1) + '\n');
   require('./icon.js').write(SRC);
@@ -176,5 +230,5 @@ function main(argv = process.argv.slice(2)) {
   }
   fs.writeFileSync(path.join(SRC, 'node.bin.gz'), Buffer.alloc(0));
 }
-module.exports = { main, nodeBin, config, checkPayload, zipTop, TARGETS };
+module.exports = { main, nodeBin, config, checkPayload, zipTop, stockFiles, addFiles, TARGETS };
 if (require.main === module) main();

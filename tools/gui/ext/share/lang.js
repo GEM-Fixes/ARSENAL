@@ -94,6 +94,8 @@ const ROWS = [
   ['gate.i.check', 'No known crash problems (static check)', 'Нет известных причин вылета (статическая проверка)', 'Немає відомих причин вильоту (статична перевірка)', '没有已知崩溃问题（静态检查）'],
   // package
   ['pack.intro', 'Makes a ready mod folder for your friends in a folder you choose: the mod folder with its mod.info and its packed files. Your mod and the game are not changed.', 'Собирает для друзей готовую папку мода в выбранном месте: папку мода с её mod.info и упакованными файлами. Ваш мод и игра не меняются.', 'Збирає для друзів готову теку мода у вибраному місці: теку мода з її mod.info і запакованими файлами. Ваш мод і гра не змінюються.', '在你选择的位置为朋友生成一个现成的模组文件夹：包含 mod.info 和打包文件的模组文件夹。你的模组和游戏不会被更改。'],
+  ['pack.speed', 'Pack for speed', 'Упаковать для скорости', 'Запакувати для швидкості', '为速度打包'],
+  ['pack.speedHint', 'Text and map files compressed, the rest stored, text first: fastest game load and check.', 'Текст и файлы карт сжаты, остальное хранится без сжатия, текст первым: самая быстрая загрузка игры и проверка.', 'Текст і файли карт стиснуті, решта зберігається без стиснення, текст першим: найшвидше завантаження гри й перевірка.', '文本和地图文件压缩，其余原样存储，文本在前：游戏加载和检查最快。'],
   ['pack.plan', 'Show plan', 'Показать план', 'Показати план', '显示计划'],
   ['pack.write', 'Write package', 'Записать пакет', 'Записати пакет', '写入包'],
   ['pack.planned', 'The package for {name} would be the folder {folder} with:', 'Пакет мода {name} будет папкой {folder}, в ней:', 'Пакет мода {name} буде текою {folder}, у ній:', '{name} 的包将是文件夹 {folder}，其中包含：'],

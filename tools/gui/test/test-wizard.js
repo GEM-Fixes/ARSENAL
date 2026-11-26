@@ -15,7 +15,9 @@ const ok = (c, m, extra) => { if (c) pass++; else { failN++; console.log('FAIL '
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 // AS2GUI_WAIT=N multiplies every wait (a loaded machine, where the first page calls each take seconds)
 const WAITX = Math.max(1, Number(process.env.AS2GUI_WAIT) || 1);
-async function waitFor(cond, what, ms = 15000) { ms *= WAITX; const t0 = Date.now(); for (;;) { let v; try { v = cond(); } catch (e) { v = false; } if (v) return v; if (Date.now() - t0 > ms) { ok(false, 'timed out waiting for ' + what); return null; } await sleep(25); } }
+const W = require('../../lib/test/wait');
+// backstop at least 60 s (WAIT line), only then a miss is reported. Backup, never a hang
+async function waitFor(cond, what, ms = 15000) { const v = await W.until(cond, { who: 'test-wizard', what, ms: ms * WAITX, step: 25 }); if (!v) { ok(false, 'not done after the long wait: ' + what); return null; } return v; }
 const NODE = process.execPath;
 const WRITEJSON = "require('fs').writeFileSync(process.argv[1],process.argv[2]);console.log('wrote result')";
 

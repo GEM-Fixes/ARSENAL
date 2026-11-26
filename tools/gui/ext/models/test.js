@@ -223,21 +223,24 @@ const SET = ['resource/entity/tank/t34/t34.mdl', 'resource/entity/tank/t34/body.
     ok('built-in editor: doc routes merged, doc part first, SOEdit behind a closed optional fold, no error when it is missing');
   }
 
+  // a child test: limit at least 10 min, killed by it -> WAIT and one rerun with twice the limit (lib/test/wait); its WAIT lines shown
+  const child = args => { const r = require('../../../lib/test/wait').spawnSync(process.execPath, args, { encoding: 'utf8', timeout: 600000 }, 'models test');
+    String(r.stderr || '').split(/\r?\n/).filter(s => /^WAIT /.test(s)).forEach(s => process.stderr.write(s + '\n')); return r; };
   // sub-part tests (sub/<name>.test.js): each runs alone and ends PASS; run here so the GUI suite covers them
   for (const f of fs.readdirSync(path.join(__dirname, 'sub')).filter(x => x.endsWith('.test.js')).sort()) {
-    const r = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'sub', f), path.join(scratch, 'sub-' + f.slice(0, -8))], { encoding: 'utf8', timeout: 240000 });
+    const r = child([path.join(__dirname, 'sub', f), path.join(scratch, 'sub-' + f.slice(0, -8))]);
     assert.ok(r.status === 0 && /^PASS /m.test(r.stdout), f + '\n' + String(r.stdout + r.stderr).split('\n').slice(-10).join('\n'));
     ok('part test ' + f);
   }
   // the end-to-end run through the editor (e2e.test.js: new model, bone, volume, mesh, material, animation, save, reopen, loss checks)
   {
-    const r = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'e2e.test.js'), path.join(scratch, 'e2e')], { encoding: 'utf8', timeout: 240000 });
+    const r = child([path.join(__dirname, 'e2e.test.js'), path.join(scratch, 'e2e')]);
     assert.ok(r.status === 0 && /^PASS models e2e /m.test(r.stdout), 'e2e.test.js\n' + String(r.stdout + r.stderr).split('\n').slice(-10).join('\n'));
     ok('end-to-end test e2e.test.js');
   }
   // the page on blocks (blocks.test.js: the whole page in the fake DOM, a model picked, every sub-tab drawn through the block rules)
   {
-    const r = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'blocks.test.js'), path.join(scratch, 'blocks')], { encoding: 'utf8', timeout: 240000 });
+    const r = child([path.join(__dirname, 'blocks.test.js'), path.join(scratch, 'blocks')]);
     assert.ok(r.status === 0 && /^PASS models blocks /m.test(r.stdout), 'blocks.test.js\n' + String(r.stdout + r.stderr).split('\n').slice(-12).join('\n'));
     ok('blocks test blocks.test.js');
   }

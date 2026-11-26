@@ -42,7 +42,7 @@ function checkPly(ctx) {
   const magic = buf.toString('latin1', 0, 4);
   if (magic !== 'EPLY' && magic !== 'BPLY') return add('PLY_BAD_MAGIC', `magic ${JSON.stringify(magic)} is not EPLY/BPLY: "Can't create resource object"`);
   const big = magic === 'BPLY', known = big ? BIG_KNOWN : KNOWN;
-  const r = new Reader(buf, 4);
+  const r = ctx.mkReader ? ctx.mkReader(buf, 4) : new Reader(buf, 4);   // binhdr: a reader over a partly read file (list.js sparse)
   const parts = [];
   let skinCount = -1, vert = null, indCount = -1, indices = null, uvBad = false, basis = null, sawVert = false;
   let stop = false;

@@ -17,6 +17,7 @@ function parseText(buf) {
 function scanMdl(ctx) {
   const { buf, rep, rel } = ctx;
   const tree = parseText(buf);
+  ctx.tree = tree;   // binhdr's header cache takes the .ply names from it (plyRefsOf): one parse
   if (!tree) return null;
   const info = { bones: new Set(), dotted: false, volumes: new Map(), seqs: [] };
   (function walk(n, inBone) {
@@ -68,20 +69,27 @@ function checkMdlVolumes(ctx, info) {
 }
 
 // FMT-07: .def volume names vs the .mdl its own {Extension} names
+// the one .mdl checkDef compares with: {top, mkey} or null (no volume/extension text, no tree, none or several {Extension}, not a .mdl).
+// binhdr runs it on the read bytes and reads that .mdl ahead with the .def, then passes the result as ctx.found
+function defMdlKey(buf, key) {
+  const text = buf.toString('latin1');
+  if (!/volume/i.test(text) || !/extension/i.test(text)) return null;
+  const tree = parseText(buf);
+  if (!tree) return null;
+  const top = tree.kids[0];
+  if (!top) return null;
+  const ext = top.kids.filter(k => lc(k.name) === 'extension');
+  if (ext.length !== 1) return null;                                 // none/several: composition unclear
+  const ef = ext[0].vals[0]?.v;
+  if (!ef || !/\.mdl$/i.test(ef)) return null;
+  const dir = key.slice(0, key.lastIndexOf('/'));
+  return { top, mkey: names.resolve(ef, dir).key };
+}
 function checkDef(ctx, mdlInfoFor) {
   const { buf, rep, rel, key } = ctx;
-  const text = buf.toString('latin1');
-  if (!/volume/i.test(text) || !/extension/i.test(text)) return;
-  const tree = parseText(buf);
-  if (!tree) return;
-  const top = tree.kids[0];
-  if (!top) return;
-  const ext = top.kids.filter(k => lc(k.name) === 'extension');
-  if (ext.length !== 1) return;                                      // none/several: composition unclear
-  const ef = ext[0].vals[0]?.v;
-  if (!ef || !/\.mdl$/i.test(ef)) return;
-  const dir = key.slice(0, key.lastIndexOf('/'));
-  const mkey = names.resolve(ef, dir).key;
+  const d = ctx.found !== undefined ? ctx.found : defMdlKey(buf, key);
+  if (!d) return;
+  const { top, mkey } = d;
   const info = mdlInfoFor(mkey);
   if (!info) return;
   for (const k of top.kids) if (lc(k.name) === 'volume') {
@@ -96,8 +104,9 @@ function checkDef(ctx, mdlInfoFor) {
 }
 
 // FMT-03/FMT-22 reachability: .ply names a .mdl loads ({VolumeView}/{View}/{LODView ..}: any string value ending .ply, anywhere in the tree)
-function plyRefs(buf) {
-  const tree = parseText(buf), out = [];
+function plyRefs(buf) { return plyRefsOf(parseText(buf)); }
+function plyRefsOf(tree) {
+  const out = [];
   if (!tree) return out;
   (function walk(n) { for (const k of n.kids) { for (const v of k.vals) if (v.t === "s" && /.ply$/i.test(v.v)) out.push(v.v); walk(k); } })(tree);
   return out;
@@ -111,4 +120,4 @@ function defMdls(buf) {
   return out;
 }
 
-module.exports = { scanMdl, checkMdlVolumes, checkDef, plyRefs, defMdls };
+module.exports = { scanMdl, checkMdlVolumes, checkDef, defMdlKey, plyRefs, plyRefsOf, defMdls };

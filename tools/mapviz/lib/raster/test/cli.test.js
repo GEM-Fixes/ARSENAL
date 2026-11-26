@@ -6,7 +6,7 @@
 // usage: node tools/mapviz/lib/raster/test/cli.test.js [scratch dir]
 // Author: Imperator_Aug (ARSENAL, ia-e41a6b5e)
 'use strict';
-const fs = require('fs'), path = require('path'), os = require('os'), crypto = require('crypto'), cp = require('child_process');
+const fs = require('fs'), path = require('path'), os = require('os'), crypto = require('crypto'), cp = require('../../../../lib/test/wait');   // wait.js spawnSync: limit at least 5 min, killed by it -> WAIT and one rerun with twice the limit
 
 const W = path.resolve(process.argv[2] || fs.mkdtempSync(path.join(os.tmpdir(), 'mapviz-raster-cli-')));
 fs.mkdirSync(W, { recursive: true });

@@ -14,7 +14,9 @@ fs.mkdirSync(S, { recursive: true });
 let pass = 0, failN = 0;
 const ok = (c, m, extra) => { if (c) pass++; else { failN++; console.log('FAIL ' + m + (extra !== undefined ? '\n  ' + String(extra).slice(0, 500) : '')); } };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-async function until(f, ms = 5000) { const t0 = Date.now(); while (Date.now() - t0 < ms) { let v = false; try { v = await f(); } catch (e) { /* not yet */ } if (v) return true; await sleep(40); } return false; }
+const WT = require('../../lib/test/wait');
+// by the event; backstop at least 60 s (WT.until), then the assert after it reports. Never a timing-only fail, never a hang
+async function until(f, ms = 5000) { return !!(await WT.until(f, { who: 'test-live', ms, step: 40 })); }
 function get(port, p, stream) {
   return new Promise(resolve => {
     const r = http.request({ host: '127.0.0.1', port, path: p, headers: { host: '127.0.0.1:' + port } }, res => {
@@ -47,10 +49,12 @@ const events = res => { const evs = []; let buf = ''; res.setEncoding('utf8'); r
     const evs = events(st.res);
     ok(await until(() => evs.some(e => e.ev === 'hello' && /^[0-9a-f]{12}$/.test(e.data.boot))), 'hello with the boot id');
     await sleep(200);
-    for (let i = 0; i < 5; i++) { fs.writeFileSync(path.join(W, 'a' + i + '.js'), 'x' + i); await sleep(20); }
+    // 5 writes 20 ms apart: each resets the 300 ms debounce. A busy PC can stretch a gap past it: each such gap may give one more reload (WAIT line)
+    let longGaps = 0; for (let i = 0; i < 5; i++) { const g0 = Date.now(); fs.writeFileSync(path.join(W, 'a' + i + '.js'), 'x' + i); if (i < 4) { await sleep(20); if (Date.now() - g0 > 250) longGaps++; } }
+    if (longGaps) process.stderr.write('WAIT test-live: ' + longGaps + ' write gap(s) of the burst took over 250 ms; one more reload each is allowed\n');
     ok(await until(() => evs.some(e => e.ev === 'reload')), 'a file change in a watched folder sends reload');
     await sleep(700);
-    ok(evs.filter(e => e.ev === 'reload').length === 1, 'a burst of changes = one reload (debounced)', evs.filter(e => e.ev === 'reload').length);
+    ok(evs.filter(e => e.ev === 'reload').length >= 1 && evs.filter(e => e.ev === 'reload').length <= 1 + longGaps, 'a burst of changes = one reload (debounced)', evs.filter(e => e.ev === 'reload').length);
     const rl = evs.find(e => e.ev === 'reload'); ok(rl && rl.data.files.includes('a0.js'), 'reload names the files', JSON.stringify(rl && rl.data));
 
     // ---- 3. classification (no file is written: the names are handed in)

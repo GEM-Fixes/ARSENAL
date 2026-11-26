@@ -19,10 +19,17 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 // catalogue, ~14 s cold). Pages left with requests open made the next page's load wait seconds on a blocked event loop
 // ("timed out waiting for os ru"). So a page is done only when it has no request open (3 quiet polls cover chained calls);
 // its own work is paid by it. The budget is for that cold catalogue read under load; a request that never ends fails here.
-async function settle(P, what, ms = 90000) { ms *= WAITX; const t0 = Date.now(); let quiet = 0; for (;;) { if (P.live.size === 0) { if (++quiet >= 3) return true; } else quiet = 0; if (Date.now() - t0 > ms) { ok(false, 'page did not go idle: ' + what, [...P.live.values()].join(' ')); return false; } await sleep(25); } }
+// Backup, never a hang: past the budget a WAIT line and once more as long, only then the fail.
+async function settle(P, what, ms = 90000) {
+  let quiet = 0; const idle = () => { if (P.live.size === 0) return ++quiet >= 3; quiet = 0; return false; };
+  for (let k = 0; k < 2; k++) if (await W.until(idle, { who: 'test-lang', what: 'page idle: ' + what + (k ? ' (second wait)' : ''), ms: ms * WAITX, step: 25 })) return true;
+  ok(false, 'page did not go idle: ' + what, [...P.live.values()].join(' ')); return false;
+}
 // AS2GUI_WAIT=N multiplies every wait (a loaded machine, where the first page calls each take seconds)
 const WAITX = Math.max(1, Number(process.env.AS2GUI_WAIT) || 1);
-async function waitFor(cond, what, ms = 15000) { ms *= WAITX; const t0 = Date.now(); for (;;) { let v; try { v = cond(); } catch (e) { v = false; } if (v) return v; if (Date.now() - t0 > ms) { ok(false, 'timed out waiting for ' + what); return null; } await sleep(25); } }
+const W = require('../../lib/test/wait');
+// backstop at least 60 s (WAIT line), only then a miss is reported
+async function waitFor(cond, what, ms = 15000) { const v = await W.until(cond, { who: 'test-lang', what, ms: ms * WAITX, step: 25 }); if (!v) { ok(false, 'not done after the long wait: ' + what); return null; } return v; }
 
 const slots = s => [...String(s).matchAll(/\{(\w+)\}/g)].map(m => m[1]).sort().join(',');
 // the key check, as a function so a seeded fault can be fed to the same code. Returns the list of problems.
@@ -169,6 +176,7 @@ async function main() {
       {   // Translate is the Translate numbers fold of the GoH unit page (GoH game, Units & Balance tab; no third row, no Advanced switch needed)
         doc.getElementById('games').children.find(b => b.dataset.game === 'goh').click();
         await waitFor(() => doc.getElementById('gameinfo').querySelector('span[data-gohas2]'), c + ': GoH game on'); await new Promise(r => setTimeout(r, 30));
+        await W.until(() => { const b = doc.getElementById('nav').children.find(b => b.dataset.id === 'units'); return b && b.textContent === 'Alt+7' + L['grp.units']; }, { who: 'test-lang', what: c + ': GoH Units & Balance tab', step: 25 });
         const fb = doc.getElementById('nav').children.find(b => b.dataset.id === 'units'); ok(fb && fb.textContent === 'Alt+7' + L['grp.units'], c + ': GoH Units & Balance tab in this language', fb && fb.textContent);
         if (fb) fb.click();
         // where the GoH unit page sits comes from groups.js (its sub-tab, and its item when that sub-tab holds more than one page)

@@ -827,8 +827,10 @@ function MISSIONS_SP(K){
   a.push(el('div',{},[s,btn(tx('missions.sp.mod.use'),function(){if(s.value)useMod(s.value)}),btn(tx('missions.sp.newmod'),function(){if(typeof newModAt==='function')newModAt('');else K.go('make')}),
    btn(tx('missions.sp.mod.other'),function(){if(typeof pick==='function')pick('dir','',function(p){if(p)useMod(p)})})]));
   return reg('mod',blk('sp.chk.mod',a,{name:tx('missions.sp.mod.h')}))}
+ // the shown lines are built again when the answer comes (spec unchanged): taken at the click they could still hold the wait text of a
+ // map or place name not read yet (one reader thread: the Preview queues behind those reads) and the Preview kept that text for good
  function preview(){var m=mod();if(!m){drawCheck();return}fill();var my=++seq,s=curSig(),ls=lines(),body={mod:m,spec:clone(spec)};prev={busy:true,sig:s};drawCheck();
-  api('/api/x/missions/sp/preview',body,{what:tx('missions.job.sp.preview',{title:spec.title||spec.name})}).then(function(j){if(my!==seq)return;prev={sig:s,j:j,lines:ls};var re=false;
+  api('/api/x/missions/sp/preview',body,{what:tx('missions.job.sp.preview',{title:spec.title||spec.name})}).then(function(j){if(my!==seq)return;prev={sig:s,j:j,lines:curSig()===s?lines():ls};var re=false;
    // the "not in the game's mods folder" box lives in the mod block only: redrawn when the Preview tells where the mod stands
    if(j.inMods!=null&&j.mod){if(!D.mods)D.mods={mods:[],cur:null};var c=D.mods.cur;if(!c||c.inMods!==j.inMods||!c.ok){D.mods.cur={path:j.mod,ok:true,inMods:j.inMods,modInfo:j.modInfo};re=true}}
    if(!j.ok&&j.refusal){bad={f:j.refusal.field,code:j.refusal.code};markBad()}if(re&&STEPS[step]==='check')draw();else drawCheck()})

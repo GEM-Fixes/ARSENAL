@@ -559,7 +559,17 @@ function jobBarText(b){var run=[],last=null,au=jobAutos();JOB.ord.forEach(functi
  var j=run.length?run[run.length-1]:last,more=run.length>1?run.length-1:0,nm=j.auto?tx('job.load',{n:au.length}):jobName(j),x=run.length?(jobProg(j)||tx('job.sec',{s:jobSec(j)})):tx(JOBST[j.state]||'job.s.done');
  b.jl.textContent=nm;b.jx.textContent=x;b.jm.hidden=!more;b.jm.textContent=more?'+'+more:'';b.jm.title=more?tx('job.more',{n:more}):'';
  b.job.title=tx('job.tip');b.job.setAttribute('aria-label',tx('job.bar')+': '+nm+', '+x+(more?', '+tx('job.more',{n:more}):''))}
-function jobRowText(j,r){r.sec.textContent=tx('job.sec',{s:jobSec(j)});r.prog.textContent=j.state==='running'?jobProg(j):''}
+// expected wait of the mod check (wizard): JOBETA[run id] = {sec, t0} while that check runs; its job row adds the time left.
+// No time limit: past the estimate the text only says it takes longer (owner rule: never stop or warn as if failing)
+var JOBETA={};
+function etaDur(sec,left){var m=sec/60;return m<1?tx(left?'wz.etaLeftUnder':'wz.etaUnder'):m>=120?tx(left?'wz.etaLeftH':'wz.etaH',{n:Math.round(m/6)/10}):tx(left?'wz.etaLeft':'wz.etaMin',{n:Math.round(m)})}
+function etaLeft(e){if(!e||!(e.sec>0))return '';var left=e.sec-(Date.now()-(e.t0||Date.now()))/1000;return left<=0?tx('wz.etaLong'):etaDur(left,true)}
+function etaNum(n){try{return Number(n||0).toLocaleString(LANG==='zh'?'zh-CN':LANG)}catch(e){return String(n||0)}}
+function etaSize(b){b=+b||0;var g=b/1073741824;return g>=1?(g>=10?Math.round(g):g.toFixed(1))+' GB':fmtBytes(b)}
+function etaText(e){if(!e||!(e.sec>=0))return '';var bs=e.basis==='history'?(e.n===1?tx('wz.etaHist1'):tx('wz.etaHist',{n:e.n})):tx('wz.etaGuess');
+ return tx('wz.eta',{t:etaDur(e.sec),n:etaNum(e.files),size:etaSize(e.bytes),basis:bs})}
+function jobRowText(j,r){r.sec.textContent=tx('job.sec',{s:jobSec(j)});var p=j.state==='running'?jobProg(j):'',x=j.state==='running'&&JOBETA[j.id]?etaLeft(JOBETA[j.id]):'';r.prog.textContent=p&&x?p+' | '+x:p||x}
+if(typeof window!=='undefined')window.CHECKETA={text:etaText,left:etaLeft,runs:JOBETA,row:jobRowText};   // test-eta.js
 function jobRow(j){var why=jobWhy(j),nm=jobName(j),armed=JOB.arm===j.id,r={};
  r.name=jobCanGo(j)?h('button',{type:'button',class:'jrn','data-jgo':j.id,title:tx('job.go'),text:nm,onclick:function(){jobGo(j)}}):h('span',{class:'jrn',text:nm});
  r.sec=h('span',{class:'jrs'});r.prog=h('span',{class:'jrp'});jobRowText(j,r);
@@ -703,10 +713,11 @@ function progress(){var t0=0,tm=null,what='',fn=null,st=h('span',{class:'hint','
   stop:function(){clearTimeout(tm);tm=null;el.hidden=true}}}
 if(typeof window!=='undefined')window.as2Progress=progress;
 // POST /api/run, read the NDJSON events. on = {start, line(kind,text), end}. Resolves with the end event (or null when the server refused: the message went to on.line).
-function streamRun(cmd,input,on,timeoutSec){
+// prio 'low' (X8): the run's child below normal priority (the Check page's re-check after a change)
+function streamRun(cmd,input,on,timeoutSec,prio){
  if(RUN){busyMsg();return Promise.resolve(null)}
- RUN={cmd:cmd,id:null,t0:Date.now()};setRunUi();var endEv=null,jn=jobDefName(cmd),jend=null;
- return fetch('/api/run',{method:'POST',headers:gameHdr({'content-type':'application/json'}),body:JSON.stringify({cmd:cmd,input:input,timeoutSec:timeoutSec})}).then(function(r){
+ RUN={cmd:cmd,id:null,t0:Date.now()};setRunUi();var endEv=null,jn=jobDefName(cmd),jend=null,bd={cmd:cmd,input:input,timeoutSec:timeoutSec};if(prio)bd.prio=prio;
+ return fetch('/api/run',{method:'POST',headers:gameHdr({'content-type':'application/json'}),body:JSON.stringify(bd)}).then(function(r){
   if(!r.ok)return r.json().catch(function(){return {}}).then(function(j){on.line('e',tx(r.status===409?'run.busy':r.status===403?'run.refused':'run.error',{m:j.error||('HTTP '+r.status)}))});
   var rd=r.body.getReader(),td=new TextDecoder(),b='';
   function pump(){return rd.read().then(function(x){if(x.done)return;b+=td.decode(x.value,{stream:true});var n;
@@ -1349,7 +1360,7 @@ function reqNow(f,vals){return f.required||(f.requiredUnless&&!vals[f.requiredUn
 // GX C7/G11: plain field names and tooltips; the tool's own field name and text stay in the tooltip. data-f = the contract field name (tests find fields by it)
 var FL={dir:['fl.dir','fl.dirT'],name:['fl.name','fl.nameT'],desc:['fl.desc','fl.descT'],deps:['fl.deps','fl.depsT'],dryRun:['fl.dryRun','fl.dryRunT'],mod:['fl.mod','fl.modT'],to:['fl.to','fl.toT'],
  plan:['fl.plan','fl.planT'],out:['fl.out','fl.outT'],thenFix:['fl.thenFix','fl.thenFixT'],'export':['fl.export','fl.exportT'],as2:['fl.as2','fl.as2T'],goh:['fl.goh','fl.gohT'],'with':['fl.with','fl.withT'],exe:['fl.exe','fl.exeT'],game:['fl.game','fl.gameT'],
- only:['fl.only','fl.onlyT'],fast:['fl.fast','fl.fastT'],locs:['fl.locs','fl.locsT'],mode:['fl.mode','fl.modeT'],set:['fl.set','fl.setT'],link:['fl.link','fl.linkT'],force:['fl.force','fl.forceT'],dry:['fl.dry','fl.dryT'],
+ only:['fl.only','fl.onlyT'],fast:['fl.fast','fl.fastT'],noload:['fl.noload','fl.noloadT'],allgames:['fl.allgames','fl.allgamesT'],restorepoints:['fl.restorepoints','fl.restorepointsT'],locs:['fl.locs','fl.locsT'],mode:['fl.mode','fl.modeT'],set:['fl.set','fl.setT'],link:['fl.link','fl.linkT'],force:['fl.force','fl.forceT'],dry:['fl.dry','fl.dryT'],
  yes:['fl.yes','fl.yesT'],map:['fl.map','fl.mapT'],inst:['fl.inst','fl.instT'],pairs:['fl.pairs','fl.pairsT'],unit:['fl.unit','fl.unitT'],army:['fl.army','fl.armyT'],entity:['fl.entity','fl.entityT'],donor:['fl.donor','fl.donorT'],
  noDeps:['fl.noDeps','fl.noDepsT'],askJson:['fl.askJson','fl.askJsonT'],noAsk:['fl.noAsk','fl.noAskT'],dropLimits:['fl.dropLimits','fl.dropLimitsT'],noTranslate:['fl.noTranslate','fl.noTranslateT']};
 function flName(f){var k=FL.hasOwnProperty(f.name)&&FL[f.name];return k?tx(k[0]):f.name}
@@ -1594,7 +1605,12 @@ function viewEdrun(r,el){el.textContent='';el.appendChild(h('div',{},[h('b',{tex
 // ---------- current mod + game ----------
 function mpKey(){return GID===GDEF?'modByPage':'modByPage.'+GID}
 function modKeep(){if(S.cur&&S.mod){var mp=LS.get(mpKey(),{})||{};mp[S.cur]=S.mod;LS.set(mpKey(),mp)}}
-function setMod(p){S.mod=p||'';if(p)recAdd('dir',p);modKeep();drawChip();refreshAll()}
+function setMod(p){S.mod=p||'';if(p)recAdd('dir',p);modKeep();drawChip();refreshAll();mwSync()}
+// X8: the server keeps one watch of the picked mod (tools/gui/modwatch.js), so a check started here gets the mod's file list without a
+// walk; it is told when the picked mod changes (never from a remote device). Off in Settings (as2gui.modwatch); the server decides
+var MWDIR=null;
+function mwSync(){if(RMT||typeof fetch!=='function')return;var d=S.mod||'';if(d===MWDIR||(MWDIR===null&&!d))return;MWDIR=d;
+ try{fetch('/api/modwatch',{method:'POST',headers:gameHdr({'content-type':'application/json'}),body:JSON.stringify({dir:d})}).then(function(r){if(!r.ok)MWDIR=null},function(){MWDIR=null})}catch(e){MWDIR=null}}
 // the mod pill (the owner, 2026-11-19): the mod folder's last name only; the whole path in its title and aria-label, and in the pill while
 // the Change picker is open (MODPK, cleared when the picker closes). No mod: "no mod chosen" as before
 var MODPK=false;
@@ -1968,7 +1984,18 @@ function wizard(){
  var W={check:null,cards:{},fixers:{},plan:null,items:[],picks:{},result:null,step:1,before:null};
  var steps=h('ol',{class:'steps'}),stat=h('div',{class:'wzstat',role:'status','aria-live':'polite'}),prog=h('div',{class:'hint wzprog'}),log=mkLog();
  var modLine=h('span',{}),fast=h('input',{type:'checkbox',title:tx('wz.fastT'),'aria-label':tx('wz.fast'),onchange:function(){fast.dataset.manual='1'}}),fastWhy=h('span',{class:'hint'});fast.checked=true;
+ var noLoad=h('input',{type:'checkbox',title:tx('wz.noloadT'),'aria-label':tx('wz.noload')});
+ // 1C + 1B (owner 2026-11-24): the target game only and no restore points by default; these boxes bring them back
+ var allGames=h('input',{type:'checkbox',title:tx('wz.allgamesT'),'aria-label':tx('wz.allgames')}),restPts=h('input',{type:'checkbox',title:tx('wz.restorepointsT'),'aria-label':tx('wz.restorepoints')});
  var bCheck=h('button',{type:'button',class:'primary','data-primary':'1',text:tx('wz.check'),onclick:function(){doCheck()}});
+ // X8: check again when the mod changes (default off). While this page is on screen: GET /api/modwatch/status every 3 s; a new change of
+ // the watched mod (gen, counted once the server has listed it again after the changes settled) starts the same check at low priority
+ var autoRe=h('input',{type:'checkbox','data-autore':'1',title:tx('wz.autoT'),'aria-label':tx('wz.auto')}),autoSt=h('span',{class:'hint','data-autost':'1'}),MWQ={t:null,seq:0,key:'',gen:-1,base:-1};
+ autoRe.checked=LS.get('modwatch.auto',false)===true;
+ autoRe.addEventListener('change',function(){LS.set('modwatch.auto',!!autoRe.checked);MWQ.key='';mwPoll()});
+ // expected wait (GET /api/check/eta): follows the mod, the game and the four boxes; the mod's size comes from one modInfo per mod
+ var etaEl=h('span',{class:'hint','data-eta':'1'}),ETAQ={seq:0,sig:''};
+ [fast,noLoad,allGames,restPts].forEach(function(b){b.addEventListener('change',function(){etaUpd()})});
  var bMod=h('button',{type:'button',text:tx('wz.change'),title:tx('wz.changeT'),onclick:function(){show('mods')}});
  var findBox=h('div'),handN=h('span',{class:'hint','data-handn':'1'}),walkBox=h('div',{class:'card','data-walk':'1'}),bWalk=tip(h('button',{type:'button','data-walkbtn':'1',text:tx('wz.walk'),onclick:function(){startWalk()}}),tx('wz.walkT')),fixBox=h('div'),count=h('span',{class:'hint'}),partial=h('div',{class:'err'});
  var bAll=h('button',{type:'button',text:tx('wz.all'),title:tx('wz.allT'),onclick:function(){setAll(function(){return true})}});
@@ -1986,7 +2013,7 @@ function wizard(){
  // blocks: the card is container wz; each step a container wz.s<n> with a heading leaf wz.s<n>.h; parts the code clears sit in a leaf of their own
  var sec=function(n,kids){return h('div',{class:'wzsec','data-step':String(n),blk:'wz.s'+n,box:'col'},[blk('wz.s'+n+'.h',[h('h4',{text:(n)+'. '+tx(WZS[n-1]),title:tx(WZT[n-1])})])].concat(kids))};
  var s1=sec(1,[h('div',{class:'row',blk:'wz.mod'},[modLine,bMod])]),
-  s2=sec(2,[h('div',{class:'row',blk:'wz.run'},[h('label',{title:tx('wz.fastT')},[fast,' '+tx('wz.fast')]),bCheck,fastWhy])]),
+  s2=sec(2,[h('div',{class:'row',blk:'wz.run'},[h('label',{title:tx('wz.fastT')},[fast,' '+tx('wz.fast')]),h('label',{title:tx('wz.noloadT')},[noLoad,' '+tx('wz.noload')]),h('label',{title:tx('wz.allgamesT')},[allGames,' '+tx('wz.allgames')]),h('label',{title:tx('wz.restorepointsT')},[restPts,' '+tx('wz.restorepoints')]),bCheck,fastWhy]),h('div',{class:'row',blk:'wz.auto'},[h('label',{title:tx('wz.autoT')},[autoRe,' '+tx('wz.auto')]),autoSt]),blk('wz.eta',[etaEl])]),
   s3=sec(3,[h('div',{class:'hint',blk:'wz.s3.hint',text:tx('wz.s3H')}),blk('wz.find',[findBox])]),
   s4=sec(4,[h('div',{class:'hint',blk:'wz.s4.hint',text:tx('wz.s4H')}),h('div',{class:'row',blk:'wz.pick'},[bAll,bNone,bSafe,count]),blk('wz.partial',[partial]),blk('wz.fixes',[fixBox])]),
   sH=sec(5,[h('div',{class:'hint',blk:'wz.s5.hint',text:tx('wz.shH')}),h('div',{class:'row',blk:'wz.walkbtn'},[bWalk,handN]),blk('wz.walk',[walkBox])]),
@@ -1994,6 +2021,20 @@ function wizard(){
   s6=sec(7,[blk('wz.res',[resBox]),h('div',{class:'row',blk:'wz.next'},[bRe,bTest])]);
  var card=h('div',{class:'card wizard',blk:'wz',box:'col'},[blk('wz.title',[h('h3',{text:tx('wz.title')})]),h('div',{class:'hint',blk:'wz.intro',text:tx('wz.intro')}),blk('wz.steps',[steps]),blk('wz.stat',[stat]),blk('wz.prog',[prog]),s1,s2,s3,s4,sH,s5,s6,blk('wz.log',[h('details',{'data-logfold':'1'},[h('summary',{text:tx('log.fold')}),log.el])])]);
  function say(k,p,cls){stat.className='wzstat '+(cls||'');stat.textContent=tx(k,p)}
+ // the watch status of the picked mod (X8): the first answer of a watch (key = mod + watch sid) is the base; a later gen, with the server's
+ // listing current again (ready) and nothing running, starts the check once. Stops while the box is off or no mod is picked
+ function mwPoll(){pollStop(MWQ.t);MWQ.t=null;var my=++MWQ.seq,mod=S.mod;if(!autoRe.checked||!mod){autoSt.textContent='';return}mwSync();
+  api('/api/modwatch/status?dir='+encodeURIComponent(mod),undefined,{job:false}).then(function(s){if(my!==MWQ.seq)return;
+   autoSt.textContent=!s.enabled?tx('wz.autoOff'):s.err?tx('wz.autoErr',{m:s.err}):'';
+   var key=mod+'|'+s.sid;if(key!==MWQ.key){MWQ.key=key;MWQ.base=s.gen}MWQ.gen=s.gen;
+   if(s.enabled&&s.ready&&s.gen!==MWQ.base&&!RUN&&S.mod===mod){MWQ.base=s.gen;doCheck(undefined,true)}
+   MWQ.t=pollLater('check',mwPoll,3000)},function(){if(my!==MWQ.seq)return;MWQ.t=pollLater('check',mwPoll,10000)})}
+ function modSize(mod){if(W.mi&&W.mi.mod===mod)return W.mi.p;var p=modInfo(mod);W.mi={mod:mod,p:p};p.catch(function(){if(W.mi&&W.mi.p===p)W.mi=null});return p}
+ function etaSig(){return [GID,S.mod,fast.checked,noLoad.checked,allGames.checked,restPts.checked].join('|')}
+ function etaUpd(force){var mod=S.mod,sig=etaSig();if(!mod){ETAQ.sig='';ETAQ.seq++;W.eta=null;etaEl.textContent='';return}if(sig===ETAQ.sig&&!force)return;ETAQ.sig=sig;var my=++ETAQ.seq;
+  modSize(mod).then(function(m){if(my!==ETAQ.seq)return null;
+   return api('/api/check/eta?dir='+encodeURIComponent(mod)+'&files='+(m.files||0)+'&bytes='+(m.bytes||0)+(m.truncated?'&trunc=1':'')+(fast.checked?'&fast=1':'')+(noLoad.checked?'&noload=1':'')+(allGames.checked?'&allgames=1':'')+(restPts.checked?'&restorepoints=1':''),undefined,{job:false})})
+  .then(function(e){if(my!==ETAQ.seq||!e)return;W.eta={sec:e.sec,sig:sig};etaEl.textContent=etaText(e)},function(){if(my!==ETAQ.seq)return;ETAQ.sig='';W.eta=null;etaEl.textContent=''})}
  function dis(b,why){b.disabled=!!why;b.setAttribute('title',why||b.dataset.tip||'');b.setAttribute('aria-disabled',why?'true':'false')}
  function picked(){return W.items.filter(function(it){return W.picks[it.id]})}
  function kinds(){var k=[];picked().forEach(function(it){if(k.indexOf(it.kind)<0)k.push(it.kind)});return k}
@@ -2003,8 +2044,9 @@ function wizard(){
  function upd(){
   var mod=S.mod;modLine.textContent=mod?tx('wz.modIs',{p:mod}):tx('wz.modNone');
   // GX B10: a small mod (under 300 files) gets the full check by default, a big one the quick check; a tick by hand wins
-  if(mod&&W.sizeFor!==mod&&!fast.dataset.manual){W.sizeFor=mod;modInfo(mod).then(function(m){if(fast.dataset.manual||S.mod!==mod)return;
-   var small=!m.truncated&&m.files<300;fast.checked=!small;fastWhy.textContent=tx(small?'wz.fastSmall':'wz.fastBig',{n:m.files})}).catch(function(){})}
+  if(mod&&W.sizeFor!==mod&&!fast.dataset.manual){W.sizeFor=mod;modSize(mod).then(function(m){if(fast.dataset.manual||S.mod!==mod)return;
+   var small=!m.truncated&&m.files<300;fast.checked=!small;fastWhy.textContent=tx(small?'wz.fastSmall':'wz.fastBig',{n:m.files});etaUpd()}).catch(function(){})}
+  etaUpd();
   // under GoH a default inside the GoH install would be refused (wz.outInGoh, writeguard): leave it empty, wz.outNone asks for one
   if(mod&&!out.dataset.manual){var dOut=join(parentOf(mod)||mod,baseOf(mod)+'_fixed'),gIn=curGame().kind==='goh'?gohDir():'';out.value=gIn&&inside(dOut,gIn)?'':dOut}
   var busy=RUN?tx('wz.busy'):'';
@@ -2101,16 +2143,21 @@ function wizard(){
    fixBox.appendChild(foldBox([h('b',{text:tx('wz.cantGrp',{k:co.length,n:(p.cant||[]).length})})],cards,W.fopen['']!=null?W.fopen['']:co.length<=3,{class:'fold fgrp','data-cant':'1'},function(o){W.fopen['']=o}))}}
  function explainCodes(codes){codes=codes.filter(function(c,i){return c&&codes.indexOf(c)===i&&!W.cards[c]});if(!codes.length)return Promise.resolve();
   return api('/api/explain?codes='+encodeURIComponent(codes.join(','))+'&lang='+encodeURIComponent(LANG)).then(function(j){Object.keys(j.cards||{}).forEach(function(c){W.cards[c]=j.cards[c]});W.fixers=j.fixers||W.fixers}).catch(function(e){toast(e.message)})}
- function run1(cmd,input,k,p){stat.dataset.keep='1';say(k,p);prog.textContent='';log.add('o','> '+cmd);var on={},done=[];
-  return streamRun(cmd,input,{line:function(kk,t){log.add(kk,t);var m=/^PROGRESS (start|done) (\S+(?: \(rerun alone\))?)(?: (\d+)s)?(.*)$/.exec(t||'');if(!m)return;
+ // eta {sec, t0}: the prog line also says the time left (etaLeft), drawn again every 5 s while the run lasts; the job row says the same
+ function run1(cmd,input,k,p,eta,low){stat.dataset.keep='1';say(k,p);prog.textContent='';log.add('o','> '+cmd);var on={},done=[],base='',tm=null,rid=null,live=true;
+  function draw(){var x=eta?etaLeft(eta):'';prog.textContent=base&&x?base+' | '+x:base||x}
+  function tick(){tm=null;if(!live)return;draw();tm=setTimeout(tick,5000)}
+  if(eta){eta.t0=Date.now();tick()}
+  return streamRun(cmd,input,{start:function(e){if(eta&&e&&e.id!=null){rid=String(e.id);JOBETA[rid]=eta}},line:function(kk,t){log.add(kk,t);var m=/^PROGRESS (start|done) (\S+(?: \(rerun alone\))?)(?: (\d+)s)?(.*)$/.exec(t||'');if(!m)return;
    if(m[1]==='start')on[m[2]]=1;else{delete on[m[2]];done.push(m[2]+' '+(m[3]||'0')+'s'+(/ERROR/.test(m[4])?' !':''))}
-   prog.textContent=tx('wz.prog',{run:Object.keys(on).join(', ')||'-',done:done.length,last:done.slice(-3).join(', ')})}}).then(function(end){prog.textContent='';
+   base=tx('wz.prog',{run:Object.keys(on).join(', ')||'-',done:done.length,last:done.slice(-3).join(', ')});draw()}},undefined,low?'low':undefined).then(function(end){live=false;if(tm)clearTimeout(tm);if(rid)delete JOBETA[rid];prog.textContent='';
   if(!end){say('wz.st.notrun',{cmd:cmd},'err');return null}
   if((end.code!==0&&!(cmd==='check'&&end.code===1&&end.result!=null))||end.cancelled||end.timedOut||end.result==null){say(end.cancelled?'wz.st.cancelled':'wz.st.failed',{cmd:cmd,code:end.code},'err');return null}return end.result})}
- function doCheck(withOut){if(RUN){busyMsg();return}if(!S.mod){upd();return}
-  var input=chkIn({mod:S.mod});if(fast.checked)input.fast=true;if(S.gameOv)input.game=S.gameOv;if(withOut)input['with']=withOut;
+ function doCheck(withOut,low){if(RUN){if(!low)busyMsg();return}if(!S.mod){upd();return}if(!low&&MWQ.gen>=0)MWQ.base=MWQ.gen;
+  var input=chkIn({mod:S.mod});if(fast.checked)input.fast=true;if(noLoad.checked)input.noload=true;if(allGames.checked){input.allgames=true;if(input.exe){input.target=input.exe;delete input.exe}}if(restPts.checked)input.restorepoints=true;if(S.gameOv)input.game=S.gameOv;if(withOut)input['with']=withOut;
   if(!withOut){W.walk={i:0,done:walkLoad(),open:false};W.check=null;W.plan=null;W.items=[];W.picks={};W.result=null;resBox.textContent=''}log.clear();upd();
-  run1('check',input,withOut?'wz.st.rechecking':'wz.st.checking',{out:withOut}).then(function(r){if(!r){upd();return}
+  var eta=W.eta&&W.eta.sig===etaSig()?{sec:W.eta.sec}:null;
+  run1('check',input,low?'wz.st.auto':withOut?'wz.st.rechecking':'wz.st.checking',{out:withOut},eta,low).then(function(r){etaUpd(true);if(!r){upd();return}
    var n=(r.findings||[]).reduce(function(s,f){return s+f.n},0);
    if(withOut){var b=W.before;resBox.appendChild(h('div',{class:n<b?'ok':'hint',text:tx('wz.after',{b:b,n:n})}));W.check=r;
     return explainCodes((r.findings||[]).map(function(f){return f.code})).then(function(){drawFindings(r);delete stat.dataset.keep;say('wz.st.rechecked',{b:b,n:n},'ok');upd()})}
@@ -2142,7 +2189,7 @@ function wizard(){
   resBox.appendChild(h('b',{text:tx('wz.next')}));
   resBox.appendChild(h('ol',{},[h('li',{text:tx('wz.next1',{mod:S.mod})}),h('li',{text:tx('wz.next2',{out:o})}),h('li',{text:tx('wz.next3')}),h('li',{text:tx('wz.next4')})]))}
  upd();
- return {el:card,upd:upd,W:W,out:out}}
+ return {el:card,upd:upd,W:W,out:out,mw:mwPoll}}
 
 // 3 Check (+ fix)
 function screenCheck(root){
@@ -2152,8 +2199,11 @@ function screenCheck(root){
  var fixc=runCard({cmd:'fix',title:'fix.title',intro:'fix.intro',presets:{mode:'plan'},hide:['mods'],
   buttons:[{label:'fix.plan',title:'fix.planT'},{label:'fix.apply',extra:{mode:'apply'},danger:true,confirm:'fix.confirm',title:'fix.applyT'}],view:viewTree('fix.result'),auto:{mod:needMod,game:function(){return curFolder()},target:fixTarget}});
  root.appendChild(blk('title',[h('h2',{text:tx('nav.check')})]));root.appendChild(wz.el);
+ // speed tips: static text, folded by default; same on every game tab (one screenCheck serves MoW:AS2, AS64, GoH)
+ root.appendChild(h('details',{blk:'check.speed',box:'col','data-card':'check-speed'},[h('summary',{text:tx('check.speedH')}),
+  blk('check.speed.list',[h('ol',{},['check.speed1','check.speed2','check.speed3','check.speed4','check.speed5','check.speed6','check.speed7','check.speed8'].map(function(k){return h('li',{text:tx(k)})}))])]));
  root.appendChild(h('details',{class:'adv',blk:'adv',box:'col'},[h('summary',{title:tx('wz.advT'),text:tx('wz.adv')}),chk.el,fixc.el]));
- return {refresh:function(){fixc.el.hidden=!fixOn();wz.upd();chk.refresh();fixc.refresh()},focus:function(){}}}
+ return {refresh:function(){fixc.el.hidden=!fixOn();wz.upd();chk.refresh();fixc.refresh();wz.mw()},focus:function(){}}}
 
 // 4 Play: play (check, install, test match, boot verdict), install, uninstall. play starts the game unless dry: it needs --allow-launch like the other launchers
 // GX G5/C12/S12: game runs on or off for this session only (POST /api/launch; never saved, the next start is off again)
@@ -2462,13 +2512,16 @@ function screenSettings(root){
  root.appendChild(card('game',[blk('game.h',[GINFO.h]),blk('game.p',[h('div',{'class':'hint',text:tx('stg.game.p')})]),blk('game.info',[GINFO.el])],{attrs:{id:'gamebox'}}));
  root.appendChild(card('adv',[blk('adv.h',[h('h3',{text:tx('adv.label')})]),blk('adv.sw',[h('label',{id:'advbox',title:tx('adv.hint')},[ac,' '+tx('stg.adv.sw')])]),
   blk('adv.p',[h('div',{'class':'hint',text:tx('stg.adv.p')})]),blk('adv.list',[addH,adds])]));
+ // X8: the watch of the picked mod (tools/gui/modwatch.js; window setting as2gui.modwatch, on unless set off; the server reads it)
+ var mw=h('input',{type:'checkbox','data-modwatch':'1','aria-label':tx('stg.mw.sw'),onchange:function(){LS.set('modwatch',!!mw.checked)}});
+ root.appendChild(card('mw',[blk('mw.h',[h('h3',{text:tx('stg.mw.h')})]),blk('mw.sw',[h('label',{title:tx('stg.mw.p')},[mw,' '+tx('stg.mw.sw')])]),blk('mw.p',[h('div',{'class':'hint',text:tx('stg.mw.p')})])]));
  var pick=h('select',{id:'arrpage','aria-label':tx('stg.arr.page')});
  var go=h('button',{type:'button',id:'arrgo','class':'primary',text:tx('blk.title'),onclick:function(){var p=pick.value;if(!S.sec[p])p=firstPage();show(p);blkArrange(true)}});
  root.appendChild(card('arr',[blk('arr.h',[h('h3',{text:tx('blk.switch')})]),blk('arr.p',[h('div',{'class':'hint',text:tx('blk.switchT')})]),fld('arr.pick',tx('stg.arr.page'),pick,{after:go})],{attrs:{id:'arrbox'}}));
  var where=h('div',{'class':'hint'});
  root.appendChild(card('where',[blk('where.h',[h('h3',{text:tx('stg.where.h')})]),blk('where.p',[where])]));
  // reset: the picker goes back to the page shown before Settings (on each visit); else it keeps the user's choice when it is still there
- function fill(reset){ac.checked=advOn();
+ function fill(reset){ac.checked=advOn();mw.checked=LS.get('modwatch',true)!==false;
   addH.textContent=tx('stg.adv.adds',{g:curGame().name});adds.textContent='';
   TABS.forEach(function(t){t.subs.forEach(function(s){s.refs.forEach(function(r){if(refAdv(r))adds.appendChild(h('li',{text:pagePath(r)}))})})});
   // the folds: every upgrade setting on Upgrade or Port (not under GoH, where that fold is always open) and the expert options on Check
@@ -2571,7 +2624,7 @@ function gameFor(id){var o=[GDEF].concat(GAMES.map(function(g){return g.id}).fil
 // last page); page may be page/view. JUMPS keeps the place left (game, page, view), so its Back restores the old game and page
 function switchGame(id,page){var jb=jmpIn();try{switchGame0(id,page)}finally{jmpOut(jb)}}
 function switchGame0(id,page){if(!gOf(id))return;var prev=S.cur;
- if(id!==GID){if(S.cur)GS[GID].screen=S.cur;GID=id;LS.set('gameId',id);gsSave();drawGames();buildNav();drawChip();gameWait();
+ if(id!==GID){if(S.cur)GS[GID].screen=S.cur;GID=id;LS.set('gameId',id);gsSave();drawGames();buildNav();drawChip();mwSync();gameWait();
   var m=S.screens.mods;loadGame().then(function(){if(m&&m.init)m.init()}).catch(function(e){toast(e.message)})}
  // no page named: stay on the page the user is on, with its sub-tab and view (page pill), when this game runs it (in its tabs, not an NA
  // page); only when it does not, the page left behind in this game, then its first page
@@ -2773,7 +2826,7 @@ document.addEventListener('keydown',function(e){
 var CMDS0=__CMDS__;
 Promise.all([api('/api/health'),{commands:CMDS0},api('/api/settings').catch(function(){return null})]).then(function(a){
  setLoad(a[2]);applyHdLock();initGames();applyStatic();
- S.health=a[0];a[1].commands.forEach(function(c){S.cmds[c.id]=c});return loadGame()}).then(function(){buildUi();window.__as2gui=S;goHash();JMP.ready=true}).catch(function(e){$('main').textContent=tx('api.noback',{m:e.message})});
+ S.health=a[0];a[1].commands.forEach(function(c){S.cmds[c.id]=c});return loadGame()}).then(function(){buildUi();window.__as2gui=S;goHash();JMP.ready=true;setTimeout(mwSync,1500)}).catch(function(e){$('main').textContent=tx('api.noback',{m:e.message})});
 })();
 </script>`;
 // JSON inside a script element: "</" would end it, U+2028/9 break old parsers

@@ -29,18 +29,21 @@ fs.writeFileSync(path.join(T, 'claims', '1.json'), JSON.stringify({ pid: process
 mk([[G], [G]]); r = run(['--no-dry']); const lg = fs.readFileSync(path.join(T, 'o', 'runlist.log'), 'utf8');
 t(r.status === 0 && !/start \S+ inst 1,/.test(lg) && /start \S+ inst 2,/.test(lg),'claimed instance 1 skipped: ' + lg.slice(0, 300));
 t(fs.readdirSync(path.join(T, 'claims')).join() === '1.json', 'runlist leaves no claim behind');
-// commit gate: low free commit holds the second start while the first game runs; freed commit releases it (slow stub keeps game 1 up 2.5 s)
+// commit gate: low free commit holds the second start while the first game runs; freed commit releases it (slow stub keeps game 1 up
+// until the test saw "start g2" and wrote go.txt: by the event, not a fixed 2.5 s. Backup, never a hang: the stub goes on after 2 min)
 fs.rmSync(path.join(T, 'o'), { recursive: true, force: true });
-const SLOW = path.join(T, 'slow.js'), CF = path.join(T, 'commit.txt');
-fs.writeFileSync(SLOW, `setTimeout(() => require(${JSON.stringify(STUB)}), process.argv.includes('--dry') ? 0 : 2500);`);
+const SLOW = path.join(T, 'slow.js'), CF = path.join(T, 'commit.txt'), GO = path.join(T, 'go.txt');
+fs.writeFileSync(SLOW, `const fs = require('fs'), t0 = Date.now(); (function w() { if (process.argv.includes('--dry') || fs.existsSync(${JSON.stringify(GO)}) || Date.now() - t0 > 120000) require(${JSON.stringify(STUB)}); else setTimeout(w, 20); })();`);
 fs.writeFileSync(CF, '36000000 1000000');   // 977 MB free < 1500
 mk([[G], [G]]);
 const { spawn } = require('child_process');
 const lgf = path.join(T, 'o', 'runlist.log'), rd = () => { try { return fs.readFileSync(lgf, 'utf8'); } catch { return ''; } };
 const cp = spawn(process.execPath, [RL, '--list', path.join(T, 'list.md'), '--edrun', SLOW, '--inst', '1,2', '--reserve', '0', '--commit-reserve', '1500', '--stagger', '0', '--no-dry', '--no-stop', '--claims', path.join(T, 'claims2')],
   { env: { ...process.env, AS64_COMMIT_FILE: CF } });
-let released = false;
-const poll = setInterval(() => { const l = rd(); if (!released && /commit hold/.test(l)) { released = true; fs.writeFileSync(CF, '36000000 6000000'); } }, 100);
+let released = false, go = false, said = false; const t0 = Date.now();
+const poll = setInterval(() => { const l = rd(); if (!released && /commit hold/.test(l)) { released = true; fs.writeFileSync(CF, '36000000 6000000'); }
+  if (!go && /start g2/.test(l)) { go = true; fs.writeFileSync(GO, 'go'); }
+  if (!go && !said && Date.now() - t0 > 120000) { said = true; require('../../lib/test/wait').say('edrun runlist', 'commit hold, release and start g2', 120000); } }, 20);
 cp.on('close', code => {
   clearInterval(poll); const l = rd(), s2 = l.indexOf('start g2'), d1 = l.indexOf('done g1');
   t(code === 0, 'commit run exits 0');

@@ -15,7 +15,7 @@ diff --strip-trailing-cr golden.dry.txt $W/dry.n.txt > /dev/null || { diff --str
 [ -d $F/arch ] && fail "dry must not archive"
 
 # 2. mock full sequence
-node $T --mock --inst 4701 --map mp_test --players 2 --mods modA --wait-over --timeout 5 --connect-timeout 5 --logdir $F/log --archive $F/arch > $W/full.txt
+node $T --mock --inst 4701 --map mp_test --players 2 --mods modA --wait-over --timeout 60 --connect-timeout 60 --logdir $F/log --archive $F/arch > $W/full.txt
 rc=$?
 cat $W/full.txt
 [ $rc -eq 0 ] || fail "full run exit $rc"
@@ -31,7 +31,7 @@ grep -q 'LOG_NO_STUFF' $W/full.txt || fail "triage not run"
 [ "$(cat $F/log/game.log | wc -l)" -eq 3 ] || fail "game.log touched"
 
 # 3. load timeout
-node $T --logdir $F/log --archive $F/arch --mock --mock-no-loaded --inst 4702 --map m --timeout 1 --connect-timeout 5 -q > $W/t.txt
+node $T --logdir $F/log --archive $F/arch --mock --mock-no-loaded --inst 4702 --map m --timeout 1 --connect-timeout 60 -q > $W/t.txt
 grep -q 'testrun: TESTRUN_LOAD_TIMEOUT' $W/t.txt || { cat $W/t.txt; fail "load timeout"; }
 
 # 4. no pipe -> clear message
@@ -39,7 +39,7 @@ node $T --logdir $F/log --archive $F/arch --mock --mock-no-pipe --inst 4703 --ma
 grep -q 'TESTRUN_NO_PIPE exe has no control pipe .* manual test (testing/loop)' $W/n.txt || { cat $W/n.txt; fail "no pipe"; }
 
 # 5. command failure stops the run
-node $T --logdir $F/log --archive $F/arch --mock --mock-fail mp_host --inst 4704 --map m --connect-timeout 5 -q > $W/f.txt
+node $T --logdir $F/log --archive $F/arch --mock --mock-fail mp_host --inst 4704 --map m --connect-timeout 60 -q > $W/f.txt
 grep -q 'TESTRUN_CMD_FAIL mp_host multi/m:combat: mock: mp_host failed' $W/f.txt || { cat $W/f.txt; fail "cmd fail"; }
 grep -q 'mp_start' $W/f.txt && fail "ran past failed cmd"
 
@@ -48,7 +48,7 @@ node $T --logdir $F/log --archive $F/arch --mock --mock-running --inst 4705 --ma
 grep -q 'TESTRUN_RUNNING' $W/r.txt || { cat $W/r.txt; fail "running refusal"; }
 
 # 7. session_failed event
-node $T --logdir $F/log --archive $F/arch --mock --mock-session-failed --inst 4706 --map m --timeout 1 --connect-timeout 5 -q > $W/s.txt
+node $T --logdir $F/log --archive $F/arch --mock --mock-session-failed --inst 4706 --map m --timeout 1 --connect-timeout 60 -q > $W/s.txt
 grep -q 'TESTRUN_SESSION_FAILED' $W/s.txt || { cat $W/s.txt; fail "session_failed"; }
 
 # 8. bad args / missing exe
@@ -66,7 +66,7 @@ grep -q 'ENG-24' $W/x3.txt && fail "ENG-24 hint on non-mod file"
 grep -q 'NO_CONTROL_FLAG' $W/x3.txt && fail "control flag false positive"
 
 # 10. probe: pipe.jsonl + answered/errored (badcmd is not in the probe plan: use --mock-fail mp_state)
-node $T --probe --mock --mock-fail mp_state --inst 4709 --logdir $F/log --archive $F/parch --connect-timeout 5 > $W/p.txt
+node $T --probe --mock --mock-fail mp_state --inst 4709 --logdir $F/log --archive $F/parch --connect-timeout 60 > $W/p.txt
 cat $W/p.txt
 grep -q '^answered: pipe_events all, mod_list, q' $W/p.txt || fail "probe answered"
 grep -q '^errored: mp_state (mock: mp_state failed)' $W/p.txt || fail "probe errored"
@@ -79,23 +79,23 @@ node $T --probe --dry --logdir $F/log > $W/pd.txt; grep -q 'send {"id":2,"cmd":"
 grep -q 'bad args' /dev/null; node $T --probe --map m --logdir $F/log -q > $W/pb.txt; grep -q 'TESTRUN_BAD_ARGS' $W/pb.txt || true
 
 # 11. scenario: pass (mp mode, expect, verdicts, rows), fail, dry, params
-node $T --scenario scen/ok.json --mock --inst 4710 --logdir $F/log --archive $F/sarch --timeout 5 --connect-timeout 5 > $W/sc1.txt
+node $T --scenario scen/ok.json --mock --inst 4710 --logdir $F/log --archive $F/sarch --timeout 60 --connect-timeout 60 > $W/sc1.txt
 rc=$?; cat $W/sc1.txt
 [ $rc -eq 0 ] || fail "scenario ok exit $rc"
 grep -q '^VERDICT PASS game.log matches /No Stuff found/ \[LOG-01\]' $W/sc1.txt || fail "verdict pass"
-grep -q '^VERDICT PASS process exits within 5s' $W/sc1.txt || fail "exit verdict"
+grep -q '^VERDICT PASS process exits within 30s' $W/sc1.txt || fail "exit verdict"
 grep -q '^ROW TST-16 PASS' $W/sc1.txt && grep -q '^ROW LOG-01 PASS' $W/sc1.txt && grep -q '^ROW TST-13 PASS' $W/sc1.txt || fail "rows pass"
-node $T --scenario scen/bad.json --mock --inst 4711 --logdir $F/log --archive $F/sarch --connect-timeout 5 > $W/sc2.txt
+node $T --scenario scen/bad.json --mock --inst 4711 --logdir $F/log --archive $F/sarch --connect-timeout 60 > $W/sc2.txt
 rc=$?; cat $W/sc2.txt
 [ $rc -eq 1 ] || fail "scenario bad exit $rc"
 grep -q 'TESTRUN_EXPECT_FAIL mod_list: reply' $W/sc2.txt || fail "expect fail"
 grep -q 'TESTRUN_CMD_FAIL badcmd: unknown command' $W/sc2.txt || fail "step cmd fail"
 grep -q '^VERDICT FAIL game.log matches forbidden /GameThreadStop/' $W/sc2.txt || fail "verdict fail"
 grep -q '^ROW TST-13 FAIL' $W/sc2.txt && grep -q '^ROW TST-16 PASS' $W/sc2.txt || fail "rows fail"
-node $T --scenario scen/bad.json --mock --mock-no-exit --exit-wait 1 --inst 4712 --logdir $F/log --archive $F/sarch --connect-timeout 5 > $W/sc3.txt
-grep -q '^VERDICT FAIL process exits within 1s (no exit seen)' $W/sc3.txt && grep -q '^ROW TST-16 FAIL' $W/sc3.txt || { cat $W/sc3.txt; fail "no-exit verdict"; }
+node $T --scenario scen/bad.json --mock --mock-no-exit --exit-wait 1 --inst 4712 --logdir $F/log --archive $F/sarch --connect-timeout 60 > $W/sc3.txt
+grep -q '^VERDICT FAIL process exits within 30s (no exit seen)' $W/sc3.txt && grep -q '^ROW TST-16 FAIL' $W/sc3.txt || { cat $W/sc3.txt; fail "no-exit verdict"; }
 # explicit --logdir whose CMD: names another instance (each instance has its own log/, TST-22) -> log verdicts undecided, not a false PASS
-node $T --scenario scen/ok.json --mock --inst 7 --logdir $F/log3 --archive $F/sarch --timeout 5 --connect-timeout 5 > $W/sc9.txt
+node $T --scenario scen/ok.json --mock --inst 7 --logdir $F/log3 --archive $F/sarch --timeout 60 --connect-timeout 60 > $W/sc9.txt
 grep -q 'TESTRUN_LOG_FOREIGN --logdir game.log CMD: is instance 0, this run is 7' $W/sc9.txt && grep -q "^VERDICT FAIL game.log has no match for /Exception/ (--logdir game.log is instance 0's)" $W/sc9.txt || { cat $W/sc9.txt; fail "foreign log"; }
 grep -q 'TESTRUN_LOG_FOREIGN' $W/sc1.txt && fail "foreign log false positive"
 node $T --scenario ../scenarios/modlist.json --mock --inst 4713 --logdir $F/log --archive $F/sarch -q > $W/sc4.txt
@@ -104,7 +104,7 @@ node $T --scenario ../scenarios/modlist.json --param mod=modA --mock --inst 4714
 grep -q '^0 findings' $W/sc5.txt && grep -q 'mod_list  -> {"name":"modA"' $W/sc5.txt || { cat $W/sc5.txt; fail "modlist scenario"; }
 node $T --scenario ../scenarios/tst16-quit.json --mock --inst 4715 --logdir $F/log --archive $F/sarch > $W/sc6.txt
 grep -q '^ROW TST-16 PASS' $W/sc6.txt || { cat $W/sc6.txt; fail "tst16 scenario"; }
-node $T --scenario ../scenarios/sp-load.json --mission m1 --mock --inst 4716 --logdir $F/log --archive $F/sarch --timeout 5 > $W/sc7.txt
+node $T --scenario ../scenarios/sp-load.json --mission m1 --mock --inst 4716 --logdir $F/log --archive $F/sarch --timeout 60 > $W/sc7.txt
 grep -q '> sp_mission m1' $W/sc7.txt && grep -q '^VERDICT PASS game.log has no match for /Block terminator expected/' $W/sc7.txt || { cat $W/sc7.txt; fail "sp-load scenario"; }
 node $T --scenario ../scenarios/sp-load.json --logdir $F/log -q > $W/sc8.txt; grep -q 'mode sp needs mission' $W/sc8.txt || fail "sp mission required"
 node $T --scenario ../scenarios/sp-load.json --mission m1 --dry --logdir $F/log --archive $F/sarch > $W/sd.txt
@@ -117,18 +117,18 @@ grep -q -- 'spawn: <exe> -control -nosound -console -instance 2' $W/sd2.txt && g
 node $T --matrix scen --modsets "modA;modB,modC" --dry --logdir $F/log --archive $F/march > $W/md.txt
 [ "$(grep -c '^== run' $W/md.txt)" -eq 4 ] || { cat $W/md.txt; fail "matrix dry runs"; }
 grep -q '^== run 4/4: scenario mock-ok map mp_test mods modB,modC inst 0' $W/md.txt || { cat $W/md.txt; fail "matrix dry labels"; }
-node $T --matrix scen --maps ma,mb --instances 2 --mock --inst 4720 --logdir $F/log --archive $F/march --timeout 5 --connect-timeout 5 --exit-wait 2 > $W/mt.txt
+node $T --matrix scen --maps ma,mb --instances 2 --mock --inst 4720 --logdir $F/log --archive $F/march --timeout 60 --connect-timeout 60 --exit-wait 30 > $W/mt.txt
 cat $W/mt.txt
 grep -q '^| 1 | mock-bad | - | - | 4720 | FAIL |' $W/mt.txt || fail "matrix row bad"
 grep -q '^| 2 | mock-ok | ma | modA | 4721 | PASS |.*LOG-01 PASS' $W/mt.txt || fail "matrix row ok ma"
 grep -q '^| 3 | mock-ok | mb | modA | 472[01] | PASS |' $W/mt.txt || fail "matrix row ok mb"
-node $T --matrix scen/ok.json --maps ma --mock --inst 4730 --logdir $F/log --archive $F/march --timeout 5 --connect-timeout 5 --format json --out $W/mj.json > /dev/null
+node $T --matrix scen/ok.json --maps ma --mock --inst 4730 --logdir $F/log --archive $F/march --timeout 60 --connect-timeout 60 --format json --out $W/mj.json > /dev/null
 node -e "const j=JSON.parse(require('fs').readFileSync('$W/mj.json','utf8')); if(j.total!==1||!j.runs[0].pass||!j.runs[0].archive||!j.runs[0].triage.LOG_NO_STUFF&&Object.keys(j.runs[0].triage).length===0&&false) process.exit(1); if(!require('fs').existsSync(require('path').join(j.runs[0].archive,'pipe.jsonl'))) process.exit(1)" || fail "matrix json"
 
 # 13. stage gating (live 2026-11-03: mp_lan replies ok while stage is 'starting'): mp_host waits for state active; timeout code; recorded trace
-node $T --mock --inst 4740 --map mp_test --players 2 --timeout 5 --connect-timeout 5 --logdir $F/log --archive $F/arch > $W/st1.txt
+node $T --mock --inst 4740 --map mp_test --players 2 --timeout 60 --connect-timeout 60 --logdir $F/log --archive $F/arch > $W/st1.txt
 grep -q '^stage mp_lobbylan active' $W/st1.txt && grep -q '^> mp_host multi/mp_test:combat 2' $W/st1.txt && grep -q '^0 findings' $W/st1.txt || { cat $W/st1.txt; fail "stage gating"; }
-node $T --mock --mock-no-stage --inst 4741 --map mp_test --stage-timeout 1 --connect-timeout 5 --logdir $F/log --archive $F/arch -q > $W/st2.txt
+node $T --mock --mock-no-stage --inst 4741 --map mp_test --stage-timeout 1 --connect-timeout 60 --logdir $F/log --archive $F/arch -q > $W/st2.txt
 grep -q 'TESTRUN_STAGE_TIMEOUT no stage event with state "active" in 1s' $W/st2.txt || { cat $W/st2.txt; fail "stage timeout"; }
 grep -q 'mp_host' $W/st2.txt && fail "mp_host sent without active stage"
 node $T --map mp_test --dry --logdir $F/log | grep -q 'wait stage event state=active' || fail "dry stage wait"
@@ -151,7 +151,7 @@ grep -q -e "--mods t1 " $W/as1.txt || fail "--as prepare: --mods not remapped"
 grep -q "mods.map-16 " $W/as1.txt && fail "--as prepare: still writes mods/<fixture>"
 
 # 16. reply/event verdicts (judged on what the live game answers; evaluated before q)
-C16="--mock --logdir $F/log --archive $F/rarch --timeout 5 --connect-timeout 5 --exit-wait 2"
+C16="--mock --logdir $F/log --archive $F/rarch --timeout 60 --connect-timeout 60 --exit-wait 30"
 node $T --scenario scen2/reply.json $C16 --inst 4750 > $W/rv1.txt; rc=$?
 [ $rc -eq 0 ] || { cat $W/rv1.txt; fail "reply scenario exit $rc"; }
 [ "$(grep -c '^VERDICT PASS' $W/rv1.txt)" -eq 9 ] || { cat $W/rv1.txt; fail "reply verdicts pass count"; }
@@ -197,7 +197,7 @@ grep -q 'mod_set as64+ e2e_test:3' $W/ms.txt || { cat $W/ms.txt; fail "stage: mo
 G=$F/gbk; mkdir -p $G/mods/e2e_test; echo orig > $G/mods/e2e_test/orig.cfg
 printf '{options\r\n\t{mods\r\n\t\t"as64+"\r\n\t\t"e2e_test"\r\n\t\t"e2e_test2"\r\n\t}\r\n}\r\n' > $G/options.set
 cp $G/options.set $F/options.want
-B18="--scenario ../scenarios/vfs-21.json --stage-as e2e_test,e2e_test2 --no-preflight --game $G --profile $G/options.set --backup $F/bk --mock --logdir $F/log --archive $F/rarch --connect-timeout 5 --exit-wait 2"
+B18="--scenario ../scenarios/vfs-21.json --stage-as e2e_test,e2e_test2 --no-preflight --game $G --profile $G/options.set --backup $F/bk --mock --logdir $F/log --archive $F/rarch --connect-timeout 60 --exit-wait 30"
 node $T $B18 --inst 4755 --out $W/bk.json > $W/bk1.txt
 grep -q '^staged fixture -> mods/e2e_test, mods/e2e_test2' $W/bk1.txt || { cat $W/bk1.txt; fail "backup: nothing staged"; }
 grep -q '^backup restored:true' $W/bk1.txt || { cat $W/bk1.txt; fail "backup restored"; }
@@ -230,17 +230,17 @@ node $T --queue-dir scen4 --dry --logdir $F/log | grep -q 'launch 1: q1, q2, q3 
 node qtest.js || fail "instance dirs / workers queue"
 
 # 21. chain-n2: mp_set team.<t>.army waits for mp_slots (the engine syncs all teams/ from a stale card copy: a fast second set reverts the first)
-node $T --scenario scen6/team.json --mock --mock-team-lag 300 --inst 4770 --logdir $F/log --archive $F/sarch --timeout 5 --connect-timeout 5 > $W/tm1.txt || { cat $W/tm1.txt; fail "team army settle"; }
+node $T --scenario scen6/team.json --mock --mock-team-lag 300 --team-settle-ms 60000 --inst 4770 --logdir $F/log --archive $F/sarch --timeout 60 --connect-timeout 60 > $W/tm1.txt || { cat $W/tm1.txt; fail "team army settle"; }
 grep -q 'team name=a size=2 army=eng' $W/tm1.txt || { cat $W/tm1.txt; fail "team a army kept"; }
-node $T --scenario scen6/team.json --mock --mock-team-lag 300 --team-settle-ms 0 --inst 4771 --logdir $F/log --archive $F/sarch --timeout 5 --connect-timeout 5 > $W/tm2.txt
+node $T --scenario scen6/team.json --mock --mock-team-lag 300 --team-settle-ms 0 --inst 4771 --logdir $F/log --archive $F/sarch --timeout 60 --connect-timeout 60 > $W/tm2.txt
 grep -q 'WARN_TESTRUN_TEAM_UNSET mp_set team.a.army eng' $W/tm2.txt || { cat $W/tm2.txt; fail "seeded: no settle must warn"; }
 
 # 22. MP-2: mp_join "try again in a moment" replies are retries (info), not TESTRUN_CMD_FAIL; AI-4: --logdir with no game.log is named
-node $T --scenario scen6/join.json --mock --inst 4772 --logdir $F/log --archive $F/sarch --timeout 5 --connect-timeout 5 > $W/mj1.txt || { cat $W/mj1.txt; fail "mp_join retry must not fail the run"; }
+node $T --scenario scen6/join.json --mock --inst 4772 --logdir $F/log --archive $F/sarch --timeout 60 --connect-timeout 60 > $W/mj1.txt || { cat $W/mj1.txt; fail "mp_join retry must not fail the run"; }
 grep -q 'TESTRUN_CMD_FAIL' $W/mj1.txt && { cat $W/mj1.txt; fail "mp_join retry counted as CMD_FAIL"; }
 grep -q '^VERDICT PASS' $W/mj1.txt || { cat $W/mj1.txt; fail "mp_join scenario verdict"; }
 mkdir -p $W/nolog
-node $T --scenario scen6/join.json --mock --inst 4773 --logdir $W/nolog --archive $F/sarch --timeout 5 --connect-timeout 5 > $W/mj2.txt
+node $T --scenario scen6/join.json --mock --inst 4773 --logdir $W/nolog --archive $F/sarch --timeout 60 --connect-timeout 60 > $W/mj2.txt
 grep -q 'TESTRUN_LOGDIR_EMPTY' $W/mj2.txt || { cat $W/mj2.txt; fail "empty --logdir not named"; }
 
 node newfeat.js || fail "newfeat"

@@ -388,6 +388,7 @@ routes['POST /api/x/share/package'] = async (url, body, ctx) => {
   const d = modDir(body.mod), mod = modLabel(d);
   if (gohOrigin(d)) return { ok: false, wrote: false, mod, plan: [], problems: [], refused: { key: 'gohMod', params: { mod: d }, msg: 'this mod holds Gates of Hell content (GOH-ORIGIN.tsv). That can never be shared, so it is not packed.' } };
   const args = [d, '--package'].concat(isGohCtx(ctx) ? ['--goh'] : []);   // GoH: the GoH mod layout (packer --goh, GHVFS-04)
+  if (body.speed === false) args.push('--no-speed');   // Pack for speed is the packer default; box off = --no-speed, same for the plan and the write
   let before = null, dest = '', fresh = false;   // I-20: say when the package folder already held files, and list only what this run wrote
   if (body.write) {
     let o; try { o = writableOut(body.out, d, ctx); } catch (e) { if (!e.key) throw e; return { ok: false, wrote: false, mod, plan: [], problems: [], refused: refusal(e) }; }
@@ -407,7 +408,7 @@ routes['POST /api/x/share/package'] = async (url, body, ctx) => {
   const plan = fs_.filter(x => x.code === 'PLAN').map(x => { const m = /^(\d+) files?, (\d+) KB/.exec(x.msg) || []; return { pak: x.where, files: +m[1] || 0, kb: +m[2] || 0 }; });
   const pkg = fs_.find(x => x.code === 'PACKAGE');
   const other = pkg ? +((/\+ (\d+) file/.exec(pkg.msg) || [])[1] || 0) : 0, own = pkg ? +((/(\d+) pak\(s\) of its own/.exec(pkg.msg) || [])[1] || 0) : 0;
-  const out = { ok: r.code === 0, wrote: !!body.write && r.code === 0, mod, plan, other, ownPaks: own, problems: fs_.filter(x => !x.info).map(x => ({ code: x.code, where: x.where, msg: x.msg })), tail: tail(r.stdout + '\n' + r.stderr, 6) };
+  const out = { ok: r.code === 0, wrote: !!body.write && r.code === 0, mod, speed: body.speed !== false, plan, other, ownPaks: own, problems: fs_.filter(x => !x.info).map(x => ({ code: x.code, where: x.where, msg: x.msg })), tail: tail(r.stdout + '\n' + r.stderr, 6) };
   if (out.wrote) {
     if (dest) touchMod(ctx, dest);   // the packed copy may sit under <game>/mods
     out.out = norm(body.out); out.dest = norm(dest);

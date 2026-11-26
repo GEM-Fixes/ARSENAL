@@ -460,7 +460,7 @@ async function partTests() {
     const t = path.join(dir, id, 'test.js');
     if (!fs.existsSync(t)) continue;
     const sw = path.join(work, 'parts', id); fs.mkdirSync(sw, { recursive: true });
-    const r = cp.spawnSync(process.execPath, [t, sw], { encoding: 'utf8', timeout: 300000, env: Object.assign({}, process.env, { TEMP: sw, TMP: sw, TMPDIR: sw }) });
+    const r = require('../../../lib/test/wait').spawnSync(process.execPath, [t, sw], { encoding: 'utf8', timeout: 300000, env: Object.assign({}, process.env, { TEMP: sw, TMP: sw, TMPDIR: sw }) }, 'bots test part ' + id);
     const lines = String(r.stdout || '').trim().split(/\r?\n/), tail = lines.filter(l => /PASS/.test(l)).pop() || lines.pop() || '';
     ok(r.status === 0, 'part ' + id + ' test failed (' + (r.status === null ? 'timed out' : 'exit ' + r.status) + '):\n' + String((r.stdout || '') + (r.stderr || '')).split('\n').slice(-12).join('\n'));
     if (r.status === 0) console.log('part ' + id + ': ' + tail);

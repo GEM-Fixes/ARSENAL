@@ -61,7 +61,8 @@ function runPage(id, script, lang, opt) {
     const rel = () => held.forEach(b => { delete b.dataset.apiBusy; b.disabled = b.dataset.blocked === '1' || b.dataset.cardBusy === '1'; });
     sent.push({ url, body });
     const p = Promise.resolve().then(() => opt.route(url, body));
-    return p.then(j => { rel(); return j; }, e => { rel(); throw e; });
+    const id = ++reqN; inFlight.set(id, { t: Date.now(), url });
+    return p.then(j => { inFlight.delete(id); rel(); return j; }, e => { inFlight.delete(id); rel(); throw e; });
   };
   const env = { document: doc, window: { as2Help: {}, URL: {} }, S, LS, tx, h, api, toast: m => toasts.push(m), pick: (m, s, cb) => opt.pickDir && cb(opt.pickDir),
     blk, asBlk, fld, card, blkPut, blkApply: () => {},
@@ -89,7 +90,12 @@ function userClick(doc, el) {
 function type(doc, input, text) { input.focus(); input.value = text; input.fire('input'); }
 const find = (root, pred) => root.all(pred);
 const byText = (root, tag, text) => root.all(c => c.tagName === tag.toUpperCase() && c.textContent === text);
-const settle = () => new Promise(r => setTimeout(r, 30));
+// settle: 30 ms, then on until every request a page started has its answer (a route that starts a child program answers later
+// than 30 ms), then 30 ms more for the draw. Backup, never a hang: a request still waiting after STUCK_MS (2 min) is left out
+// from then on (said once on stderr as WAIT), so a request that never answers costs that time once, not at every settle
+const inFlight = new Map(), STUCK_MS = 120000; let reqN = 0;
+const live = () => { let n = 0; const now = Date.now(); for (const [id, r] of inFlight) { if (now - r.t < STUCK_MS) n++; else if (!r.said) { r.said = true; process.stderr.write('WAIT fakedom: ' + r.url + ' has no answer after ' + STUCK_MS / 1000 + ' s; settle goes on without it\n'); } } return n; };
+const settle = async () => { await new Promise(r => setTimeout(r, 30)); if (!live()) return; while (live()) await new Promise(r => setTimeout(r, 10)); await new Promise(r => setTimeout(r, 30)); };
 // the structure rules of tools/gui/test/test-blocks.js (checkScreen) on a screen root, for the parts a screen draws after a server
 // reply (test-blocks sees only the first build). Returns the problems as lines; [] = fine
 // (the shared tools/gui/test/blockcheck.js, which reads this DOM's childNodes and own _text)

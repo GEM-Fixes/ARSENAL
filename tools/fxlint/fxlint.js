@@ -11,6 +11,8 @@
 //   WARN_ENV_NO_ENABLE (VIS-14) environment {weather}/{thunder} block without {enable}: enabled defaults false (unverified in 3.262; vanilla multi_10 has none)
 //   THUNDER_NO_SOUND (VIS-14)      {thunder {enable}} with empty/absent sound: Strike never fires
 //   FX_TRACER_UNLISTED (VIS-19) track `{Tracer {View "x"}}` entity not in fxmanager.set: warns and drops every trace
+//   --restore-points  also read <mod folder>/.arsenal-undo (restore points; the game never mounts them, so off by default)
+//   CLI lists the folder once and reads the walked files through the thread pool (checkAsync); check() = same findings, one at a time
 // IA action walk: `{on ..}` bodies of set/interaction_entity + interaction_terrain roots (includes expanded); descends only through
 //   action containers (actions.json containers: users). regen actions.json: node tools/fxlint/fxlint.js --regen-actions
 // lib gap: none (lib/sdlset createSource + sdlx tree, keylint/model.parts for MOD-transparent blocks)
@@ -19,7 +21,7 @@ require('../lib/help')(__filename); // --help / -h: header usage, exit 0 (HELPFI
 const fs = require('fs'), path = require('path');
 const sdlset = require('../lib/sdlset'), sdlx = require('../lib/sdlx');
 const { createReport, relPath } = require('../lib/report');
-const M = require('../keylint/model');
+const M = require('../keylint/model'), fast = require('../strlint/fastread');
 
 const ENTITY_ROOT = 'resource/set/interaction_entity/entity.set', TERRAIN_ROOT = 'resource/set/interaction_terrain/effects.set';
 const FXMGR = 'resource/set/fxmanager.set';
@@ -32,11 +34,17 @@ const tokText = t => t && (t.k === 'STRING' ? t.value : t.k === 'IDENT' ? t.text
 const keyOf = p => p.keyTok && p.keyTok.k === 'IDENT' ? p.keyTok.text.toLowerCase() : null;
 const norm = s => s.toLowerCase().replace(/\\/g, '/').replace(/^\/+/, '');
 
-function check(opts) {
+const SND_RE = /^resource\/sound\/(.*\/)?folder\.set$/;
+const isEnvKey = key => /^resource\/set\/environment\//.test(key) && key.endsWith('.set');
+const isDefKey = key => /^resource\/entity\/.*\.(def|inc|ext|def1)$/.test(key) || /^resource\/set\/stuff\//.test(key);
+// the check as steps: yields a Promise only while a read-ahead file (io.ra, async run) is still being read
+function* steps(opts, io) {
   const rep = createReport();
   let mods = opts.mods;
   if (!mods && opts.folder && opts.gameDir && path.basename(path.dirname(path.resolve(opts.folder))).toLowerCase() === 'mods') mods = [path.basename(path.resolve(opts.folder))];
-  const src = sdlset.createSource({ gameDir: opts.gameDir, mods, folder: opts.folder, exe: opts.exe });
+  const ra = io && io.ra;
+  // each walked file and each include read once per run (fastread)
+  const F = fast.wrap(sdlset.createSource({ gameDir: opts.gameDir, mods, folder: opts.folder, exe: opts.exe, ...fast.srcOpts(opts) }), ra), src = F.src;
   const { ACTIONS, CONTAINERS } = acFor(src.v ? src.v.exe : opts.exe);
   const items = new Map();
   if (opts.vfs) for (const t of src.vfsItems()) items.set(t.key, t);
@@ -121,14 +129,19 @@ function check(opts) {
     }
   }
 
-  for (const [key, t] of items) {
-    const isSnd = /^resource\/sound\/(.*\/)?folder\.set$/.test(key), isEnv = /^resource\/set\/environment\//.test(key) && key.endsWith('.set');
-    const isDef = /^resource\/entity\/.*\.(def|inc|ext|def1)$/.test(key) || /^resource\/set\/stuff\//.test(key);
-    if (!isSnd && !isEnv && !isDef) continue;
+  const walked = key => SND_RE.test(key) || isEnvKey(key) || isDefKey(key);
+  if (ra) for (const [key, t] of items) if (walked(key) && t.path) ra.add(key, t.path);
+  for (const [key, t0] of items) {
+    if (!walked(key)) continue;
+    if (ra && t0.path) { const w = ra.wait(key); if (w) yield w; }
+    try { checkFile(key, F.item(t0)); } finally { F.done(t0); }
+  }
+  function checkFile(key, t) {
+    const isSnd = SND_RE.test(key), isEnv = isEnvKey(key), isDef = isDefKey(key);
     if (isDef && /^resource\/entity\/.*\.def$/.test(key)) foresightCheck(key, t);   // TST-83
-    if (isDef && !/tracer/i.test(Buffer.from(t.get()).toString('latin1'))) continue;
+    if (isDef && !/tracer/i.test(Buffer.from(t.get()).toString('latin1'))) return;
     let r; try { r = src.read(t, () => {}); } catch (e) { r = null; }
-    if (!r || !r.root) continue;
+    if (!r || !r.root) return;
     files++;
     const walk = (node, isRoot, fn) => { const p = M.parts(node, isRoot); fn(node, p); for (const k of p.kids) walk(k, false, fn); };
     if (isSnd) walk(r.root, true, (n, p) => {
@@ -170,6 +183,15 @@ function check(opts) {
   for (const root of [ENTITY_ROOT, TERRAIN_ROOT]) { const r = readKey(root); if (r && r.root) { files++; actWalk(r.root, true, false); } }
   return { rep, files, own: opts.vfs ? null : items.size };
 }
+// check(opts) -> { rep, files, own }   sync, files read one at a time
+// opts: { folder|vfs, gameDir, mods, exe, restorePoints (also read <folder>/.arsenal-undo, off by default), listing }
+function check(opts) { return fast.drive(steps(opts, null)); }
+// checkAsync(opts) -> Promise<same>: the folder listed once through the thread pool, walked files read ahead
+// checkAsync(opts, ra): ra = a readAhead stand-in to read through (lib/modset read-once pass, ctx.js), closed at the end
+async function checkAsync(opts, ra0) {
+  const { opts: o, ra } = await fast.prepare(opts, ra0);
+  try { return await fast.driveAsync(steps(o, { ra })); } finally { if (ra) ra.close(); }
+}
 
 function regen() {
   const out = new Set();
@@ -180,14 +202,19 @@ function regen() {
 }
 
 const cli = require('../lib/cli');
-if (require.main === module) cli.run(() => {
-  const p = cli.parse(process.argv.slice(2), { flags: ['--vfs', '--regen-actions'] });
+// thread pool 16 (libuv default 4): more reads queued at the disk at once (as keylint)
+if (require.main === module && !process.env.UV_THREADPOOL_SIZE) process.env.UV_THREADPOOL_SIZE = '16';
+// main(argv, {ra}): the CLI (and ctx.js, the read-once module form, with the pass's reader as ra)
+async function main(argv, { ra } = {}) {
+  const p = cli.parse(argv, { flags: ['--vfs', '--regen-actions', '--restore-points'] });
   if (p.x['regen-actions']) { regen(); process.exit(0); }
   const o = { gameDir: p.gameDir || undefined, mods: p.mods.length ? p.mods : undefined, vfs: p.x.vfs, folder: p.pos[0], exe: p.exe };
-  if (!o.folder && !o.vfs || o.vfs && !o.gameDir) { console.error('usage: node tools/fxlint/fxlint.js <mod folder> [--game dir] [--mods a,b] [--exe as64|mowas_2|mowas2|goh] [-q] [--summary] [--format text|json|sarif|html|csv] [-o file] [--rc file|--no-rc] | --vfs --game <dir>'); process.exit(2); }
-  const { rep, files, own } = check(o);
+  if (p.x['restore-points']) o.restorePoints = true;
+  if (!o.folder && !o.vfs || o.vfs && !o.gameDir) { console.error('usage: node tools/fxlint/fxlint.js <mod folder> [--game dir] [--mods a,b] [--exe as64|mowas_2|mowas2|goh] [--restore-points] [-q] [--summary] [--format text|json|sarif|html|csv] [-o file] [--rc file|--no-rc] | --vfs --game <dir>'); process.exit(2); }
+  const { rep, files, own } = await checkAsync(o, ra);
   cli.printReport(rep, p, { tool: 'fxlint' });
   if (p.format === 'text' && !p.output) console.log(`${files} files`); else console.error(`${files} files`);
   if (own === 0) console.error('fxlint: 0 files from the folder: nothing of the mod linted (the count above is mounted game roots)');   // COV-LINT: was silent on an empty folder
-});
-module.exports = { check };
+}
+if (require.main === module) cli.run(() => main(process.argv.slice(2)));
+module.exports = { check, checkAsync, main };

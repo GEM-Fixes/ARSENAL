@@ -149,11 +149,13 @@ function run(tool, argv, opt) {
 // a plain "not part of this copy" instead of an error
 const NOTE_DIRS = { codemap: 'codemap', gohweb: 'gohweb' };
 function notInCopy(what) { const t = 'This lookup is not part of this copy of ARSENAL (' + what + ' is not here). Use the guide and the skills instead.'; return { text: t, stdout: t, stderr: '', isError: false, code: 0, notInCopy: true }; }
+// tools/q never ships in the public copy (owner 2026-11-23): the guard below answers notInCopy() there, so the run goes by Q_TOOL
+const Q_TOOL = 'q';
 async function q(args, opt) {
-  if (!fs.existsSync(path.join(TOOLS, 'q', 'q.js'))) return notInCopy('the note lookup tool');
+  if (!fs.existsSync(path.join(TOOLS, Q_TOOL, 'q.js'))) return notInCopy('the note lookup tool');
   const a = Array.isArray(args) ? args : [];
   if (a[0] === 'gohweb' && !fs.existsSync(path.join(ROOT, NOTE_DIRS.gohweb))) return notInCopy('the Gates of Hell notes');
-  const r = await run('q', args, opt);
+  const r = await run(Q_TOOL, args, opt);
   if (r && (r.isError || r.code) && !fs.existsSync(path.join(ROOT, NOTE_DIRS.codemap)) && (a.includes('-g') || a.includes('-r') || /codemap|no such|ENOENT/i.test(String(r.stderr || '') + String(r.text || '')))) return notInCopy('the internal notes this mode reads');
   return r;
 }

@@ -14,6 +14,9 @@ let fails = 0, n = 0;
 // Timing on a busy machine: every timed check takes the best of RUNS tries (a slow try is the machine, a slow best is the code)
 // and keeps its hard upper bound. A calibration loop (fixed work, best of 5) is printed so a slow log can be read against it.
 const RUNS = 5;
+// owner rule 2026-11-25: a busy PC never fails a check by time alone. Speed bounds are x5 (they still catch a code that got slow);
+// waits go by time with a 60 s backstop and a WAIT line (lib/test/wait)
+const WT = require('../../lib/test/wait');
 function bestMs(fn, runs) { let best = Infinity, out; for (let i = 0; i < (runs || RUNS); i++) { const t = process.hrtime.bigint(); const r = fn(); const ms = Number(process.hrtime.bigint() - t) / 1e6; if (ms < best) { best = ms; out = r; } } return { ms: best, r: out }; }
 async function bestMsAsync(fn, runs) { let best = Infinity, out; for (let i = 0; i < (runs || RUNS); i++) { const t = process.hrtime.bigint(); const r = await fn(); const ms = Number(process.hrtime.bigint() - t) / 1e6; if (ms < best) { best = ms; out = r; } } return { ms: best, r: out }; }
 const calib = bestMs(() => { let x = 0; for (let i = 0; i < 2e6; i++) x = (x * 31 + i) | 0; return x; }).ms;
@@ -134,7 +137,7 @@ function oddRun(ictx, tag) {
   worst = Math.max(worst, bestMs(() => { try { sy = N.symbols(od); } catch (e) { threw = threw || e.message; } }, 3).ms);
   worst = Math.round(worst * 10) / 10;
   ok(!threw, tag + ': odd blanks never throw ' + threw);
-  ok(worst < 50, tag + ': odd blanks every call < 50 ms (worst ' + worst + ' ms)');
+  ok(worst < 250, tag + ': odd blanks every call < 250 ms (worst ' + worst + ' ms)');
   ok(Array.isArray(sy) && sy.length >= 1, tag + ': odd blanks symbols ' + JSON.stringify(sy));
   return worst;
 }
@@ -195,24 +198,26 @@ async function ixGuard() {
   const g2 = path.join(scratch, 'fakegame2'); fs.mkdirSync(g2, { recursive: true });
   const ix = { gameDir: g2, mods: [] };
   const wait = ms => new Promise(r => setTimeout(r, ms));
-  const until = async (f, ms) => { const t = Date.now(); while (Date.now() - t < ms) { if (f()) return true; await wait(25); } return f(); };
+  const until = async (f, ms) => !!(await WT.until(f, { who: 'nav test', what: String(f).slice(0, 100), ms, step: 25 }));   // backstop 60 s + WAIT
+  // a retry time set at the fail: between the start of the step (t0) and now, plus the backoff (a slow PC widens the window, never fails it)
+  const retryIn = (at, ms, t0) => at - ms >= t0 - 100 && at - ms <= Date.now() + 100;
   N._ixTest({ script: silent, quietMs: 400 });
   const d = { key: doc.key, text };
-  const hl = seen(N.hover(d, { line: 8, col: 12 }, ix));   // t34m while the (silent) build runs
+  const ts = Date.now(), hl = seen(N.hover(d, { line: 8, col: 12 }, ix));   // t34m while the (silent) build runs
   ok(hl && hl.rows.some(r => r.k === 'ide.h.ixLoading'), 'index building: hover has ixLoading row ' + JSON.stringify(hl));
   let s = N._ixTest(null, ix);
   ok(s && s.child, 'index child started');
   const tq = Date.now();
   ok(await until(() => s.failed && !s.child, 3000), 'quiet child killed and counted as failed');
   console.log('quiet guard fired after ' + (Date.now() - tq) + ' ms (limit 400 in test, 120000 live)');
-  ok(s.fails === 1 && Math.abs(s.retryAt - Date.now() - 30000) < 2000, 'first retry in 30 s ' + (s.retryAt - Date.now()));
+  ok(s.fails === 1 && retryIn(s.retryAt, 30000, ts), 'first retry in 30 s ' + (s.retryAt - Date.now()));
   ok(!N.hover(d, { line: 8, col: 12 }, ix).rows.some(r => r.k === 'ide.h.ixLoading'), 'failed, waiting: no loading row');
   ok(!s.child, 'no retry before the backoff');
-  N._ixTest({ script: bad }); s.retryAt = 0; N.hover(d, { line: 8, col: 12 }, ix);
+  const tb = Date.now(); N._ixTest({ script: bad }); s.retryAt = 0; N.hover(d, { line: 8, col: 12 }, ix);
   ok(!!s.child, 'retry starts after the backoff');
-  ok(await until(() => !s.child, 5000) && s.fails === 2 && Math.abs(s.retryAt - Date.now() - 120000) < 2000, 'non-zero exit: second retry in 2 min');
-  N._ixTest({ script: empty }); s.retryAt = 0; N.hover(d, { line: 8, col: 12 }, ix);
-  ok(await until(() => !s.child, 5000) && s.fails === 3 && Math.abs(s.retryAt - Date.now() - 600000) < 2000, 'exit 0 without a loadable index: third retry in 10 min');
+  ok(await until(() => !s.child, 5000) && s.fails === 2 && retryIn(s.retryAt, 120000, tb), 'non-zero exit: second retry in 2 min');
+  const te = Date.now(); N._ixTest({ script: empty }); s.retryAt = 0; N.hover(d, { line: 8, col: 12 }, ix);
+  ok(await until(() => !s.child, 5000) && s.fails === 3 && retryIn(s.retryAt, 600000, te), 'exit 0 without a loadable index: third retry in 10 min');
   N.hover(d, { line: 8, col: 12 }, ix);
   ok(await until(() => !s.child, 2000) && s.fails === 3, 'no retry before 10 min');
   eq(N.touch(ix, 'localization/x.lng'), false, 'touch ignores a .lng save');
@@ -235,7 +240,7 @@ async function ixGuard() {
 
 // ---- timing (warm, no game)
 const warmKey = +(bestMs(() => { for (let i = 0; i < 20; i++) N.hover(doc, { line: 4, col: 4 }, {}); }).ms / 20).toFixed(2);
-ok(warmKey < 30, 'warm key hover ' + warmKey + ' ms');
+ok(warmKey < 150, 'warm key hover ' + warmKey + ' ms (bound 150)');
 
 // ---- sound names: fireSound / reloadSound short forms, link_sound / start_sound / {sound ..} names, a sound/ path (synthetic mod)
 {
@@ -308,7 +313,8 @@ async function game() {
   ok(hmn && hmn.lead.k === 'ide.h.includeMine' && hmn.links[0].link === 'ide:resource/properties/vehicle.ext', 'game: mod copy wins ' + JSON.stringify(hmn && hmn.links));
   eq(N.def(doc, { line: 3, col: 15 }, mod)[0].link, 'ide:resource/properties/vehicle.ext:1', 'game: def into the mod folder');
   // entity index (background build the first time)
-  const t0 = Date.now(), ready = await N._ready(ictx, 120000);
+  const t0 = Date.now(); let ready = await N._ready(ictx, 120000);
+  if (!ready) { WT.say('nav test', 'entity index (once more with 240 s)', 120000); ready = await N._ready(ictx, 240000); }
   console.log('entity index ready ' + ready + ' in ' + (Date.now() - t0) + ' ms');
   ok(ready, 'game: entity index loads');
   if (!ready) return;
@@ -320,7 +326,7 @@ async function game() {
   ok(hs && hs.lead.k === 'ide.h.stuff' && hs.lead.p.n >= 1, 'game: stuff tags');
   const warmEnt = +(bestMs(() => { for (let i = 0; i < 20; i++) N.hover(doc, { line: 8, col: 12 }, ictx); }).ms / 20).toFixed(2);
   const warmPath = +(bestMs(() => { for (let i = 0; i < 20; i++) N.hover(doc, { line: 5, col: 16 }, ictx); }).ms / 20).toFixed(2);
-  ok(warmEnt < 30 && warmPath < 30, 'game: warm hover entity ' + warmEnt + ' ms, path ' + warmPath + ' ms');
+  ok(warmEnt < 150 && warmPath < 150, 'game: warm hover entity ' + warmEnt + ' ms, path ' + warmPath + ' ms');
   console.log('warm ms: key ' + warmKey + ', entity ' + warmEnt + ', path ' + warmPath);
   const r = N.refs(null, { name: 'large_cartridge' }, mod);
   ok(r.kind === 'text' || r.kind === 'entity', 'game: refs kind');
@@ -331,7 +337,7 @@ async function game() {
   // a busy machine (other suites running) can cut a sync run at its 400 ms budget with 0 hits: retry, keep the first run that is not cut
   let rp = null;
   // (a pause between tries lets a burst of load from other suites pass; the time budget itself is judged below, not here)
-  for (let i = 0; i < 12 && !(rp && !rp.truncated && rp.hits.length); i++) { if (i) await new Promise(z => setTimeout(z, 150 * i)); rp = N.refs(doc, { line: 8, col: 12 }, ictx); }
+  { const tr = Date.now(); for (let i = 0; !(rp && !rp.truncated && rp.hits.length); i++) { if (i) { if (Date.now() - tr > WT.COND_MS) { WT.say('nav test', 'a refs run from a position not cut by its budget', WT.COND_MS); break; } await new Promise(z => setTimeout(z, Math.min(150 * i, 2000))); } rp = N.refs(doc, { line: 8, col: 12 }, ictx); } }   // by time: 60 s, then WAIT and the check reports
   ok(rp.name === 't34m' && rp.kind === 'entity' && rp.hits.length >= 1, 'game: refs from a position [' + JSON.stringify({ name: rp.name, kind: rp.kind, n: rp.hits.length, t: rp.truncated, why: rp.why, ms: rp.ms }) + ']');
   // entity count row: named for what it counts, never zero; lead has no count
   ok(he && he.lead.k === 'ide.h.entityIs' && he.lead.p.n === undefined, 'game: entity lead without a count');
@@ -341,23 +347,24 @@ async function game() {
   // odd blanks with the game and the index loaded
   oddRun(ictx, 'game');
   // refs on the request thread: 400 ms budget, most relevant first
-  // refs keeps its own 400 ms budget; the run with the smallest reported ms is judged (best of RUNS), hard bound 700 ms
+  // refs keeps its own 400 ms budget; the run with the smallest reported ms is judged (best of RUNS), hard bound 3500 ms (x5)
   N.refs(null, { name: 't34m' }, mod);   // warm (game view, index users map)
   // a run cut by the time budget (machine busy) never beats a run that finished
   // under load: up to 12 tries with a growing pause between them (a burst from the other suites passes)
-  const minBy = async (fn, k) => { let b = null; for (let i = 0; i < Math.max(k, 12); i++) { if (i) await new Promise(z => setTimeout(z, 150 * i)); const r = fn(); if (!b || (b.truncated && !r.truncated) || (!!b.truncated === !!r.truncated && r.ms < b.ms)) b = r; if (b.ms < 300 && !b.truncated) break; } return b; };
-  const r1 = await minBy(() => N.refs(null, { name: 't34m' }, mod), RUNS);
-  ok(r1.ms < 700 && r1.hits.length >= 1, 'game: refs t34m within budget ' + r1.ms + ' ms, ' + r1.hits.length + ' hits');
+  // need (a run that must finish): past the 12 tries while every run so far was cut, by time up to 60 s (WAIT)
+  const minBy = async (fn, k, need) => { let b = null; const tm = Date.now(); for (let i = 0; ; i++) { if (i) { if (i >= Math.max(k, 12) && (!need || !b.truncated || Date.now() - tm > WT.COND_MS)) { if (need && b.truncated) WT.say('nav test', 'a refs run not cut by its budget', WT.COND_MS); break; } await new Promise(z => setTimeout(z, Math.min(150 * i, 2000))); } const r = fn(); if (!b || (b.truncated && !r.truncated) || (!!b.truncated === !!r.truncated && r.ms < b.ms)) b = r; if (b.ms < 300 && !b.truncated) break; } return b; };
+  const r1 = await minBy(() => N.refs(null, { name: 't34m' }, mod), RUNS, true);
+  ok(r1.ms < 3500 && r1.hits.length >= 1, 'game: refs t34m within budget ' + r1.ms + ' ms, ' + r1.hits.length + ' hits');
   const r2 = await minBy(() => N.refs(null, { name: 'zzqnavnone' }, mod), RUNS);
-  ok(r2.ms < 700, 'game: refs unknown name within budget ' + r2.ms + ' ms');
-  ok(r2.truncated ? r2.why === 'time' : r2.ms <= 450, 'game: refs unknown name: done in budget or truncated/time ' + JSON.stringify([r2.truncated, r2.why, r2.ms]));
+  ok(r2.ms < 3500, 'game: refs unknown name within budget ' + r2.ms + ' ms');
+  ok(r2.truncated ? r2.why === 'time' : r2.ms <= 2250, 'game: refs unknown name: done in budget or truncated/time ' + JSON.stringify([r2.truncated, r2.why, r2.ms]));
   console.log('refs t34m: ' + r1.hits.length + ' hits, ' + r1.ms + ' ms, truncated ' + r1.truncated + ' ' + (r1.why || '') + '; refs unknown: ' + r2.ms + ' ms, ' + r2.why);
   // async: sliced, the event loop keeps turning, finds at least what the sync one found
   let ticks = 0; const tick = setInterval(() => ticks++, 5);
   const ra = await N.refsAsync(null, { name: 't34m' }, mod);
   clearInterval(tick);
   ok(ra.hits.length >= r1.hits.length && r1.hits.every(h => ra.hits.some(x => x.link === h.link)), 'game: refsAsync finds what refs found ' + ra.hits.length);
-  ok(ticks >= 2 || ra.ms < 30, 'game: refsAsync yields to the event loop (' + ticks + ' timer ticks in ' + ra.ms + ' ms)');
+  ok(ticks >= 2 || ra.ms < 100, 'game: refsAsync yields to the event loop (' + ticks + ' timer ticks in ' + ra.ms + ' ms)');
   eq(ra.hits.slice(0, r1.hits.length).map(h => h.link), r1.hits.map(h => h.link), 'game: refsAsync keeps the order of refs (index users, mod, game)');
   const firstMine = ra.hits.findIndex(h => h.where === 'mine' && /^ide:resource\/entity\/navtest\//.test(h.link));
   ok(firstMine < 0 || ra.hits.slice(firstMine).every((h, i, a) => i === 0 || !(h.where === 'mine' && a.slice(0, i).some(x => x.where === 'vanilla' && /^key:/.test(x.link) && !rp.hits.some(y => y.link === x.link)))), 'game: mod hits before game-scan hits');
@@ -367,20 +374,22 @@ async function game() {
   ok(rb.truncated && rb.why === 'abort', 'game: refsAsync abort');
   let rc = null;
   for (let i = 0; i < 3 && !(rc && rc.ms < 200); i++) { const x = await N.refsAsync(null, { name: 'zzqnavnone' }, mod, { budgetMs: 40 }); if (!rc || x.ms < rc.ms) rc = x; }
-  ok(rc.truncated && rc.why === 'time' && rc.ms < 200, 'game: budget cut gives truncated/time ' + JSON.stringify([rc.truncated, rc.why, rc.ms]));
+  ok(rc.truncated && rc.why === 'time' && rc.ms < 1000, 'game: budget cut gives truncated/time ' + JSON.stringify([rc.truncated, rc.why, rc.ms]));
   // own game view: after touch, the stale copy keeps serving (no rebuild on the hover)
   N.hover(doc, { line: 3, col: 15 }, ictx);
   N.touch(ictx, 'resource/entity/navtest/a.def');
   // the first hover after touch is the one that would rebuild; the later tries are still stale (the rebuild runs in the background)
   const st = bestMs(() => N.hover(doc, { line: 3, col: 15 }, ictx), 3), hst = st.r, tStale = +st.ms.toFixed(1);
-  ok(hst && hst.lead.k === 'ide.h.includeVanilla' && tStale < 50, 'game: stale view serves without a rebuild ' + tStale + ' ms');
+  ok(hst && hst.lead.k === 'ide.h.includeVanilla' && tStale < 250, 'game: stale view serves without a rebuild ' + tStale + ' ms');
   await new Promise(r => setTimeout(r, 1500));   // background rebuild runs here
   // warm hover on a 200 KB buffer
   let big = ''; while (big.length < 200 * 1024) big += text + '\n';
   const bl = big.split('\n').length - 3, bdoc = { key: doc.key, text: big };
   N.hover(bdoc, { line: bl, col: 3 }, ictx);
-  const warmBig = +(bestMs(() => { for (let i = 0; i < 10; i++) N.hover(bdoc, { line: bl, col: 3 }, ictx); }, 3).ms / 10).toFixed(2);
-  ok(warmBig < 50, 'game: warm hover on 200 KB ' + warmBig + ' ms');
+  const big10 = () => +(bestMs(() => { for (let i = 0; i < 10; i++) N.hover(bdoc, { line: bl, col: 3 }, ictx); }, 3).ms / 10).toFixed(2);
+  let warmBig = big10();
+  if (warmBig >= 250) { WT.say('nav test', 'warm hover on 200 KB within 250 ms (took ' + warmBig + ' ms; once more)', warmBig); await new Promise(r => setTimeout(r, 2000)); warmBig = Math.min(warmBig, big10()); }   // the rebuild may still run on a busy PC
+  ok(warmBig < 250, 'game: warm hover on 200 KB ' + warmBig + ' ms');
   console.log('warm hover 200 KB buffer: ' + warmBig + ' ms');
 }
 

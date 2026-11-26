@@ -47,7 +47,13 @@ const ext = require('./index');
 const R = require('./routes');
 const call = (k, q) => ext.routes['GET /api/x/docs/' + k](new URL('http://127.0.0.1/api/x/docs/' + k + '?' + new URLSearchParams(q || {})), null, {});
 const st = async p => { try { await p; return 0; } catch (x) { return x.status || -1; } };
-const tick = async () => { for (let i = 0; i < 12; i++) await new Promise(r => setImmediate(r)); };
+// tick: 12 turns, then on until every request the page made has its answer (a list rebuild after TTL reads the disk through the
+// thread pool, more than 12 turns on a busy PC), then 12 turns more for the draw. Backup, never a hang: a request with no answer
+// after 60 s is left out from then on (WAIT on stderr once)
+const INFL = new Map(); let inflN = 0;
+const live = () => { let n = 0; for (const r of INFL.values()) { if (Date.now() - r.t < 60000) n++; else if (!r.said) { r.said = true; process.stderr.write('WAIT docs test: ' + r.u + ' has no answer after 60 s; tick goes on without it\n'); } } return n; };
+const turns = async () => { for (let i = 0; i < 12; i++) await new Promise(r => setImmediate(r)); };
+const tick = async () => { await turns(); if (!live()) return; while (live()) await new Promise(r => setTimeout(r, 2)); await turns(); };
 
 (async () => {
   // ---- ext shape, script rules, 4 languages
@@ -174,7 +180,8 @@ const tick = async () => { for (let i = 0; i < 12; i++) await new Promise(r => s
       // the shell's view hook (page.js viewSet): the page reports a part it changed itself
       viewSet: o.noViewSet ? undefined : (pg, v) => views.push(pg + '/' + v),
       onTheme: (fn, key) => { themeFns[key] = fn; return () => {}; },
-      api: (u, body) => { const url = new URL('http://127.0.0.1' + u); const fn = ext.routes[(body === undefined ? 'GET ' : 'POST ') + url.pathname]; return fn ? fn(url, body || null, {}) : Promise.reject(new Error('no route ' + url.pathname)); },
+      api: (u, body) => { const url = new URL('http://127.0.0.1' + u); const fn = ext.routes[(body === undefined ? 'GET ' : 'POST ') + url.pathname]; if (!fn) return Promise.reject(new Error('no route ' + url.pathname));
+        const id = ++inflN, p = Promise.resolve(fn(url, body || null, {})); INFL.set(id, { t: Date.now(), u }); p.then(() => INFL.delete(id), () => INFL.delete(id)); return p; },
       h: (tag, attrs, kids) => {
         const e = doc.createElement(tag);
         for (const k in attrs || {}) { const v = attrs[k]; if (v == null || v === false || k === 'blk' || k === 'box') continue; if (k === 'class') e.className = v; else if (k === 'text') e.textContent = v; else if (k.slice(0, 2) === 'on') e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v); }
@@ -998,7 +1005,9 @@ const tick = async () => { for (let i = 0; i < 12; i++) await new Promise(r => s
       {
         const JL = require(path.join(__dirname, '..', '..', 'joblist')).create({ keepMs: 600000 }), jctx = { jobs: JL, gameId: () => 'goh' };
         const postC = (k, b) => ext.routes['POST /api/x/docs/history/' + k](new URL('http://127.0.0.1/api/x/docs/history/' + k), b || {}, jctx);
-        const wait = ms => new Promise(z => setTimeout(z, ms)), bgs = () => JL.list().filter(j => j.kind === 'bg');
+        // the join is polled every 5 ms: wait for the job state it should reach (by time; 60 s backstop: WAIT, the check after it reports)
+        const wait = f => require('../../../lib/test/wait').until(f, { who: 'docs test', what: 'join job: ' + String(f).slice(0, 100) }), bgs = () => JL.list().filter(j => j.kind === 'bg');
+        const jst = () => JL.get(run[0].id).state;
         let boom = false;
         const stopMod = Object.assign({}, full, { available: partsAv,
           joinStart: o => { calls.push(['start', o]); if (J.state !== 'running') Object.assign(J, { state: startAs, doneMb: 412, why: '' }); return Object.assign({}, J); },
@@ -1013,17 +1022,17 @@ const tick = async () => { for (let i = 0; i < 12; i++) await new Promise(r => s
           bgs()[0].done === 412 && bgs()[0].total === 934, 'jobs: the join is a bg job with MB progress; no stop in the module = no Cancel ' + JSON.stringify(bgs()));
         await postC('join'); await postC('joinstatus');
         ok(bgs().length === 1, 'jobs: one job per join, however often the page asks');
-        Object.assign(J, { state: 'done', doneMb: 934 }); await wait(40);
+        Object.assign(J, { state: 'done', doneMb: 934 }); await wait(() => bgs()[0].state === 'done');
         ok(bgs()[0].state === 'done', 'jobs: the job ends done when the join does');
         // with a stop: Cancel in the list calls it, the job ends cancelled
         Object.assign(J, { state: 'idle', doneMb: 0 }); R._setHistory(stopMod); R.reset(); calls.length = 0;
         jr = await postC('join');
         let run = bgs().filter(j => j.state === 'running');
         ok(jr.canStop === true && run.length === 1 && run[0].canCancel === true, 'jobs: a join that can be stopped is listed with Cancel');
-        J.doneMb = 500; await wait(40);
+        J.doneMb = 500; await wait(() => JL.get(run[0].id).done === 500);
         ok(JL.get(run[0].id).done === 500, 'jobs: the progress follows the join');
         ok(JL.cancel(run[0].id) === true && calls.some(c => c[0] === 'stop'), 'jobs: Cancel calls the join stop');
-        await wait(40);
+        await wait(() => jst() === 'cancelled');
         ok(JL.get(run[0].id).state === 'cancelled', 'jobs: a stopped join ends its job cancelled');
         jr = await postC('joinstatus');
         ok(jr.ok === true && jr.state === 'stopped' && !jr.canStop && bgs().filter(j => j.state === 'running').length === 0, 'jobs: joinstatus says stopped, no new job ' + JSON.stringify(jr));
@@ -1032,14 +1041,14 @@ const tick = async () => { for (let i = 0; i < 12; i++) await new Promise(r => s
         await postC('join'); run = bgs().filter(j => j.state === 'running');
         jr = await postC('joinstop');
         ok(calls.some(c => c[0] === 'stop') && jr.state === 'stopped', 'jobs: joinstop stops the join ' + JSON.stringify(jr));
-        await wait(40);
+        await wait(() => run.length !== 1 || jst() === 'cancelled');
         ok(run.length === 1 && JL.get(run[0].id).state === 'cancelled', 'jobs: Stop on the page ends the job cancelled too');
         // failed, and a status that throws: ended failed, never left running
         Object.assign(J, { state: 'idle', doneMb: 0 }); await postC('join'); run = bgs().filter(j => j.state === 'running');
-        Object.assign(J, { state: 'failed', why: 'piece gone' }); await wait(40);
+        Object.assign(J, { state: 'failed', why: 'piece gone' }); await wait(() => run.length !== 1 || jst() === 'failed');
         ok(run.length === 1 && JL.get(run[0].id).state === 'failed', 'jobs: a failed join ends its job failed');
         Object.assign(J, { state: 'idle', doneMb: 0, why: '' }); await postC('join'); run = bgs().filter(j => j.state === 'running');
-        boom = true; await wait(40); boom = false;
+        boom = true; await wait(() => run.length !== 1 || jst() === 'failed'); boom = false;
         ok(run.length === 1 && JL.get(run[0].id).state === 'failed' && bgs().filter(j => j.state === 'running').length === 0, 'jobs: a status that throws ends the job failed');
         const rsrc = fs.readFileSync(path.join(__dirname, 'routes.js'), 'utf8');
         ok(rsrc.includes('cancel: stop || undefined') && rsrc.includes('const f = joinStopFn();') && rsrc.includes("require('../../../gemindex/lib/ww2')"), 'jobs: Cancel and Stop go through joinStopFn (the real module: lib/ww2 joinStop)');

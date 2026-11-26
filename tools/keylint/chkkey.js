@@ -36,10 +36,10 @@ function onBlock(x) {
 
   // AI-01: a selector whose groups all have {select ..} terms drops every contact no term matches; a group without {select} takes the rest
   if (kind.startsWith('set/target') && key === 'selector' && cp.keyTok && cp.keyTok.k === 'IDENT') {
-    const groups = cp.kids.filter(k => M.parts(k, false).key === 'group');
-    const gp = groups.map(g => M.parts(g, false));
-    const sel = gp.map(g => g.kids.filter(k => M.parts(k, false).key === 'select'));
-    const inRange = k => { const p = M.parts(k, false); return p.toks.some(t => t.k === 'IDENT' && t.text.toLowerCase() === 'in_range') || p.kids.some(z => M.parts(z, false).key === 'in_range'); };
+    const groups = cp.kids.filter(k => M.partsM(k).key === 'group');
+    const gp = groups.map(g => M.partsM(g));
+    const sel = gp.map(g => g.kids.filter(k => M.partsM(k).key === 'select'));
+    const inRange = k => { const p = M.partsM(k); return p.toks.some(t => t.k === 'IDENT' && t.text.toLowerCase() === 'in_range') || p.kids.some(z => M.partsM(z).key === 'in_range'); };
     const catchAll = sel.some(s => !s.length), range = sel.some(s => s.some(inRange));
     if (!catchAll && !range)
       emit(c, 'SELECT_NO_CATCHALL', groups.length ? 'every group has {select ..} terms and none is a late catch-all: a contact that matches no term is never attacked; add a last {group} without {select}, or a {select {in_range m}} group'
@@ -51,8 +51,8 @@ function onBlock(x) {
     const cond = t => t && t.k === 'IDENT' && /^in_(bush|cover)$/i.test(t.text);
     if (!cp.kids.length) emit(c, 'AMMO_RULE_GAP', `ammo class "${cp.keyTok.text}" has no ammo rule: every ammo falls to the engine catch-all (priority -1), so this target class is never shot at; add {"bullet"} etc.`);
     else if (cond(t0) && pcp) {
-      const sib = pcp.kids.filter(k => M.parts(k, false).key === key).map(k => M.parts(k, false));
-      if (sib.every(p => cond(p.toks[0])) && pcp.kids.find(k => M.parts(k, false).key === key) === c)
+      const sib = pcp.kids.filter(k => M.partsM(k).key === key).map(k => M.partsM(k));
+      if (sib.every(p => cond(p.toks[0])) && pcp.kids.find(k => M.partsM(k).key === key) === c)
         emit(c, 'AMMO_RULE_GAP', `ammo class "${cp.keyTok.text}" only has in_bush/in_cover blocks and no plain {${cp.keyTok.text} ...} block: targets in any other state get no ammo rule and are not shot at`);
     }
   }
@@ -61,11 +61,12 @@ function onBlock(x) {
 // TST-80: raw text of a def-like file; armor macro call ("armor_x" turret(a b c d) body(..) | args N): parameter lists take 1, 2 or 4 numbers
 function armorText(text) {
   const s = text.replace(/;[^\r\n]*/g, m => ' '.repeat(m.length)), out = [], re = /\(\s*"armor_\w+"/gi;
-  let m;
+  let m, at = 0, ln = 1;   // line of m.index counted on from the last match (before: s.slice(0, index).split per match, O(n^2))
+  const lineOf = ix => { if (!M.fast()) return s.slice(0, ix).split('\n').length; for (let j = s.indexOf('\n', at); j >= 0 && j < ix; j = s.indexOf('\n', j + 1)) ln++; at = ix; return ln; };
   while ((m = re.exec(s))) {
     let d = 1, i = m.index + m[0].length; const st = i;
     while (i < s.length && d) { const ch = s[i++]; if (ch === '(') d++; else if (ch === ')') d--; }
-    const body = s.slice(st, i - 1), line = s.slice(0, m.index).split('\n').length;
+    const body = s.slice(st, i - 1), line = lineOf(m.index);
     const bad = [];
     const pr = /([A-Za-z_]\w*)\s*\(([^()]*)\)/g; let p;
     while ((p = pr.exec(body))) { const n = p[2].trim().split(/\s+/).filter(Boolean); if (n.length && n.every(v => /^[-+]?[\d.]+$/.test(v)) && ![1, 2, 4].includes(n.length)) bad.push(`${p[1]}(${n.length} values)`); }
@@ -91,10 +92,14 @@ function stripLua(t) {
   }
   return o;
 }
+// newlines(s) -> offsets of every '\n'; lineIn(nl, ix) = s.slice(0, ix).split('\n').length (newlines before ix, + 1)
+function newlines(s) { const a = []; for (let j = s.indexOf('\n'); j >= 0; j = s.indexOf('\n', j + 1)) a.push(j); return a; }
+function lineIn(nl, ix) { let lo = 0, hi = nl.length; while (lo < hi) { const mid = (lo + hi) >> 1; if (nl[mid] < ix) lo = mid + 1; else hi = mid; } return lo + 1; }
 const isBotLua = k => /^resource\/script\/multiplayer\/bot[^/]*\.lua$/.test(k);
 // -> [{ line, code, msg }] for one bot Lua file (key = virtual key)
 function luaPass(key, text) {
-  const s = stripLua(text), out = [], lineAt = ix => s.slice(0, ix).split('\n').length;
+  const s = stripLua(text), out = [], nl = M.fast() ? newlines(s) : null;
+  const lineAt = ix => nl ? lineIn(nl, ix) : s.slice(0, ix).split('\n').length;
   let m;
   if (/(^|\/)bot\.data\.lua$/.test(key)) {
     const re = /(?<![\w.])(period|AttackBaseTime)\s*=(?!=)/g;

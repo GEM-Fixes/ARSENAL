@@ -16,6 +16,11 @@ const game = path.join(scratch, 'game'), mod = path.join(scratch, 'mymod');
 for (const d of [path.join(game, 'resource'), path.join(game, 'mods'), mod]) fs.mkdirSync(d, { recursive: true });
 let n = 0; const ok = m => { n++; console.log('ok ' + n + ' ' + m); };
 const tick = () => new Promise(r => setImmediate(r));
+// built: by time, not by count; backstop 60 s with a WAIT line, then the check after it reports
+const built = P => require('../../../lib/test/wait').until(() => P.ctx.__as2gui, { who: 'models blocks test', what: 'the page built', step: 1 });
+// settled: 60 ticks, then on while a real route call has no answer yet (a busy PC), backstop 60 s with a WAIT line
+let inflight = 0;
+const settled = async () => { for (let i = 0; i < 60; i++) await tick(); if (inflight) { await require('../../../lib/test/wait').until(() => !inflight, { who: 'models blocks test', what: 'a route call answered', step: 1 }); for (let i = 0; i < 60; i++) await tick(); } };
 const clone = o => JSON.parse(JSON.stringify(o));
 
 // ---------- the block rules (copy of checkScreen in tools/gui/test/test-blocks.js) ----------
@@ -128,7 +133,8 @@ function boot(store) {
       if (p.startsWith('/api/x/models/')) {
         const f = ext.routes[m + ' ' + p];
         if (!f) return new Promise(() => {});
-        return Promise.resolve().then(() => f(m === 'GET' ? new URL('http://127.0.0.1' + u) : p, body, rctx)).then(j => resp(j), e => resp({ error: e.message }, e.status || 500));
+        inflight++;
+        return Promise.resolve().then(() => f(m === 'GET' ? new URL('http://127.0.0.1' + u) : p, body, rctx)).then(j => resp(j), e => resp({ error: e.message }, e.status || 500)).finally(() => { inflight--; });
       }
       return new Promise(() => {});
     },
@@ -142,9 +148,9 @@ function boot(store) {
 async function pickCard() {
   const EN = ext.lang.en, T = (k, o) => EN[k].replace(/\{(\w+)\}/g, (m, s) => (o && o[s] != null ? String(o[s]) : m));
   const P = boot();
-  for (let i = 0; i < 400 && !P.ctx.__as2gui; i++) await tick();
+  await built(P);
   const S = P.ctx.__as2gui, sec = P.doc.getElementById('main').children.find(s => s.dataset.id === 'models');
-  const settle = async () => { for (let i = 0; i < 60; i++) await tick(); };
+  const settle = settled;
   S.mod = mod; P.ctx.as2Link('page:models'); await settle();
   const blk = id => { const a = sec.all().filter(e => e.dataset && e.dataset.blk === id); assert.strictEqual(a.length, 1, 'one block ' + id); return a[0]; };
   const q = blk('pk.q').all().find(e => e.tagName === 'INPUT'), pIn = blk('pk.path').all().find(e => e.tagName === 'INPUT');
@@ -269,7 +275,7 @@ async function pickCard() {
   assert.ok(stage() === 't34_76' && q.value === 't34_76' && !rows().length && say() === '', 'pick(name) from another page');
   assert.strictEqual(P.store.get('as2gui.models.target'), '"t34_76"');
   const P2 = boot(P.store);
-  for (let i = 0; i < 400 && !P2.ctx.__as2gui; i++) await tick();
+  await built(P2);
   const sec2 = P2.doc.getElementById('main').children.find(s => s.dataset.id === 'models');
   const v2 = sec2.all().find(e => e.dataset && e.dataset.blk === 'pk.kind').children.find(b => b.textContent === EN['models.f.vehicle']);
   assert.strictEqual(v2.getAttribute('aria-pressed'), 'true', 'the kind choice is back after a reload');
@@ -287,10 +293,10 @@ const check = (sec, what) => { const pr = checkScreen(sec); assert.ok(!pr.length
   ok('a model from the vehicle template in the temp mod (' + files.length + ' files)');
 
   const P = boot();
-  for (let i = 0; i < 400 && !P.ctx.__as2gui; i++) await tick();
+  await built(P);
   assert.ok(P.ctx.__as2gui, 'page built');
   const S = P.ctx.__as2gui, sec = P.doc.getElementById('main').children.find(s => s.dataset.id === 'models');
-  const settle = async () => { for (let i = 0; i < 60; i++) await tick(); P.ctx.as2Blocks.apply(sec); };
+  const settle = async () => { await settled(); P.ctx.as2Blocks.apply(sec); };
   // MODELS_BLK_SOFT=1: list the problems of every draw and go on (while converting)
   const check = what => { const pr = checkScreen(sec); if (process.env.MODELS_BLK_SOFT) { if (pr.length) console.log('PROBLEMS ' + what + ' (' + pr.length + '):\n  ' + pr.join('\n  ')); return; } assert.ok(!pr.length, what + ':\n  ' + pr.slice(0, 30).join('\n  ') + (pr.length > 30 ? '\n  ... ' + (pr.length - 30) + ' more' : '')); };
   check('models first build');

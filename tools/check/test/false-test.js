@@ -70,7 +70,7 @@ const fails = []; const ok = (c, m) => { if (!c) fails.push(m); };
 // ---- seeded mod, end to end
 cp.execFileSync(process.execPath, [path.join(here, 'mkfalse.js'), FL]);
 const jf = path.join(FL, 'r.json');
-const p = cp.spawnSync(process.execPath, [CHECK, path.join(G, 'mods', 'fm'), '--game', G, '--exe', 'mowas2', '--json', jf], { encoding: 'utf8', cwd: here, timeout: 600000 });
+const p = require('../../lib/test/wait').spawnSync(process.execPath, [CHECK, path.join(G, 'mods', 'fm'), '--game', G, '--exe', 'mowas2', '--json', jf], { encoding: 'utf8', cwd: here, timeout: 600000 }, 'check false-test');
 let R = null; try { R = JSON.parse(fs.readFileSync(jf, 'utf8')); } catch { /* none */ }
 const out = (p.stdout || '') + (p.stderr || '');
 if (!R) ok(false, 'no json: ' + out.slice(-500));

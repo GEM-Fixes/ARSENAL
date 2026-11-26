@@ -4,7 +4,7 @@
 // usage: node tools/dist/test/clean.js --zip <ARSENAL-ver.zip> [--keep]
 //        node tools/dist/test/clean.js --build <scratch dir>   (build the zip there first with zip.js, then check it)
 // Author: Imperator_Aug (ARSENAL, ia-dbedaf7e)
-const fs = require('fs'), path = require('path'), os = require('os'), zlib = require('zlib'), { spawnSync } = require('child_process');
+const fs = require('fs'), path = require('path'), os = require('os'), zlib = require('zlib'), { spawnSync } = require('child_process'), Wt = require('../../lib/test/wait');
 const a = process.argv.slice(2), arg = k => (a.indexOf(k) >= 0 ? a[a.indexOf(k) + 1] : null);
 let zip = arg('--zip');
 if (!zip && arg('--build')) {
@@ -47,14 +47,14 @@ for (const ex of ['ARSENAL']) {
   const exe = path.join(root, ex + exeName);
   say(fs.existsSync(exe), `${ex}${exeName} is in the zip (${fs.existsSync(exe) ? (fs.statSync(exe).size / 1048576).toFixed(1) + ' MB' : 'missing'})`);
   if (!fs.existsSync(exe)) continue;
-  const v = spawnSync(exe, ['--version'], { cwd, env, encoding: 'utf8', timeout: 60000 });
+  const v = Wt.spawnSync(exe, ['--version'], { cwd, env, encoding: 'utf8' }, 'dist clean');
   say(v.status === 0, `${ex} --version rc ${v.status}: ${(v.stdout || v.stderr || '').split(/\r?\n/)[0].slice(0, 70)}`);
   if (ex === 'ARSENAL') {
-    const h = spawnSync(exe, ['--help'], { cwd, env, encoding: 'utf8', timeout: 60000 });
+    const h = Wt.spawnSync(exe, ['--help'], { cwd, env, encoding: 'utf8' }, 'dist clean');
     say(h.status === 0 && FRONT.every(f => new RegExp('^\\s*' + f + '\\b', 'm').test(h.stdout)), `${ex} --help rc ${h.status}, lists the ${FRONT.length} front-door commands`);
   }
   for (const f of FRONT) {
-    const r = spawnSync(exe, [f, '--help'], { cwd, env, encoding: 'utf8', timeout: 60000 });
+    const r = Wt.spawnSync(exe, [f, '--help'], { cwd, env, encoding: 'utf8' }, 'dist clean');
     const ok = r.status === 0 && new RegExp('^usage: (?:ARSENAL|as2) ' + f + '(\\s|$)', 'm').test(r.stdout || '');
     say(ok, `${ex} ${f} --help rc ${r.status}${ok ? '' : ' ' + ((r.stdout || '') + (r.stderr || '')).split(/\r?\n/)[0].slice(0, 90)}`);
   }

@@ -32,7 +32,7 @@ module.exports = async function run(work, ok) {
     runTool: async (tool, entry, args) => {
       if (tool === 'modinfo') return { code: 1, stdout: args[0] + '/mod.info: WARN_DESC_SHORT the description is short\n', stderr: '' };
       if (tool === 'check') { const j = args.indexOf('--json'); if (j >= 0) fs.writeFileSync(args[j + 1], JSON.stringify({ target: 'as64', overall: { target: 'as64', verdict: 'crash', crash: 2, text: 'x' }, plain: ['x', 'Can crash the game: one.', 'Can crash the game: two.'] })); return { code: 0, stdout: 'VERDICT as64: LOADS_STATIC\n', stderr: '' }; }
-      const r = cp.spawnSync(process.execPath, [path.join(G, '..', entry)].concat(args), { encoding: 'utf8', timeout: 90000 }); return { code: r.status, stdout: r.stdout || '', stderr: r.stderr || '', timedOut: !!r.error };
+      const r = require(path.join(G, '..', 'lib', 'test', 'wait')).spawnSync(process.execPath, [path.join(G, '..', entry)].concat(args), { encoding: 'utf8', timeout: 90000 }, 'share pagecheck'); return { code: r.status, stdout: r.stdout || '', stderr: r.stderr || '', timedOut: !!r.error };
     },
   };
   fs.mkdirSync(ctx.tmpRoot, { recursive: true });
@@ -59,11 +59,13 @@ module.exports = async function run(work, ok) {
   };
   P.window = P; vm.createContext(P);
   vm.runInContext(/<script>([\s\S]*)<\/script>/.exec(html)[1], P, { filename: 'page.js:script' });
-  for (let i = 0; i < 400 && !P.__as2gui; i++) await tick();
+  await require(path.join(G, '..', 'lib', 'test', 'wait')).until(() => P.__as2gui, { who: 'share pagecheck', what: 'the page built', step: 1 });   // by time, backstop 60 s
   ok(!!P.__as2gui, 'page built');
   const S = P.__as2gui, sec = doc.getElementById('main').children.find(s => s.dataset.id === 'share');
   P.as2Link('page:share'); S.mod = S.mod || md;
-  const settle = async (cond, n) => { for (let i = 0; i < (n || 300); i++) { await tick(); if (cond && cond()) return true; } return !cond; };
+  // cond: waited for by time as well as by ticks (a route that starts a child program answers after many ticks). Backup, never a
+  // hang: after 60 s it says WAIT on stderr and returns false (the check after it reports what is missing). No cond: n ticks
+  const settle = async (cond, n) => { const t0 = Date.now(); for (let i = 0; ; i++) { await tick(); if (cond && cond()) return true; if (i + 1 >= (n || 300)) { if (!cond) return true; if (Date.now() - t0 > 60000) { process.stderr.write('WAIT share pagecheck: a condition not met after 60 s: ' + String(cond).slice(0, 120) + '\n'); return false; } await new Promise(r => setTimeout(r, 5)); } } };
   const B = id => sec.all().find(e => isB(e) && e.dataset.blk === id);
   const btn = (box, key) => box.all().find(e => e.tagName === 'BUTTON' && e.textContent === L['share.' + key]);
   const check = what => { P.as2Blocks.apply(sec); const pr = checkScreen(sec); ok(!pr.length, 'blocks: ' + what + (pr.length ? '\n  ' + pr.slice(0, 12).join('\n  ') : '')); };
@@ -74,7 +76,7 @@ module.exports = async function run(work, ok) {
   await settle(() => B('about.info'));
   ok(B('about.info') && B('about.credit') && B('about.pic') && !B('about.st'), 'About: drawn after the server reply, the waiting line gone');
   btn(B('about.info'), 'about.preview').click(); B('about.info.name').all().find(e => e.tagName === 'INPUT').value = 'Mine';
-  await settle(() => B('about.info.out').textContent);
+  await settle(() => B('about.info.out').textContent || B('about.info.stat').textContent);   // the answer: changes, or the no-change line
   check('About after Preview');
 
   await tab('gate');

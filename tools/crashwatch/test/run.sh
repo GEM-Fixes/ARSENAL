@@ -6,19 +6,20 @@ cd "$(dirname "$0")"
 command -v powershell >/dev/null 2>&1 || { echo "SKIP: no powershell"; echo PASS; exit 0; }
 W=$(mktemp -d) && W=$(cd "$W" && { pwd -W 2>/dev/null || pwd; }) || exit 1
 P="powershell -NoProfile -ExecutionPolicy Bypass -File ../crashwatch.ps1"
-node -e "setTimeout(() => {}, 60000)" & SP=$!
-trap 'kill $SP 2>/dev/null; rm -rf "$W"' EXIT
+# no stdout/stderr: a stand-in left behind (interrupted run) must not hold the output pipe of test-all open
+node -e "setTimeout(() => {}, 1800000)" >/dev/null 2>&1 & SP=$!
+trap 'kill $SP $A1 $A2 2>/dev/null; rm -rf "$W"' EXIT
 WP=$(ps -p $SP 2>/dev/null | awk 'NR==2 {print $4}')   # Git Bash ps: column 4 = the Windows pid
 [ -n "$WP" ] || WP=$SP
 fail() { echo "FAIL: $1"; [ -f "$2" ] && cat "$2"; exit 1; }
 
 # -Pid + -Plan: the stand-in is found, nothing attached, the missing pdb is named
-$P -Pid "$WP" -Exe node.exe -Plan -Out "$W/p1.txt" -Wait 5 > "$W/p1.out" 2>&1 || fail "-Pid -Plan exit $?" "$W/p1.out"
+$P -Pid "$WP" -Exe node.exe -Plan -Out "$W/p1.txt" -Wait 60 > "$W/p1.out" 2>&1 || fail "-Pid -Plan exit $?" "$W/p1.out"
 grep -q "^plan: would watch pid $WP (node.exe); no pdb beside node.exe: addresses (rva) only" "$W/p1.out" || fail "-Pid plan line" "$W/p1.out"
 grep -q "^plan: would watch pid $WP" "$W/p1.txt" || fail "-Pid plan in -Out" "$W/p1.txt"
 echo "ok -Pid -Plan"
 # -Inst 0: any process of that name
-$P -Inst 0 -Exe node.exe -Plan -Out "$W/p2.txt" -Wait 5 > "$W/p2.out" 2>&1 || fail "-Inst 0 exit" "$W/p2.out"
+$P -Inst 0 -Exe node.exe -Plan -Out "$W/p2.txt" -Wait 60 > "$W/p2.out" 2>&1 || fail "-Inst 0 exit" "$W/p2.out"
 grep -q '^plan: would watch pid [0-9]* (node.exe); ' "$W/p2.out" || fail "-Inst 0 plan line" "$W/p2.out"
 echo "ok -Inst 0"
 # -Pid with another name: not that process
@@ -42,14 +43,15 @@ echo "ok no-process lines"
 # real attach to a stand-in (node, read only; standin.js exits once the watcher wrote "attached pid", which ends the run):
 # -Pid writes the note as its first line; the AS64 form (-Inst N >= 1, no -Game, no -Pid; here -Exe node.exe with "-instance 7")
 # writes no note, as before
-# wait until the stand-in wrote its pid file (up to 10 s: node starts slowly on a loaded machine)
-waitpid() { i=0; while [ ! -s "$1" ] && [ $i -lt 100 ]; do node -e "setTimeout(() => {}, 100)"; i=$((i+1)); done; [ -s "$1" ] || fail "stand-in wrote no pid file $1"; }
-node standin.js "$W/a1.pid" "$W/a1.txt" > /dev/null 2>&1 &
+# wait until the stand-in wrote its pid file: by time, not by count (node starts slowly on a loaded machine). Backup, never a hang:
+# after 60 s one WAIT line on stderr, then the check below reports
+waitpid() { t0=$(date +%s); while [ ! -s "$1" ] && [ $(( $(date +%s) - t0 )) -lt 60 ]; do sleep 0.1; done; [ -s "$1" ] || echo "WAIT crashwatch: stand-in pid file $1 not done after 60 s" >&2; [ -s "$1" ] || fail "stand-in wrote no pid file $1"; }
+node standin.js "$W/a1.pid" "$W/a1.txt" > /dev/null 2>&1 & A1=$!
 waitpid "$W/a1.pid"
-$P -Pid "$(cat "$W/a1.pid")" -Exe node.exe -Out "$W/a1.txt" -Wait 20 > /dev/null 2>&1
-node standin.js "$W/a2.pid" "$W/a2.txt" -instance 7 > /dev/null 2>&1 &
+$P -Pid "$(cat "$W/a1.pid")" -Exe node.exe -Out "$W/a1.txt" -Wait 120 > /dev/null 2>&1
+node standin.js "$W/a2.pid" "$W/a2.txt" -instance 7 > /dev/null 2>&1 & A2=$!
 waitpid "$W/a2.pid"
-$P -Inst 7 -Exe node.exe -Out "$W/a2.txt" -Wait 20 > /dev/null 2>&1
+$P -Inst 7 -Exe node.exe -Out "$W/a2.txt" -Wait 120 > /dev/null 2>&1
 head -1 "$W/a1.txt" | grep -q ' note: no pdb beside node.exe: addresses (rva) only' || fail "-Pid attach: note not first" "$W/a1.txt"
 grep -q ' attached pid ' "$W/a2.txt" || fail "-Inst 7 attach" "$W/a2.txt"
 grep -q 'note:' "$W/a2.txt" && fail "AS64 form attach wrote a note line" "$W/a2.txt"

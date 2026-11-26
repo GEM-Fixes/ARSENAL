@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // humlint: human/infantry data linter (vitality, health_damage actions, perks/abilities, breeds, inventory box, stance FSM, .mdl duration).
 // rows HUM-01 HUM-03 HUM-07 HUM-14 HUM-16 HUM-18 HUM-23 HUM-29 HUM-31 (all re-verified against src; HUM-13 = keylint WARN_PERK_LEVEL, HUM-31 track limit = binhdr ANM_BONE_LIMIT / expcheck)
-// usage: node tools/humlint/humlint.js <mod folder> [--game dir] [--mods a,b] [--exe as64|mowas_2|mowas2|goh] [-q] [--summary]
+// usage: node tools/humlint/humlint.js <mod folder> [--game dir] [--mods a,b] [--exe as64|mowas_2|mowas2|goh] [-q] [--summary] [--restore-points]
+//   --restore-points: also read <mod>/.arsenal-undo (restore points, never mounted; left out by default)
 //        node tools/humlint/humlint.js --vfs --game <dir> [--mods a,b] [--exe X]   (whole mounted vfs)
 //   --exe X  the game whose vfs view is read (lib/cli common option, lib/games): none = as before (as64 when as64.exe is in the folder);
 //            mowas_2 = no as64/core; goh = the GoH install when no --game. The HUM rules are AS2 source rows; for GoH they are [I]
@@ -13,7 +14,7 @@
 //        HUM_FSM_SPLIT_ORDER HUM_FSM_DYING_EDGES (29)  HUM_DURATION_ZERO (31, `{duration frames 0}`; the .anm track limit lives in binhdr/expcheck)
 // Author: Imperator_Aug (ARSENAL, ia-4f2e87a6)
 require('../lib/help')(__filename); // --help / -h: header usage, exit 0 (HELPFIX2)
-const path = require('path');
+const fs = require('fs'), path = require('path');
 const sdlset = require('../lib/sdlset');
 const { createReport } = require('../lib/report'), cli = require('../lib/cli');
 
@@ -34,11 +35,21 @@ const STAMINA_KEYS = new Set(['max', 'current', 'movement_limits', 'inc', 'load'
 const DAMAGE_ACTIONS = new Set(['health_damage_pierce', 'health_damage_blast', 'health_damage_count', 'health_damage_blow']);   // crush has its own 2-string reader
 const POSTURES = new Set(['stand', 'squat', 'crawl', 'cover', 'vehicle', 'default']);
 
-function check(opts) {
+// Speed wave 2b): each file is read once (before: the PRE test read it, then the parse read it again, a stuff
+// file a third time) and checkAsync (the CLI) reads the mod's files ahead of the loop, ARSENAL_READ_WINDOW (default 32) at a time
+// (lib/sdlset readAhead); check(opts) stays sync with the same report. stackable(): one read + test per stuff file, kept.
+// opts.restorePoints: read <mod>/.arsenal-undo too (left out by default, lib/sdlset).
+// checkAsync(opts, ra): ra = a readAhead stand-in to read through (lib/modset read-once pass, ctx.js), closed at the end
+function check(opts) { const g = body(opts, null); let r = g.next(); while (!r.done) r = g.next(); return r.value; }
+async function checkAsync(opts, ra0) {
+  const ra = ra0 || sdlset.readAhead({ window: +process.env.ARSENAL_READ_WINDOW || 32 });
+  try { const g = body(opts, ra); let r = g.next(); while (!r.done) { if (r.value) await r.value; r = g.next(); } return r.value; } finally { ra.close(); }
+}
+function* body(opts, ra) {
   const rep = createReport();
   let mods = opts.mods;
   if (!mods && opts.folder && opts.gameDir && path.basename(path.dirname(path.resolve(opts.folder))).toLowerCase() === 'mods') mods = [path.basename(path.resolve(opts.folder))];
-  const src = sdlset.createSource({ gameDir: opts.gameDir, mods, folder: opts.folder, exe: opts.exe });
+  const src = sdlset.createSource({ gameDir: opts.gameDir, mods, folder: opts.folder, exe: opts.exe, ...(opts.restorePoints != null ? { restorePoints: !!opts.restorePoints } : {}) });
   const isGoh = (src.v ? src.v.exe : opts.exe) === 'goh';   // the game the vfs used (a GoH folder with no --exe is goh too)
   const items = new Map();
   if (opts.vfs) for (const t of src.vfsItems()) items.set(t.key, t);
@@ -47,7 +58,20 @@ function check(opts) {
   // all keys visible (folder over vfs): for breeds, abilities, stuff
   const allKeys = new Set(src.local.keys());
   if (src.v) for (const k of src.v.files.keys()) allKeys.add(k);
-  const readKey = key => { try { return src.read({ key, file: key, get: () => src.get(key) }, () => {}); } catch (e) { return null; } };
+  // pre: read once: the loose set/ability and set/breed files (read whole by the registries below, readKey, and again by the loop)
+  // taken from the read-ahead before the loop and kept for the run; only where get would read that same loose file
+  const pre = new Map();
+  // inc: read once: a loose file a parse includes (on RobZ breed_soldier.inc is in every breed file: 2379 reads before) is read
+  // once and kept for the run: from the read-ahead when it holds it, else from disk (then let go there). The loop keeps its
+  // .inc / .presets items (2 MB on RobZ) and takes any kept file from here. Only included keys: other gets read as before
+  const inc = new Map(), INC_KEEP = /\.(inc|presets)$/;
+  if (ra) src.ahead({ take: key => {
+    let b = inc.get(key); if (b !== undefined || !src.included.has(key)) return b;
+    b = ra.take(key);
+    if (b === undefined) { b = fs.readFileSync(src.local.get(key)); ra.drop(key); }
+    inc.set(key, b); return b;
+  } });
+  const readKey = key => { try { return src.read({ key, file: key, get: () => (pre.has(key) ? pre.get(key) : src.get(key)) }, () => {}); } catch (e) { return null; } };
 
   const seen = new Set();
   const add = (n, t, code, msg) => {
@@ -118,8 +142,10 @@ function check(opts) {
     if (!T.length) return null;
     const c = stuffList().filter(s => T.every(t => s.words.has(t)));
     if (!c.length) return null;
-    return c.some(s => { const b = src.get(s.key); return b && /stackable/i.test(b.toString('latin1')); });
+    return c.some(s => stk(s.key));
   };
+  const stkMemo = new Map();
+  const stk = k => { let x = stkMemo.get(k); if (x === undefined) { const b = src.get(k); x = !!(b && /stackable/i.test(b.toString('latin1'))); stkMemo.set(k, x); } return x; };
 
   const visit = (t, n, parents) => {
     const name = nameOf(n);
@@ -236,9 +262,28 @@ function check(opts) {
     return bItems;
   };
   let files = 0;
-  for (const [key, t] of items) {
-    if (!/^resource\/(set|properties|entity|map|stuff)/.test(key) && !/\.mdl$/.test(key)) continue;
-    const buf = t.get(); if (!buf || !PRE.test(buf.toString('latin1'))) continue;
+  const want = key => /^resource\/(set|properties|entity|map|stuff)/.test(key) || /\.mdl$/.test(key);
+  if (ra) for (const [key, t0] of items) if (t0.path && want(key)) ra.add(key, t0.path);
+  if (ra) {
+    const pk = [...items.keys()].filter(k => /^resource\/set\/(ability|breed)\/.*\.set$/.test(k) && items.get(k).path && src.loosePath(k) === items.get(k).path).sort();
+    for (let i = 0; i < pk.length; i += 32) {   // 32 waits at a time (each wait starts its read)
+      const part = pk.slice(i, i + 32), ws = part.map(k => ra.wait(k)).filter(Boolean);
+      if (ws.length) yield Promise.all(ws);
+      for (const k of part) { const b = ra.take(k); if (b !== undefined) pre.set(k, b); }
+    }
+  }
+  for (const [key, t0] of items) {
+    if (!want(key)) continue;
+    let buf;
+    if (pre.has(key)) buf = pre.get(key);
+    else if (ra && t0.path && inc.has(key) && src.loosePath(key) === t0.path) buf = inc.get(key);
+    else if (ra && t0.path) {
+      const w = ra.wait(key); if (w) yield w; buf = ra.take(key);
+      if (buf !== undefined && (INC_KEEP.test(key) || src.included.has(key)) && src.loosePath(key) === t0.path) inc.set(key, buf);
+    }
+    if (buf === undefined) buf = t0.get();
+    if (!buf || !PRE.test(buf.toString('latin1'))) continue;
+    const t = { key: t0.key, file: t0.file, get: () => buf };   // the parse below reads these bytes, not the file again
     const raw = buf.toString('latin1');
     // TST-106 vision_human radius tiny (raw text: macro define)
     if (/^resource\/set\/vision\//.test(key)) {
@@ -310,12 +355,15 @@ function check(opts) {
   return { rep, files };
 }
 
-if (require.main === module) cli.run(() => {
-  const p = cli.parse(process.argv.slice(2), { flags: ['--vfs'] });
-  const o = { gameDir: p.gameDir || undefined, mods: p.mods.length ? p.mods : undefined, vfs: p.x.vfs, folder: p.pos[0], exe: p.exe };
+// main(argv, {ra}): the CLI (and ctx.js, the read-once module form, with the pass's reader as ra)
+function main(argv, { ra } = {}) {
+  const p = cli.parse(argv, { flags: ['--vfs', '--restore-points'] });
+  const o = { gameDir: p.gameDir || undefined, mods: p.mods.length ? p.mods : undefined, vfs: p.x.vfs, folder: p.pos[0], exe: p.exe, ...(p.x['restore-points'] ? { restorePoints: true } : {}) };
   if (!o.folder && !o.vfs || o.vfs && !o.gameDir) { console.error('usage: node tools/humlint/humlint.js <mod folder> [--game dir] [--mods a,b] [--exe as64|mowas_2|mowas2|goh] [-q] [--summary] [--format text|json|sarif|html|csv] [-o file] [--rc file|--no-rc] | --vfs --game <dir>'); process.exit(2); }
-  const { rep, files } = check(o);
-  cli.printReport(rep, p, { tool: 'humlint' });
-  if (p.format === 'text' && !p.output) console.log(`${files} files`); else console.error(`${files} files`);
-});
-module.exports = { check };
+  return checkAsync(o, ra).then(({ rep, files }) => {
+    cli.printReport(rep, p, { tool: 'humlint' });
+    if (p.format === 'text' && !p.output) console.log(`${files} files`); else console.error(`${files} files`);
+  });
+}
+if (require.main === module) cli.run(() => main(process.argv.slice(2)));
+module.exports = { check, checkAsync, main };

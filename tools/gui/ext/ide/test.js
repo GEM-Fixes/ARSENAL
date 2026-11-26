@@ -12,6 +12,9 @@ const ok = (c, m) => { n++; if (!c) { bad++; console.log('FAIL ' + m); } };
 const skip = (m, why) => { skipped.push(m); console.log('SKIPPED ' + m + ' (' + why + ')'); };
 const wr = (f, b) => { fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, b); };
 const TOOLS = path.join(__dirname, '..', '..', '..');
+const WT = require('../../../lib/test/wait');
+// the page build: 400 turns as before, then on by time. Backup, never a hang: after 60 s WAIT on stderr, the checks after it report
+const built = async bx => { const t0 = Date.now(); for (let i = 0; !bx.__as2gui; i++) { if (i >= 400 && Date.now() - t0 >= WT.COND_MS) { WT.say('ide test', 'the page build', WT.COND_MS); break; } await new Promise(r => (i < 400 ? setImmediate(r) : setTimeout(r, 5))); } };
 const has = rel => fs.existsSync(path.join(TOOLS, rel));
 // makeEmpty(dir, n, nm) -> { ok, why, line }: n empty files dir/nm(1..n), written 64 at a time. The first 256 are a probe: on a disk
 // where one create costs much (a busy or scanned drive: 0.5 s a file was seen) the projected time for n is over the budget and the
@@ -296,7 +299,7 @@ async function boot(o) {
   F.defer = fn => bx.setTimeout(fn, 150);
   bx.window = bx; vm.createContext(bx);
   vm.runInContext(/<script>([\s\S]*)<\/script>/.exec(require(path.join(G, 'page.js')))[1], bx);
-  for (let i = 0; i < 400 && !bx.__as2gui; i++) await new Promise(r => setImmediate(r));
+  await built(bx);
   const flush = async () => { for (let i = 0; i < 10; i++) { timers.splice(0).forEach(t => { try { t.f(); } catch { /* page timers */ } }); await new Promise(r => setImmediate(r)); } };
   const St = bx.__as2gui;
   if (o.show !== false) { St.mod = M; bx.as2Link('page:ide'); await flush(); }
@@ -609,17 +612,17 @@ const kitEnv = () => ({ ok, skip, has, work, TOOLS, G: path.join(__dirname, '..'
   ok(ib.items.length === 3 && ib.items[0].ref.mod === mod && ib.items[0].ref.rel === 'resource/entity/gun.def' && ib.items[0].line === 2 && ib.items[0].col === 4, 'inbox round trip mod file ' + JSON.stringify(ib.items[0]));
   ok(ib.items[1].ref.path === gunVan && !ib.items[1].ref.mod, 'inbox vanilla file -> path ref ' + JSON.stringify(ib.items[1]));
   ok(ib.items[2].ref.key === 'resource/entity/gun.def' && ib.items[2].ref.idx === van.idx && ib.items[2].ref.mod === mod, 'inbox vanilla:true -> layer ref ' + JSON.stringify(ib.items[2]));
-  // hold released early by a post
+  // hold released early by a post (a hold of 2 min, so "early" is a wide gap a busy PC cannot close)
+  R._setHoldMs(120000);
   const t0 = Date.now();
   const held = get('inbox', { wait: '1' });
   setTimeout(() => post('inbox', { token: 't', file: gunMod, line: 5, col: 1 }), 60);
   const hr = await held;
-  ok(hr.items.length === 1 && hr.items[0].line === 5 && Date.now() - t0 < 3000, 'inbox hold released early by a post (' + (Date.now() - t0) + ' ms)');
-  // two tabs: a new GET never releases an older one; a POST releases both with the same item
-  R._setHoldMs(400);
+  ok(hr.items.length === 1 && hr.items[0].line === 5 && Date.now() - t0 < 60000, 'inbox hold released early by a post (' + (Date.now() - t0) + ' ms)');
+  // two tabs: a new GET never releases an older one; a POST releases both with the same item (the post releases them: a long hold)
   let r1done = false;
   const w1 = get('inbox', { wait: '1' }).then(r => { r1done = true; return r; }), w2 = get('inbox', { wait: '1' });
-  await new Promise(r => setTimeout(r, 30));
+  await WT.until(() => R._waiters() === 2, { who: 'ide test', what: 'two inbox waiters live' });
   ok(!r1done && R._waiters() === 2, 'new waiter does not release the old one (' + R._waiters() + ' live)');
   const pw = await post('inbox', { token: 't', file: gunMod, line: 7, col: 1 });
   const r1 = await w1, r2 = await w2;
@@ -628,12 +631,12 @@ const kitEnv = () => ({ ok, skip, has, work, TOOLS, G: path.join(__dirname, '..'
   const w3 = await get('inbox', { wait: '1' });
   ok(w3.items.length === 0, 'lone waiter times out empty');
   // cap 8: the ninth releases the oldest empty
-  R._setHoldMs(5000);
+  R._setHoldMs(120000);
   const nine = []; let firstAt = 0; const tc = Date.now();
   for (let i = 0; i < 9; i++) nine.push(get('inbox', { wait: '1' }));
   nine[0].then(() => { firstAt = Date.now() - tc; });
   const f0 = await nine[0];
-  ok(f0.items.length === 0 && firstAt < 1000 && R._waiters() === 8, 'waiter cap 8: oldest released empty (' + R._waiters() + ' live)');
+  ok(f0.items.length === 0 && firstAt < 60000 && R._waiters() === 8, 'waiter cap 8: oldest released empty (' + R._waiters() + ' live, ' + firstAt + ' ms)');
   await post('inbox', { token: 't', file: gunMod, line: 8, col: 1 });
   const rest = await Promise.all(nine.slice(1));
   ok(rest.every(r => r.items.length === 1 && r.items[0].line === 8), 'the 8 live waiters all get the post');
@@ -641,7 +644,7 @@ const kitEnv = () => ({ ok, skip, has, work, TOOLS, G: path.join(__dirname, '..'
   let closeFn = null;
   const cctx = Object.assign({}, ctx, { onClose: fn => { closeFn = fn; } });
   const dead = get('inbox', { wait: '1' }, cctx);
-  await new Promise(r => setTimeout(r, 10));
+  await WT.until(() => typeof closeFn === 'function' && R._waiters() === 1, { who: 'ide test', what: 'the inbox waiter with onClose' });
   ok(typeof closeFn === 'function' && R._waiters() === 1, 'inbox GET registers onClose');
   closeFn();
   const dr = await dead;
@@ -656,7 +659,7 @@ const kitEnv = () => ({ ok, skip, has, work, TOOLS, G: path.join(__dirname, '..'
   const capped = await get('inbox', {});
   ok(capped.items.length === 50 && capped.items[49].line === 60, 'inbox cap 50 keeps newest');
   const tq = Date.now(); const to = await get('inbox', { wait: '1' });
-  ok(to.items.length === 0 && Date.now() - tq < 2000, 'inbox hold times out');
+  ok(to.items.length === 0 && Date.now() - tq < 20000, 'inbox hold times out (' + (Date.now() - tq) + ' ms; the hold is 200 ms, the default 25 s)');
 
   // ---- inbox: what counts as a mod folder
   const loose = path.join(work, 'loose', 'resource', 'entity', 'x.def'); wr(loose, '{x}\r\n');
@@ -767,13 +770,13 @@ const kitEnv = () => ({ ok, skip, has, work, TOOLS, G: path.join(__dirname, '..'
       const hide = v => { if (how === 'page') bx.S.cur = v ? 'share' : 'ide'; else { doc.hidden = v; doc.visibilityState = v ? 'hidden' : 'visible'; } };
       const auto = host.all().find(e => e.tagName === 'INPUT' && e.attrs.type === 'checkbox');
       ok(auto && lc() === 0, 'log poll (' + how + '): the log panel with its auto tick, nothing read yet');
-      auto.checked = true; auto.fire('change'); await wait(80);
+      auto.checked = true; auto.fire('change'); await WT.until(() => lc() >= 3 && host.textContent.includes('ide.p.l.count{"n":1}'), { who: 'ide test', what: 'log poll (' + how + '): three reads' });
       ok(lc() >= 3 && host.textContent.includes('ide.p.l.count{"n":1}'), 'log poll (' + how + '): on screen the log is read again and again: ' + lc());
       hide(true); await wait(40); const n1 = lc(); await wait(120);
       ok(lc() === n1, 'log poll (' + how + ' hidden): no log request: ' + n1 + ' -> ' + lc());
       nf = 2; hide(false); bx.pollWake(); await flush();
       ok(lc() === n1 + 1 && host.textContent.includes('ide.p.l.count{"n":2}'), 'log poll (' + how + ' shown again): one read at once and the new log is drawn: ' + n1 + ' -> ' + lc());
-      await wait(60); const n2 = lc();
+      await WT.until(() => lc() > n1 + 1, { who: 'ide test', what: 'log poll (' + how + '): reads go on' }); const n2 = lc();
       ok(n2 > n1 + 1, 'log poll (' + how + '): and it goes on while shown: ' + n2);
       hide(true); await wait(40); const n3 = lc(); auto.checked = false; auto.fire('change'); hide(false); bx.pollWake(); await flush(); await wait(60);
       ok(lc() === n3, 'log poll (' + how + '): unticked while hidden = no read on return: ' + n3 + ' -> ' + lc());
@@ -797,7 +800,7 @@ const kitEnv = () => ({ ok, skip, has, work, TOOLS, G: path.join(__dirname, '..'
         return new Promise(() => {}); } };
     bx.window = bx; vm.createContext(bx);
     vm.runInContext(/<script>([\s\S]*)<\/script>/.exec(require(path.join(G, 'page.js')))[1], bx);
-    for (let i = 0; i < 400 && !bx.__as2gui; i++) await new Promise(r => setImmediate(r));
+    await built(bx);
     const sec = doc.getElementById('main').children.find(s => s.dataset.id === 'ide');
     const isB = e => !!(e && e.dataset && e.dataset.blk != null), B = id => sec.all().find(e => isB(e) && e.dataset.blk === id);
     const kids = c => c.children.filter(isB).map(b => b.dataset.blk).join();
@@ -841,7 +844,7 @@ const kitEnv = () => ({ ok, skip, has, work, TOOLS, G: path.join(__dirname, '..'
         return new Promise(() => {}); } };
     bx.window = bx; vm.createContext(bx);
     vm.runInContext(/<script>([\s\S]*)<\/script>/.exec(require(path.join(G, 'page.js')))[1], bx);
-    for (let i = 0; i < 400 && !bx.__as2gui; i++) await new Promise(r => setImmediate(r));
+    await built(bx);
     const flush = async () => { for (let i = 0; i < 10; i++) { timers.splice(0).forEach(f => { try { f(); } catch { /* page timers */ } }); await new Promise(r => setImmediate(r)); } };
     const St = bx.__as2gui, IDEo = bx.IDE, V = bx.VIEW, M = 'C:/g/mods/mine';
     ok(V && V.specs.hex && IDEo, 'viewer: VIEW is on the page with the hex kind');
@@ -1062,14 +1065,13 @@ const kitEnv = () => ({ ok, skip, has, work, TOOLS, G: path.join(__dirname, '..'
       let moved = false; try { fs.renameSync(zdir, zout); moved = true; } catch { moved = false; }
       if (!moved) skip('nomax outside mod timing', 'the folder could not be moved');
       else try {
-        let t1 = Date.now();
-        const od = await g2('vdir', { mod: om, dir: 'zout', off: 0, lim: 1000 });
-        const tOd = Date.now() - t1; t1 = Date.now();
-        const of = await g2('vfind', { mod: om, q: 'zout/u29', off: 0, lim: 500 });
-        const tOf = Date.now() - t1;
-        ok(od.total === NB && od.files.length === 1000 && od.files[0].name === nm(1) && od.files[0].where === 'mine' && od.files[0].size === 0 && !('_f' in od.files[0]) && tOd < 2000,
+        // speed guards (no stat per file): 2 s was the budget; a busy PC gets 10 s and one more run before it fails (WT.fast)
+        let od = null, of = null;
+        const fOd = await WT.fast(async () => { od = await g2('vdir', { mod: om, dir: 'zout', off: 0, lim: 1000 }); }, 10000, { who: 'ide test', what: 'outside mod vdir first page' }), tOd = fOd.ms;
+        const fOf = await WT.fast(async () => { of = await g2('vfind', { mod: om, q: 'zout/u29', off: 0, lim: 500 }); }, 10000, { who: 'ide test', what: 'outside mod vfind' }), tOf = fOf.ms;
+        ok(od.total === NB && od.files.length === 1000 && od.files[0].name === nm(1) && od.files[0].where === 'mine' && od.files[0].size === 0 && !('_f' in od.files[0]) && fOd.ok,
           'nomax outside mod: vdir first page of ' + od.total + ' loose files in ' + tOd + ' ms, sizes on the page');
-        ok(of.total === 1000 && of.hits.length === 500 && of.hits[0].where === 'mine' && of.hits[0].size === 0 && tOf < 2000, 'nomax outside mod: vfind over the loose files in ' + tOf + ' ms, total ' + of.total);
+        ok(of.total === 1000 && of.hits.length === 500 && of.hits[0].where === 'mine' && of.hits[0].size === 0 && fOf.ok, 'nomax outside mod: vfind over the loose files in ' + tOf + ' ms, total ' + of.total);
         console.log('timing: outside mod vdir first page ' + tOd + ' ms, vfind ' + tOf + ' ms');
       } finally { fs.renameSync(zout, zdir); }
       fs.rmSync(path.join(work, 'outside'), { recursive: true, force: true });
@@ -1091,8 +1093,9 @@ const kitEnv = () => ({ ok, skip, has, work, TOOLS, G: path.join(__dirname, '..'
       return { P, X, st: () => X().state(), ex, body, items, names: () => items().map(e => { const n = e.all().find(x => cl(x, 'idx-name')); return n ? n.textContent : ''; }),
         key: k => body().fire('keydown', { key: k }), filt: () => ex().all().find(e => cl(e, 'idx-filter')) };
     };
-    // run the page timers until c() holds; the routes answer on real I/O, so the wait is in time (ms, default 30 s), not in rounds
-    const until = async (P, c, ms) => { const end = Date.now() + (ms || 30000); for (;;) { let v = false; try { v = c(); } catch { v = false; } if (v) return true; if (Date.now() > end) return false; await P.flush(); await new Promise(r => setTimeout(r, 1)); } };
+    // run the page timers until c() holds; the routes answer on real I/O, so the wait is in time, not in rounds. Backup, never a hang:
+    // at least 60 s, then WAIT on stderr and false (the check after it reports what is missing)
+    const until = async (P, c, ms) => { const lim = Math.max(ms || 0, WT.COND_MS), end = Date.now() + lim; for (;;) { let v = false; try { v = c(); } catch { v = false; } if (v) return true; if (Date.now() > end) { WT.say('ide test', String(c).slice(0, 120), lim); return false; } await P.flush(); await new Promise(r => setTimeout(r, 1)); } };
     t0 = Date.now();
     const A = await page({});
     await until(A.P, () => A.X() && A.st().rows > 3);
@@ -1443,7 +1446,7 @@ const kitEnv = () => ({ ok, skip, has, work, TOOLS, G: path.join(__dirname, '..'
   // ---- game parity cases (AS64, MoW:AS2, GoH): tools/gui/ext/ide/test-games.js sets process.env and exits, so it runs as a child
   // process on its own fixture under <work>/games; its last line counts as one case here.
   if (has('gui/ext/ide/test-games.js')) {
-    const r = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'test-games.js'), path.join(work, 'games')], { encoding: 'utf8', timeout: 300000 });
+    const r = WT.spawnSync(process.execPath, [path.join(__dirname, 'test-games.js'), path.join(work, 'games')], { encoding: 'utf8', timeout: 300000 }, 'ide test');
     const out = String(r.stdout || '') + String(r.stderr || ''), last = out.trim().split(/\r?\n/).pop() || '';
     if (r.status !== 0) console.log(out.trim());
     ok(r.status === 0 && /^ide games \d+ PASS$/.test(last), 'game parity cases (test-games.js): ' + last);

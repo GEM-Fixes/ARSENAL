@@ -4,8 +4,9 @@
 //   MOD_LIST_WORKSHOP_ID   VFS-53  mod list line is a numeric Workshop id, the engine wants the normalized title
 //   WARN_VIDEO_MISSION_PATH VFS-58 a mod's video/mission/*.avi is not <mission folder>/start|tactical|strategic.avi
 //   VFS-54 had: MOD_MODE (lib/vfs build) already flags every listed mod of the other mode
+//   checksAsync(v, o): checks with the VFS-35 texts read ahead (refTexts; o.ra: the loose ones through a read-once pass), same findings
 // Author: Imperator_Aug (ARSENAL, ia-6ac18805)
-const path = require('path');
+const fs = require('fs'), path = require('path');
 const vfs = require('../lib/vfs'), names = require('../lib/names');
 
 const BASE_LAYER = l => l === 'base' || /^patch \d+$/.test(l) || l === 'as64/core';
@@ -16,16 +17,54 @@ const SHOWN = 10;      // findings per mod and code, the rest is counted
 
 // VFS-35: deleted key (mod layer) absent at the end, whose resource-relative path (with or without extension) still appears in
 // another indexed text file. reference form is [I]; the fatal on a missing non-optional open is [V]
-function deleteReferenced(v) {
-  const out = [], dels = [];
-  for (const s of v.shadows) if (s.by && s.by.deleted && !BASE_LAYER(s.by.layer) && !v.files.has(s.key)) dels.push(s);
+const delsOf = v => v.shadows.filter(s => s.by && s.by.deleted && !BASE_LAYER(s.by.layer) && !v.files.has(s.key));
+const refText = b => b.toString('latin1').toLowerCase().replace(/\\/g, '/');
+// the texts deleteReferenced searches, read ahead: loose files `window` at a time through the thread pool, pak entries in offset
+// order (vfs.readRecsOrdered). -> Map key -> text; a file it could not read is not in it (deleteReferenced reads it itself)
+async function refTexts(v, o = {}) {
+  const pre = new Map();
+  if (!delsOf(v).length) return pre;
+  const loose = [], packed = [];
+  for (const [k, rec] of v.files) {
+    if (!REF_EXT.has(extOf(k)) || rec.size > 4e6) continue;
+    (rec.source === 'loose' ? loose : packed).push({ k, rec });
+  }
+  if (o.ra) await looseVia(o.ra, loose, pre);
+  let i = o.ra ? loose.length : 0;
+  const one = async () => {
+    while (i < loose.length) {
+      const it = loose[i++];
+      try { pre.set(it.k, refText(await fs.promises.readFile(path.join(it.rec.container, it.rec.entry)))); } catch { /* read again below */ }
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(o.window || 32, loose.length) }, one));
+  try { for (const _ of vfs.readRecsOrdered(packed, (it, b) => pre.set(it.k, refText(b)), { maxBytes: Infinity })) { /* one read a step */ } }
+  finally { vfs.closeRecs(); }
+  return pre;
+}
+// o.ra: a readAhead stand-in (lib/modset read-once pass, vfs ctx.js): the loose files are read through it instead, in v.files
+// order; a file it does not give is read here as above. The caller closes it.
+async function looseVia(ra, loose, pre) {
+  for (const it of loose) ra.add(it.k, path.join(it.rec.container, it.rec.entry));
+  for (const it of loose) {
+    const p = ra.wait(it.k); if (p) await p;
+    const b = ra.take(it.k);
+    if (b !== undefined) { pre.set(it.k, refText(b)); continue; }
+    try { pre.set(it.k, refText(await fs.promises.readFile(path.join(it.rec.container, it.rec.entry)))); } catch { /* read again below */ }
+  }
+}
+// pre: refTexts(v) (optional; a key it lacks is read here, as before)
+function deleteReferenced(v, pre) {
+  const out = [], dels = delsOf(v);
   if (!dels.length) return out;
   const corpus = [];
   try {
     for (const [k, rec] of v.files) {
       if (!REF_EXT.has(extOf(k)) || rec.size > 4e6) continue;
+      const t = pre && pre.get(k);
+      if (t !== undefined) { corpus.push([k, t]); continue; }
       let b; try { b = vfs.readRec(rec); } catch { continue; }
-      corpus.push([k, b.toString('latin1').toLowerCase().replace(/\\/g, '/')]);
+      corpus.push([k, refText(b)]);
     }
   } finally { vfs.closeRecs(); }
   const idc = /[a-z0-9_\-]/;
@@ -132,7 +171,9 @@ function videoMissionPath(v) {
   return out;
 }
 
-function checks(v, o = {}) {
-  return [].concat(deleteReferenced(v), shaderPartial(v), listWorkshopId(o.list, v.gameDir, v.exe), videoMissionPath(v));
+function checks(v, o = {}, pre) {
+  return [].concat(deleteReferenced(v, pre), shaderPartial(v), listWorkshopId(o.list, v.gameDir, v.exe), videoMissionPath(v));
 }
-module.exports = { checks, deleteReferenced, shaderPartial, listWorkshopId, videoMissionPath };
+// the same findings, the files VFS-35 searches read ahead first
+async function checksAsync(v, o = {}) { return checks(v, o, await refTexts(v, o)); }
+module.exports = { checks, checksAsync, refTexts, deleteReferenced, shaderPartial, listWorkshopId, videoMissionPath };

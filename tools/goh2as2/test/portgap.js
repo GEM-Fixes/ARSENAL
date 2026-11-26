@@ -14,7 +14,7 @@ const W = fs.mkdtempSync(path.join(os.tmpdir(), 'portgap-'));
 const crlf = s => s.replace(/\r?\n/g, '\r\n');
 const port = (name, args) => {
   const out = path.join(W, 'o', name);
-  const r = cp.spawnSync(process.execPath, [tool, ...args, '--out', out, '--no-keylint', '--no-rc', '-q'], { encoding: 'utf8', env });
+  const r = require('../../lib/test/wait').spawnSync(process.execPath, [tool, ...args, '--out', out, '--no-keylint', '--no-rc', '-q'], { encoding: 'utf8', env }, 'portgap');   // backstop 5 min, killed: once more
   return { out, r };
 };
 const gapsOf = out => { const g = path.join(out, 'gaps'); return fs.existsSync(g) ? fs.readdirSync(g).sort().map(f => JSON.parse(fs.readFileSync(path.join(g, f), 'utf8'))) : []; };

@@ -18,6 +18,7 @@ const ORDER = ['en', 'ru', 'uk', 'zh'];
 let pass = 0, failN = 0;
 const ok = (c, m, extra) => { if (c) { pass++; console.log('ok ' + m); } else { failN++; console.log('FAIL ' + m + (extra !== undefined ? '\n  ' + String(extra).slice(0, 700) : '')); } };
 const tick = () => new Promise(r => setImmediate(r));
+const W = require('../../lib/test/wait');
 const clone = o => JSON.parse(JSON.stringify(o));
 const GAMEP = 'F:\\Games\\Men of War Assault Squad 2';
 const GOOD = { dir: GAMEP, source: 'steam', ok: true, exes: ['as64.exe', 'mowas_2.exe'], hasMods: true, codes: [] };
@@ -63,7 +64,7 @@ async function load() {
   w.window = w; vm.createContext(w);
   vm.runInContext(/<script>([\s\S]*)<\/script>/.exec(html)[1], w, { filename: 'page.js:script' });
   w.JOBS.tune({ wait: 1e12 });   // the requests of the page's own start are never answered here: they are not this test's jobs
-  for (let i = 0; i < 800 && !w.__as2gui; i++) { await tick(); adv(20); }
+  { const t0 = Date.now(); while (!w.__as2gui && Date.now() - t0 < W.COND_MS) { await tick(); adv(20); } if (!w.__as2gui) W.say('test-jobs', 'page build', W.COND_MS); }   // by real time, not by count
   await settle(3000);
   w.JOBS.tune({ wait: 600 });
   doc.documentElement.scrollHeight = 6000; P.pend.length = 0; P.calls.length = 0;

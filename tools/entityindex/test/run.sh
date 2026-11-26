@@ -41,6 +41,12 @@ node "$T/folder.js" "$W" || fail folder.js
 node "$T/found.js" "$W" || fail found.js
 # checkpoint during a build (a stopped build is resumed) and seeding a mods/folder index from vanilla.<exe>.json of the same exe
 node "$T/seed.js" "$W" || fail seed.js
+# stock index keyed by the game: two check-style overlays of one install share one vanilla file, the second build parses nothing;
+# the as64/mowas_2 twin; a mods index on an overlay seeds from it; stock files of gone check overlays are removed
+node "$T/overlay.js" "$W" || fail overlay.js
+# shipped stock index (ship.js): a file of the same fingerprint is used as the cache (nothing parsed), another game's is ignored,
+# a near one seeds the build; a mods index seeds from it
+node "$T/ship.js" "$W" || fail ship.js
 # byte memo: an included file is read once per build, the cache is the same as without it, nothing is kept after the build
 node "$T/memo.js" "$W" || fail memo.js
 # buildAsync: loose files read ahead of the parser, the cache is the same as build's; a failed or missing read ends as in build

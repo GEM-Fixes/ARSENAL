@@ -2624,6 +2624,32 @@
    "remote": true
   },
   {
+   "route": "GET /api/check/eta",
+   "method": "GET",
+   "path": "/api/check/eta",
+   "page": "core",
+   "what": "",
+   "query": [],
+   "body": [],
+   "read": "full",
+   "writes": "no"
+  },
+  {
+   "route": "GET /api/modwatch/status",
+   "method": "GET",
+   "path": "/api/modwatch/status",
+   "page": "core",
+   "what": "?dir= {enabled, dir, watching, ready, sid, gen, err} gen: changes seen since watch sid began",
+   "query": [
+    {
+     "name": "dir"
+    }
+   ],
+   "body": [],
+   "read": "full",
+   "writes": "no"
+  },
+  {
    "route": "GET /api/peek",
    "method": "GET",
    "path": "/api/peek",
@@ -2932,11 +2958,27 @@
    "writes": "always"
   },
   {
+   "route": "POST /api/modwatch",
+   "method": "POST",
+   "path": "/api/modwatch",
+   "page": "core",
+   "what": "{dir} the picked mod ('' = none): the one watch of it follows (off: setting as2gui.modwatch false, ARSENAL_MODWATCH=0)",
+   "query": [],
+   "body": [
+    {
+     "name": "dir",
+     "type": "string"
+    }
+   ],
+   "read": "full",
+   "writes": "unknown"
+  },
+  {
    "route": "POST /api/run",
    "method": "POST",
    "path": "/api/run",
    "page": "core",
-   "what": "[?stream=0|1] {cmd, input, timeoutSec?} -> NDJSON events (default) or one buffered JSON object",
+   "what": "[?stream=0|1] {cmd, input, timeoutSec?, prio?} -> NDJSON events (default) or one buffered JSON object. prio 'low' = the child below normal priority; cmd check of the watched mod: + --listing <its current scan> (modwatch.js)",
    "query": [
     {
      "name": "stream"
@@ -2952,6 +2994,9 @@
     },
     {
      "name": "timeoutSec"
+    },
+    {
+     "name": "prio"
     }
    ],
    "read": "full",
@@ -5908,7 +5953,7 @@
    ],
    "writes": "no",
    "remote": true,
-   "src": "tools/gui/ext/units/server.js:1943"
+   "src": "tools/gui/ext/units/server.js:1982"
   },
   {
    "route": "POST /api/x/units/search",
@@ -5948,7 +5993,7 @@
    "read": "full",
    "writes": "no",
    "remote": true,
-   "src": "tools/gui/ext/units/server.js:1944"
+   "src": "tools/gui/ext/units/server.js:1983"
   },
   {
    "route": "POST /api/x/units/index",
@@ -5971,7 +6016,7 @@
    "read": "full",
    "writes": "no",
    "remote": true,
-   "src": "tools/gui/ext/units/server.js:1945"
+   "src": "tools/gui/ext/units/server.js:1984"
   },
   {
    "route": "POST /api/x/units/weapons",
@@ -5994,7 +6039,7 @@
    "read": "full",
    "writes": "no",
    "remote": true,
-   "src": "tools/gui/ext/units/server.js:1946"
+   "src": "tools/gui/ext/units/server.js:1985"
   },
   {
    "route": "POST /api/x/units/stats",
@@ -6023,7 +6068,7 @@
    "read": "full",
    "writes": "no",
    "remote": true,
-   "src": "tools/gui/ext/units/server.js:1947"
+   "src": "tools/gui/ext/units/server.js:1986"
   },
   {
    "route": "POST /api/x/units/change",
@@ -6063,7 +6108,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/server.js:1948"
+   "src": "tools/gui/ext/units/server.js:1987"
   },
   {
    "route": "POST /api/x/units/add",
@@ -6115,7 +6160,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/server.js:1949"
+   "src": "tools/gui/ext/units/server.js:1988"
   },
   {
    "route": "POST /api/x/units/buy",
@@ -6175,7 +6220,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/server.js:1950"
+   "src": "tools/gui/ext/units/server.js:1989"
   },
   {
    "route": "POST /api/x/units/models",
@@ -6212,7 +6257,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/server.js:1951"
+   "src": "tools/gui/ext/units/server.js:1990"
   },
   {
    "route": "POST /api/x/units/lineup",
@@ -6256,7 +6301,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/server.js:1952"
+   "src": "tools/gui/ext/units/server.js:1991"
   },
   {
    "route": "POST /api/x/units/kit",
@@ -6307,7 +6352,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/server.js:1953"
+   "src": "tools/gui/ext/units/server.js:1992"
   },
   {
    "route": "POST /api/x/units/kit/items",
@@ -6337,7 +6382,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/server.js:1954"
+   "src": "tools/gui/ext/units/server.js:1993"
   },
   {
    "route": "POST /api/x/units/kit/set",
@@ -6399,7 +6444,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/server.js:1955"
+   "src": "tools/gui/ext/units/server.js:1994"
   },
   {
    "route": "POST /api/x/units/kit/slot",
@@ -6450,7 +6495,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/server.js:1956"
+   "src": "tools/gui/ext/units/server.js:1995"
   },
   {
    "route": "POST /api/x/units/look",
@@ -6494,7 +6539,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/server.js:1957"
+   "src": "tools/gui/ext/units/server.js:1996"
   },
   {
    "route": "POST /api/x/units/look/skins",
@@ -6517,7 +6562,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/server.js:1958"
+   "src": "tools/gui/ext/units/server.js:1997"
   },
   {
    "route": "POST /api/x/units/look/set",
@@ -6569,7 +6614,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/server.js:1959"
+   "src": "tools/gui/ext/units/server.js:1998"
   },
   {
    "route": "POST /api/x/units/describe",
@@ -6610,7 +6655,7 @@
    "read": "full",
    "writes": "no",
    "remote": true,
-   "src": "tools/gui/ext/units/server.js:1960"
+   "src": "tools/gui/ext/units/server.js:1999"
   },
   {
    "route": "POST /api/x/units/compare",
@@ -6633,7 +6678,7 @@
    "read": "full",
    "writes": "no",
    "remote": true,
-   "src": "tools/gui/ext/units/server.js:1961"
+   "src": "tools/gui/ext/units/server.js:2000"
   },
   {
    "route": "POST /api/x/units/armyprice",
@@ -6666,7 +6711,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/server.js:1962"
+   "src": "tools/gui/ext/units/server.js:2001"
   },
   {
    "route": "POST /api/x/units/hints",
@@ -6695,7 +6740,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/server.js:1963"
+   "src": "tools/gui/ext/units/server.js:2002"
   },
   {
    "route": "POST /api/x/units/recipe",
@@ -6742,7 +6787,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/server.js:1964"
+   "src": "tools/gui/ext/units/server.js:2003"
   },
   {
    "route": "POST /api/x/units/card/kinds",
@@ -6759,7 +6804,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/card.js:215"
+   "src": "tools/gui/ext/units/card.js:216"
   },
   {
    "route": "POST /api/x/units/card/current",
@@ -6810,7 +6855,7 @@
    ],
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/card.js:216"
+   "src": "tools/gui/ext/units/card.js:217"
   },
   {
    "route": "POST /api/x/units/card/styles",
@@ -6861,7 +6906,7 @@
    ],
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/card.js:217"
+   "src": "tools/gui/ext/units/card.js:218"
   },
   {
    "route": "POST /api/x/units/card/scene",
@@ -6952,7 +6997,7 @@
    ],
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/card.js:218"
+   "src": "tools/gui/ext/units/card.js:219"
   },
   {
    "route": "POST /api/x/units/card/weapons",
@@ -7009,7 +7054,7 @@
    ],
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/card.js:219"
+   "src": "tools/gui/ext/units/card.js:220"
   },
   {
    "route": "POST /api/x/units/card/plan",
@@ -7067,7 +7112,7 @@
    ],
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/card.js:220"
+   "src": "tools/gui/ext/units/card.js:221"
   },
   {
    "route": "POST /api/x/units/card/make",
@@ -7167,7 +7212,7 @@
    ],
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/card.js:221"
+   "src": "tools/gui/ext/units/card.js:222"
   },
   {
    "route": "POST /api/x/units/card/load",
@@ -7196,7 +7241,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/card.js:222"
+   "src": "tools/gui/ext/units/card.js:223"
   },
   {
    "route": "POST /api/x/units/card/images",
@@ -7219,7 +7264,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/card.js:223"
+   "src": "tools/gui/ext/units/card.js:224"
   },
   {
    "route": "POST /api/x/units/card/gimp",
@@ -7236,7 +7281,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/card.js:224"
+   "src": "tools/gui/ext/units/card.js:225"
   },
   {
    "route": "POST /api/x/units/card/cutouts",
@@ -7293,7 +7338,7 @@
    ],
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/card.js:225"
+   "src": "tools/gui/ext/units/card.js:226"
   },
   {
    "route": "POST /api/x/units/card/openxcf",
@@ -7314,7 +7359,7 @@
    "read": "full",
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/card.js:226"
+   "src": "tools/gui/ext/units/card.js:227"
   },
   {
    "route": "POST /api/x/units/card/fidelity",
@@ -7365,7 +7410,7 @@
    ],
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/units/card.js:227"
+   "src": "tools/gui/ext/units/card.js:228"
   },
   {
    "route": "POST /api/x/units/goharmor",
@@ -7482,7 +7527,7 @@
    "writes": "no",
    "by": "name",
    "why": "classed by its name (calc), not proven from the code",
-   "src": "tools/gui/ext/balance/prices.js:279"
+   "src": "tools/gui/ext/balance/prices.js:280"
   },
   {
    "route": "POST /api/x/balance/prices/try",
@@ -7518,7 +7563,7 @@
     "callee not found: u.gidOf"
    ],
    "writes": "unknown",
-   "src": "tools/gui/ext/balance/prices.js:279"
+   "src": "tools/gui/ext/balance/prices.js:280"
   },
   {
    "route": "POST /api/x/balance/prices/save",
@@ -7554,7 +7599,7 @@
     "callee not found: u.gidOf"
    ],
    "writes": "always",
-   "src": "tools/gui/ext/balance/prices.js:279",
+   "src": "tools/gui/ext/balance/prices.js:280",
    "preview": "POST /api/x/balance/prices/plan"
   },
   {
@@ -7591,7 +7636,7 @@
    ],
    "writes": "flag",
    "flag": "write",
-   "src": "tools/gui/ext/balance/prices.js:280"
+   "src": "tools/gui/ext/balance/prices.js:281"
   },
   {
    "route": "POST /api/x/balance/prices/plan",
@@ -7629,7 +7674,7 @@
    "writes": "no",
    "by": "name",
    "why": "classed by its name (plan), not proven from the code",
-   "src": "tools/gui/ext/balance/prices.js:280"
+   "src": "tools/gui/ext/balance/prices.js:281"
   },
   {
    "route": "POST /api/x/balance/prices/apply",
@@ -7668,7 +7713,7 @@
     "callee not found: u.gidOf"
    ],
    "writes": "always",
-   "src": "tools/gui/ext/balance/prices.js:280",
+   "src": "tools/gui/ext/balance/prices.js:281",
    "preview": "POST /api/x/balance/prices/plan"
   },
   {
@@ -7710,7 +7755,7 @@
    "writes": "no",
    "by": "name",
    "why": "classed by its name (check), not proven from the code",
-   "src": "tools/gui/ext/balance/prices.js:281"
+   "src": "tools/gui/ext/balance/prices.js:282"
   },
   {
    "route": "POST /api/x/balance/prices/undo",
@@ -7742,7 +7787,7 @@
     "callee not found: u.gidOf"
    ],
    "writes": "always",
-   "src": "tools/gui/ext/balance/prices.js:281"
+   "src": "tools/gui/ext/balance/prices.js:282"
   },
   {
    "route": "POST /api/x/balance/prices/names",
@@ -7773,7 +7818,7 @@
    "writes": "no",
    "by": "name",
    "why": "classed by its name (names), not proven from the code",
-   "src": "tools/gui/ext/balance/prices.js:281"
+   "src": "tools/gui/ext/balance/prices.js:282"
   },
   {
    "route": "GET /api/x/models/locate",
@@ -8950,7 +8995,7 @@
    ],
    "read": "full",
    "writes": "unknown",
-   "src": "tools/gui/ext/models/sub/look.server.js:122"
+   "src": "tools/gui/ext/models/sub/look.server.js:123"
   },
   {
    "route": "POST /api/x/models/look/skins",
@@ -8966,7 +9011,7 @@
    ],
    "read": "full",
    "writes": "unknown",
-   "src": "tools/gui/ext/models/sub/look.server.js:122"
+   "src": "tools/gui/ext/models/sub/look.server.js:123"
   },
   {
    "route": "POST /api/x/models/look/pose",
@@ -8993,7 +9038,7 @@
    ],
    "read": "full",
    "writes": "unknown",
-   "src": "tools/gui/ext/models/sub/look.server.js:122"
+   "src": "tools/gui/ext/models/sub/look.server.js:123"
   },
   {
    "route": "GET /api/x/maps/list",
@@ -14715,6 +14760,31 @@
      "desc": "skip the slow tools"
     },
     {
+     "name": "noload",
+     "type": "bool",
+     "desc": "skip the load check (wouldload)"
+    },
+    {
+     "name": "allgames",
+     "type": "bool",
+     "desc": "check every game build (default: the target game only)"
+    },
+    {
+     "name": "restorepoints",
+     "type": "bool",
+     "desc": "also check restore points inside the mod (.arsenal-undo)"
+    },
+    {
+     "name": "target",
+     "type": "enum",
+     "values": [
+      "as64",
+      "mowas2",
+      "goh"
+     ],
+     "desc": "the game the exit code follows (default: --exe, else mod.info)"
+    },
+    {
      "name": "jobs",
      "type": "int",
      "desc": "parallel jobs"
@@ -15583,27 +15653,27 @@
   "games": 3,
   "pages": 31,
   "pagesNoTab": 2,
-  "routes": 447,
-  "get": 181,
-  "post": 266,
-  "fieldsFull": 358,
+  "routes": 450,
+  "get": 183,
+  "post": 267,
+  "fieldsFull": 361,
   "fieldsPartial": 89,
   "fieldsNone": 0,
-  "withFields": 377,
-  "described": 147,
+  "withFields": 379,
+  "described": 149,
   "commands": 23,
   "writes": {
-   "no": 251,
+   "no": 253,
    "launch": 1,
    "blocked": 4,
    "always": 12,
+   "unknown": 102,
    "command": 1,
    "dry": 13,
-   "unknown": 101,
    "flag": 64
   },
   "readByName": 37,
   "withPreview": 12
  },
- "sig": "58a557fd8c410eb876fa3fccb81441e14bf1b5af"
+ "sig": "f76ba94e969bfbc6ebeed080ddd6cb3679c4399d"
 }

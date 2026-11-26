@@ -12,6 +12,7 @@
 // Author: Imperator_Aug (ARSENAL, ia-db919c90)
 'use strict';
 const fs = require('fs'), os = require('os'), path = require('path'), { spawn } = require('child_process');
+const W = require('../../lib/test/wait');
 const SERVER = path.resolve(__dirname, '..', 'server.js'), ROOT = path.resolve(__dirname, '..', '..', '..');
 
 function cleanEnv(extra) {
@@ -19,16 +20,23 @@ function cleanEnv(extra) {
   for (const k of Object.keys(process.env)) if (!/^ARSENAL_/i.test(k)) e[k] = process.env[k];
   return Object.assign(e, extra || {});
 }
-function rpc(messages, env) {
+// Backup, never a hang: a server with no end after 5 min is killed (WAIT line) and run once more with 10 min, then it fails.
+function rpc(messages, env, lim) {
+  lim = lim || W.CHILD_MS;
   return new Promise((resolve, reject) => {
     const c = spawn(process.execPath, [SERVER], { cwd: ROOT, env: cleanEnv(env), stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
-    let out = '', err = '';
+    let out = '', err = '', killed = false;
     c.stdout.setEncoding('utf8'); c.stderr.setEncoding('utf8');
     c.stdout.on('data', d => { out += d; }); c.stderr.on('data', d => { err += d; });
     c.on('error', reject);
-    const timer = setTimeout(() => { c.kill(); reject(new Error('server gave no end after 5 min\n' + err)); }, 300000);
+    const timer = setTimeout(() => {
+      killed = true; c.kill(); W.say('mcp rpc', 'server end', lim);
+      if (lim < 2 * W.CHILD_MS) rpc(messages, env, 2 * lim).then(resolve, reject);
+      else reject(new Error('server gave no end after ' + Math.round(lim / 60000) + ' min\n' + err));
+    }, lim);
     c.on('close', () => {
       clearTimeout(timer);
+      if (killed) return;
       const m = new Map(), raw = [];
       for (const l of out.split('\n')) { if (!l.trim()) continue; let j; try { j = JSON.parse(l); } catch (e) { raw.push(l); continue; } m.set(j.id, j); }
       m.set('raw', raw); m.set('stderr', err);

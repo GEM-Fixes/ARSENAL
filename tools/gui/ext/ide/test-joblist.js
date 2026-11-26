@@ -11,6 +11,7 @@ module.exports = async function (env) {
   const ok = (c, m, x) => env.ok(c, c || x === undefined ? m : m + ' [' + String(x).slice(0, 500) + ']');
   const wr = (f, b) => { fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, b); };
   const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const WT = require('../../../lib/test/wait'), who = 'ide joblist';   // waits by time, backstop 60 s + WAIT line, then the check reports
   const EN = {}; for (const r of require('./lang/jump').concat(require('./lang/core'))) EN[r[0]] = r[1];
   const fill = (k, p) => String(EN[k] || k).replace(/\{(\w+)\}/g, (m, n) => (p && p[n] != null ? String(p[n]) : m));
   const joblist = require('../../joblist');
@@ -29,7 +30,7 @@ module.exports = async function (env) {
     const base = Object.assign({}, env.ctx, { game: () => game, tmpRoot: path.join(W, 'tmp'), jobs, gameId: () => 'mowas2' });
     const mk = () => Object.assign({}, base, { job: jobs.add({ kind: 'req', what: '', canCancel: false, keepMs: 0 }) });
     const bg = () => jobs.list().filter(j => j.kind === 'bg');
-    const run = async (b) => { let r = null; for (let i = 0; i < 400; i++) { const c = mk(); r = await env.post('modcheck', Object.assign({ mod, from: 0 }, b), c); c.job.end(); if (r.done || r.stopped) break; await sleep(5); } return r; };
+    const run = async (b) => { let r = null; await WT.until(async () => { const c = mk(); r = await env.post('modcheck', Object.assign({ mod, from: 0 }, b), c); c.job.end(); return r.done || r.stopped; }, { who, what: 'the check ends' }); return r; };
     R._reset();
     // ---- one background job per check, however many slice requests
     const c0 = mk(), r0 = await env.post('modcheck', { mod, from: 0 }, c0);
@@ -50,7 +51,7 @@ module.exports = async function (env) {
     const r3 = await env.post('modcheck', { mod, from: 0, job: r2.job }, mk());
     ok(r3.stopped === true && r3.done === false && r3.job === r2.job, 'joblist check: after Cancel the next slice request answers stopped:true, done:false', JSON.stringify({ s: r3.stopped, d: r3.done }));
     ok(bg().find(j => j.id === row2.id).state === 'cancelled', 'joblist check: the stopped check\'s row ends cancelled', JSON.stringify(bg()));
-    await sleep(30);
+    await sleep(30);   // "stays stopped": nothing to wait on; a fixed gap can only make it pass more
     const r3b = await env.post('modcheck', { mod, from: 0, job: r2.job }, mk());
     ok(r3b.stopped === true && r3b.done === false, 'joblist check: a stopped check stays stopped for its page (never done)');
     const r4 = await run({});
@@ -70,7 +71,7 @@ module.exports = async function (env) {
     ok(bg().filter(j => j.state === 'running').length === 0, 'joblist check: no row is left running when the checks are dropped', JSON.stringify(bg().map(j => j.state)));
     // ---- without a registry (older server, tests): the check works as before
     const plain = Object.assign({}, env.ctx, { game: () => game, tmpRoot: path.join(W, 'tmp') });
-    let rp = null; for (let i = 0; i < 400; i++) { rp = await env.post('modcheck', { mod, from: 0 }, plain); if (rp.done) break; await sleep(5); }
+    let rp = null; await WT.until(async () => { rp = await env.post('modcheck', { mod, from: 0 }, plain); return rp.done; }, { who, what: 'the check without a registry ends' });
     ok(rp && rp.done && rp.total === 3, 'joblist check: a server without the registry still checks the mod');
     R._reset();
 
@@ -95,7 +96,7 @@ module.exports = async function (env) {
     R._setIntel(Object.assign({}, real, { refsAsync: (doc, pos, ictx, o) => new Promise(res => { sig = o && o.signal; if (!sig) return res({ name: 'x', kind: 'text', hits: [], truncated: false }); sig.addEventListener('abort', () => res({ name: 'x', kind: 'text', hits: [], truncated: true, why: 'abort' })); }) }));
     const cr = Object.assign(mk(), { onClose: fn => { closeFn = fn; } });
     const pr = env.post('refs', { mod, name: 'x' }, cr);
-    await sleep(10);
+    await WT.until(() => sig, { who, what: 'the usages scan started' });
     ok(cr.job.what === 'ide.job.refs' && cr.job.page === 'ide' && cr.job.canCancel === true && jobs.list().find(j => j.id === cr.job.id).canCancel === true, 'joblist usages: the request is named and can be stopped', JSON.stringify(jobs.list().find(j => j.id === cr.job.id)));
     ok(jobs.cancel(cr.job.id) === true && sig && sig.aborted === true, 'joblist usages: Cancel aborts the scan');
     const rr = await pr;
@@ -103,7 +104,7 @@ module.exports = async function (env) {
     cr.job.end();
     const cr2 = Object.assign(mk(), { onClose: fn => { closeFn = fn; } }); sig = null; closeFn = null;
     const pr2 = env.post('refs', { mod, name: 'x' }, cr2);
-    await sleep(10);
+    await WT.until(() => sig && closeFn, { who, what: 'the second usages scan started' });
     ok(typeof closeFn === 'function' && sig && !sig.aborted, 'joblist usages: the request watches for a page that went away');
     if (closeFn) closeFn();
     ok(sig && sig.aborted === true && (await pr2).why === 'abort', 'joblist usages: a page that went away stops the scan');
@@ -133,20 +134,27 @@ module.exports = async function (env) {
     const list = async () => ((await req('GET', '/api/jobs')).j || {}).jobs || [];
     const gq = '&game=' + encodeURIComponent(game);
     try {
-      R._reset(); R._setHoldMs(700);
+      R._reset();
       // ---- the inbox long poll: held, never listed (the wait=1 rule of the dispatcher)
-      const held = open('GET', '/api/x/ide/inbox?wait=1', { headers: { 'x-arsenal-job': 'inboxPoll01' } });
-      await sleep(150);
-      let L = await list();
-      ok(R._waiters() === 1 && !L.some(j => j.id === 'inboxPoll01') && L.filter(j => j.kind === 'req').length === 0, 'joblist server: the held inbox long poll is not in GET /api/jobs', JSON.stringify(L));
-      const hr = await held.done;
+      // held 700 ms; a busy PC whose list read outlives the hold does the step once more with 7 s (WAIT line)
+      let L = null, hr = null, wn = 0;
+      for (const hold of [700, 7000]) {
+        R._setHoldMs(hold);
+        const held = open('GET', '/api/x/ide/inbox?wait=1', { headers: { 'x-arsenal-job': 'inboxPoll01' } });
+        await WT.until(() => R._waiters() === 1, { who, what: 'the inbox poll is held' });
+        L = await list(); wn = R._waiters();
+        hr = await held.done;
+        if (wn === 1 || hold > 700) break;
+        WT.say(who, 'the list read within the inbox hold (once more with 7 s)', hold);
+      }
+      ok(wn === 1 && !L.some(j => j.id === 'inboxPoll01') && L.filter(j => j.kind === 'req').length === 0, 'joblist server: the held inbox long poll is not in GET /api/jobs', JSON.stringify(L));
       ok(hr.status === 200 && hr.j && Array.isArray(hr.j.items) && hr.j.items.length === 0, 'joblist server: the long poll still answers when its time is up', hr.text);
       R._setHoldMs(25000);
       // ---- the whole-mod check: one bg row, its slice requests never listed; /api/cancel stops it
       let r = await req('POST', '/api/x/ide/modcheck', { body: { mod, from: 0, game }, headers: { 'x-arsenal-job': 'sliceAsk0001', 'x-arsenal-game': 'as64' } });
       ok(r.status === 200 && r.j && /^mc\d+-/.test(r.j.job), 'joblist server: the check starts through the server', r.text);
       const j0 = r.j.job;
-      for (let i = 0; i < 300 && !(r.j && r.j.done); i++) { await sleep(10); r = await req('POST', '/api/x/ide/modcheck', { body: { mod, from: 0, job: j0, game } }); }
+      await WT.until(async () => { if (r.j && r.j.done) return true; await sleep(10); r = await req('POST', '/api/x/ide/modcheck', { body: { mod, from: 0, job: j0, game } }); return r.j && r.j.done; }, { who, what: 'the server check ends' });
       L = await list();
       const rows = L.filter(j => j.what === 'job.w.modcheck');
       ok(r.j && r.j.done && rows.length === 1 && rows[0].kind === 'bg' && rows[0].page === 'ide' && rows[0].state === 'done' && rows[0].done === 3 && rows[0].total === 3 && rows[0].game === 'as64',

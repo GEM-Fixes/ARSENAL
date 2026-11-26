@@ -5,6 +5,7 @@ const work = path.resolve(process.argv[2] || fs.mkdtempSync(path.join(require('o
 require('../../../lib/testscratch').guard(work);   // never wipe a shared root, the repo, a game or a mod
 fs.rmSync(work, { recursive: true, force: true }); fs.mkdirSync(work, { recursive: true });
 const X = require('./index');
+const WT = require('../../../lib/test/wait');
 require('../../../lib/modtree')._reset({ store: null });   // the shared walk keeps nothing outside this run (no write to the real store)
 const T = path.join(__dirname, '..', '..', '..');
 let bad = 0;
@@ -20,6 +21,8 @@ const ctx = {
 const U = q => ({ searchParams: new URLSearchParams(q) });
 const R = X.routes, t = X._t;
 const fails = async (p, m) => { let e = null; try { await p(); } catch (x) { e = x; } ok(e && e.status === 400, m); };
+// the list scan (a real mission-clone child): polled until it is not running, by time. Backup, never a hang: WAIT after 5 min, the last answer
+const listDone = async l => (l.state !== 'running' ? l : (await WT.until(async () => { const x = await R['GET /api/x/maps/list'](U(''), null, ctx); return x.state !== 'running' ? x : null; }, { who: 'maps test', what: 'the map list scan', step: 30, ms: WT.CHILD_MS })) || R['GET /api/x/maps/list'](U(''), null, ctx));
 // structure rules of tools/gui/test/blockcheck.js (checkScreen), for the state the page reaches after server replies
 const BC = require(path.join(__dirname, '..', '..', 'test', 'blockcheck'));
 const isB = e => !!(e && e.dataset && e.dataset.blk != null);
@@ -51,8 +54,7 @@ const checkScreen = sec => (sec.all().filter(isB).length < 10 ? ['fewer than 10 
   await fails(async () => t.safeMod(path.join(work, 'nope'), ctx), 'refuse missing');
   await fails(async () => t.safeMod('', ctx), 'refuse empty');
   // picture + list need real data; list route works with a job
-  let l = await R['GET /api/x/maps/list'](U(''), null, ctx);
-  for (let i = 0; i < 100 && l.state === 'running'; i++) { await new Promise(r => setTimeout(r, 200)); l = await R['GET /api/x/maps/list'](U(''), null, ctx); }
+  let l = await listDone(await R['GET /api/x/maps/list'](U(''), null, ctx));
   ok(l.state === 'done' && l.maps.some(m => m.key === 'map/multi/a1' && m.players === 2 && m.modes.includes('combat')), 'list a1 players+modes');
   ok(l.maps.every(m => m.name), 'list names');
   // the place card's entity index: .def names of game + mod by folder
@@ -96,7 +98,8 @@ const checkScreen = sec => (sec.all().filter(isB).length < 10 ? ['fewer than 10 
     });
     const reqJob = reg.add({ kind: 'req', canCancel: false });
     const jctx = Object.assign({}, ctx, { tmpRoot: jroot, jobs: reg, job: reqJob, runTool: pend });
-    const settle = async () => { for (let i = 0; i < 6; i++) await new Promise(r => setImmediate(r)); };
+    // the scan's end: its bg job no longer running (it ends last, after the list and the cache), by time with the 60 s backstop
+    const settle = async () => { for (let i = 0; i < 6; i++) await new Promise(r => setImmediate(r)); await WT.until(() => !bgs().some(j => j.state === 'running'), { who: 'maps test', what: 'the list job to end' }); };
     // the list kept in the shared store of this scratch server (section maps.list), read from its files
     const caches = () => { const e = path.join(jroot, 'cache', 'store', 'e'); if (!fs.existsSync(e)) return []; return fs.readdirSync(e).filter(k => { try { return JSON.parse(fs.readFileSync(path.join(e, k, 'meta.json'), 'utf8')).section === 'maps.list'; } catch (x) { return false; } }); };
     const a1 = await R['GET /api/x/maps/list'](U('refresh=1'), null, jctx);
@@ -182,8 +185,7 @@ const checkScreen = sec => (sec.all().filter(isB).length < 10 ? ['fewer than 10 
     fs.writeFileSync(path.join(game, 'mods', id, 'mod.info'), '{Mod\r\n\t{Name "' + id + '"}\r\n}\r\n');
     zw.writeZip(path.join(game, 'mods', id, 'resource', 'map.pak'), ents);
   }
-  l = await R['GET /api/x/maps/list'](U('refresh=1'), null, ctx);
-  for (let i = 0; i < 100 && l.state === 'running'; i++) { await new Promise(r => setTimeout(r, 200)); l = await R['GET /api/x/maps/list'](U(''), null, ctx); }
+  l = await listDone(await R['GET /api/x/maps/list'](U('refresh=1'), null, ctx));
   const p7 = (l.maps || []).find(m => m.key === 'map/multi/p7'), f3 = (l.maps || []).find(m => m.key === 'map/multi/f3');
   ok(p7 && (p7.mods || []).join() === 'pk_t' && p7.copy === true, 'GT-07 list: mod map p7 carries its mod ' + JSON.stringify(p7));
   ok(f3 && f3.copy === false, 'GT-07 list: f3 (mode file only) marked as not copyable ' + JSON.stringify(f3));
@@ -398,7 +400,7 @@ const checkScreen = sec => (sec.all().filter(isB).length < 10 ? ['fewer than 10 
       const PP = page('en', u => Promise.resolve(u.startsWith('/api/x/maps/list') ? (done ? LIST : { state: 'running', elapsed: 7 }) : { svg: null }), { poll: true });
       const lc = () => PP.box.calls.filter(c => c[0].startsWith('/api/x/maps/list'));
       const hide = v => { if (how === 'page') PP.box.S.cur = v ? 'share' : 'maps'; else PP.doc.hidden = v; };
-      PP.scr.focus(); await wait(80);
+      PP.scr.focus(); await WT.until(() => lc().length >= 3 && PP.rootEl.textContent.includes(prog), { who: 'maps test', what: 'poll (' + how + '): the list asked three times' });
       ok(lc().length >= 3 && lc().slice(1).every(c => c[2] && c[2].job === false) && PP.rootEl.textContent.includes(prog), 'poll (' + how + '): on screen the running list is asked again and again: ' + lc().length);
       hide(true); await wait(40); const n1 = lc().length; await wait(120);
       ok(lc().length === n1, 'poll (' + how + ' hidden): no list request while the scan runs: ' + n1 + ' -> ' + lc().length);
@@ -513,7 +515,8 @@ const checkScreen = sec => (sec.all().filter(isB).length < 10 ? ['fewer than 10 
       } });
     const S = t.storeOf(cctx), L = R['GET /api/x/maps/list'];
     const fresh = () => { t.drop(); GV.drop(); };            // forget the 5 s memories, as time passing does
-    const list = async q => { let l = await L(U(q || ''), null, cctx); for (let i = 0; i < 200 && l.state === 'running'; i++) { await new Promise(r => setTimeout(r, 50)); l = await L(U(''), null, cctx); } return l; };
+    const list = async q => { const l = await L(U(q || ''), null, cctx); if (l.state !== 'running') return l;
+      return (await WT.until(async () => { const x = await L(U(''), null, cctx); return x.state !== 'running' ? x : null; }, { who: 'maps test', what: 'the cached map list scan', step: 30, ms: WT.CHILD_MS })) || L(U(''), null, cctx); };
     const nList = () => runs.filter(x => x === 'mission-clone').length;
     const parts = t.listParts(cctx, game);
     t.JOBS.clear(); fresh();

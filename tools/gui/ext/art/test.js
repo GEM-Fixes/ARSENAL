@@ -6,6 +6,7 @@ const work = path.resolve(process.argv[2] || fs.mkdtempSync(path.join(require('o
 require('../../../lib/testscratch').guard(work);   // never wipe a shared root, the repo, a game or a mod
 fs.rmSync(work, { recursive: true, force: true }); fs.mkdirSync(work, { recursive: true });
 const C = require('./core'), X = require('./index'), D = require('./data');
+const WT = require('../../../lib/test/wait');
 let bad = 0, ok = 0;
 const t = (c, m) => { if (c) ok++; else { bad++; console.log('FAIL ' + m); } };
 const rejects = async (f, re, m) => { try { await f(); t(false, m + ' (no error)'); } catch (e) { t(re.test(e.message), m + ' (' + e.message + ')'); } };
@@ -269,14 +270,18 @@ const call = (key, u, body) => R[key](u, body, ctx);
       t(s.view === 'disk' && (s.exts || []).join() === 'png' && kitOf('art.png').input.value === path.join(work, 'p.png'), 'browse: png box on the disk, .png only, the full path');
     }
     const wrap = P.root.all(c => c.className === 'sk' && c.dataset.sk === 'art.unit')[1], uin = wrap.children[0];
-    uin.value = 'zz'; uin.selectionStart = 2; uin.fire('input'); for (let i = 0; i < 4; i++) await FD.settle(); await new Promise(r => setTimeout(r, 20));
-    const opts = wrap.children[3].children.filter(c => c.getAttribute('role') === 'option');
+    uin.value = 'zz'; uin.selectionStart = 2; uin.fire('input'); for (let i = 0; i < 4; i++) await FD.settle();
+    const optsOf = () => wrap.children[3].children.filter(c => c.getAttribute('role') === 'option');
+    await WT.until(() => optsOf().some(o => /zz1/.test(o.textContent)), { who: 'art test', what: 'unit names listed for zz' });
+    const opts = optsOf();
     t(opts.some(o => /zz1/.test(o.textContent)), 'kits: typing in a unit box lists unit names (' + opts.map(o => o.textContent).join('|') + ')');
     wrap.children[3].fire('click', { target: opts.find(o => /zz1/.test(o.textContent)) }); for (let i = 0; i < 4; i++) await FD.settle();
+    await WT.until(() => /zz1/.test((P.root.all(c => c.dataset.blk === 'camo.now')[0] || {}).textContent || ''), { who: 'art test', what: 'the camo look-up after a pick' });
     const all = P.root.all(c => c.tagName === 'INPUT' && c.getAttribute('placeholder') === E['art.unitPh']);
     t(all.every(i => i.value === 'zz1') && /zz1/.test((P.root.all(c => c.dataset.blk === 'camo.now')[0] || {}).textContent || ''), 'kits: a pick fills every unit box and runs that box\'s look-up');
     const cv = P.root.all(c => c.className === 'sk' && c.dataset.sk === 'art.camoVar')[0], got = [];
-    if (cv) { cv.children[0].value = 'au'; cv.children[0].selectionStart = 2; cv.children[0].fire('input'); await new Promise(r => setTimeout(r, 20)); cv.children[3].children.forEach(o => got.push(o.textContent)); }
+    if (cv) { cv.children[0].value = 'au'; cv.children[0].selectionStart = 2; cv.children[0].fire('input');
+      await WT.until(() => cv.children[3].children.some(o => /aut/.test(o.textContent)), { who: 'art test', what: 'camo variants listed for au' }); cv.children[3].children.forEach(o => got.push(o.textContent)); }
     t(cv && got.some(x => /aut/.test(x)), 'kits: the camo variant box (drawn with the look-up) offers the variants found: ' + got.join('|'));
     {
       const sent = []; P.picker((spec, done) => { sent.push(spec); done('entity/vehicle/tank/zz1/zz1_body#win.dds', { view: 'data' }); });

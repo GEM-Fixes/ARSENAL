@@ -8,7 +8,7 @@
 //   --scratch: where to build/unzip/run (default: tools/dist/test/work-docrun, removed at the end unless --keep)
 //   --table: print the doc | line | exit | ok table (markdown) after the run
 // Author: Imperator_Aug (ARSENAL, ia-ec6c3f14)
-const fs = require('fs'), os = require('os'), path = require('path'), zlib = require('zlib'), { spawnSync } = require('child_process');
+const fs = require('fs'), os = require('os'), path = require('path'), zlib = require('zlib'), { spawnSync } = require('child_process'), Wt = require('../../lib/test/wait');
 const ZIP = path.join(__dirname, '..', 'zip.js'), GOLD = path.join(__dirname, 'docrun.golden.txt');
 const argv = process.argv.slice(2);
 const opt = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : undefined; };
@@ -116,12 +116,14 @@ for (const d of DOCS) {
   const env = { ...process.env, AS2_HOME: dir, AS2_NO_STEAM: '1', AS2_GAME: G };
   for (const c of cmds) {
     const p = prepare(c.text, G);
-    const r = spawnSync(exe, p.args, { cwd: dir, env, encoding: 'utf8', timeout: 240000, maxBuffer: 1 << 26, windowsHide: true });
+    const r = Wt.spawnSync(exe, p.args, { cwd: dir, env, encoding: 'utf8', maxBuffer: 1 << 26, windowsHide: true }, 'dist docrun');
     if (p.redirect) fs.writeFileSync(path.join(dir, p.redirect), r.stdout || '');
     const out = norm((r.stdout || '') + ((r.stdout || '').trim() ? '' : (r.stderr || '')), dir);
     const all = (r.stdout || '') + (r.stderr || '');
-    const crash = /unknown tool|TypeError|ReferenceError|at .*\.js:\d+:\d+|Cannot find module/.test(all) || r.status === null;
-    results.push({ doc: c.doc, line: c.line, text: c.text, rc: r.status === null ? 'timeout' : r.status, first: firstLine(out), note: p.note, crash });
+    const CRASH = /unknown tool|TypeError|ReferenceError|at .*\.js:\d+:\d+|Cannot find module/;
+    const crash = CRASH.test(all) || r.status === null;
+    const why = crash ? (r.status === null ? 'no exit (killed)' : (all.split(/\r?\n/).find(l => CRASH.test(l)) || '').trim()) : '';   // the line that set the flag, shown in the FAIL
+    results.push({ doc: c.doc, line: c.line, text: c.text, rc: r.status === null ? 'timeout' : r.status, first: firstLine(out), note: p.note, crash, why });
   }
 }
 
@@ -146,7 +148,8 @@ else {
   }
   for (const k of want.keys()) fail('golden line no longer in the docs: ' + k.replace('\t', ' '));
 }
-for (const r of results) if (r.crash) fail(`${r.doc}:${r.line} ${r.text}: crash or unknown tool (rc ${r.rc}): ${r.first}`);
+for (const r of results) if (r.crash) fail(`${r.doc}:${r.line} ${r.text}: crash or unknown tool (rc ${r.rc}): ${r.first}
+   because: ${r.why}`);
 if (argv.includes('--table')) {
   console.log('| doc | line | command | exit | note | ok |\n|---|---|---|---|---|---|');
   for (const r of results) console.log(`| ${r.doc} | ${r.line} | \`${r.text}\` | ${r.rc} | ${r.note} | ${r.crash ? 'NO' : 'yes'} |`);

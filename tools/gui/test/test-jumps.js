@@ -16,6 +16,7 @@ const ORDER = ['en', 'ru', 'uk', 'zh'];
 let pass = 0, failN = 0;
 const ok = (c, m, extra) => { if (c) { pass++; console.log('ok ' + m); } else { failN++; console.log('FAIL ' + m + (extra !== undefined ? '\n  ' + String(extra).slice(0, 600) : '')); } };
 const tick = () => new Promise(r => setImmediate(r));
+const W = require('../../lib/test/wait');
 const clone = o => JSON.parse(JSON.stringify(o));
 const GAMEP = 'F:\\Games\\Men of War Assault Squad 2';
 const GOOD = { dir: GAMEP, source: 'steam', ok: true, exes: ['as64.exe', 'mowas_2.exe'], hasMods: true, codes: [] };
@@ -52,7 +53,7 @@ async function load() {
   // the bar is shared with JOBS (test-jobs.js): the requests this fake server never answers would be listed as jobs and keep the bar up,
   // so here no request is ever old enough to be listed and the bar shows jumps only
   w.JOBS.tune({ wait: 1e12 });
-  for (let i = 0; i < 800 && !w.__as2gui; i++) { await tick(); adv(20); }
+  { const t0 = Date.now(); while (!w.__as2gui && Date.now() - t0 < W.COND_MS) { await tick(); adv(20); } if (!w.__as2gui) W.say('test-jumps', 'page build', W.COND_MS); }   // by real time, not by count
   await settle(3000);
   doc.documentElement.scrollHeight = 6000;
   const P = { doc, w, adv, settle, S: () => w.__as2gui };

@@ -337,6 +337,17 @@ ok(/nothing to change/.test(run(['apply', mod, '--model', modelFile, ...SH, '--u
 run(['undo', mod, '--undo', 't3']);
 const after3 = snap(mod);
 ok([...before].every(([k, b]) => after3.has(k) && after3.get(k).equals(b)), 'undo after set-prices restores bytes');
+// undo copies sit beside the mod (<mod>.arsenal-undo/<tag>), never inside it; an old one inside the mod (older versions) is still undone
+ok(['t1', 't2', 't3'].every(t => fs.existsSync(path.join(mod + '.arsenal-undo', t, 'manifest.json'))) && !fs.existsSync(path.join(mod, '.arsenal-undo')), 'undo copies beside the mod, nothing inside it');
+run(['apply', mod, '--model', modelFile, ...SH, '--undo', 't4']);
+fs.mkdirSync(path.join(mod, '.arsenal-undo'), { recursive: true }); fs.renameSync(path.join(mod + '.arsenal-undo', 't4'), path.join(mod, '.arsenal-undo', 't4'));
+ok(run(['check', mod, '--model', modelFile, ...SH]).status === 0, 'check finds the newest apply in the old inside place');
+const ou4 = run(['undo', mod]);
+const after4 = snap(mod);
+ok(ou4.status === 0 && /undo t4/.test(ou4.stdout) && [...before].every(([k, b]) => after4.has(k) && after4.get(k).equals(b)) && after4.size === before.size, 'undo without a tag takes the old inside restore point back byte for byte');
+const r4 = run(['apply', mod, '--model', modelFile, ...SH, '--undo', 't4'], true);
+ok(r4.status !== 0 && /older undo copy inside the mod/.test(r4.stderr) && [...before].every(([k, b]) => snap(mod).get(k).equals(b)), 'a write never reuses a tag only an old inside copy holds (refused, nothing written)');
+fs.rmSync(path.join(mod, '.arsenal-undo'), { recursive: true, force: true });
 
 // ---- 6. rules file, no-sheet seed, vanilla layout, unknown layout ----
 const RL = require('../rules');

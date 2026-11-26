@@ -5,6 +5,20 @@
 //                --cache-dir d (refcheck caches), --inject f.json ({as64|mowas2|goh|as2:{sdllint|refcheck:text|null}}, as2 = both AS2 exes when they have no key of their own, null = tool failed)
 //   --no-warm: no vanilla refcheck warm run first (by default, when neither the mod's refcheck cache nor the vanilla entityindex cache of
 //              that exe and folder exists, one vanilla refcheck builds the vanilla one, so the mod run is seeded warm; --time shows it)
+//   --restore-points: handed on to the sdllint and refcheck runs: they also read <mod>/.arsenal-undo restore points (default off)
+//   the vanilla warm run's cache: entityindex keys the stock index by the game (an overlay game folder of tools/check maps to its
+//     real install, entityindex/index.js cachePath), so a check of a mod outside <game>/mods finds it again on the next run
+//   --keep-out D: each sdllint / refcheck pass also writes D/<exe id>.<tool>.json = {args, ok, code, why, ms, out (its stdout), err (last
+//     2000 chars of its stderr)} when it ends (temp file + rename): tools/check hands D to doctor (--reuse-dir), which takes the target
+//     build's findings from there instead of running both again when the arguments are the same wave 2a)
+//   the mod is listed once per run (lib/modtree scan): the vfs view mounts it from that scan and sdllint / refcheck get it as --listing
+//     <temp file> (removed at exit), so neither lists the mod again; with --keep-out D the file is D/listing.json instead (temp +
+//     rename, left for the caller, which removes D): doctor --reuse-dir D takes it for its read-once pass (one listing per check),
+//     D/listing.json = null when the scan failed; --reach-all and the crash rows' reach read the mod's text through
+//     the thread pool with the loop free (reach.js reachAllAsync), so the children's pipes are read and refcheck starts beside sdllint
+//   reach cache (reachcache.js): what each mod text file gives the reach scan is kept by path + size + mtime (+ the scan's code)
+//     in <toolcache wouldload>/reach (--reach-cache-dir d for tests), so a repeat run reads only changed files; same answers.
+//     --no-reach-cache or env ARSENAL_REACH_CACHE=0: every file read, as before; a scan that fails with it reruns without it
 //   --reach-all: --json carries exes[t].reachAll = {defs: {def key: REACHABLE|ORPHAN|UNKNOWN}, unrefFiles: [entity .mdl/.ply nothing names]} (check reach gate)
 // GoH version gate: Min/Max against the exe version (PORT-46); mod.info Tags with the word "develop" skips it (GHVFS-02)
 // verdicts: REFUSED (version gate) | LIKELY_CRASH (crash class found) | LOADS_STATIC (static only, not run) | UNKNOWN (paks unread, exe missing, tool failed)
@@ -20,7 +34,7 @@ const { readText } = require('../lib/enc'), sdl = require('../lib/sdl'), games =
 
 const AS64_PLAIN = C.MODERN_MIN;   //  PRODUCT_VERSION "3.301": the PE field carries the data version, not this one
 const CLS = require('./classes');   // engine behaviour per crash code with source cites; SPAWN = fatal when the entity def is first read, USE = dies when the item is used
-const { reachability, reachAll } = require('./reach');   // REACHABLE | ORPHAN | UNKNOWN per crash entity; ORPHAN is reported, not counted
+const { reachability, reachabilityAsync, reachAllAsync, sameScan } = require('./reach');   // REACHABLE | ORPHAN | UNKNOWN per crash entity; ORPHAN is reported, not counted
 // sdllint codes that are fatal when an entity def is read: the HARD set of classes.js (ERROR_MSG sites, cited there)
 const CRASH_LINT = { has: c => CLS.isHard(c) };
 const LABEL = { as64: 'as64.exe', mowas2: 'mowas_2.exe', goh: 'call_to_arms.exe' };
@@ -92,7 +106,8 @@ function pakSurvey(modDir, files, goh) {
 // AS2 folder is not read as as64 (as64/core, as64+ left out); goh names goh, so a --goh folder is read as GoH even when the vfs
 // would not pick it from its exe files (sdllint and refcheck get the same --exe)
 const VFS_EXE = { mowas2: 'mowas_2', goh: 'goh' };
-function mountPlan(modDir, gameDir, mi, survey, t) {
+// T: the run's lib/modtree scan of modDir (or null): the mod is mounted from it (lib/vfs listings: the same records, no stat per file)
+function mountPlan(modDir, gameDir, mi, survey, t, T) {
   const goh = t === 'goh', vexe = VFS_EXE[t], as64 = t !== 'mowas2' && fs.existsSync(path.join(gameDir, 'as64.exe'));
   const out = { gameDir, mounted: false, why: '', list: [], others: new Set(), unread: [...survey.mountable], requireMissing: [], v: null, note: '', ms: 0 };
   const t0 = Date.now();
@@ -114,9 +129,13 @@ function mountPlan(modDir, gameDir, mi, survey, t) {
     out.ms = Date.now() - t0; return out;
   }
   if (!under) { out.why = `folder is not under ${C.fwd(path.join(gameDir, 'mods'))}, cannot mount`; out.ms = Date.now() - t0; return out; }
-  const list = [...new Set([...(isModern(mi) && as64 ? ['as64+'] : []), ...reqs, id])];
+  // as64+ only when the game has it (as64/plus/mod.info): naming a missing as64+ made refcheck refuse the run (MOD_UNKNOWN), while
+  // the engine applies no Enhanced mode then and skips a modern mod (MOD_MODE): the mod is checked as a folder, as doctor does
+  const list = [...new Set([...(isModern(mi) && as64 && found.has('as64+') ? ['as64+'] : []), ...reqs, id])];
   try {
-    const v = vfs.build(vexe ? { gameDir, mods: list, exe: vexe } : { gameDir, mods: list });
+    const bo = vexe ? { gameDir, mods: list, exe: vexe } : { gameDir, mods: list };
+    if (T) bo.listings = [T];
+    const v = vfs.build(bo);
     vfs.closeRecs();
     if (v.mods.includes(id)) {
       out.mounted = true; out.list = list; out.v = v;
@@ -140,23 +159,49 @@ function mountPlan(modDir, gameDir, mi, survey, t) {
 }
 
 // ---- child tool, async so the passes run side by side (common.runTool is sync)
-function runAsync(tool, args, timeoutMs) {
+// --progress: PROGRESS start|done wouldload:<pass> lines on stderr (check echoes them, the GUI shows them). While a pass runs, one
+// "still running" line every 30 s says which file it is on, how big that file is and for how long (the pass names each file before
+// it parses it, lib/progress.js), and a file of 8 MB or more is announced when it starts. No time limit comes from this.
+let PROGRESS = false;
+const prog = s => { if (PROGRESS) process.stderr.write('PROGRESS ' + s + '\n'); };
+const BIG = 8 * 1048576, mbOf = b => (b / 1048576).toFixed(b < 10485760 ? 1 : 0) + ' MB';
+function runAsync(tool, args, timeoutMs, label) {
   return new Promise(resolve => {
     const t0 = Date.now(), chunks = [];
+    const name = 'wouldload:' + (label || tool), sec = t => Math.round((Date.now() - t) / 1000);
+    // the file the pass is on: {n, bytes, file, thread, t}; n counts per thread (lib/progress), so total counts every PROGRESS line
+    let at = null, part = '', total = 0;
+    const where = () => at ? `: file ${total}, ${at.file} (${mbOf(at.bytes)}${at.bytes >= BIG ? ', very large' : ''}), on it for ${sec(at.t)}s` : ': reading the file lists, no file parsed yet';
+    const beat = PROGRESS ? setInterval(() => prog(`still running ${name} ${sec(t0)}s${where()}`), 30000) : null;
+    if (beat) beat.unref();
+    const onErr = d => {
+      part += d; const ls = part.split('\n'); part = ls.pop(); let rest = '';
+      for (const l of ls) {
+        const m = l.startsWith('PROGRESS at ') ? require('../lib/progress').parse(l) : null;
+        if (!m) { if (/^sdllint: worker \d+ failed/.test(l)) prog(`note ${name} ${l.slice(9)}`); rest += l + '\n'; continue; }
+        at = { ...m, t: Date.now() }; total++;
+        if (at.bytes >= BIG) prog(`note ${name} very large file ${at.file} (${mbOf(at.bytes)}): parsing it can take a long time`);
+      }
+      return rest;
+    };
+    prog('start ' + name);
     let errTail = '', timedOut = false;   // GUI-LOC: say why a pass ended without its findings line (exit 134 = out of memory, timeout)
-    const child = cp.spawn(process.execPath, [path.join(C.TOOLS, tool, tool + '.js'), ...args], { windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
+    // test hook (check/test/run.sh): WOULDLOAD_TEST_HANG=<tool> makes that pass a program that never ends
+    const hang = process.env.WOULDLOAD_TEST_HANG === tool;
+    const child = cp.spawn(process.execPath, hang ? ['-e', 'setInterval(() => {}, 1e6)'] : [path.join(C.TOOLS, tool, tool + '.js'), ...args], { windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'], env: PROGRESS ? { ...process.env, ARSENAL_PROGRESS: '1' } : process.env });
     const timer = timeoutMs > 0 ? setTimeout(() => { timedOut = true; C.killTree(child.pid); }, timeoutMs) : null;   // --timeout 0 = no limit
     child.stdout.on('data', d => chunks.push(d));
-    child.stderr.on('data', d => { errTail = (errTail + d).slice(-2000); });
-    child.on('error', e => { clearTimeout(timer); resolve({ ok: false, out: '', why: e.message, ms: Date.now() - t0 }); });
+    child.stderr.on('data', d => { errTail = (errTail + (PROGRESS ? onErr(d) : d)).slice(-2000); });
+    child.on('error', e => { clearTimeout(timer); clearInterval(beat); prog(`done ${name} 0s ERROR ${e.message}`); resolve({ ok: false, out: '', why: e.message, ms: Date.now() - t0 }); });
     child.on('close', code => {
-      clearTimeout(timer);
+      clearTimeout(timer); clearInterval(beat);
       const out = Buffer.concat(chunks).toString('utf8');
       // the count line proves the tool got to its end; exit status only says whether it found something
       const ok = /^\d+ findings/m.test(out);
       const oom = code === 134 || /out of memory|heap limit|Allocation failed/i.test(errTail);
       const why = ok ? '' : `${tool} ended without a findings line${timedOut ? ` (killed after ${timeoutMs / 1000}s timeout)` : oom ? ` (exit ${code}: out of memory)` : code ? ` (exit ${code})` : ''}`;
-      resolve({ ok, out, why, oom, timedOut, code, ms: Date.now() - t0 });
+      prog(`done ${name} ${sec(t0)}s${at ? ` ${total} files parsed` : ''}${ok ? '' : ' ERROR ' + why + (at ? `; last file ${at.file}` : '')}`);
+      resolve({ ok, out, err: errTail, why, oom, timedOut, code, ms: Date.now() - t0 });
     });
   });
 }
@@ -216,8 +261,27 @@ function verdict(s) {
   return { verdict: 'LOADS_STATIC', text: (orph ? 'no counted crash class found' : 'no crash class found') + ', version accepted: static only, not run' + on };
 }
 
+// ---- reach cache (reachcache.js, job X2): each mod text file's facts by path + size + mtime (+ the scan's
+// code), one cache per run shared by every pass: a repeat check reads only the files that changed. Off: --no-reach-cache or env
+// ARSENAL_REACH_CACHE=0. Kept in <toolcache wouldload>/reach (not --cache-dir: tools/check gives a temp one per run). A scan that
+// throws with the cache runs again without it (cache off for the rest of the run); not written then.
+let RC = null;
+const RCH = require('./reachcache');
+// fn(memo) with the cache on memo; on a throw: memo emptied, the cache dropped, fn again the old way
+async function cached(memo, fn) {
+  if (!RC || memo.cache === null) return fn(memo);
+  memo.cache = RC;
+  try { return await fn(memo); } catch (err) {
+    for (const k of Object.keys(memo)) delete memo[k];
+    memo.cache = null; RC = null;
+    return fn(memo);
+  }
+}
+
 // ---- reachability (reach.js): adds .reach/.reachWhy to each crash entry; one scan per pass serves every exe on it
-function annotate(crash, p) {
+// The --reach-all scan's memo (p.allMemo) answers when reach.sameScan says a scan of its own would give the same answer (no
+// second read of the mod's text: 60-90 s on a big mod); else its own memo, as before. Async: the loop keeps turning (other passes)
+async function annotate(crash, p) {
   if (!crash.length) return;
   const pl = p.plan;
   if (!pl.mounted || !pl.v) { for (const e of crash) { e.reach = 'UNKNOWN'; e.reachWhy = 'mod not mounted by the tools: no vanilla/layer view to judge reachability'; } return; }
@@ -227,7 +291,8 @@ function annotate(crash, p) {
   const ents = crash.filter(e => e.cls !== 'LOAD');
   if (!ents.length) return;
   try {
-    const res = reachability(pl.v, pl.list[pl.list.length - 1], new Set(ents.map(e => e.entity)), p.memo);
+    const names = new Set(ents.map(e => e.entity)), memo = p.allMemo && sameScan(p.allMemo, names) ? p.allMemo : p.memo;
+    const res = await cached(memo, m => reachabilityAsync(pl.v, pl.list[pl.list.length - 1], names, m));
     for (const e of ents) { const r = res.get(e.entity); e.reach = r.reach; e.reachWhy = r.why; }
   } catch (err) { for (const e of ents) { e.reach = 'UNKNOWN'; e.reachWhy = 'reachability scan failed: ' + err.message; } }
   vfs.closeRecs();
@@ -245,34 +310,105 @@ async function runPass(key, modDir, gameDir, plan, o) {
   // as64 keeps the old 'as2-' cache name (it is the view the old shared pass read); mowas2 and goh have their own
   const tc = require('../lib/toolcache'), cacheName = (key === 'as64' ? 'as2' : key) + '-' + cacheKey + '.json';   // default dir: per-user, an old file in tools/wouldload/cache copied over
   const cache = path.resolve(o.cacheDir) === path.resolve(tc.dir('wouldload')) ? tc.file('wouldload', cacheName, path.join(__dirname, 'cache')) : path.join(o.cacheDir, cacheName);
-  // modDir, not plan.lintDir: sdllint scopes to the layer named by the folder's basename, and that is the mod id
+  const { lintArgs, refArgs } = childArgs(key, modDir, gameDir, plan, cache, o);
+  // --listing: the run's scan of the mod (o.listingFile), so neither child lists it again; a speed hint only, left out of the
+  // arguments --keep-out records (doctor compares those with its own)
+  const L = a => o.listingFile ? [...a, '--listing', o.listingFile] : a;
+  const lintP = runAsync('sdllint', L(lintArgs), o.timeout, 'sdllint:' + key).then(r => keepOut(o, key, 'sdllint', lintArgs, r));
+  // refcheck starts at once beside sdllint when the stock index is there; else after the one vanilla warm run builds it (so it is
+  // never built twice at the same time)
+  const need = o.noWarm ? null : warmNeed(key, gameDir, cache), warm = need ? await warmVanilla(key, gameDir, o) : null;
+  const refP = runAsync('refcheck', L(refArgs), o.timeout, 'refcheck:' + key).then(r => keepOut(o, key, 'refcheck', refArgs, r));
+  const [lint, ref] = await Promise.all([lintP, refP]);
+  return { lint, ref, warm };
+}
+// --keep-out: one pass's output for doctor --reuse-dir (temp + rename, so a reader never sees half a file); a failed write only loses the reuse
+function keepOut(o, key, tool, args, r) {
+  if (!o.keepOut) return r;
+  const f = path.join(o.keepOut, `${key}.${tool}.json`);
+  try { fs.mkdirSync(o.keepOut, { recursive: true }); fs.writeFileSync(f + '.tmp', JSON.stringify({ args, ok: r.ok, code: r.code, why: r.why, ms: r.ms, out: r.out, err: r.err || '' })); fs.renameSync(f + '.tmp', f); }
+  catch (e) { console.error(`wouldload: --keep-out ${f}: ${e.message}`); }
+  return r;
+}
+// the sdllint and refcheck arguments of one pass. modDir, not plan.lintDir: sdllint scopes to the layer named by the folder's
+// basename, and that is the mod id. o.restorePoints (--restore-points): both also read <mod>/.arsenal-undo restore points
+function childArgs(key, modDir, gameDir, plan, cache, o) {
   const lintArgs = [modDir, '--game', gameDir, '-q', '--no-rc'], refArgs = [gameDir, '--scope', 'mod', '-q', '--no-rc', '--cache', cache];
   if (plan.mounted) { lintArgs.push('--mods', plan.list.join(',')); refArgs.push('--mods', plan.list.join(',')); }
   else refArgs.push('--folder', modDir);
   if (VFS_EXE[key]) { lintArgs.push('--exe', VFS_EXE[key]); refArgs.push('--exe', VFS_EXE[key]); }
-  const lintP = runAsync('sdllint', lintArgs, o.timeout), warm = o.noWarm ? null : await warmVanilla(key, gameDir, cache, o);
-  const [lint, ref] = await Promise.all([lintP, runAsync('refcheck', refArgs, o.timeout)]);
-  return { lint, ref, warm };
+  if (o && o.restorePoints) { lintArgs.push('--restore-points'); refArgs.push('--restore-points'); }
+  return { lintArgs, refArgs };
 }
 // refcheck seeds a mod run that has no cache of its own from the vanilla entityindex cache of the same exe (refcheck seedCache).
 // When that vanilla cache is missing too, one vanilla refcheck of the same exe and folder builds it first, under its own timeout, so
 // the mod run starts warm (a cold GoH mod run parsed the whole GoH tree inside the mod run's limit) and every later mod is warm.
 // The mod's findings do not change; a failed warm run leaves the mod run cold, as before. --no-warm skips it.
-async function warmVanilla(key, gameDir, cache, o) {
+// warmNeed: sync, so a pass whose caches are there spawns refcheck in the same turn as sdllint -> true when the warm run is needed
+const stockOf = (key, gameDir) => require('../entityindex/index').cachePath(path.join(C.TOOLS, 'entityindex', 'cache', 'vanilla.json'), VFS_EXE[key], gameDir);
+function warmNeed(key, gameDir, cache) {
   const ix = require('../entityindex/index'), exe = VFS_EXE[key];
-  let modCache, vanilla;
-  try { modCache = ix.cachePath(cache, exe, gameDir); vanilla = ix.cachePath(path.join(C.TOOLS, 'entityindex', 'cache', 'vanilla.json'), exe, gameDir); }
-  catch (e) { return null; }
-  if (fs.existsSync(modCache) || fs.existsSync(vanilla)) return null;
+  try { return !fs.existsSync(ix.cachePath(cache, exe, gameDir)) && !fs.existsSync(stockOf(key, gameDir)); } catch (e) { return false; }
+}
+async function warmVanilla(key, gameDir, o) {
+  const exe = VFS_EXE[key], vanilla = stockOf(key, gameDir);
   if (!o.q) console.error(`wouldload: no vanilla refcheck cache for ${LABEL[key]} yet: building it once (first run on this machine)`);
-  const r = await runAsync('refcheck', [gameDir, '-q', '--no-rc', ...(exe ? ['--exe', exe] : [])], o.timeout);
+  const r = await runAsync('refcheck', [gameDir, '-q', '--no-rc', ...(exe ? ['--exe', exe] : [])], o.timeout, 'game-index:' + key);
   return { ok: r.ok && fs.existsSync(vanilla), ms: r.ms, why: r.why };
+}
+
+// walkAsync(dir) -> Promise<[rel]>: the list C.walk(dir) gives (every file, a link counted as a file, depth first in readdir order,
+// forward slashes), with the folders read through the thread pool 32 at a time instead of one by one on the loop. A folder that
+// cannot be read rejects, as C.walk throws
+function walkAsync(dir) {
+  return new Promise((resolve, reject) => {
+    const ents = new Map(), queue = [''];
+    let flying = 0, failed = false;
+    const pump = () => {
+      if (failed) return;
+      if (!queue.length && !flying) {
+        const out = [], emit = rel => { for (const [nm, isDir] of ents.get(rel)) { const r = rel ? rel + '/' + nm : nm; if (isDir) emit(r); else out.push(r); } };
+        emit(''); return resolve(out);
+      }
+      while (queue.length && flying < 32) {
+        const rel = queue.pop(); flying++;
+        fs.readdir(rel ? path.join(dir, rel) : dir, { withFileTypes: true }, (err, es) => {
+          flying--;
+          if (failed) return;
+          if (err) { failed = true; return reject(err); }
+          ents.set(rel, es.map(e => [e.name, e.isDirectory()]));
+          for (const e of es) if (e.isDirectory()) queue.push(rel ? rel + '/' + e.name : e.name);
+          pump();
+        });
+      }
+    };
+    pump();
+  });
+}
+// the run's scan as a temp file for the children (--listing), removed when wouldload exits; null when it cannot be written.
+// --keep-out D: D/listing.json (temp + rename, so a reader never sees half a file), left for doctor --reuse-dir D; T null = "null"
+function saveListing(T, o) {
+  if (o.keepOut) {
+    const f = path.join(o.keepOut, 'listing.json');
+    try { fs.mkdirSync(o.keepOut, { recursive: true }); fs.writeFileSync(f + '.tmp', T ? JSON.stringify(T) : 'null'); fs.renameSync(f + '.tmp', f); return T ? f : null; }
+    catch (e) { try { fs.rmSync(f + '.tmp', { force: true }); } catch (e2) { /* none */ } if (!T) return null; }
+  }
+  if (!T) return null;
+  const f = path.join(require('os').tmpdir(), `wouldload-listing-${process.pid}-${crypto.randomBytes(4).toString('hex')}.json`);
+  try { fs.writeFileSync(f, JSON.stringify(T)); } catch (e) { try { fs.rmSync(f, { force: true }); } catch (e2) { /* none */ } return null; }
+  process.on('exit', () => { try { fs.rmSync(f, { force: true }); } catch (e) { /* gone */ } });
+  return f;
 }
 
 async function analyse(modDir, o) {
   const t0 = Date.now();
   const inst = C.installs({ as2: o.game, goh: o.goh });
-  const files = C.walk(modDir), survey = pakSurvey(modDir, files), surveyGoh = pakSurvey(modDir, files, true), mi = readModInfo(modDir);
+  // the folder walked (every file, as C.walk) and scanned (lib/modtree: names, sizes, times) at once, through the thread pool; the
+  // scan mounts the mod in mountPlan and goes to sdllint and refcheck as --listing (one listing of the mod for the whole run)
+  const [files, T] = await Promise.all([walkAsync(modDir), require('../lib/modtree').scan(modDir).catch(() => null)]);
+  if (o.keepOut || (T && !o.inject)) { const lf = saveListing(T, o); if (T && !o.inject) o.listingFile = lf; }
+  RC = RCH.offWhy(o) ? null : RCH.open({ dir: o.reachCacheDir || path.join(require('../lib/toolcache').dir('wouldload'), 'reach'), modDir, T });
+  const survey = pakSurvey(modDir, files), surveyGoh = pakSurvey(modDir, files, true), mi = readModInfo(modDir);
   const surveyOf = key => key === 'goh' ? surveyGoh : survey;
   let fatalInfo = '';
   if (mi && !o.inject) {
@@ -296,18 +432,24 @@ async function analyse(modDir, o) {
   const jobs = [];
   for (const key of C.TARGETS) {
     if (!o.exes.includes(key) || !wanted(key)) continue;
-    const plan = mountPlan(modDir, roots[key], mi, surveyOf(key), key);
+    const plan = mountPlan(modDir, roots[key], mi, surveyOf(key), key, T);
     passes[key] = { plan };
     jobs.push(runPass(key, modDir, roots[key], plan, o).then(r => { passes[key].lint = r.lint; passes[key].ref = r.ref; passes[key].warm = r.warm; }));
   }
   // --reach-all needs only the pass's view, not its lint: scanned here while sdllint and refcheck run in their own processes (before: after
-  // them, 5-10 s per pass on top). Own memo, so the crash rows' reach (annotate) reads as before.
+  // them, 5-10 s per pass on top). Async (reach.js reachAllAsync, files read ahead): the loop keeps reading the children's pipes (a sync
+  // scan of a big mod held them ~3 min: the children stood still on a full stderr pipe and refcheck started only after it). Its memo
+  // (p.allMemo) serves the crash rows' reach (annotate) when reach.sameScan says the answers are the same.
   if (o.reachAll) for (const key of Object.keys(passes)) {
     const p = passes[key];
     if (!p.plan.mounted || !p.plan.v) continue;
-    try { p.reachAll = reachAll(p.plan.v, p.plan.list[p.plan.list.length - 1], {}); } catch (err) { p.reachAll = { none: 'reach scan failed: ' + err.message }; }
+    const memo = {}, t1 = Date.now();
+    prog('start wouldload:reach:' + key);
+    const h0 = RC ? RC.stats.hits : 0;
+    try { p.reachAll = await cached(memo, m => reachAllAsync(p.plan.v, p.plan.list[p.plan.list.length - 1], m)); p.allMemo = memo; } catch (err) { p.reachAll = { none: 'reach scan failed: ' + err.message }; }
     vfs.closeRecs();
-    await new Promise(r => setImmediate(r));   // read the children's pipes between the passes
+    const rc = RC && memo.cache ? ` (${RC.stats.hits - h0} of them taken from the reach cache, not read again)` : '';
+    prog(`done wouldload:reach:${key} ${Math.round((Date.now() - t1) / 1000)}s${p.reachAll.files !== undefined ? ` ${p.reachAll.files} files read${rc}` : ''}`);
   }
   await Promise.all(jobs);
   for (const t of o.exes) {
@@ -332,12 +474,12 @@ async function analyse(modDir, o) {
       const lint = p.lint.ok ? C.parseFindings(p.lint.out).filter(f => !f.info) : [], ref = p.ref.ok ? C.parseFindings(p.ref.out).filter(f => !f.info) : [];
       const c = classify(lint.filter(f => f.code !== 'WARN_SDLLINT_PAKS_UNREAD'), ref, p.plan);
       x.crash = c.crash; x.unnamed = c.unnamed; x.silent = c.silent; x.foreign = c.foreign;
-      annotate(c.crash, p);
+      await annotate(c.crash, p);
       // --reach-all (tools/check reach gate): reach of every mod def + unreferenced entity meshes, one scan per pass
       if (o.reachAll) {
         if (!p.reachAll) {
           if (!p.plan.mounted || !p.plan.v) p.reachAll = { none: 'mod not mounted by the tools: no reach judged' };
-          else { try { p.memo = p.memo || {}; p.reachAll = reachAll(p.plan.v, p.plan.list[p.plan.list.length - 1], p.memo); } catch (err) { p.reachAll = { none: 'reach scan failed: ' + err.message }; } vfs.closeRecs(); }
+          else { try { p.memo = p.memo || {}; p.reachAll = await cached(p.memo, m => reachAllAsync(p.plan.v, p.plan.list[p.plan.list.length - 1], m)); } catch (err) { p.reachAll = { none: 'reach scan failed: ' + err.message }; } vfs.closeRecs(); }
         }
         x.reachAll = p.reachAll;
       }
@@ -348,6 +490,8 @@ async function analyse(modDir, o) {
     Object.assign(x, verdict(x));
     if (t === 'goh' && x.tested) x.text += ' [I: GoH dialect noise in the findings]';
   }
+  if (RC && RC.stats.hits + RC.stats.misses) RC.save();
+  RC = null;
   const timing = {};
   for (const k of Object.keys(passes)) { timing[k] = { vfs: passes[k].plan.ms, sdllint: passes[k].lint.ms, refcheck: passes[k].ref.ms }; if (passes[k].warm) timing[k].warm = passes[k].warm.ms; }
   return { mod: C.fwd(modDir), modInfo: mi && { min: mi.min, max: mi.max, requires: mi.requires, modern: isModern(mi) }, exes, timing, ms: Date.now() - t0 };
@@ -407,18 +551,21 @@ function printAll(R, o) {
   L(`${total} findings`);
 }
 
-function usage(rc = 2) { (rc ? console.error : console.log)('usage: node wouldload.js <modDir> [--exe as64,mowas2|mowas_2,goh] [--game AS2dir] [--goh GoHdir] [--json f] [--reach-all] [--time] [--no-warm] [--timeout sec, 0 = none; default 600 per pass] [-q]\n  exit 0 = all LOADS_STATIC, 1 = any LIKELY_CRASH or REFUSED, 2 = usage, tool failed, or UNKNOWN'); process.exit(rc); }
+function usage(rc = 2) { (rc ? console.error : console.log)('usage: node wouldload.js <modDir> [--exe as64,mowas2|mowas_2,goh] [--game AS2dir] [--goh GoHdir] [--json f] [--reach-all] [--time] [--no-warm] [--restore-points] [--keep-out dir] [--no-reach-cache] [--timeout sec, 0 = none; default 600 per pass] [-q]\n  exit 0 = all LOADS_STATIC, 1 = any LIKELY_CRASH or REFUSED, 2 = usage, tool failed, or UNKNOWN'); process.exit(rc); }
 
 function parseArgs(argv) {
   const o = { exes: C.TARGETS.slice(), q: false, timeout: 600000, cacheDir: require('../lib/toolcache').dir('wouldload') }, pos = [];
-  const VALS = { '--game': 'game', '--goh': 'goh', '--json': 'json', '--exe-as64': 'exe-as64', '--exe-mowas2': 'exe-mowas2', '--exe-goh': 'exe-goh', '--ver-goh': 'verGoh', '--cache-dir': 'cacheDir', '--inject': 'injectFile' };
+  const VALS = { '--game': 'game', '--goh': 'goh', '--json': 'json', '--exe-as64': 'exe-as64', '--exe-mowas2': 'exe-mowas2', '--exe-goh': 'exe-goh', '--ver-goh': 'verGoh', '--cache-dir': 'cacheDir', '--inject': 'injectFile', '--keep-out': 'keepOut', '--reach-cache-dir': 'reachCacheDir' };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--help' || a === '-h') usage(0);
     if (a === '-q') o.q = true;
     else if (a === '--reach-all') o.reachAll = true;
     else if (a === '--time') o.time = true;
+    else if (a === '--progress') PROGRESS = true;
     else if (a === '--no-warm') o.noWarm = true;
+    else if (a === '--no-reach-cache') o.noReachCache = true;
+    else if (a === '--restore-points') o.restorePoints = true;
     else if (a === '--timeout') { const v = argv[++i]; if (!/^\d+(\.\d+)?$/.test(v || '')) usage(); const ms = +v * 1000; o.timeout = ms <= 2147483647 ? ms : 0; }   // seconds per pass; 0, or more than a timer can hold = no limit (check passes 0)
     else if (a === '--exe') { if (argv[i + 1] === undefined) usage(); o.exes = [...new Set(argv[++i].split(',').map(s => s.trim().toLowerCase()).filter(Boolean).map(s => games.idOf(s) || s))]; }
     else if (VALS[a]) { if (argv[i + 1] === undefined) usage(); o[VALS[a]] = argv[++i]; }
@@ -445,4 +592,4 @@ if (require.main === module) {
     process.exitCode = vs.some(v => v === 'LIKELY_CRASH' || v === 'REFUSED') ? 1 : vs.some(v => v !== 'LOADS_STATIC') ? 2 : 0;
   }).catch(e => { console.log('VERDICT all: UNKNOWN: wouldload failed: ' + e.stack); process.exitCode = 2; });
 }
-module.exports = { CLS, reachability, gate, verdict, classify, pakSurvey, readModInfo, isModern, isDevelop };
+module.exports = { CLS, reachability, gate, verdict, classify, pakSurvey, readModInfo, isModern, isDevelop, childArgs, walkAsync };

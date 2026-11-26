@@ -18,7 +18,8 @@ const ok = (c, m) => { if (!c) { bad++; console.log('FAIL ' + m); } };
 const put = (p, s) => { fs.mkdirSync(path.dirname(p), { recursive: true }); fs.writeFileSync(p, s); };
 const failsWith = async (p, key, m) => { let e = null; try { await p(); } catch (x) { e = x; } ok(e && e.status === 400 && e.message === key, m + ' (' + (e && e.message) + ')'); };
 const U = q => ({ searchParams: new URLSearchParams(q) });
-const wait = async f => { let l = await f(); for (let i = 0; i < 100 && l.state === 'running'; i++) { await new Promise(r => setTimeout(r, 50)); l = await f(); } return l; };
+// by time, not by count. Backup, never a hang: after 5 min (a tool may run) WAIT on stderr and the last answer (the check reports)
+const wait = async f => { const l = await f(); if (l.state !== 'running') return l; return (await require('../../../lib/test/wait').until(async () => { const x = await f(); return x.state !== 'running' ? x : null; }, { who: 'maps test-games', what: 'the map list', step: 30, ms: 300000 })) || f(); };
 
 // ---- made-up AS2 install (as64.exe beside resource/) and GoH install
 const as2 = path.join(work, 'as2'); put(path.join(as2, 'as64.exe'), '');

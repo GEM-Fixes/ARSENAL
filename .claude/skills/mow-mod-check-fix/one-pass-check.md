@@ -4,10 +4,13 @@ when: "check my mod", "why does it crash", before a first run, after any edit, b
 G = AS2 install, H = GoH install, `<mod>` = mod folder (anywhere on disk). Reads only; the game is not run.
 
 ## Steps
-1. MCP `mow_mod_check` (`mod` = full path, `game`). default = quick check (under a minute on a small mod); `full: true` = every linter (minutes on a big mod); `only` = linter names (`sdllint,refcheck,lnglint` ..); `with` = a patch mod checked on top; `limit` = rows
+1. MCP `mow_mod_check` (`mod` = full path, `game`). default = quick check (under a minute on a small mod); `full: true` = every linter (minutes on a big mod); `only` = linter names (`sdllint,refcheck,lnglint` ..); `with` = a patch mod checked on top; `allGames: true` = every game build; `restorePoints: true` = also `<mod>/.arsenal-undo`; `limit` = rows
    answer: verdict per game + the worst finding kinds with one example each
-2. CLI `node tools/check/check.js <mod, anywhere> [--with <patch>] [--only tool,tool] [--fast] [-j n] [--locs N] [--timing] [--pass-limit sec] [--exe as64,mowas2,goh] [--target T] [--game G] [--goh H] [--json f] [--plain [--raw]]`
+2. CLI `node tools/check/check.js <mod, anywhere> [--with <patch>] [--only tool,tool] [--fast] [--no-load-check] [--all-games] [--restore-points] [-j n] [--locs N] [--timing] [--pass-limit sec] [--exe as64,mowas2,goh] [--target T] [--game G] [--goh H] [--json f] [--plain [--raw]]`
    - `--fast`: verdict + cheap linters, one SKIPPED line per tool left out; the preflight warnings are not run
+   - no time limit. Tool output names the pass, the file it is on, its size and the seconds on it (`PROGRESS still running wouldload:...`, every 30 s). Pass never ends on a mod: `--no-load-check` (MCP `noLoad: true`, GUI box "skip the load check") leaves the load verdict out, linters still run
+   - only the target game is checked (plain line "Only ... was checked"); `--all-games` (MCP `allGames`, GUI box "check every game build") brings the other builds back as info
+   - restore points inside the mod (`<mod>/.arsenal-undo`) are left out (NOTE RESTORE_POINTS); `--restore-points` (MCP `restorePoints`, GUI "also check restore points") reads them
    - no time limit by default: a big mod runs as long as it needs. `--pass-limit sec` stops one verdict pass; a stopped tool is named as a timeout
    - `--plain`: plain words, no codes (line 1 = overall result for the target build, then one line per finding kind); `--raw` adds the full report
    - `--json f` always holds `overall {target, verdict: ok|crash|refused|unfinished, crash, silent, text}`
@@ -18,7 +21,7 @@ G = AS2 install, H = GoH install, `<mod>` = mod folder (anywhere on disk). Reads
 6. fix plan next: MCP `mow_mod_fix` (preview) · `node tools/fix/fix.js <mod> plan`
 
 ## Which game is the target
-check picks, in this order: `--target`; the one `--exe`; goh (mod in `<H>/mods`, or every mod.info bound "any" or below 2); mowas2 (MaxGameVersion < 3.3); else as64. The other builds print as info. The linters run for the target game.
+check picks, in this order: `--target`; the one `--exe`; goh (mod in `<H>/mods`, or every mod.info bound "any" or below 2); mowas2 (MaxGameVersion < 3.3); else as64. Only that build is read; with `--all-games` the others print as info. The linters run for the target game.
 
 ## What runs
 - verdict: wouldload (sdllint + refcheck per exe)

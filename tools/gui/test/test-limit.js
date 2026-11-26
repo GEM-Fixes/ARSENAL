@@ -8,7 +8,9 @@ fs.mkdirSync(S, { recursive: true });
 let pass = 0, failN = 0;
 const ok = (c, m, extra) => { if (c) pass++; else { failN++; console.log('FAIL ' + m + (extra !== undefined ? '\n  ' + String(extra).slice(0, 700) : '')); } };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-async function waitFor(cond, what, ms = 10000) { const t0 = Date.now(); for (;;) { let v; try { v = cond(); } catch (e) { v = false; } if (v) return v; if (Date.now() - t0 > ms) { ok(false, 'timed out waiting for ' + what); return null; } await sleep(25); } }
+const W = require('../../lib/test/wait');
+// backstop at least 60 s (WAIT line), then the caller's check reports what is missing. Backup, never a hang
+async function waitFor(cond, what, ms = 10000) { return (await W.until(cond, { who: 'test-limit', what, ms, step: 25 })) || null; }
 function get(port, url) {
   return new Promise((resolve, reject) => {
     const r = http.request({ host: '127.0.0.1', port, method: 'GET', path: url, agent: false, headers: { host: '127.0.0.1:' + port } }, res => {

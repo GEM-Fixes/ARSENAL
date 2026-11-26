@@ -4,7 +4,7 @@
 // arg: [exe] = run the SEA build (as2.exe) instead of node as2.js (tools/dist/test/run.sh)
 // PENDING: tools other sessions own; a miss there prints PENDING, not FAIL (drop the name here once its session lands the fix).
 // Author: Imperator_Aug (ARSENAL, ia-b750c9ce)
-const fs = require('fs'), path = require('path'), os = require('os'), { spawnSync } = require('child_process');
+const fs = require('fs'), path = require('path'), os = require('os'), Wt = require('../../lib/test/wait');
 const T = path.join(__dirname, '..', '..'), AS2 = path.join(T, 'as2', 'as2.js');
 const { entry } = require(AS2), { FRONT, MAIN } = require('../menu'), { CMDS } = require('../flow');
 const PENDING = new Set(['edrun', 'goh2as2', 'mission-clone']);
@@ -19,7 +19,7 @@ const EXE = process.argv[2] ? path.resolve(process.argv[2]) : null;
 const cwd = fs.mkdtempSync(path.join(os.tmpdir(), 'helpdoor-'));
 let fail = 0, pend = 0;
 for (const n of doors) {
-  const r = spawnSync(EXE || process.execPath, [...(EXE ? [] : [AS2]), n, '--help'], { cwd, encoding: 'utf8', timeout: 30000, env: { ...process.env, AS2_NO_STEAM: '1' } });
+  const r = Wt.spawnSync(EXE || process.execPath, [...(EXE ? [] : [AS2]), n, '--help'], { cwd, encoding: 'utf8', env: { ...process.env, AS2_NO_STEAM: '1' } }, 'as2 helpdoor ' + n);
   const ok = r.status === 0 && new RegExp('^usage: (?:ARSENAL|as2) ' + n + '(\\s|$)', 'm').test(r.stdout || '');
   const why = ok ? '' : ` rc=${r.status} ${((r.stdout || '') + (r.stderr || '')).split(/\r?\n/)[0].slice(0, 100)}`;
   if (ok) console.log('ok      ' + n);

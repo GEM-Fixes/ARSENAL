@@ -71,7 +71,8 @@ const PAGE_HEAD = n => 'HTTP/1.1 200 OK\ncontent-type: text/html; charset=utf-8\
   ok(t1.files.length === 3 && t1.next === 3 && t1.off === 0, 'tree, first page: 3 rows', JSON.stringify([t1.files.length, t1.next]));
   const pg = '&lim=3&off=3&ver=' + encodeURIComponent(t1.ver);
   const a = await raw(port, q + pg); same(a, 'tree, second page of the kept list');
-  await new Promise(r => setTimeout(r, 300));   // the walk is over by now: the next two asks meet a finished list (kept row text)
+  // the walk is over (a page answer has its total): the next two asks meet a finished list (kept row text)
+  await require('../../lib/test/wait').until(async () => JSON.parse((await raw(port, q + pg)).body.toString('utf8')).total != null, { who: 'test-wire', what: 'the tree walk is over', step: 30 });
   const b = await raw(port, q + pg), c = await raw(port, q + pg, GZ);
   const jb = same(b, 'tree, the same page of the finished list'); same(c, 'tree, the same page again (kept row text)');
   ok(b.body.equals(c.body) && JSON.stringify(jb.files) === JSON.stringify(t0.files.slice(3, 6)) && jb.ver === t1.ver, 'tree: a page asked again has the same rows as the whole list', JSON.stringify(jb.files).slice(0, 200));

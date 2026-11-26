@@ -3,6 +3,8 @@
 # + outside <game>/mods (overlay) gives the same findings as in place; --with <patch> merges source + patch
 # Author: Imperator_Aug (ARSENAL, ia-d537fab2)
 cd "$(dirname "$0")"
+# the tests below check a real run each time: whole-check reuse (X1) off here; reuse-test.js (last) turns it on and tests it
+export ARSENAL_CHECK_REUSE=0
 node ../../fix/test/mkfixture.js "$PWD/fx" >/dev/null || { echo "FAIL: mkfixture"; exit 1; }
 G=fx/game
 node ../check.js $G/mods/m1 --game $G --exe mowas2 > out1.txt 2>&1
@@ -27,6 +29,36 @@ for(const f of R.findings)for(const s of f.samples||[]){if(typeof s!=='object'||
  if(s.path&&!fs.existsSync(s.path)){const b=L.read(s.path);if(!b||!b.length)throw 'pak entry unreadable '+s.path;pk++}}
 if(!n)throw 'no samples';if(!pk)throw 'no sample inside a pak';if(!ln)throw 'no line numbers';if(R.locs!==50)throw 'locs';" || fail "samples / pak paths in json"
 grep -q '^PROGRESS done ' out2.txt || fail "no PROGRESS lines"
+grep -q '^PROGRESS start wouldload:sdllint:' out2.txt && grep -q '^PROGRESS done wouldload:refcheck:' out2.txt || fail "no PROGRESS lines of wouldload's passes"
+grep -q '^PROGRESS done wouldload:sdllint:mowas2 [0-9]*s [0-9]* files parsed' out2.txt || fail "the pass does not say how many files it parsed"
+# a pass that hangs: no limit by default, so --pass-limit ends it here; while it hangs the still-running line says so
+WOULDLOAD_TEST_HANG=sdllint node ../check.js $G/mods/m1 --game $G --exe mowas2 --pass-limit 3 > out8.txt 2>&1
+grep -q 'ERROR sdllint ended without a findings line (killed after 3s timeout)' out8.txt || fail "the PROGRESS line does not name the stopped pass"
+# --no-load-check: wouldload does not run, the check says so and still ends with its findings
+node ../check.js $G/mods/m1 --game $G --exe mowas2 --no-load-check --json out9.json > out9.txt 2>&1
+grep -q '^wouldload: SKIPPED (--no-load-check)' out9.txt && grep -q 'LOAD_CHECK_SKIPPED' out9.txt || fail "--no-load-check does not say the load check was skipped"
+grep -q 'wouldload' out9.txt && ! grep -q 'PROGRESS start wouldload' out9.txt || fail "--no-load-check still ran wouldload"
+grep -q '^PROGRESS done ' out9.txt && tail -1 out9.txt | grep -q '^[0-9]* findings$' || fail "--no-load-check: no linters or no findings line"
+grep -q '"loadSkipped": true' out9.json || fail "--no-load-check: json lacks loadSkipped"
+grep -q 'did not finish' out9.txt && fail "--no-load-check: the report says the check did not finish"
+grep -q 'The load check was skipped' out9.txt || fail "--no-load-check: the words do not say it was skipped"
+# wave 2a: the full check takes sdllint + refcheck from wouldload's run (wouldload --keep-out, doctor --reuse-dir), the same findings as
+# doctor's own run (--no-load-check: doctor runs them); a pass that did not finish: doctor runs that one itself (REUSE_MISS)
+rm -rf ta; CHECK_TEST_ARGS="$PWD/ta" node ../check.js $G/mods/m5 --game $G --exe mowas2 --json outr1.json > outr1.txt 2>&1
+grep -q '"--reuse-dir"' ta/doctor.args && grep -q '"--keep-out"' ta/wouldload.args || fail "full check: doctor not given --reuse-dir / wouldload not given --keep-out"
+grep -q "^NOTE REUSED sdllint, refcheck: findings from the load check's run" outr1.txt || { cat outr1.txt; fail "full check: sdllint/refcheck not taken from the load check"; }
+rm -rf ta; CHECK_TEST_ARGS="$PWD/ta" node ../check.js $G/mods/m5 --game $G --exe mowas2 --no-load-check --json outr2.json > outr2.txt 2>&1
+grep -q 'reuse-dir' ta/doctor.args && fail "--no-load-check: doctor given --reuse-dir"
+grep -q 'REUSE' outr2.txt && fail "--no-load-check: a REUSE note"
+WOULDLOAD_TEST_HANG=sdllint node ../check.js $G/mods/m5 --game $G --exe mowas2 --pass-limit 3 --json outr3.json > outr3.txt 2>&1
+grep -q "^NOTE REUSE_MISS sdllint: the load check's run did not finish" outr3.txt && grep -q '^NOTE REUSED refcheck:' outr3.txt || { cat outr3.txt; fail "stopped sdllint pass: doctor did not run sdllint itself"; }
+WOULDLOAD_TEST_HANG=refcheck node ../check.js $G/mods/m5 --game $G --exe mowas2 --pass-limit 3 --json outr4.json > outr4.txt 2>&1
+grep -q "^NOTE REUSE_MISS refcheck: the load check's run did not finish" outr4.txt && grep -q '^NOTE REUSED sdllint:' outr4.txt || { cat outr4.txt; fail "stopped refcheck pass: doctor did not run refcheck itself"; }
+node -e "
+const s=f=>JSON.stringify(require('./'+f).findings.filter(x=>/^(sdllint|refcheck)$/.test(x.tool)));const a=s('outr1.json');
+if(!a.includes('sdllint')||!a.includes('refcheck'))throw 'fixture m5 lost its sdllint/refcheck findings';
+if(a!==s('outr3.json'))throw 'sdllint: reused differs from doctor own run';if(a!==s('outr4.json'))throw 'refcheck: reused differs from doctor own run'" || fail "sdllint/refcheck findings: reused vs doctor's own run (same reach gate)"
+rm -rf ta outr1.json outr2.json outr3.json outr4.json outr1.txt outr2.txt outr3.txt outr4.txt
 node ../check.js $G/mods/m2 --game $G --exe mowas2 --locs 1 --json out2b.json > /dev/null 2>&1
 node -e "const R=require('./out2b.json');if(!R.findings.some(f=>f.n>1&&f.tool!=='preflight'))process.exit(0);if(R.findings.some(f=>f.tool!=='preflight'&&(f.samples||[]).length>1))process.exit(1)" || fail "--locs 1 cap"
 grep -qE '^  [A-Z_]+ x[0-9]+  \[[a-z]+\] e\.g\. [^ ]+:[0-9]+' out1.txt || fail "CLI e.g. has no file:line"
@@ -150,6 +182,25 @@ node ../check.js $G/mods/m1 --game $G --exe mowas2 --only modinfo,lnglint,ialint
 cmp -s det1.txt det2.txt && [ -s det1.txt ] || fail "check: two runs differ in stdout"
 ! grep -q '^PROGRESS ' det1.txt || fail "check: PROGRESS on stdout"
 rm -f det1.txt det2.txt
+# 1C: no --exe = wouldload gets --exe <target> (m1: Max 3.262 = mowas2); --all-games = no --exe (every build); --restore-points reaches
+# wouldload and doctor (argument lists via CHECK_TEST_ARGS; the children's own handling is theirs). plain says the others were not checked
+rm -rf ta0 ta1 ta2
+CHECK_TEST_ARGS=ta0 node ../check.js $G/mods/m1 --game $G --only modinfo --plain > outg0.txt 2>&1
+node -e "const a=JSON.parse(require('fs').readFileSync('ta0/wouldload.args','utf8')),i=a.indexOf('--exe');if(i<0||a[i+1]!=='mowas2')process.exit(1);if(a.includes('--restore-points')||JSON.parse(require('fs').readFileSync('ta0/doctor.args','utf8')).includes('--restore-points'))process.exit(1)" || fail "default: wouldload did not get --exe mowas2 (or got --restore-points)"
+grep -q '^Only the original 32-bit game was checked; the other game builds were not\.' outg0.txt || { cat outg0.txt; fail "default: plain does not say the other builds were not checked"; }
+CHECK_TEST_ARGS=ta1 node ../check.js $G/mods/m1 --game $G --only modinfo --all-games --restore-points > outg1.txt 2>&1
+node -e "const a=JSON.parse(require('fs').readFileSync('ta1/wouldload.args','utf8'));if(a.includes('--exe')||!a.includes('--restore-points')||!JSON.parse(require('fs').readFileSync('ta1/doctor.args','utf8')).includes('--restore-points'))process.exit(1)" || fail "--all-games / --restore-points: wrong child arguments"
+grep -q 'GAMES target only' outg1.txt && fail "--all-games: still says target only"
+CHECK_TEST_ARGS=ta2 node ../check.js $G/mods/m1 --game $G --exe as64,mowas2 --only modinfo > /dev/null 2>&1
+node -e "const a=JSON.parse(require('fs').readFileSync('ta2/wouldload.args','utf8')),i=a.indexOf('--exe');if(a[i+1]!=='as64,mowas2')process.exit(1)" || fail "--exe given: the user's list must win"
+# restore points inside the mod: left out by default with a NOTE + plain line; not with --restore-points
+mkdir -p $G/mods/m1/.arsenal-undo/t1
+node ../check.js $G/mods/m1 --game $G --exe mowas2 --only modinfo --plain --raw > outg3.txt 2>&1
+node ../check.js $G/mods/m1 --game $G --exe mowas2 --only modinfo --restore-points > outg4.txt 2>&1
+rm -rf $G/mods/m1/.arsenal-undo
+grep -q '^NOTE RESTORE_POINTS left out' outg3.txt && grep -q '^Restore points kept inside the mod were not checked\.' outg3.txt || { cat outg3.txt; fail "restore points: no left-out note"; }
+grep -q 'RESTORE_POINTS' outg4.txt && fail "--restore-points: still says left out"
+rm -rf ta0 ta1 ta2 outg0.txt outg1.txt outg3.txt outg4.txt
 node toolfix.js || fail "toolfix"
 # T-CRASH: one of each known crash / silent-disable cause seeded (mkcrash.js), exactly those codes; verdict in words; plain errors
 node crash-test.js || fail "crash-test"
@@ -159,4 +210,6 @@ node false-test.js || fail "false-test"
 node verdict-test.js || fail "verdict-test"
 # game parity: the target game reaches doctor (mowas2 = --exe mowas_2, goh = GoH install in place or overlaid), default target goh
 node games-test.js || fail "games-test"
+# X1 whole-check reuse: replay of an unchanged mod; a changed mod file / pak / game / required mod / argument / env runs again
+ARSENAL_CHECK_REUSE= node reuse-test.js || fail "reuse-test"
 echo PASS

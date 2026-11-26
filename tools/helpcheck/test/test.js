@@ -35,17 +35,19 @@ function snap(dir) { // tool folder files -> mtime+size, test/ out/ work/ cache/
   return m;
 }
 
-function run1(rel, flag) {
+// watchdog 5 min (a busy PC starts node slowly); killed by it: WAIT line, one more run with twice the limit, then the verdict
+function run1(rel, flag, lim = 300000, again = true) {
   return new Promise(res => {
     const cwd = fs.mkdtempSync(path.join(os.tmpdir(), 'helpcheck-'));
     const toolDir = path.join(TOOLS, rel.split('/')[0]), before = snap(toolDir);
     const env = Object.assign({}, process.env, { AS2_HELPCHECK: '1' });
     const p = spawn(process.execPath, [path.join(TOOLS, rel), flag], { cwd, env, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
-    let out = '', err = '', done = false;
+    let out = '', err = '', done = false, killed = false;
     p.stdout.on('data', b => { out += b; }); p.stderr.on('data', b => { err += b; });
-    const t = setTimeout(() => { if (!done) { p.kill(); } }, 30000);
+    const t = setTimeout(() => { if (!done) { killed = true; p.kill(); } }, lim);
     p.on('close', (code, sig) => {
       done = true; clearTimeout(t);
+      if (killed && again) { try { fs.rmSync(cwd, { recursive: true, force: true }); } catch (e) { } require('../../lib/test/wait').say('helpcheck', rel + ' ' + flag + ' (runs once more)', lim); return res(run1(rel, flag, 2 * lim, false)); }
       const why = [];
       if (sig) why.push('timeout/killed');
       else if (code !== 0) why.push('exit ' + code);

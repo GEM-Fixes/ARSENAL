@@ -5,6 +5,7 @@
 'use strict';
 const fs = require('fs'), path = require('path'), http = require('http'), { spawn } = require('child_process');
 const { T, scratch, rm, cleanEnv, ROOT } = require('./rpc');
+const Wt = require('../../lib/test/wait');
 const GUI_MCP = path.resolve(__dirname, '..', 'gui.js');
 const t = T('gui');
 
@@ -15,13 +16,15 @@ function pipe(env) {
   c.stdout.setEncoding('utf8'); c.stderr.setEncoding('utf8');
   c.stderr.on('data', d => { err += d; });
   c.stdout.on('data', d => { buf += d; let i; while ((i = buf.indexOf('\n')) >= 0) { const l = buf.slice(0, i); buf = buf.slice(i + 1); if (!l.trim()) continue; let j; try { j = JSON.parse(l); } catch (e) { raw++; continue; } const f = wait.get(j.id); if (f) { wait.delete(j.id); f(j); } } });
-  const ask = (method, params) => new Promise((resolve, reject) => {
-    const id = ++n, timer = setTimeout(() => reject(new Error('no answer to ' + method + ' in 60 s\n' + err)), 60000);
-    wait.set(id, j => { clearTimeout(timer); resolve(j); });
+  // Backup, never a hang: no answer in 60 s says WAIT and waits as long again before it throws
+  const NONE = {};
+  const ask = (method, params) => Wt.late(new Promise(resolve => {
+    const id = ++n;
+    wait.set(id, resolve);
     c.stdin.write(JSON.stringify({ jsonrpc: '2.0', id, method, params }) + '\n');
-  });
+  }), { who: 'mcp gui', what: 'answer to ' + method, ms: 60000, or: NONE }).then(j => { if (j === NONE) throw new Error('no answer to ' + method + ' in 120 s\n' + err); return j; });
   const call = async (name, args) => { const r = await ask('tools/call', { name, arguments: args || {} }); return r.error ? { text: '', isError: true, error: r.error } : { text: r.result.content.map(x => x.text).join('\n'), isError: !!r.result.isError, data: r.result.structuredContent }; };
-  const end = () => new Promise(resolve => { c.on('close', code => resolve({ code, err, raw })); c.stdin.end(); });
+  const end = () => Wt.late(new Promise(resolve => { c.on('close', code => resolve({ code, err, raw })); c.stdin.end(); }), { who: 'mcp gui', what: 'server end after stdin closed', ms: 60000, or: { code: 'no end', err, raw } }).then(e => { if (e.code === 'no end') c.kill(); return e; });
   return { ask, call, end, send: l => c.stdin.write(l + '\n') };
 }
 function post(port, p, body) {

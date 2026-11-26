@@ -13,10 +13,11 @@ function run(dir, args = [], warm = false) {
     const j = path.join(os.tmpdir(), `wl-test-${process.pid}-${Math.random().toString(36).slice(2)}.json`);
     const a = [WL, dir, '--game', G, '--goh', H, '--cache-dir', CACHE, '--json', j, ...(warm ? [] : ['--no-warm']), ...args];
     const env = { ...process.env }; delete env.AS2_GAME; delete env.GOH_GAME;
-    cp.execFile(process.execPath, a, { env, encoding: 'utf8', maxBuffer: 1 << 26, windowsHide: true }, (err, out) => {
+    // backstop 15 min (the tool's own pass limit is 10 min), killed: WAIT and once more with twice the limit; never a hang
+    require('../../lib/test/wait').execFile(process.execPath, a, { env, encoding: 'utf8', maxBuffer: 1 << 26, windowsHide: true, timeout: 900000 }, (err, out) => {
       let R = null; try { R = JSON.parse(fs.readFileSync(j, 'utf8')); fs.unlinkSync(j); } catch { /* no json */ }
       resolve({ out, code: err ? err.code : 0, R });
-    });
+    }, 'wouldload check');
   });
 }
 // refcheck takes --exe once its own builder adds it (usage line names it); until then the refcheck half of the mowas2 pass is not testable here
@@ -161,7 +162,7 @@ const CASES = [
   ok(rc('bad pak unknown') === 2, 'unread pak exits 2, got ' + rc('bad pak unknown'));
   ok(rc('Require not installed unknown') === 2, 'missing Require exits 2, got ' + rc('Require not installed unknown'));
   ok(rc('clean legacy loads static on both') === 0, 'clean exits 0');
-  const h = cp.spawnSync(process.execPath, [WL, '--help'], { encoding: 'utf8' }); ok(h.status === 0 && /usage/i.test(h.stdout), '--help exits 0, got ' + h.status);
+  const h = require('../../lib/test/wait').spawnSync(process.execPath, [WL, '--help'], { encoding: 'utf8' }, 'wouldload check'); ok(h.status === 0 && /usage/i.test(h.stdout), '--help exits 0, got ' + h.status);
   // DET-FIX: two runs, same stdout bytes, and no clock in stdout or json
   { const a = await run(m('clean'), AS2), b = await run(m('clean'), AS2);
     ok(a.out === b.out && a.out.length > 0, 'two runs give the same stdout bytes');
@@ -182,7 +183,75 @@ const CASES = [
     fs.rmSync(WC, { recursive: true, force: true });
     const w2 = await run(m('clean'), ['--exe', 'mowas2', '--time', '--cache-dir', WC], true);
     ok(w2.R && w2.R.timing.mowas2.warm === undefined && w2.R.exes.mowas2.verdict === 'LOADS_STATIC', 'vanilla cache there: no second warm run', w2.out);
-    fs.rmSync(vanilla, { force: true }); }
+    fs.rmSync(vanilla, { force: true }); fs.rmSync(ix.cachePath(path.join(__dirname, '..', '..', 'entityindex', 'cache', 'vanilla.json'), 'as64', G), { force: true }); }
+  // check-style overlays (tools/check overlay(): the game's folders junctioned, root files copied, the mod junctioned under mods/):
+  // the stock index is keyed by the game, not the folder, so the first overlay run warms it and a second overlay of the same game
+  // finds it (no second warm run, 1A)
+  { const ix = require('../../entityindex/index'), van = path.join(__dirname, '..', '..', 'entityindex', 'cache', 'vanilla.json'), links = [];
+    const overlay = name => {
+      const ov = path.join(FX, name, 'game'), J = (t, l) => { fs.symlinkSync(t, l, 'junction'); links.push(l); };
+      fs.mkdirSync(path.join(ov, 'mods'), { recursive: true });
+      for (const e of fs.readdirSync(G, { withFileTypes: true })) { if (e.name === 'mods') continue; const p = path.join(G, e.name); if (e.isDirectory()) J(p, path.join(ov, e.name)); else fs.copyFileSync(p, path.join(ov, e.name)); }
+      J(m('clean'), path.join(ov, 'mods', 'clean'));
+      return ov;
+    };
+    const O1 = overlay('check-ov-wl1'), O2 = overlay('check-ov-wl2');
+    const vG = ix.cachePath(van, 'mowas_2', G);
+    ok(ix.cachePath(van, 'mowas_2', O1) === vG && ix.cachePath(van, 'mowas_2', O2) === vG, 'overlays of one game share its stock index file', [vG, ix.cachePath(van, 'mowas_2', O1)].join('\n'));
+    fs.rmSync(vG, { force: true });
+    const o1 = await run(path.join(O1, 'mods', 'clean'), ['--exe', 'mowas2', '--time', '--game', O1, '--cache-dir', path.join(FX, 'cache-ov1')], true);
+    ok(o1.R && typeof o1.R.timing.mowas2.warm === 'number' && fs.existsSync(vG) && o1.R.exes.mowas2.verdict === 'LOADS_STATIC', 'first overlay run warms the stock index of the game', o1.out);
+    const o2 = await run(path.join(O2, 'mods', 'clean'), ['--exe', 'mowas2', '--time', '--game', O2, '--cache-dir', path.join(FX, 'cache-ov2')], true);
+    ok(o2.R && o2.R.timing.mowas2.warm === undefined && o2.R.exes.mowas2.verdict === 'LOADS_STATIC', 'second overlay run finds it: no second warm run', o2.out);
+    for (const l of links.reverse()) { try { fs.rmdirSync(l); } catch { /* gone */ } }
+    for (const d of ['check-ov-wl1', 'check-ov-wl2', 'cache-ov1', 'cache-ov2']) fs.rmSync(path.join(FX, d), { recursive: true, force: true });
+    fs.rmSync(vG, { force: true }); fs.rmSync(ix.cachePath(van, 'as64', G), { force: true }); }
+  // --restore-points: handed on to both sdllint and refcheck of a pass; off by default
+  { const plan = { mounted: true, list: ['clean'] };
+    const a = W.childArgs('mowas2', m('clean'), G, plan, 'c.json', {}), b = W.childArgs('mowas2', m('clean'), G, plan, 'c.json', { restorePoints: true });
+    ok(!a.lintArgs.includes('--restore-points') && !a.refArgs.includes('--restore-points'), 'no --restore-points by default');
+    ok(b.lintArgs.includes('--restore-points') && b.refArgs.includes('--restore-points'), '--restore-points goes to sdllint and refcheck', JSON.stringify(b));
+    const inj = path.join(os.tmpdir(), `wl-inj-${process.pid}.json`); fs.writeFileSync(inj, '{"as2":{}}');
+    const r = await run(m('clean'), [...AS2, '--restore-points', '--inject', inj]); fs.rmSync(inj, { force: true });
+    ok(r.code === 0 && v(r, 'as64') === 'LOADS_STATIC', 'wouldload takes --restore-points', r.out); }
+  // one listing per run: the children get it as --listing (a temp file, removed at exit); --keep-out records the arguments without it
+  // (doctor compares those with its own), and the outputs are the ones of a run whose children list the mod themselves
+  { const K = path.join(FX, 'keep-l'), lst = () => fs.readdirSync(os.tmpdir()).filter(f => /^wouldload-listing-/.test(f)).length, before = lst();
+    const r1 = await run(m('crash_macro'), ['--exe', 'mowas2', '--keep-out', K]);
+    const k = JSON.parse(fs.readFileSync(path.join(K, 'mowas2.sdllint.json'), 'utf8')), kr = JSON.parse(fs.readFileSync(path.join(K, 'mowas2.refcheck.json'), 'utf8'));
+    ok(k.ok && kr.ok && !k.args.includes('--listing') && !kr.args.includes('--listing'), '--keep-out args carry no --listing', JSON.stringify([k.args, kr.args]));
+    ok(lst() <= before, 'the listing temp file is gone after the run');
+    const cp2 = require('child_process'), sd = require('../../lib/test/wait').spawnSync(process.execPath, [path.join(__dirname, '..', '..', 'sdllint', 'sdllint.js'), ...k.args], { encoding: 'utf8' }, 'wouldload check');
+    ok(sd.stdout === k.out, 'sdllint run alone (own listing) = the pass output', sd.stdout + '\n---\n' + k.out);
+    ok(v(r1, 'mowas2') === 'LIKELY_CRASH', 'verdict with --keep-out', r1.out);
+    fs.rmSync(K, { recursive: true, force: true }); }
+  // reach cache (reachcache.js, job X2): every case again with a warm cache and with it off: the same stdout and json bytes;
+  // off (--no-reach-cache, ARSENAL_REACH_CACHE=0) writes no cache file; an edit to a scratch copy of a mod is seen on the next run
+  { const RD = path.join(FX, 'reach-cache'), rcArgs = a => [...a, '--reach-cache-dir', RD];
+    const same = (a, b) => a.out === b.out && JSON.stringify(a.R) === JSON.stringify(b.R) && a.code === b.code;
+    const reachCases = CASES.filter(c => c[2].includes('--reach-all') || /orph|reach|pak|dash|selector|filestem/.test(c[1]));
+    const one = async ([name, dir, args]) => {
+      const cold = await run(dir, rcArgs([...args, '--reach-all'])), warm = await run(dir, rcArgs([...args, '--reach-all'])), off = await run(dir, rcArgs([...args, '--reach-all', '--no-reach-cache']));
+      ok(same(cold, warm) && same(cold, off), `reach cache: ${name}: cold, warm and off give the same bytes`, [cold.out, warm.out, off.out].join('\n----\n'));
+    };
+    await Promise.all(reachCases.map(one));
+    ok(fs.existsSync(RD) && fs.readdirSync(RD).some(f => /^reach-[0-9a-f]{16}\.txt$/.test(f)), 'reach cache files written');
+    const RD2 = path.join(FX, 'reach-cache-off');
+    await run(m('orph_mixed'), ['--exe', 'mowas2', '--reach-all', '--no-reach-cache', '--reach-cache-dir', RD2]);
+    const envOff = await new Promise(res => require('../../lib/test/wait').execFile(process.execPath, [WL, m('orph_mixed'), '--game', G, '--goh', H, '--cache-dir', CACHE, '--no-warm', '--exe', 'mowas2', '--reach-all', '--reach-cache-dir', RD2], { env: { ...process.env, ARSENAL_REACH_CACHE: '0' }, encoding: 'utf8', timeout: 900000 }, (e, out) => res(out), 'wouldload check'));
+    ok(/VERDICT mowas2/.test(envOff) && !fs.existsSync(RD2), 'off: no reach cache file (flag and env)');
+    // invalidation: scratch copy orph_mixed -> rc_edit; tank_o is ORPHAN, then named by an edit of s.set (same size, new mtime)
+    const E = path.join(G, 'mods', 'rc_edit'); fs.rmSync(E, { recursive: true, force: true }); fs.cpSync(m('orph_mixed'), E, { recursive: true });
+    const args = rcArgs(['--exe', 'mowas2', '--reach-all']);
+    const r1 = await run(E, args);
+    ok(r1.R && r1.R.exes.mowas2.reachAll.defs['resource/entity/o/tank_o.def'] === 'ORPHAN', 'rc_edit: tank_o ORPHAN at first', r1.out);
+    const S = path.join(E, 'resource', 'set', 's.set'); fs.writeFileSync(S, '{tank_o}\r\n'.slice(0, fs.statSync(S).size).padEnd(fs.statSync(S).size, ' ')); const t1 = new Date(Date.now() + 3000); fs.utimesSync(S, t1, t1);
+    const r2 = await run(E, args), r2off = await run(E, [...args, '--no-reach-cache']);
+    ok(r2.R && r2.R.exes.mowas2.reachAll.defs['resource/entity/o/tank_o.def'] === 'REACHABLE' && same(r2, r2off), 'rc_edit: the edit is seen with the cache, same bytes as with it off', r2.out + '\n----\n' + r2off.out);
+    fs.rmSync(path.join(E, 'resource', 'set', 's.set'));
+    const r3 = await run(E, args), r3off = await run(E, [...args, '--no-reach-cache']);
+    ok(same(r3, r3off) && r3.R.exes.mowas2.reachAll.defs['resource/entity/o/tank_o.def'] === 'ORPHAN', 'rc_edit: file removed: same bytes as off', r3.out);
+    fs.rmSync(E, { recursive: true, force: true }); fs.rmSync(RD, { recursive: true, force: true }); }
   console.log(`${n} checks, ${fails} failed`);
   process.exit(fails ? 1 : 0);
 })();

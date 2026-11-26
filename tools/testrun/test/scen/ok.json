@@ -31,7 +31,7 @@
   },
   {
    "exit": true,
-   "within": 5,
+   "within": 30,
    "row": "TST-16"
   }
  ]

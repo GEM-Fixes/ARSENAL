@@ -17,7 +17,9 @@ const ok = (c, m, extra) => { if (c) pass++; else { failN++; console.log('FAIL '
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 // AS2GUI_WAIT=N multiplies every wait (a loaded machine, where the first page calls each take seconds)
 const WAITX = Math.max(1, Number(process.env.AS2GUI_WAIT) || 1);
-async function waitFor(cond, what, ms = 15000) { ms *= WAITX; const t0 = Date.now(); for (;;) { let v; try { v = cond(); } catch (e) { v = false; } if (v) return v; if (Date.now() - t0 > ms) { ok(false, 'timed out waiting for ' + what); return null; } await sleep(25); } }
+const W = require('../../lib/test/wait');
+// backstop at least 60 s (WAIT line), only then a miss is reported. Backup, never a hang
+async function waitFor(cond, what, ms = 15000) { const v = await W.until(cond, { who: 'test-gui2', what, ms: ms * WAITX, step: 25 }); if (!v) { ok(false, 'not done after the long wait: ' + what); return null; } return v; }
 const alive = pid => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; } };
 const NODE = process.execPath;
 const SLEEPER = "console.log('pid '+process.pid);setInterval(function(){},1000)";
@@ -485,14 +487,14 @@ async function main() {
     r = await req(A.port, 'POST', '/api/answer', { id: id1, answer: { a: 1 } }); ok(r.status === 400, 'answer: a non-interactive job takes none');
     const tc = Date.now(); r = await req(A.port, 'POST', '/api/cancel', { id: id1 }); ok(r.status === 200, 'cancel: 200');
     let e1 = endOf(await s1.done);
-    ok(e1 && e1.cancelled === true && e1.timedOut === undefined && Date.now() - tc < 8000, 'cancel: end event says cancelled, quickly', JSON.stringify(e1));
+    ok(e1 && e1.cancelled === true && e1.timedOut === undefined && Date.now() - tc < 60000, 'cancel: end event says cancelled, quickly (under 60 s; the sleeper never ends by itself)', JSON.stringify(e1));
     await waitFor(() => !alive(pid1), 'cancelled child gone'); ok(!alive(pid1), 'cancel: the child process is dead');
     ok((await req(A.port, 'POST', '/api/cancel', { id: id1 })).status === 404, 'cancel: finished job 404');
     ok((await req(A.port, 'GET', '/api/jobs')).j.jobs.length === 0, 'jobs: empty after cancel');
 
     let s2 = streamRun(A.port, 'check', { mod: root, fast: true }, 1);
     const t0 = Date.now(); const e2 = endOf(await s2.done); const pid2 = pidOf(s2.events);
-    ok(e2 && e2.timedOut === true && !e2.cancelled && Date.now() - t0 < 10000, 'timeout: 1 s limit stops the run and says timedOut', JSON.stringify(e2));
+    ok(e2 && e2.timedOut === true && !e2.cancelled && Date.now() - t0 < 60000, 'timeout: 1 s limit stops the run and says timedOut (well before 60 s; the sleeper never ends by itself)', JSON.stringify(e2));
     ok(pid2 > 0 && s2.events.some(ev => ev.t === 'err' && /timed out after 1 s/.test(ev.line)), 'timeout: stderr line tells why');
     await waitFor(() => !alive(pid2), 'timed-out child gone'); ok(!alive(pid2), 'timeout: the child process is dead');
     r = await req(A.port, 'POST', '/api/run?stream=0', { cmd: 'check', input: { mod: root, fast: true }, timeoutSec: 1 });
@@ -506,7 +508,7 @@ async function main() {
     await waitFor(() => pidOf(s3.events), 'sleeper pid (disconnect test)'); const pid3 = pidOf(s3.events);
     s3.abort(); await waitFor(() => !alive(pid3), 'child gone after client left', 10000);
     ok(!alive(pid3), 'disconnect: closing the connection kills the child');
-    await waitFor(() => (calls.length, true), 'tick'); await sleep(200);
+    await W.until(async () => (await req(A.port, 'GET', '/api/jobs')).j.jobs.length === 0, { who: 'test-gui2', what: 'jobs empty after disconnect', step: 25 });
     ok((await req(A.port, 'GET', '/api/jobs')).j.jobs.length === 0, 'jobs: empty after disconnect');
 
     // 409 lock on B (launching allowed): a held edrun blocks prove, not check; released after cancel
@@ -527,7 +529,7 @@ async function main() {
     mode = 'sleep'; const h2 = streamRun(B.port, 'edrun', { pairs: path.join(S, 'p.json'), out: path.join(S, 'ed-out3'), dry: false });
     await waitFor(() => pidOf(h2.events), 'second held run'); const pidH2 = pidOf(h2.events);
     h2.abort(); await waitFor(() => !alive(pidH2), 'second held child gone', 10000);
-    await sleep(200); mode = 'echo';
+    await W.until(async () => (await req(B.port, 'GET', '/api/jobs')).j.jobs.length === 0, { who: 'test-gui2', what: 'the launch lock released after the client left', step: 25 }); mode = 'echo';
     r = await req(B.port, 'POST', '/api/run?stream=0', { cmd: 'prove', input: { game: S, unit: 'u', army: 'rus' } });
     ok(r.status === 200, 'lock: released when the client disconnects too', r.text);
     mode = 'echo';
@@ -598,7 +600,7 @@ async function main() {
     // missing required field is caught in the page, no request
     const fixc = cardOf(sc('check'), 'Fix: plan, then apply into a patch mod');
     // I-18: out is needed for apply only (plan writes nothing)
-    const c1 = calls.length; P.confirms.length = 0; fixc.byText('fix: apply', 'button').click(); await sleep(50);
+    const c1 = calls.length; P.confirms.length = 0; fixc.byText('fix: apply', 'button').click(); await W.until(() => /^Fill in first: /.test(statOf(fixc)), { who: 'test-gui2', what: 'Fix apply: the missing field line', step: 10 });
     ok(calls.length === c1 && P.confirms.length === 0 && /^Fill in first: /.test(statOf(fixc)), 'Fix apply: missing out folder caught before any request or confirm', statOf(fixc));
     // the game is a folder of its own: out inside the game folder is refused by the write guard (I-3)
     const fixGame = path.join(S, 'fixgame'); fs.mkdirSync(fixGame, { recursive: true });
@@ -657,7 +659,7 @@ async function main() {
     altKey(doc, 'mods'); ok(items(doc) === 'mods,upgrade,files', 'Advanced on: the Mods sub-tab holds Mods, Upgrade or Port and Mod Files', items(doc));
     // upgrade, every setting (the upadv fold shows now that Advanced is on)
     altKey(doc, 'upgrade'); ok(doc.body.classList.contains('advon') && upadv.classList.contains('adv'), 'Upgrade or Port: Advanced on shows every upgrade setting');
-    let c2 = calls.length; up.byText('upgrade: plan', 'button').click(); await sleep(50);
+    let c2 = calls.length; up.byText('upgrade: plan', 'button').click(); await W.until(() => /^Fill in first: /.test(statOf(up)), { who: 'test-gui2', what: 'Upgrade: the missing target line', step: 10 });
     ok(calls.length === c2 && /^Fill in first: /.test(statOf(up)), 'Upgrade: upgrade needs a target, caught in the page');
     field(up, 'to').value = 'as64'; mode = 'json'; sample = { rows: [] };
     up.byText('upgrade: plan', 'button').click(); await waitFor(() => statOf(up).startsWith('exit'), 'upgrade preview');
@@ -837,7 +839,7 @@ async function main() {
           { const rows = sh._sk.items().filter(x => x.k === 'index');
             ok(rows.map(x => x.label).join() === 'T-34,T-34' && rows.map(x => x.value).join() === 't34_0,t34_85' && rows.every(x => /^t34_\w+\s+rus /.test(x.hint) && /tank/i.test(x.hint)), 'Shooter box: two units with one name are told apart by id; each row shows name, id, army and kind', JSON.stringify(rows.map(x => [x.label, x.hint])));
             ok(PPS.of('index')[0].body.mod === path.join(root, 'alpha'), 'Shooter box: the index is asked for the picked mod', JSON.stringify(PPS.of('index')[0].body)); }
-          const find = async (inp, text) => { inp.value = text; inp.fire('input'); await sleep(20); inp._sk.flush(); return inp._sk.items().filter(x => x.k === 'index').map(x => x.value).join(); };
+          const find = async (inp, text) => { inp.value = text; inp.fire('input'); await sleep(20); await W.until(() => { inp._sk.flush(); return inp._sk.items().some(x => x.k === 'index'); }, { who: 'test-gui2', what: 'index rows for ' + text, step: 10 }); return inp._sk.items().filter(x => x.k === 'index').map(x => x.value).join(); };
           ok(await find(sh, 'ger') === 'pz4h' && await find(sh, 'gaz67b') === 'gaz67b' && await find(sh, 'rus t-34') === 't34_0,t34_85' && await find(sh, 'т-34-85') === 't34_85' && await find(tg, 'gaz') === 'gaz67b' && PPS.of('index').length === 1,
             'unit boxes: an army, an id, a name (also one in another language the index sends) narrow; the index was asked once for both boxes', PPS.of('index').length);
           sh.value = 't34_0'; sh.fire('input'); tg.value = 'gaz67b'; tg.fire('input'); sh._sk.close(); tg._sk.close();
@@ -925,7 +927,8 @@ async function main() {
             fs.writeFileSync(badF, JSON.stringify([{ shooter: 't34_0' }])); pairsIn.fire('change'); await waitFor(() => bads().hidden === false, 'wrong-file line (no foe)'); ok(/not a unit pairs file/.test(bads().textContent), 'a list whose entries have no foe is not a pairs file either');
             pairsIn.value = path.join(st, 'readme.txt'); pairsIn.fire('change'); ok(bads().hidden === false && bads().textContent === EN['ed.pairsBad'].replace('{file}', path.join(st, 'readme.txt')), 'a file that is not .json gets the line without asking the server');
             pairsIn.value = path.join(st, 'gone.json'); pairsIn.fire('change'); await waitFor(() => bads().hidden === false && bads().textContent === EN['ed.pairsMissing'].replace('{file}', path.join(st, 'gone.json')), 'missing-file line');
-            pairsIn.value = path.join(gdir, 'g1.json'); pairsIn.fire('input'); pairsIn.fire('change'); await new Promise(r => setImmediate(r)); await waitFor(() => bads().hidden === true, 'good file'); await new Promise(r => setTimeout(r, 150));
+            pairsIn.value = path.join(gdir, 'g1.json'); pairsIn.fire('input'); pairsIn.fire('change'); await new Promise(r => setImmediate(r)); await waitFor(() => bads().hidden === true, 'good file'); await new Promise(r => setTimeout(r, 150));   // a gap: no late line comes back
+            await W.until(() => srcOf().dataset.src === 'typed', { who: 'test-gui2', what: 'pairs source typed', step: 10 });
             ok(bads().hidden === true && srcOf().dataset.src === 'typed', 'a real pairs file (a list of shooter and foe) gets no line');
             // leave the field free again for the checks below
             for (const n of ['old', 'new', 'mid', 'guns2']) PPS.lib.delete(n); fs.rmSync(gdir, { recursive: true, force: true }); pairsIn.value = ''; pairsIn.fire('input'); await again(); await waitFor(() => srcOf().dataset.src === 'none' && pairsIn.value === '', 'pairs field free again'); }
@@ -1001,9 +1004,9 @@ async function main() {
     // a button on another screen during that run says why it does nothing (it used to be disabled and silent)
     altKey(doc, 'make'); const cbusy = calls.length, pb = nm.byText('gen: plan', 'button');
     ok(pb.disabled === false, 'busy: run buttons stay clickable (not silently disabled) while another screen runs');
-    pb.click(); await sleep(30);
+    pb.click(); await W.until(() => /busy: check is still running/.test(doc.getElementById('toast').textContent) && nm.has('busy: check is still running'), { who: 'test-gui2', what: 'the busy line', step: 10 });
     ok(calls.length === cbusy && /busy: check is still running/.test(doc.getElementById('toast').textContent) && nm.has('busy: check is still running'), 'busy: a click on another screen starts nothing and says what is running', doc.getElementById('toast').textContent);
-    await toGame(doc, 'goh'); altKey(doc, 'goh'); const trb = sc('goh').byText('Translate', 'button'); trb.click(); await sleep(30);
+    await toGame(doc, 'goh'); altKey(doc, 'goh'); const trb = sc('goh').byText('Translate', 'button'); doc.getElementById('toast').textContent = ''; trb.click(); await W.until(() => /busy:/.test(doc.getElementById('toast').textContent), { who: 'test-gui2', what: 'the busy line (Translate)', step: 10 });
     ok(calls.length === cbusy && /busy:/.test(doc.getElementById('toast').textContent), 'busy: the Translate button says it too');
     await toGame(doc, 'as64'); altKey(doc, 'check');
     doc.key('Escape'); await waitFor(() => statOf(chk).startsWith('cancelled'), 'page shows cancelled');

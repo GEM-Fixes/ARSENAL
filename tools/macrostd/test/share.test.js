@@ -77,8 +77,8 @@ ok(r.rc === 0 && /verify: PASS/.test(r.out), 'verify PASS');
 if (r.rc) console.log(r.out);
 r = run('plan', mod, ...G, '--only', 'share');
 ok(/plan share: 0 files, 0 rows/.test(r.out), 're-plan: 0 rows');
-const ud = fs.readdirSync(path.join(mod, '.arsenal-undo'))[0];
-r = run('undo', mod, '--step', 'share', '--undo', path.join(mod, '.arsenal-undo', ud));
+const ud = fs.readdirSync(mod + '.arsenal-undo')[0];   // restore points beside the mod
+r = run('undo', mod, '--step', 'share', '--undo', path.join(mod + '.arsenal-undo', ud));
 ok(r.rc === 0 && sameTree(h0, hashTree(mod)), 'undo restores every byte, created files gone');
 
 console.log(fails ? `FAIL ${fails}` : 'PASS');

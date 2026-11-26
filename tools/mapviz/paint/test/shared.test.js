@@ -7,7 +7,7 @@
 // usage: node tools/mapviz/paint/test/shared.test.js [scratch dir] [--update-golden]
 // Author: Imperator_Aug (ARSENAL, ia-27e8edda)
 'use strict';
-const fs = require('fs'), path = require('path'), os = require('os'), crypto = require('crypto'), { spawnSync } = require('child_process');
+const fs = require('fs'), path = require('path'), os = require('os'), crypto = require('crypto'), { spawnSync } = require('../../../lib/test/wait');   // wait.js spawnSync: limit at least 5 min, killed by it -> WAIT and one rerun with twice the limit
 
 const ARG = process.argv[2] && !/^--/.test(process.argv[2]) ? process.argv[2] : null;
 const W0 = path.resolve(ARG || fs.mkdtempSync(path.join(os.tmpdir(), 'mapviz-paint-shared-')));

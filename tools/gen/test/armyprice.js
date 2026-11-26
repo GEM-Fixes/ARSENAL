@@ -18,7 +18,7 @@ const ctx = {
   cache: STORE,
   gamedir: game, tools: TOOLS, tmpRoot, allowLaunch: false, game: () => game,
   runTool: async (tool, entry, args, o) => {
-    const r = cp.spawnSync(process.execPath, [path.join(TOOLS, entry), ...args], { encoding: 'utf8', timeout: (o && o.timeoutMs) || 600000, maxBuffer: 1 << 28 });
+    const r = require(path.join(TOOLS, 'lib', 'test', 'wait')).spawnSync(process.execPath, [path.join(TOOLS, entry), ...args], { encoding: 'utf8', timeout: Math.max((o && o.timeoutMs) || 0, 600000), maxBuffer: 1 << 28 }, 'gen armyprice ' + tool);
     return { code: r.status, stdout: r.stdout, stderr: r.stderr, timedOut: !!(r.error && r.error.code === 'ETIMEDOUT') };
   },
 };

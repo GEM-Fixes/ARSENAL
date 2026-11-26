@@ -95,6 +95,17 @@ The exit code follows the verdict for the mod's own target build, which is AS64 
 
 `--fast` skips the slow checks and says so in the output. A small mod takes seconds; drop `--fast` for the full check, which takes minutes on a big mod. `--with <patch folder>` checks a mod together with a patch folder made by `ARSENAL fix`. Do not use it for an `ARSENAL upgrade --out` folder: that is a whole mod with its own `mod.info`, so run `check` on it directly.
 
+#### Making the check faster
+
+1. Keep `--fast` on while you work (in the window: keep the Quick check box ticked). Drop it for the full check before you share or release the mod.
+2. A check of a mod whose files have not changed since the last full run is shown again from the store in about a second.
+3. After you change a file, most checkers reuse what they kept about the files you did not change, so the next check is shorter than the first.
+4. The first check of a mod is the slow one, and so is the first check after the cache folder was emptied. Do not let a cleaning tool empty `%LOCALAPPDATA%\ARSENAL\cache`.
+5. Pack the mod into .pak files on an internal SSD: paks read much faster than thousands of loose files, for the check and for the game. Use the Share tab (Package for friends) and keep "Pack for speed" ticked (it is on by default): it sorts the files into one pak per kind, compresses only text and map .net and .grs files, stores the rest, and puts text first. A mod on a USB stick or a network share reads much more slowly.
+6. Antivirus: add the mod folder and `%LOCALAPPDATA%\ARSENAL\cache` to the exclusions of real-time scanning; otherwise every file the check reads is scanned too.
+7. The check uses every processor core: close other heavy programs while it runs.
+8. In `ARSENAL.exe` each checker reads the mod on its own (the shared single read is not in the exe yet). Run from a source folder with Node.js (`node tools/gui/gui.js` for the window, `node tools/as2/as2.js check <mod folder>` for the command) and the checkers share one read of the mod, which is faster on a big mod.
+
 ### `fix`: a patch mod for common problems
 
 ```
@@ -931,6 +942,8 @@ ARSENAL release-check --publish M
 The details are in [chapter 20](20-packaging-and-release.md).
 
 Gates of Hell guard: `packer` and `release-check --publish` refuse (exit 1, `PACK_GOH_ORIGIN`, `PACK_GOH_RENAMED`, `PACK_PRIVATE`) a mod whose `GOH-ORIGIN.tsv` lists a file still holding its ported Gates of Hell bytes, under its own or another name; `packer --allow-private` packs it anyway as `<role>-PRIVATE.pak` for your own machine only, never to publish.
+
+`packer M --out <folder>` (also with `--package`, `--goh`) writes the paks in the speed layout by default, the "Pack for speed" box of the Share page: text and map `.net` and `.grs` files compressed, everything else (textures, sounds, models, animations) stored, and the text entries first in each pak, then the rest in path order; the report adds the info line `PACK_SPEED_LAYOUT`. `--no-speed` (the box unticked) writes them as before: only text compressed, files in folder order.
 
 ## Claude: skills and MCP servers
 

@@ -24,9 +24,12 @@
 //   opts.base = a view of build({gameDir, mods: [], exe}) of the same game (lib/gameview get): the game layers (base, patches,
 //     as64/core) are taken from it (records shared, not copied) and not mounted again: the result is the same view. Not used when
 //     it is of another game folder or exe, has mods, or opts.profile is given. GoH: the caller sees to it that it has the same lang.
+//   Without opts.base the game layers come from lib/gamecache when it holds them for this game's fingerprint (else mounted and
+//     stored there): the same records, order and problems. Env ARSENAL_GAME_CACHE=0 = always mounted, nothing stored.
 // Author: Imperator_Aug (ARSENAL, ia-1bb6067c)
 const fs = require('fs'), path = require('path');
 const names = require('./names'), pak = require('./pak'), sdl = require('./sdl'), { readText } = require('./enc'), cipath = require('./cipath');
+const gamecache = require('./gamecache');
 // case: index keys are names.normalize (lowercase) of on-disk names, folded once; records keep the real on-disk path for reading.
 // Fixed names the engine asks for (mods, mod.info, resource[.pak], localization[.pak], N.pat, as64/core, ...) go through
 // ci(): exact path when it exists (Windows: always, so results there are unchanged), else a case-blind match in the
@@ -197,7 +200,8 @@ function build0(opts) {
   const t0 = Date.now();
   const gameDir = path.resolve(opts.gameDir);
   let gameVersion = opts.gameVersion || '3.262.1';
-  const problems = [], files = new Map(), shadows = [], gone = new Set();
+  const problems = [], gone = new Set();
+  let files = new Map(), shadows = [];   // the game layers' own when lib/gamecache holds them
   const lists = (opts.listings || []).filter(usable).map(T => ({ low: lowDir(T.dir), T }));
   const prob = (code, msg, where, level = 'error') => problems.push({ code, msg, where: where || '', level });
   // two names in one folder that differ only by case (case-sensitive fs only; NTFS cannot hold them): the game would see one
@@ -370,19 +374,39 @@ function build0(opts) {
   };
   const B = opts.base, base = B && B.files instanceof Map && Array.isArray(B.shadows) && Array.isArray(B.problems) && !opts.profile && B.exe === exe0
     && !(B.mods || []).length && !(B.modDirs || []).length && lowDir(B.gameDir) === lowDir(gameDir) ? B : null;
-  if (base) {
-    for (const [k, r] of base.files) files.set(k, r);
-    for (const sh of base.shadows) { shadows.push(sh); if (sh.by.deleted) gone.add(sh.key); else gone.delete(sh.key); }
-    for (const p of base.problems) problems.push(p);
-  } else mountRoot(gameDir, layerBase, Infinity, n => 'patch ' + n);
-
   // ---- 3c: as64.exe only: as64/core/ right after the game, always (every mode), patches=0, before any mod
   // ( MountGame: MountMod(game, ALL_PATCHES); MountMod("as64/core/", 0); MountMod
   // = resource.pak, resource/, N.pat (none for 0), localization.pak, localization/ -> resource/interface/text/)
   const exe = exe0;
   const isAs64 = exe === 'as64';
+  // the game layers (base, patches, as64/core) from lib/gamecache when it holds this game's (same fingerprint), else mounted and
+  // offered to it. Not with an fs seam (tests), nor when a listing covers a mounted game folder (it would be read from there).
+  // Its lookups go through their own case cache: no clash line from them, the mount reports as before. Off: ARSENAL_GAME_CACHE=0
+  let GC = null;
+  if (!base && !opts.fs && process.env.ARSENAL_GAME_CACHE !== '0') {
+    try {
+      const own = new Map(), gci = (d, r) => cipath.resolve(d, r, { cache: own });
+      GC = { gameDir, exe: exe0, isGoh, langs: gohLangs, coreDir: isAs64 ? gci(gameDir, 'as64/core') : null, ci: gci, exists, covered: false };
+      if (lists.length) {
+        const r = isGoh ? [gci(gameDir, 'resource'), ...gohLangs.map(l => gci(gameDir, 'localizations/' + l))]
+          : [gameDir, GC.coreDir].filter(Boolean).flatMap(d => [gci(d, 'resource'), gci(d, 'localization')]);
+        GC.covered = r.some(d => d && listNode(lists, d) !== undefined);
+      }
+    } catch (e) { GC = null; }
+  }
+  const held = GC && gamecache.take(GC);
+  if (base) {
+    for (const [k, r] of base.files) files.set(k, r);
+    for (const sh of base.shadows) { shadows.push(sh); if (sh.by.deleted) gone.add(sh.key); else gone.delete(sh.key); }
+    for (const p of base.problems) problems.push(p);
+  } else if (held) {
+    files = held.files; shadows = held.shadows;
+    for (const sh of shadows) { if (sh.by.deleted) gone.add(sh.key); else gone.delete(sh.key); }
+    for (const p of held.problems) problems.push(p);
+  } else mountRoot(gameDir, layerBase, Infinity, n => 'patch ' + n);
   const coreDir = isAs64 ? ci(gameDir, 'as64/core') : null;
-  if (!base && isAs64 && exists(coreDir)) mountRoot(coreDir, 'as64/core', 0);
+  if (!base && !held && isAs64 && exists(coreDir)) mountRoot(coreDir, 'as64/core', 0);
+  if (GC && !held) gamecache.save(GC, { files, shadows, problems });
 
   // ---- 1-2: mod list
   let list = opts.mods;

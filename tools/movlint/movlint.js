@@ -10,12 +10,15 @@
 //   MOV_PIVOT_MISSING wheel/water chassis whose .mdl skeleton lacks bone pivot_front and/or pivot_back -> warning, wheel geometry defaults (MOV-20, InitWheels)
 //   MOV_WHEEL_RADIUS_ZERO basis bone param WheelRadius=0 -> error "Wheel radius is zero" (MOV-20, InitWheels)
 //   MOV_BONE_RADIUS_ZERO wheel* revolute bone param radius=0 (|r*unitsPerMeter|<1e-5) -> error "Invalid bone radius" (MOV-20)
+//   --restore-points  also read <mod folder>/.arsenal-undo (restore points; the game never mounts them, so off by default)
+//   CLI lists the folder once and reads the defs through the thread pool (checkAsync); check() = same findings, one file at a time
 // chassis type = last string-valued {Chassis "type"} in the flattened def (includes expanded); Locomotion is only read by vehicle chassis types.
 // Author: Imperator_Aug (ARSENAL, ia-d2d16c16)
 require('../lib/help')(__filename); // --help / -h: header usage, exit 0 (HELPFIX2)
 const path = require('path');
 const sdlset = require('../lib/sdlset'), sdlx = require('../lib/sdlx');
 const { createReport } = require('../lib/report'), cli = require('../lib/cli');
+const fast = require('../strlint/fastread');
 
 const low = s => String(s).toLowerCase();
 const LOCO_KEYS = new Set(['maxspeed', 'maxspeedatmaxturn', 'starttime', 'braketime', 'stoptime', 'turnradius', 'turntime', 'turnstart', 'turnstop',
@@ -53,11 +56,15 @@ function params(bone) {
 }
 const isZero = txt => txt !== undefined && Math.abs(parseFloat(txt) || 0) < 1e-5;   // FromStr of junk = 0
 
-function check(opts) {
+const DEF_RE = /^resource\/entity\/.*\.def$/;
+// the check as steps: yields a Promise only while a read-ahead file (io.ra, async run) is still being read
+function* steps(opts, io) {
   const rep = createReport();
   let mods = opts.mods;
   if (!mods && opts.folder && opts.gameDir && path.basename(path.dirname(path.resolve(opts.folder))).toLowerCase() === 'mods') mods = [path.basename(path.resolve(opts.folder))];
-  const src = sdlset.createSource({ gameDir: opts.gameDir, mods, folder: opts.folder, exe: opts.exe });
+  const ra = io && io.ra;
+  // each def and each include read once per run (fastread)
+  const F = fast.wrap(sdlset.createSource({ gameDir: opts.gameDir, mods, folder: opts.folder, exe: opts.exe, ...fast.srcOpts(opts) }), ra), src = F.src;
   const locoKeys = (src.v ? src.v.exe : opts.exe) === 'goh' ? LOCO_KEYS_GOH : LOCO_KEYS;
   const items = new Map();
   if (opts.vfs) for (const t of src.vfsItems()) items.set(t.key, t);
@@ -95,10 +102,17 @@ function check(opts) {
 
   let files = 0;
   const seen = new Set();   // mdl|code dedupe: one finding per model
-  for (const [key, t] of items) {
-    if (!/^resource\/entity\/.*\.def$/.test(key)) continue;
+  if (ra) for (const [key, t] of items) if (DEF_RE.test(key) && t.path) ra.add(key, t.path);
+  for (const [key, t0] of items) {
+    if (!DEF_RE.test(key)) continue;
+    if (ra && t0.path) { const w = ra.wait(key); if (w) yield w; }
+    try { checkDef(key, F.item(t0)); } finally { F.done(t0); }
+  }
+  return { rep, files };
+
+  function checkDef(key, t) {
     let r; try { r = src.read(t, () => {}); } catch (e) { r = null; }
-    if (!r) continue;
+    if (!r) return;
     files++;
     const ge = [...blocks(r.root)].find(b => nameOf(b) === 'game_entity') || r.root;
     let type = null;
@@ -116,13 +130,13 @@ function check(opts) {
       }
     }
     // MOV-20: model facts. extension of the flattened def; report on the mdl when it is in the checked set, else on the def
-    if (type === null || !RADIUS_TYPES.has(type)) continue;
+    if (type === null || !RADIUS_TYPES.has(type)) return;
     const exts = sub(ge, 'extension').filter(b => strVal(b) && /\.mdl$/i.test(strVal(b)));
     const ext = exts.find(b => own(b, t.file)) || exts[0];
-    if (!ext) continue;
+    if (!ext) return;
     const mdlKey = resolveRel(strVal(ext), key);
     const mdl = loadMdl(mdlKey);
-    if (!mdl) continue;
+    if (!mdl) return;
     const mItem = items.get(mdlKey);
     const at = (code, mdlLine, msg) => {
       const tag = mdlKey + '|' + code + '|' + mdlLine;
@@ -139,15 +153,29 @@ function check(opts) {
       if (miss.length) at('MOV_PIVOT_MISSING', mdl.skelLine, `${type} chassis but skeleton has no ${miss.map(m => '"' + m + '"').join(' & ')} bone: warning, wheelbase/steering geometry defaults`);
     }
   }
-  return { rep, files };
 }
 
-if (require.main === module) cli.run(() => {
-  const p = cli.parse(process.argv.slice(2), { flags: ['--vfs'] });
+// check(opts) -> { rep, files }   sync, files read one at a time
+// opts: { folder|vfs, gameDir, mods, exe, restorePoints (also read <folder>/.arsenal-undo, off by default), listing }
+function check(opts) { return fast.drive(steps(opts, null)); }
+// checkAsync(opts) -> Promise<same>: the folder listed once through the thread pool, defs read ahead of the walk
+// checkAsync(opts, ra): ra = a readAhead stand-in to read through (lib/modset read-once pass, ctx.js), closed at the end
+async function checkAsync(opts, ra0) {
+  const { opts: o, ra } = await fast.prepare(opts, ra0);
+  try { return await fast.driveAsync(steps(o, { ra })); } finally { if (ra) ra.close(); }
+}
+
+// thread pool 16 (libuv default 4): more reads queued at the disk at once (as keylint)
+if (require.main === module && !process.env.UV_THREADPOOL_SIZE) process.env.UV_THREADPOOL_SIZE = '16';
+// main(argv, {ra}): the CLI (and ctx.js, the read-once module form, with the pass's reader as ra)
+async function main(argv, { ra } = {}) {
+  const p = cli.parse(argv, { flags: ['--vfs', '--restore-points'] });
   const o = { gameDir: p.gameDir || undefined, mods: p.mods.length ? p.mods : undefined, vfs: p.x.vfs, folder: p.pos[0], exe: p.exe };
-  if (!o.folder && !o.vfs || o.vfs && !o.gameDir) { console.error('usage: node tools/movlint/movlint.js <mod folder> [--game dir] [--mods a,b] [--exe as64|mowas_2|mowas2|goh] [-q] [--summary] [--format text|json|sarif|html|csv] [-o file] [--rc file|--no-rc] | --vfs --game <dir>'); process.exit(2); }
-  const { rep, files } = check(o);
+  if (p.x['restore-points']) o.restorePoints = true;
+  if (!o.folder && !o.vfs || o.vfs && !o.gameDir) { console.error('usage: node tools/movlint/movlint.js <mod folder> [--game dir] [--mods a,b] [--exe as64|mowas_2|mowas2|goh] [--restore-points] [-q] [--summary] [--format text|json|sarif|html|csv] [-o file] [--rc file|--no-rc] | --vfs --game <dir>'); process.exit(2); }
+  const { rep, files } = await checkAsync(o, ra);
   cli.printReport(rep, p, { tool: 'movlint' });
   if (p.format === 'text' && !p.output) console.log(`${files} files`); else console.error(`${files} files`);
-});
-module.exports = { check };
+}
+if (require.main === module) cli.run(() => main(process.argv.slice(2)));
+module.exports = { check, checkAsync, main };

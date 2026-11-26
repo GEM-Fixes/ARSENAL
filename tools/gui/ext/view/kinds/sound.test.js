@@ -237,7 +237,7 @@ const call = (route, q) => { const u = new URL('http://x/api/x/view/sound/' + ro
         return new Promise(() => {}); } };
     bx.window = bx; vm.createContext(bx);
     vm.runInContext(/<script>([\s\S]*)<\/script>/.exec(require(path.join(G, 'page.js')))[1], bx);
-    for (let i = 0; i < 400 && !bx.__as2gui; i++) await new Promise(r => setImmediate(r));
+    { const t0 = Date.now(); while (!bx.__as2gui && Date.now() - t0 < 60000) await new Promise(r => setImmediate(r)); if (!bx.__as2gui) process.stderr.write('WAIT sound kind test: the page not built after 60 s\n'); }   // by time, not by count
     const fl = async () => { for (let i = 0; i < 10; i++) { tm.splice(0).forEach(f => { try { f(); } catch { /* page timers */ } }); await new Promise(r => setImmediate(r)); } };
     const St = bx.__as2gui, IDEo = bx.IDE, M = 'C:/g/mods/mine', ev = { hide: 0, show: 0 };
     bx.VIEW.reg('zzs', { where: 'tab', exts: ['zzs'], open: () => ({ hide() { ev.hide++; }, show() { ev.show++; }, close() {} }) });

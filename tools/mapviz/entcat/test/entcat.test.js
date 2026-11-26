@@ -6,7 +6,7 @@
 // spot check of ten vanilla objects and the y sign on real asymmetric objects. Last line: PASS mapviz entcat (N).
 // Author: Imperator_Aug (ARSENAL, ia-beb98c73)
 'use strict';
-const fs = require('fs'), path = require('path'), os = require('os'), cp = require('child_process');
+const fs = require('fs'), path = require('path'), os = require('os'), cp = require('../../../lib/test/wait');   // wait.js spawnSync: limit at least 5 min, killed by it -> WAIT and one rerun with twice the limit
 
 const scratch = path.resolve(process.argv[2] || fs.mkdtempSync(path.join(os.tmpdir(), 'mapviz-entcat-')));
 fs.mkdirSync(scratch, { recursive: true });

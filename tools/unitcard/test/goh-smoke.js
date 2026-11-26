@@ -13,6 +13,7 @@
 'use strict';
 const fs = require('fs'), path = require('path'), os = require('os');
 const T = path.join(__dirname, '..', '..');
+const W = require('../../lib/test/wait');
 const argv = process.argv.slice(2), opt = k => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : null; };
 
 async function main() {
@@ -27,8 +28,9 @@ async function main() {
   const srv = await G.start({ port: 0, tmpRoot: path.join(tmp, 'gui') });
   const rows = [];
   const post = async (p, b) => {
-    const go = () => fetch(srv.url.replace(/\/$/, '') + p, { method: 'POST', headers: { 'content-type': 'application/json', 'x-arsenal-game': 'goh' }, body: JSON.stringify(Object.assign({ gid: 'goh', game: dir, mod }, b)), signal: AbortSignal.timeout(15 * 60 * 1000) });
-    let r; try { r = await go(); } catch (e) { await new Promise(z => setTimeout(z, 200)); r = await go(); }
+    const go = min => fetch(srv.url.replace(/\/$/, '') + p, { method: 'POST', headers: { 'content-type': 'application/json', 'x-arsenal-game': 'goh' }, body: JSON.stringify(Object.assign({ gid: 'goh', game: dir, mod }, b)), signal: AbortSignal.timeout(min * 60 * 1000) });
+    // backup: a dropped connection is asked once more; a 15 min stop says WAIT and is asked once more with 30 min
+    let r; try { r = await go(15); } catch (e) { const slow = e && e.name === 'TimeoutError'; if (slow) W.say('unitcard goh-smoke', p, 15 * 60 * 1000); await new Promise(z => setTimeout(z, 200)); r = await go(slow ? 30 : 15); }
     const j = await r.json().catch(() => ({ error: 'HTTP ' + r.status })); if (!r.ok || j.error) throw new Error(j.error || 'HTTP ' + r.status); return j;
   };
   // one function: ok + a short note, or fail + the reason

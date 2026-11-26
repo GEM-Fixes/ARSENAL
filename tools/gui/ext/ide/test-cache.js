@@ -87,7 +87,8 @@ module.exports = async function (env) {
   ok(!fs.existsSync(path.join(ctx.tmpRoot, 'ide-modcheck')), 'check: nothing under <tmpRoot>/ide-modcheck any more');
   // the page's check now reuses every file
   R._reset();
-  const run = async (b2) => { let r = null, all = []; for (let i = 0; i < 400; i++) { r = await env.post('modcheck', Object.assign({ mod, from: all.length }, b2), ctx); all = all.concat(r.files); if (r.done) break; await sleep(5); } return { r, all }; };
+  // by time, not by count: backstop 60 s + WAIT line, then the checks after it report
+  const run = async (b2) => { let r = null, all = []; await require('../../../lib/test/wait').until(async () => { r = await env.post('modcheck', Object.assign({ mod, from: all.length }, b2), ctx); all = all.concat(r.files); return r.done; }, { who: 'ide cache', what: 'the whole-mod check ends' }); return { r, all }; };
   let x = await run({});
   ok(x.r.done && x.r.stat.cached === x.r.total && x.r.stat.checkedNew === 0, 'check: the page\'s check after Prepare takes every file from the store', JSON.stringify(x.r.stat));
   const found = x.all.map(f => f.rel).join();

@@ -8,7 +8,7 @@
 // usage: node tools/mapviz/paint/painted/test/real.test.js [scratch dir]
 // Author: Imperator_Aug (ARSENAL, ia-8c854365)
 'use strict';
-const fs = require('fs'), path = require('path'), os = require('os'), { spawnSync } = require('child_process');
+const fs = require('fs'), path = require('path'), os = require('os'), { spawnSync } = require('../../../../lib/test/wait');   // wait.js spawnSync: limit at least 5 min, killed by it -> WAIT and one rerun with twice the limit
 
 const MV = path.join(__dirname, '../../..');
 const SIZE = Number(process.env.MAPVIZ_PAINT_SIZE) || 1024;

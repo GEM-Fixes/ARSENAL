@@ -57,7 +57,7 @@ async function run(o) {
   const seen = [];
   const runTool = async (tool, entry, args, x) => {
     seen.push(args);
-    const r = cp.spawnSync(process.execPath, [path.join(TOOLS, entry), ...args], { encoding: 'utf8', timeout: (x && x.timeoutMs) || 120000 });
+    const r = require('../../../lib/test/wait').spawnSync(process.execPath, [path.join(TOOLS, entry), ...args], { encoding: 'utf8', timeout: (x && x.timeoutMs) || 120000 }, 'units testgames');   // backstop 5 min, killed: once more with twice the limit
     return { code: r.status, stdout: r.stdout, stderr: r.stderr, timedOut: !!(r.error && r.error.code === 'ETIMEDOUT') };
   };
   const ctxOf = (gid, game, goh, tmp) => {

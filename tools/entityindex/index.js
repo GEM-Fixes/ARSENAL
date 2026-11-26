@@ -8,6 +8,12 @@
 //     game folder: meta.game = the resolved gameDir. A cache built for another game folder is never reused (rebuilt cold). In the
 //       shared cache folder (toolcache dir('entityindex')) the plain name belongs to the installed game (lib/games install); another
 //       game folder gets <cache>[.<exe>].f<8 hex>.json (ix.cachePath(file, exe, gameDir)), so a fixture never overwrites it.
+//       The stock index (<shared>/vanilla.json, no mod, no folder) is keyed by the game instead: an overlay game folder (tools/check
+//       check-ov-*) maps to its real install, another install gets vanilla[.<exe>].<fingerprint 12 hex>.json (see "the stock index"
+//       below: ix.realGame, ix.gameFp); stats.twin = the other AS2 exe's stock file written by the same build (writeTwin), or null.
+//       The first build into the shared folder in a process removes stock files of check overlays that no longer exist (sweepOverlays).
+//       No local stock index that fits: the shipped one (shipped/vanilla.<exe>.<fp12>.json.gz, ship.js) is taken or seeds the build
+//       (findShipped below); stats.shipped = { file, exact } or null. load() writes out an exact shipped one when the cache is missing.
 //     modDirs: mod folders by path laid over game + mods as layers (lib/vfs.js modDirs), active in the game or not; their paks count
 //     throws Error code MOD_NOT_MOUNTED (.unmounted=[{name,why}]) when a named mod is not active in the vfs, unless allowUnmounted
 //     checkpoint (o.checkpointEvery parsed files, default 2000, at most every o.checkpointMs, default 60000; 0 = none): the records so
@@ -82,15 +88,179 @@ const addPart = (c, part) => { const ext = path.extname(c); return ext ? c.slice
 // no exe named and a GoH game folder (lib/games detect): keyed as exe goh, so it writes the same <cache>.goh.json as --exe goh and never
 // the plain name of the AS2 install. An AS2 folder with no exe keeps the plain name (as before).
 const exeFor = (exe, gameDir) => normExe(exe) || (gameDir && gameDir !== '-' && require('../lib/games').detect(gameDir) === 'goh' ? 'goh' : undefined);
+// ---- the stock index (vanilla.json: the game's own data, no mod, no folder) is keyed by the game, not by the folder.
+// tools/check checks a mod outside <game>/mods in an overlay game folder Temp/check-ov-<random>/game (check.js overlay(): the
+// install's folders junctioned, its root exes/paks copied). Keyed by that folder, no later run found the stock index (a 7 min build
+// per game build, 31 MB left in the shared cache each run). Now:
+//   realGame(dir): the install behind a game folder: the parent of the real path of its resource/ folder when that is a link to
+//     another game folder (one that holds as64.exe, mowas_2.exe or binaries/x64/call_to_arms.exe), else the folder itself.
+//   gameFp(real, exe): sha1 of name|size|mtime of every pak the view mounts (the lib/gameview stamp() rows: resource.pak,
+//     localization.pak, N.pat at the root; *.pak at any depth and every file directly under resource/, localization/,
+//     localizations/; the same under as64/core for the as64 view), read on the real install. null when the folder has no pak at
+//     all (a loose test fixture): such a folder keeps a folder key. Unlike gameview.stamp it leaves the exe version out (the
+//     records self-check by dh anyway) and follows links. Asked at most every 5 s per folder + view.
+//   cachePath(<shared>/vanilla.json, exe, gameDir): the installed game (gameDir or its realGame) keeps the plain name as before;
+//     any other game folder gets vanilla[.<exe>].<fp 12 hex>.json, or vanilla[.<exe>].f<8 hex of the real folder>.json with no
+//     pak. An overlay and its install give the same file. Mod and folder indexes (mods-*, folder-*, ...) keep the f<8 hex of the
+//     folder given>. meta.game of a stock index = the real install (display and the cleanup below), meta.fp = its fingerprint.
+const isStock = c => path.basename(String(c)).toLowerCase() === 'vanilla.json';
+const GAME_EXES = ['as64.exe', 'mowas_2.exe', 'binaries/x64/call_to_arms.exe'];
+function realGame(d) {
+  const R = path.resolve(String(d));
+  try {
+    const r = fs.realpathSync(path.join(R, 'resource'));
+    if (path.basename(r).toLowerCase() !== 'resource') return R;
+    const p = path.dirname(r);
+    if (sameDir(p, R)) return R;
+    return GAME_EXES.some(x => fs.existsSync(path.join(p, x))) ? p : R;
+  } catch (e) { return R; }
+}
+const ROOT_PAK = /^(?:resource\.pak|localization\.pak|\d+\.pat)$/i, DATA_DIR = /^(?:resource|localization|localizations)$/i, SKIP_DIR = /^\.(?:git|svn)$/i;
+function pakRows(root, tag, rows) {
+  const list = d => { try { return fs.readdirSync(d, { withFileTypes: true }); } catch (e) { return []; } };
+  const st = p => { try { return fs.statSync(p); } catch (e) { return null; } };
+  const row = (rel, s) => rows.push(tag + rel + '|' + s.size + '|' + s.mtimeMs);
+  const deep = (dir, rel, top, n) => {
+    if (n > 32) return;
+    for (const e of list(dir)) {
+      const p = path.join(dir, e.name), r = rel + '/' + e.name.toLowerCase(), s = e.isSymbolicLink() ? st(p) : null;
+      const isDir = s ? s.isDirectory() : e.isDirectory();
+      if (isDir) { if (!SKIP_DIR.test(e.name)) deep(p, r, false, n + 1); }
+      else if (top || /\.pak$/i.test(e.name)) { const t = s || st(p); if (t) row(r, t); }
+    }
+  };
+  for (const e of list(root)) {
+    const p = path.join(root, e.name), s = e.isSymbolicLink() ? st(p) : null, isDir = s ? s.isDirectory() : e.isDirectory();
+    if (isDir) { if (DATA_DIR.test(e.name)) deep(p, e.name.toLowerCase(), true, 0); }
+    else if (ROOT_PAK.test(e.name)) { const t = s || st(p); if (t) row(e.name.toLowerCase(), t); }
+  }
+}
+const FPS = new Map(), FP_MS = 5000;
+function fpRows(real, e) {
+  const as64 = e === 'as64' || (!e && fs.existsSync(path.join(real, 'as64.exe')));
+  const rows = [];
+  pakRows(real, '', rows);
+  if (as64) pakRows(path.join(real, 'as64', 'core'), 'as64/core/', rows);
+  return rows.sort();
+}
+function gameFp(real, e) {
+  const as64 = e === 'as64' || (!e && fs.existsSync(path.join(real, 'as64.exe')));
+  const k = path.resolve(real).toLowerCase() + '|' + (as64 ? 'as64' : ''), c = FPS.get(k), now = Date.now();
+  if (c && now - c.at < FP_MS) return c.fp;
+  const rows = fpRows(real, e);
+  const fp = rows.some(r => /\.(pak|pat)\|/.test(r)) ? crypto.createHash('sha1').update(rows.join('\n')).digest('hex') : null;
+  if (FPS.size > 64) FPS.clear();
+  FPS.set(k, { fp, at: now });
+  return fp;
+}
 function cachePath(f, exe, gameDir) {
   const e = exeFor(exe, gameDir);
   let c = cacheFile(f);
+  const stock = isStock(c);
   if (e && e !== 'as64') c = addPart(c, e);
-  if (gameDir && gameDir !== '-' && inShared(c) && !homeDirs(e).some(h => sameDir(h, gameDir))) c = addPart(c, 'f' + dirKey(gameDir));
+  if (gameDir && gameDir !== '-' && inShared(c)) {
+    if (stock) {
+      const real = realGame(gameDir);
+      if (!homeDirs(e).some(h => sameDir(h, real))) { const fp = gameFp(real, e); c = addPart(c, fp ? fp.slice(0, 12) : 'f' + dirKey(real)); }
+    } else if (!homeDirs(e).some(h => sameDir(h, gameDir))) c = addPart(c, 'f' + dirKey(gameDir));
+  }
   return c;
 }
-// the game folder a cache was built for matches this one (both none = a folder-only index)
-const sameGame = (meta, gameDir) => (!meta.game && !gameDir) || (!!meta.game && !!gameDir && sameDir(meta.game, gameDir));
+// the game folder a cache was built for matches this one (both none = a folder-only index): the same folder, the same real install
+// (an overlay of it), or for a stock index the same fingerprint (fp: this run's, or null)
+const sameGame = (meta, gameDir, fp) => (!meta.game && !gameDir) || (!!meta.game && !!gameDir && (sameDir(meta.game, gameDir) ||
+  sameDir(realGame(meta.game), realGame(gameDir)) || (!!fp && meta.fp === fp)));
+// the meta of a cache file from its first bytes (pack writes meta first), without parsing a 31 MB file; null = not readable
+function metaHead(f) {
+  let fd = null;
+  try {
+    fd = fs.openSync(f, 'r');
+    const b = Buffer.alloc(16384), n = fs.readSync(fd, b, 0, b.length, 0);
+    return metaOf(b.toString('utf8', 0, n));
+  } catch (e) { return null; } finally { if (fd !== null) try { fs.closeSync(fd); } catch (e) { /* closed */ } }
+}
+function metaOf(s) {
+  if (!s.startsWith('{"meta":{')) return null;
+  let q = false;
+  for (let i = 9; i < s.length; i++) {
+    const ch = s[i];
+    if (q) { if (ch === '\\') i++; else if (ch === '"') q = false; }
+    else if (ch === '"') q = true;
+    else if (ch === '{') return null;
+    else if (ch === '}') { try { return JSON.parse(s.slice(8, i + 1)); } catch (e) { return null; } }
+  }
+  return null;
+}
+// ---- the shipped stock index 6): <tools>/entityindex/shipped/vanilla.<exe>.<fp 12 hex>.json.gz, made
+// ship.js on the publisher's install: the stock cache gzipped, meta.game dropped, meta.paks = name|size of every row the fingerprint
+// reads (no file times). Used only when no local stock index fits:
+//   - same exe and the same fingerprint: written out under the normal cache name (meta.game = this install) and used as it is
+//   - else a file of the same game (as64 and mowas_2 count as one) whose meta.paks shares at least half its rows with this install
+//     (the same game with other file times, or a small update): its records seed the build; a record whose signatures (dh) differ
+//     is parsed again, as with any seed
+//   - anything else (another game, another index version) is ignored
+// Also a mods-/folder- index with no stock cache to seed from seeds from it. env ARSENAL_SHIPPED_INDEX = another folder (tests).
+const SHIP_RE = /^vanilla\.(as64|mowas_2|goh)\.([0-9a-f]{12})\.json\.gz$/;
+const shippedDir = () => process.env.ARSENAL_SHIPPED_INDEX || path.join(__dirname, 'shipped');
+const pakList = (real, e) => fpRows(real, e).map(r => r.slice(0, r.lastIndexOf('|')));
+function gzMeta(f) {
+  try {
+    const fd = fs.openSync(f, 'r'), b = Buffer.alloc(1 << 18);
+    let n; try { n = fs.readSync(fd, b, 0, b.length, 0); } finally { fs.closeSync(fd); }
+    const zlib = require('zlib'), s = zlib.gunzipSync(b.subarray(0, n), { finishFlush: zlib.constants.Z_SYNC_FLUSH }).toString('utf8');
+    return metaOf(s);
+  } catch (e) { return null; }
+}
+function readShipped(f) {
+  try { const d = JSON.parse(require('zlib').gunzipSync(fs.readFileSync(f)).toString('utf8')); return d && d.meta && d.entities ? d : null; } catch (e) { return null; }
+}
+// -> { file, exact } or null. exe = the exe of this run, fp = this install's fingerprint, real = the install
+function findShipped(exe, fp, real) {
+  if (!exe || !fp) return null;
+  const dir = shippedDir();
+  let names; try { names = fs.readdirSync(dir); } catch (e) { return null; }
+  const pair = exe === 'goh' ? ['goh'] : ['as64', 'mowas_2'];
+  const cands = names.map(n => SHIP_RE.exec(n)).filter(m => m && pair.includes(m[1])).sort((a, b) => a[0] < b[0] ? -1 : 1);
+  const ex = cands.find(m => m[1] === exe && m[2] === fp.slice(0, 12));
+  if (ex) { const f = path.join(dir, ex[0]), m = gzMeta(f); if (m && m.version === VERSION && m.exe === exe && m.fp === fp && !m.partial && !m.game) return { file: f, exact: true }; }
+  let mine = null, best = null;
+  for (const c of cands) {
+    const f = path.join(dir, c[0]), m = gzMeta(f);
+    if (!m || m.version !== VERSION || m.partial || m.game || !Array.isArray(m.paks) || !m.paks.length) continue;
+    if (!mine) mine = new Set(pakList(real, exe));
+    const score = m.paks.filter(r => mine.has(r)).length / Math.max(mine.size, m.paks.length);
+    if (score >= 0.5 && (!best || score > best.score || (score === best.score && c[1] === exe))) best = { file: f, exact: false, score };
+  }
+  return best;
+}
+// the exact shipped file for the stock cache file (cachePath name) of this install: written out there, -> the data (packed form)
+function unship(file, s, real) {
+  const d = readShipped(s.file);
+  if (!d) return null;
+  d.meta.game = real; delete d.meta.paks;
+  writeCache(file, JSON.stringify(d));   // read-only cache folder: used for this run only
+  return d;
+}
+// cleanup (once per process, on the first build into the shared cache folder): stock index files (vanilla*.json) whose meta.game
+// is a tools/check overlay folder (.../check-ov-<random>/game) that no longer exists are removed. Cache files only: nothing else is
+// touched, and only in the shared entityindex cache folder. Before the fingerprint key every check of a mod outside <game>/mods
+// left one there (31 MB per game build).
+let SWEPT = false;
+const OV_GAME = /[\\/]check-ov-[^\\/]+[\\/]game[\\/]?$/i;
+function sweepOverlays() {
+  if (SWEPT) return 0;
+  SWEPT = true;
+  const dir = toolcache.dir('entityindex');
+  let names = [], n = 0;
+  try { names = fs.readdirSync(dir); } catch (e) { return 0; }
+  for (const nm of names) {
+    if (!/^vanilla(\.[^.]+)*\.json$/i.test(nm)) continue;
+    const f = path.join(dir, nm), m = metaHead(f);
+    if (!m || typeof m.game !== 'string' || !OV_GAME.test(m.game) || fs.existsSync(m.game)) continue;
+    try { fs.rmSync(f); n++; } catch (e) { /* in use: next time */ }
+  }
+  return n;
+}
 const sdlset = require('../lib/sdlset'), sdlx = require('../lib/sdlx'), vfs = require('../lib/vfs'), { relPath } = require('../lib/report');
 
 const VERSION = 8;   // 8: stuff from/tags/refs read from the stuff's own first block, not the .presets/include block ahead of it
@@ -417,6 +587,7 @@ function build(o) {
   const t0 = Date.now();
   const given = o.cache ? cacheFile(o.cache) : null;
   if (o.cache) o = { ...o, cache: cachePath(o.cache, o.exe, o.gameDir) };
+  if (o.cache && inShared(o.cache)) sweepOverlays();
   const src = openSource(o), sig = makeSig(src), keys = allKeys(src);
   if ('bytes' in src && o.byteMemo !== false) src.bytes = new Map();   // one read per included file for this build (openSource), dropped before it returns
   try { const it = build1(o, src, sig, keys, t0, given, null); let r; while (!(r = it.next()).done); return r.value; } finally { if (src.bytes) src.bytes = null; }
@@ -427,6 +598,7 @@ async function buildAsync(o) {
   const t0 = Date.now();
   const given = o.cache ? cacheFile(o.cache) : null;
   if (o.cache) o = { ...o, cache: cachePath(o.cache, o.exe, o.gameDir) };
+  if (o.cache && inShared(o.cache)) sweepOverlays();
   const src = openSource(o), sig = makeSig(src), keys = allKeys(src);
   if ('bytes' in src && o.byteMemo !== false) src.bytes = new Map();
   const ra = o.readAhead !== false && typeof src.ahead === 'function' && typeof src.loosePath === 'function' ? sdlset.readAhead({ window: o.aheadWindow, maxBytes: o.aheadBytes }) : null;
@@ -442,12 +614,27 @@ async function buildAsync(o) {
 function* build1(o, src, sig, keys, t0, given, A) {
   const has = k => keys.has(k);
   const exe = src.v ? src.v.exe : (normExe(o.exe) || null);   // the exe the vfs used (a folder-only index: the one named, else null)
-  const prev = o.cache && !o.force && fs.existsSync(o.cache) ? safeJson(o.cache) : null;
+  let prev = o.cache && !o.force && fs.existsSync(o.cache) ? safeJson(o.cache) : null;
   const game = o.gameDir && o.gameDir !== '-' ? path.resolve(o.gameDir) : null;
+  // the stock index (given name vanilla.json, no mod, no folder): keyed by the game (cachePath header); meta.game = the real install,
+  // meta.fp = its fingerprint (null: no pak, keyed by the real folder)
+  const stock = !!(given && isStock(given) && game && src.v && !o.folder && !(o.mods && o.mods.length) && !(o.modDirs && o.modDirs.length));
+  const real = game ? realGame(game) : null, fp = stock ? gameFp(real, exe) : null;
   // a cache made for another exe or another game folder is never reused (rebuilt cold and written over); caches from before meta.exe
-  // have none: default name, kept as before
-  const fits = d => d && d.meta && d.meta.version === VERSION && (d.meta.exe === undefined || d.meta.exe === exe) && sameGame(d.meta, game);
-  let old = fits(prev) ? prev : { entities: {}, stuff: {}, models: {} }, seeded = null;
+  // have none: default name, kept as before. An overlay of the same install, or a stock index of the same fingerprint, is the same game
+  const fits = d => d && d.meta && d.meta.version === VERSION && (d.meta.exe === undefined || d.meta.exe === exe) && sameGame(d.meta, game, fp);
+  let old = fits(prev) ? prev : { entities: {}, stuff: {}, models: {} }, seeded = null, shipped = null;
+  // no local stock index fits: the shipped one (findShipped above). exact = taken as the cache; near = its records seed this build
+  if (old !== prev && stock && fp && o.shipped !== false && inShared(o.cache)) {
+    const s = findShipped(exe, fp, real);
+    if (s && s.exact) {
+      const d = unship(o.cache, s, real);
+      if (d && fits(unpack(d))) { prev = old = d; shipped = { file: s.file, exact: true }; }
+    } else if (s) {
+      const d = readShipped(s.file);
+      if (d) { unpack(d); old = { entities: d.entities || {}, stuff: d.stuff || {}, models: d.models || {}, aux: d.aux || {} }; shipped = { file: s.file, exact: false }; }
+    }
+  }
   // seed (shared cache folder only, o.seed !== false): a mods-/folder- index with no usable cache of its own starts from the game's
   // vanilla cache of the same exe and game folder (cachePath(<shared>/vanilla.json, exe, gameDir), also a checkpoint of it). Records
   // are self-checking (dh = the signatures of every file they came from, in this run's vfs view): a file the mod or folder replaces,
@@ -456,9 +643,14 @@ function* build1(o, src, sig, keys, t0, given, A) {
     const sf = cachePath(path.join(path.dirname(given), 'vanilla.json'), exe, game);
     const sd = !sameDir(sf, o.cache) && fs.existsSync(sf) ? safeJson(sf) : null;
     if (fits(sd)) { old = { entities: sd.entities || {}, stuff: sd.stuff || {}, models: sd.models || {} }; seeded = sf; }
+    else if (!stock && o.shipped !== false) {   // no stock cache yet: the shipped stock index of this game, if one is near enough
+      const rg = realGame(game), s = findShipped(exe, gameFp(rg, exe), rg), d = s ? readShipped(s.file) : null;
+      if (d) { unpack(d); old = { entities: d.entities || {}, stuff: d.stuff || {}, models: d.models || {} }; seeded = s.file; }
+    }
   }
   let parsed = 0, reused = 0;
-  const data = { meta: { version: VERSION, game, folder: o.folder || null, mods: src.v ? src.v.mods : [], exe, built: new Date().toISOString() }, entities: {}, stuff: {}, models: {} };
+  const data = { meta: { version: VERSION, game: stock ? real : game, folder: o.folder || null, mods: src.v ? src.v.mods : [], exe, built: new Date().toISOString() }, entities: {}, stuff: {}, models: {} };
+  if (stock) data.meta.fp = fp;
   // a build with no game folder and no folder (0 entities) never writes the shared folder: its plain name is the installed game's
   const sourceless = !game && !o.folder && !src.v;
   const writes = !!o.cache && !(sourceless && inShared(o.cache));
@@ -479,7 +671,7 @@ function* build1(o, src, sig, keys, t0, given, A) {
   };
 
   // a seeded entity record also keeps its layer (a mod copy of a vanilla pak would have the same signatures but another layer)
-  const keep = (tbl, key) => { const r = old[tbl][key]; if (r && hashDeps(r.deps, sig) === r.dh && !(seeded && tbl === 'entities' && r.layer !== sourceOf(src, key).layer)) { reused++; return r; } return null; };
+  const keep = (tbl, key) => { const r = old[tbl][key]; if (r && hashDeps(r.deps, sig) === r.dh && !((seeded || (shipped && !shipped.exact)) && tbl === 'entities' && r.layer !== sourceOf(src, key).layer)) { reused++; return r; } return null; };
   const finish = (rec, deps) => { rec.deps = deps; rec.dh = hashDeps(deps, sig); parsed++; return rec; };
 
   // buildAsync only (A): which files will be parsed is decided before the loop (the same keep() test, each record once), so their
@@ -502,7 +694,9 @@ function* build1(o, src, sig, keys, t0, given, A) {
   };
   function* paks() { if (!pakWant.length) return; const w = pakWant; pakWant = []; let n = 0; for (const _ of src.pakAhead(w)) if (++n % 16 === 0) yield new Promise(r => setImmediate(r)); }
   function* got(key) { const l = plans.get(key); if (l) for (const k of l) { const w = ra.wait(k); if (w) yield w; } }
-  const passed = key => { const l = plans.get(key); if (l) { for (const k of l) ra.drop(k); plans.delete(key); } };
+  // a file passed may be planned again by a later step (a .def read for its entity, then by a refcheck aux table): read ahead again
+  // then, not read one by one on the loop (11 s of sync reads in a refcheck of a 94k-file mod)
+  const passed = key => { const l = plans.get(key); if (l) { for (const k of l) { ra.drop(k); planned.delete(k); } plans.delete(key); } };
   let turns = 0;
   function* turn() { if (A && ++turns % 200 === 0) yield new Promise(r => setImmediate(r)); }
   const isDefKey = key => key.startsWith('resource/entity/') && key.endsWith('.def');
@@ -611,8 +805,56 @@ function* build1(o, src, sig, keys, t0, given, A) {
   const cnt = t => Object.keys(t || {}).length;
   const same = prev && old === prev && !prev.meta.partial && !parsed && !auxParsed && ['entities', 'stuff', 'models'].every(t => cnt(old[t]) === cnt(data[t])) &&
     Object.keys(data.aux).length === Object.keys(old.aux || {}).length && Object.keys(data.aux).every(n => cnt(data.aux[n]) === cnt((old.aux || {})[n]));
-  if (writes && !same) writeCache(o.cache, JSON.stringify(pack(data)));   // read-only folder: one stderr line, the run goes on
-  return { idx: makeIndex(data), stats: { entities: Object.keys(data.entities).length, stuff: Object.keys(data.stuff).length, models: Object.keys(data.models).length, parsed, reused, auxParsed, auxReused, ms: Date.now() - t0, seeded, checkpoints: cps }, src, keys };
+  let text = null;
+  if (writes && !same) writeCache(o.cache, text = JSON.stringify(pack(data)));   // read-only folder: one stderr line, the run goes on
+  const twin = writes && stock ? writeTwin(o, given, src, data, text, game, real) : null;
+  return { idx: makeIndex(data), stats: { entities: Object.keys(data.entities).length, stuff: Object.keys(data.stuff).length, models: Object.keys(data.models).length, parsed, reused, auxParsed, auxReused, ms: Date.now() - t0, seeded, shipped, checkpoints: cps, twin }, src, keys };
+}
+// one stock build serves both AS2 exes: the as64 view is the mowas_2 view plus the as64/core layer (lib/vfs 3c), and a record
+// carries the signatures (dh) of every file it came from, so a record that touches no as64/core file is the same in both views.
+// The stock index is written under the other AS2 exe's name too (meta.exe = that exe): whole when the as64/core layer holds nothing
+// the index reads (no core file among the records' files, none under resource/entity/ or resource/set/stuff/, no .mdl/.mtl); else
+// without the records that touch a core file and marked meta.partial (a checkpoint: load() refuses it, the next build of that exe
+// reuses it and parses only the rest). Written only when that file is missing, a checkpoint, or of another fingerprint.
+// -> the file written, or null
+function writeTwin(o, given, src, data, text, game, real) {
+  const exe = data.meta.exe, other = exe === 'as64' ? 'mowas_2' : exe === 'mowas_2' ? 'as64' : null;
+  if (!other || !inShared(o.cache) || data.meta.partial) return null;
+  if (!fs.existsSync(path.join(game, other === 'as64' ? 'as64.exe' : 'mowas_2.exe'))) return null;
+  const tf = cachePath(given, other, game);
+  if (sameDir(tf, o.cache)) return null;
+  // the twin carries the OTHER exe's fingerprint: the two exes mount other paks (as64/core), so their fingerprints differ
+  const ofp = data.meta.fp ? gameFp(real, other) : data.meta.fp;
+  const m = fs.existsSync(tf) ? metaHead(tf) : null;
+  if (m && !m.partial && m.version === VERSION && m.exe === other && (ofp ? m.fp === ofp : sameDir(m.game || '', data.meta.game || ''))) return null;
+  // the as64/core keys of the as64 view (this build's view, or one built now: the game paks are listed, nothing is read)
+  let v64 = src.v;
+  if (exe !== 'as64') {
+    if (!fs.existsSync(path.join(real, 'as64', 'core'))) v64 = null;
+    else { try { v64 = vfs.build({ gameDir: game, mods: [], exe: 'as64' }); vfs.closeRecs(); } catch (e) { return null; } }
+  }
+  const core = new Set();
+  if (v64) for (const [k, r] of v64.files) if (String(r.layer).startsWith('as64/core')) core.add(k);
+  const meta = { ...data.meta, exe: other, fp: ofp };
+  if (!core.size) {
+    if (text === null) text = JSON.stringify(pack(data));
+    const head = '{"meta":' + JSON.stringify(data.meta);
+    if (!text.startsWith(head)) return null;
+    return writeCache(tf, '{"meta":' + JSON.stringify(meta) + text.slice(head.length)) ? tf : null;
+  }
+  let dropped = [...core].some(k => k.startsWith('resource/entity/') || k.startsWith('resource/set/stuff/') || /\.(mdl|mtl)$/.test(k));
+  const touches = r => !r || !Array.isArray(r.deps) || r.deps.some(k => core.has(k));
+  const out = { meta, aux: {} };
+  for (const t of ['entities', 'stuff', 'models']) {
+    out[t] = {};
+    for (const [k, r] of Object.entries(data[t])) { if (core.has(k) || touches(r)) dropped = true; else out[t][k] = r; }
+  }
+  for (const [n, tbl] of Object.entries(data.aux || {})) {
+    out.aux[n] = {};
+    for (const [k, r] of Object.entries(tbl)) { if (core.has(k) || touches(r)) dropped = true; else out.aux[n][k] = r; }
+  }
+  if (dropped) meta.partial = true;
+  return writeCache(tf, JSON.stringify(pack(out))) ? tf : null;
 }
 
 // cache file write: <file>.<pid>.part beside it, then renamed over it, so a run stopped while writing never leaves a cut JSON
@@ -642,7 +884,15 @@ function safeJson(f) { try { const d = JSON.parse(fs.readFileSync(f, 'utf8')); r
 // cache in the shared folder must have been built for the installed game (when one is found), else it is refused as another folder's
 function load(file, exe, gameDir) {
   const e = exeFor(exe, gameDir);
-  file = cachePath(file, e, gameDir); const d = safeJson(file); if (!d || !d.meta) throw new Error('bad cache ' + file);
+  const stockGiven = isStock(cacheFile(file));
+  file = cachePath(file, e, gameDir);
+  // no stock cache yet: the shipped one of the same exe and fingerprint is written out first (only an exact one: load checks no record)
+  if (stockGiven && inShared(file) && !fs.existsSync(file)) {
+    const real = gameDir && gameDir !== '-' ? realGame(gameDir) : homeDirs(e)[0];
+    const ex = real ? e || (fs.existsSync(path.join(real, 'as64.exe')) ? 'as64' : 'mowas_2') : null, s = ex ? findShipped(ex, gameFp(real, ex), real) : null;
+    if (s && s.exact) unship(file, s, real);
+  }
+  const d = safeJson(file); if (!d || !d.meta) throw new Error('bad cache ' + file);
   if (e && d.meta.exe && d.meta.exe !== e) throw new Error(`bad cache ${file}: built for exe ${d.meta.exe}, not ${e}`);
   // no exe and no game folder: the shared plain name is the AS2 install's; a GoH cache there (an old no-exe GoH build) is refused
   if (!e && !gameDir && inShared(file) && d.meta.exe === 'goh') throw new Error(`bad cache ${file}: built for exe goh, not the AS2 install; rebuild it with entityindex <gameDir>, or load it with exe goh`);
@@ -651,7 +901,7 @@ function load(file, exe, gameDir) {
   // a checkpoint of a build that was stopped (meta.partial): its records only seed the next build, it is not an index to answer from
   if (d.meta.partial) throw new Error(`bad cache ${file}: a checkpoint of a build that did not finish; run entityindex <gameDir> to finish it`);
   if (d.meta.game) {
-    if (gameDir && gameDir !== '-' && !sameDir(d.meta.game, gameDir)) throw new Error(`bad cache ${file}: built for the game folder ${d.meta.game}, not ${path.resolve(gameDir)}`);
+    if (gameDir && gameDir !== '-' && !sameGame(d.meta, path.resolve(gameDir), d.meta.fp ? gameFp(realGame(gameDir), e || d.meta.exe) : null)) throw new Error(`bad cache ${file}: built for the game folder ${d.meta.game}, not ${path.resolve(gameDir)}`);
     if (!gameDir && inShared(file)) { const h = homeDirs(e); if (h.length && !h.some(x => sameDir(x, d.meta.game))) throw new Error(`bad cache ${file}: built for the game folder ${d.meta.game}, not the installed game (${h.join(', ')}); rebuild it with entityindex <gameDir>`); }
   }
   return makeIndex(d);
@@ -673,4 +923,4 @@ function staleness(src, data) {
   return r;
 }
 
-module.exports = { build, buildAsync, load, cacheFile, cachePath, normExe, staleness, openSource, makeSig, resolveModel, mtlCandidates, VERSION, kidsOf, kids, nameOf, argsOf, str0, hasKid, parseKey };
+module.exports = { build, buildAsync, load, cacheFile, cachePath, normExe, realGame, gameFp, pakList, findShipped, shippedDir, fpForget: () => FPS.clear(), metaHead, sweepOverlays, staleness, openSource, makeSig, resolveModel, mtlCandidates, VERSION, kidsOf, kids, nameOf, argsOf, str0, hasKid, parseKey };

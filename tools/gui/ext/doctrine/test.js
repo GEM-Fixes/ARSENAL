@@ -6,6 +6,7 @@ const work = path.resolve(process.argv[2] || fs.mkdtempSync(path.join(require('o
 require('../../../lib/testscratch').guard(work);   // never wipe a shared root, the repo, a game or a mod
 fs.rmSync(work, { recursive: true, force: true }); fs.mkdirSync(work, { recursive: true });
 const X = require('./index');
+const WT = require('../../../lib/test/wait');
 let bad = 0;
 const ok = (c, m) => { if (!c) { bad++; console.log('FAIL ' + m); } };
 const T = path.join(__dirname, '..', '..', '..');
@@ -129,13 +130,15 @@ const throws = async (f, re, m) => { try { await f(); ok(false, m + ' (no error)
     const P = FD.runPage('doctrine', X.script, L, { route, S: { mod: modR } }), B = id => P.root.all(c => c.dataset.blk === id);
     P.screen.refresh();   // lazy pages: the data is asked for at the first show (page.js show0 calls refresh), not while the page is built
     const btn = t => P.root.all(c => c.tagName === 'BUTTON' && c.textContent === t)[0];
-    const wait = async f => { for (let i = 0; i < 100 && !f(); i++) await FD.settle(); return f(); };
+    // by time, not by count. Backup, never a hang: after 60 s it says WAIT on stderr and returns f() (the check after it reports)
+    const wait = async f => { const t0 = Date.now(); while (!f()) { if (Date.now() - t0 >= WT.COND_MS) { WT.say('doctrine test', String(f).slice(0, 120), WT.COND_MS); break; } await FD.settle(); } return f(); };
     ok(await wait(() => B('rules').length), 'blocks: the rules tab is drawn after the data came');
     const acts = { personas: L.en['doctrine.p.sample'], profile: L.en['doctrine.prof.detect'], gen: L.en['doctrine.gen.preview'] };
     for (const id of ['rules', 'personas', 'missions', 'profile', 'gen', 'check']) {
       btn(L.en['doctrine.tab.' + id]).click();
       if (acts[id]) { const b = btn(acts[id]); ok(b, 'blocks: tab ' + id + ' has its button'); if (b) b.click(); }
       for (let i = 0; i < 8; i++) await FD.settle();
+      await wait(() => B(id).length === 1 && (id !== 'gen' || /\[T\]/.test(B('gen.res')[0] ? B('gen.res')[0].textContent : '')));
       const pr = FD.checkBlocks(P.root);
       ok(B(id).length === 1 && B('pane')[0].children.length === 1 && !pr.length, 'blocks: tab ' + id + ' ' + pr.slice(0, 8).join(' | '));
       if (id === 'gen') ok(/\[T\]/.test(B('gen.res')[0] ? B('gen.res')[0].textContent : ''), 'blocks: the preview table is drawn inside its leaf: ' + (B('gen.res')[0] || {}).textContent);
@@ -143,13 +146,15 @@ const throws = async (f, re, m) => { try { await f(); ok(false, m + ' (no error)
     // searchKit (owner 2026-11-19): the rules box and the base file box have browse, an index and history
     {
       const ks = () => P.root.all(c => c.dataset && c.dataset.sk).map(c => c.dataset.sk);
-      btn(L.en['doctrine.tab.rules']).click(); for (let i = 0; i < 4; i++) await FD.settle();
-      const rq = P.root.all(c => c.tagName === 'INPUT' && c.getAttribute('aria-label') === L.en['doctrine.rules.find'])[0], r0 = d.rules[0];
+      const rqOf = () => P.root.all(c => c.tagName === 'INPUT' && c.getAttribute('aria-label') === L.en['doctrine.rules.find'])[0];
+      btn(L.en['doctrine.tab.rules']).click(); for (let i = 0; i < 4; i++) await FD.settle(); await wait(rqOf);
+      const rq = rqOf(), r0 = d.rules[0];
       ok(rq && ks().includes('doctrine.rules.q'), 'searchKit: rules box ' + ks().join(','));
       if (rq) {
-        FD.type(P.doc, rq, r0.id); for (let i = 0; i < 3; i++) await FD.settle();
-        const dd = rq.parentNode.all(c => c.getAttribute && c.getAttribute('role') === 'listbox')[0];
-        const o = dd && dd.all(c => /sk-index/.test(c.className || '') && c.textContent.indexOf(r0.id) === 0)[0];
+        const ddOf = () => rq.parentNode.all(c => c.getAttribute && c.getAttribute('role') === 'listbox')[0];
+        const oOf = () => { const x = ddOf(); return x && x.all(c => /sk-index/.test(c.className || '') && c.textContent.indexOf(r0.id) === 0)[0]; };
+        FD.type(P.doc, rq, r0.id); for (let i = 0; i < 3; i++) await FD.settle(); await wait(oOf);
+        const dd = ddOf(), o = oOf();
         ok(!!o, 'searchKit: a rule ID is suggested');
         if (o) { dd.fire('click', { target: o }); await FD.settle(); ok(rq.value === r0.id && (P.env.LS.get('sk.hist.doctrine.rules.q', [])[0] === r0.id), 'searchKit: a picked rule is kept in history');
           ok(B('rules.list')[0].textContent.indexOf(r0.id + ' - ') >= 0, 'searchKit: the picked rule is drawn'); }
@@ -160,18 +165,21 @@ const throws = async (f, re, m) => { try { await f(); ok(false, m + ' (no error)
         const md = path.join(__dirname, '..', '..', '..', 'doctrine', 'data', 'md');
         ok(pk && pk.spec.mode === 'file' && pk.spec.view === 'disk' && path.resolve(pk.spec.start) === path.resolve(md) && pk.spec.exts.join() === 'md', 'browse: the rules box opens the pack documents ' + JSON.stringify(pk && pk.spec));
         if (pk) { const f = path.join(md, 'missions', 'river.md'), riv = d.missions.find(m => m.id === 'river').rules; pk.done(f, { view: 'disk', path: f }); for (let i = 0; i < 3; i++) await FD.settle();
+          await wait(() => rq.value === 'river' && B('rules.list')[0] && riv.every(id => B('rules.list')[0].textContent.indexOf(id + ' - ') >= 0));
           const tl = B('rules.list')[0].textContent;
           ok(rq.value === 'river' && riv.every(id => tl.indexOf(id + ' - ') >= 0), 'browse: a picked mission file shows the rules it teaches ' + rq.value);
           ok(tl.indexOf(r0.id + ' - ') < 0, 'browse: and only those'); }
       }
       P.S.roots = [path.dirname(modR)];
-      btn(L.en['doctrine.tab.gen']).click(); for (let i = 0; i < 4; i++) await FD.settle();
-      const bq = P.root.all(c => c.tagName === 'INPUT' && c.getAttribute('aria-label') === L.en['doctrine.gen.base'])[0];
+      const bqOf = () => P.root.all(c => c.tagName === 'INPUT' && c.getAttribute('aria-label') === L.en['doctrine.gen.base'])[0];
+      btn(L.en['doctrine.tab.gen']).click(); for (let i = 0; i < 4; i++) await FD.settle(); await wait(bqOf);
+      const bq = bqOf();
       ok(bq && ks().includes('doctrine.gen.base'), 'searchKit: base file box ' + ks().join(','));
       if (bq) {
-        FD.type(P.doc, bq, path.basename(modR).slice(0, 3)); for (let i = 0; i < 4; i++) await FD.settle();
-        const dd = bq.parentNode.all(c => c.getAttribute && c.getAttribute('role') === 'listbox')[0];
-        const o = dd && dd.all(c => /sk-index/.test(c.className || '') && c.textContent.indexOf(path.basename(modR)) === 0)[0];
+        const ddOf = () => bq.parentNode.all(c => c.getAttribute && c.getAttribute('role') === 'listbox')[0];
+        const oOf = () => { const x = ddOf(); return x && x.all(c => /sk-index/.test(c.className || '') && c.textContent.indexOf(path.basename(modR)) === 0)[0]; };
+        FD.type(P.doc, bq, path.basename(modR).slice(0, 3)); for (let i = 0; i < 4; i++) await FD.settle(); await wait(oOf);
+        const dd = ddOf(), o = oOf();
         ok(!!o, 'searchKit: a mod from the mod folders is suggested ' + (dd ? dd.textContent : ''));
         if (o) { dd.fire('click', { target: o }); await FD.settle(); ok(bq.value === modR, 'searchKit: a picked mod fills the base box'); }
         let pk = null; P.picker((spec, done) => { pk = { spec, done }; });

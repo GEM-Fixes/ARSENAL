@@ -36,13 +36,20 @@
 //   Steps keep bytes 1:1 (latin1 strings) and the line ends unless the step is about them; comments (';' to line end) and strings
 //   ('"' .. '"', never across a line end) must be respected when finding spans (scan.js does).
 // apply: before the first write of each file in a step the original is copied to <undo>/<step>/<mod-relative path>, <undo> =
-//   --undo dir or <modDir>/.arsenal-undo/macrostd-<YYYYMMDD>; an existing copy is never overwritten (it is the older original);
+//   --undo dir or <modDir>.arsenal-undo/macrostd-<YYYYMMDD> BESIDE the mod (lib/modwrite restoreRoot; a mod in a game folder:
+//   <modDir>/.arsenal/undo/...): a folder inside the mod would ship with a Workshop upload (VFS-32). An existing copy is never
+//   overwritten (it is the older original);
 //   files a step creates are listed in <undo>/<step>/_created.txt. undo puts the copies back, deletes the created files and renames
-//   the step folder to <step>.undone-<HHMMSS>. Undo steps in reverse order of applying them.
+//   the step folder to <step>.undone-<HHMMSS>. Undo steps in reverse order of applying them. undo without --undo takes the newest
+//   macrostd-<YYYYMMDD> holding the step, beside the mod or in <modDir>/.arsenal-undo where older versions wrote them (left in
+//   place; same day: the beside one first).
 // Author: Imperator_Aug (ARSENAL, ia-3e8c31ba)
 const fs = require('fs'), path = require('path');
 const cli = require('../lib/cli'), { createReport, walkFiles, relPath } = require('../lib/report');
 const model = require('./model');
+const MW = require('../lib/modwrite');
+// undo roots: beside the mod (written), then <modDir>/.arsenal-undo (older versions wrote there; still read by undo)
+const undoRoots = modDir => { const a = MW.restoreRoot(modDir), b = path.join(modDir, '.arsenal-undo'); return path.resolve(a) === path.resolve(b) ? [a] : [a, b]; };
 
 const STEPS_DIR = path.join(__dirname, 'steps');
 function loadSteps() {
@@ -96,7 +103,7 @@ function runSteps(o, ids, write) {
   const absOf = rel => path.join(modDir, ...rel.split('/'));
   const read = rel => { const k = lc(rel); if (overlay.has(k)) return overlay.get(k); return fs.readFileSync(absOf(rel)); };
   const exists = rel => overlay.has(lc(rel)) || fs.existsSync(absOf(rel));
-  const undoBase = o.undo ? path.resolve(o.undo) : path.join(modDir, '.arsenal-undo', 'macrostd-' + ymd(new Date()));
+  const undoBase = o.undo ? path.resolve(o.undo) : path.join(MW.restoreRoot(modDir), 'macrostd-' + ymd(new Date()));
   const tsv = [], perStep = [], allCases = [];
   for (const id of ids) {
     const step = steps.get(id), t0 = Date.now();
@@ -142,10 +149,12 @@ function undo(o) {
   if (!step) throw new Error('undo needs --step <step>');
   let base = o.undo ? path.resolve(o.undo) : null;
   if (!base) {
-    const ud = path.join(modDir, '.arsenal-undo');
-    const cands = fs.existsSync(ud) ? fs.readdirSync(ud).filter(d => /^macrostd-\d{8}$/.test(d) && fs.existsSync(path.join(ud, d, step))).sort() : [];
-    if (!cands.length) throw new Error(`no undo folder for step ${step} under ${ud}`);
-    base = path.join(ud, cands[cands.length - 1]);
+    const roots = undoRoots(modDir), cands = [];
+    roots.forEach((ud, ri) => { if (fs.existsSync(ud)) for (const d of fs.readdirSync(ud)) if (/^macrostd-\d{8}$/.test(d) && fs.existsSync(path.join(ud, d, step))) cands.push({ d, ri, p: path.join(ud, d) }); });
+    // newest day wins; the same day in both places: the beside one (written after the older inside one)
+    cands.sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : b.ri - a.ri));
+    if (!cands.length) throw new Error(`no undo folder for step ${step} under ${roots.join(' or ')}`);
+    base = cands[cands.length - 1].p;
   }
   const sd = path.join(base, step);
   if (!fs.existsSync(sd)) throw new Error(`no ${sd}`);

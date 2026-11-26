@@ -5,6 +5,7 @@
 // Author: Imperator_Aug (ARSENAL, ia-a4fcf2e8)
 const fs = require('fs'), path = require('path'), cp = require('child_process'), assert = require('assert');
 const ext = require('./index');
+const WT = require('../../../lib/test/wait');
 const TOOLS = path.resolve(__dirname, '..', '..', '..');
 const scratch = path.resolve(process.argv[2] || path.join(__dirname, 'work'));
 fs.mkdirSync(scratch, { recursive: true });
@@ -13,7 +14,7 @@ const tmpRoot = path.join(scratch, 'tmp'); fs.rmSync(tmpRoot, { recursive: true,
 const ctx = {
   gamedir: game, tools: TOOLS, tmpRoot, allowLaunch: false, modAgeMs: 0, game: () => game,
   runTool: async (tool, entry, args, o) => {
-    const r = cp.spawnSync(process.execPath, [path.join(TOOLS, entry), ...args], { encoding: 'utf8', timeout: (o && o.timeoutMs) || 60000 });
+    const r = WT.spawnSync(process.execPath, [path.join(TOOLS, entry), ...args], { encoding: 'utf8', timeout: (o && o.timeoutMs) || 60000 }, 'balance test');
     return { code: r.status, stdout: r.stdout, stderr: r.stderr, timedOut: !!(r.error && r.error.code === 'ETIMEDOUT') };
   },
 };
@@ -134,8 +135,9 @@ function blocksPage(m) {
   P.S.mod = mod; P.screen.refresh(); await FD.settle(); await FD.settle();
   const qIn = P.root.all(c => c.tagName === 'INPUT' && c.getAttribute('aria-label') === en['balance.q'])[0];
   const count = () => P.root.all(c => c.tagName === 'SPAN' && /^\d+ /.test(c.textContent))[0];
-  FD.type(P.doc, qIn, 'panzer 6'); await new Promise(r => setTimeout(r, 400));
-  const shown = P.root.all(c => c.tagName === 'TD' && c.textContent === 'PzKpfw VI Tiger');
+  const tigers = () => P.root.all(c => c.tagName === 'TD' && c.textContent === 'PzKpfw VI Tiger');
+  FD.type(P.doc, qIn, 'panzer 6'); await WT.until(() => tigers().length === 1, { who: 'balance test', what: 'the filter "panzer 6" drawn' });
+  const shown = tigers();
   assert.ok(shown.length === 1, 'Panzer 6 finds the Tiger; ' + (count() && count().textContent));
   ok('free filter: "panzer 6" finds "PzKpfw VI Tiger"');
   {   // Browse = the file picker (owner 2026-11-19): game data at entity/, .def; a pick puts the unit's name in as a free word
@@ -249,7 +251,8 @@ function blocksPage(m) {
   ok('prices: game only (no mod) reads the game rows and cards, says so, refuses every write; Gates of Hell: fair and game price of every breed and card; the model edited in memory, seeded and saved into the mod, check / plan / write of the mod own breed prices with restore points, Undo last for each write');
 
   // a mod of its own with the game's soldiers.set and squads.set copied in (the comment lines go there); the game stays as it is
-  const pmod = path.join(game, 'mods', 'pricemod'); fs.rmSync(pmod, { recursive: true, force: true });
+  const pmod = path.join(game, 'mods', 'pricemod'); for (const d of [pmod, pmod + '.arsenal-undo']) fs.rmSync(d, { recursive: true, force: true });
+  const undoAt = require('../../../lib/modwrite').restoreRoot(pmod);   // undo copies beside the mod (<mod>.arsenal-undo), never inside it
   for (const f of ['soldiers.set', 'squads.set']) { fs.mkdirSync(path.join(pmod, U), { recursive: true }); fs.copyFileSync(path.join(game, U, f), path.join(pmod, U, f)); }
   const gameSold = fs.readFileSync(path.join(game, U, 'soldiers.set')), modSold = fs.readFileSync(path.join(pmod, U, 'soldiers.set'));
   pr = await call('prices/calc', { mod: pmod });
@@ -304,7 +307,8 @@ function blocksPage(m) {
   // save: only price_model.inc, undo copy first, hand comments kept on the next save
   let sv = await call('prices/save', { mod: pmod, text: tr.text });
   assert.ok(sv.saved && sv.created && sv.rel === MK); assert.strictEqual(fs.readFileSync(path.join(pmod, MK), 'latin1'), tr.text);
-  let man = JSON.parse(fs.readFileSync(path.join(pmod, '.arsenal-undo', sv.tag, 'manifest.json'), 'utf8')); assert.deepStrictEqual(man.created, [MK]);
+  let man = JSON.parse(fs.readFileSync(path.join(undoAt, sv.tag, 'manifest.json'), 'utf8')); assert.deepStrictEqual(man.created, [MK]);
+  assert.ok(!fs.existsSync(path.join(pmod, '.arsenal-undo')), 'the undo copy is not inside the mod');
   assert.ok(fs.readFileSync(path.join(pmod, U, 'soldiers.set')).equals(modSold), 'save touches no other file');
   pr = await call('prices/calc', { mod: pmod }); assert.ok(!pr.state.includes('noModel') && pr.model.file, 'model read back');
   const hand = pr.text.replace('\r\n{price_model\r\n', '\r\n; my own note\r\n{price_model\r\n');
@@ -330,6 +334,17 @@ function blocksPage(m) {
   ud = await call('prices/undo', { mod: pmod }); assert.strictEqual(ud.tag, 'pricecalc-test');
   assert.ok(fs.readFileSync(path.join(pmod, U, 'soldiers.set')).equals(modSold), 'undo: byte for byte');
   ok('prices: comment lines planned, previewed, written with an undo tag, checked (comments only, idempotent), undone byte for byte; game files untouched');
+  // an old undo copy inside the mod (<mod>/.arsenal-undo/<tag>, where older versions wrote them) is still found by Undo last
+  const ap2 = await call('prices/apply', { mod: pmod, tag: 'pricecalc-old' });
+  assert.ok(ap2.tag === 'pricecalc-old' && fs.existsSync(path.join(undoAt, 'pricecalc-old', 'manifest.json')) && !fs.existsSync(path.join(pmod, '.arsenal-undo')), 'apply: undo copy beside the mod');
+  fs.mkdirSync(path.join(pmod, '.arsenal-undo'), { recursive: true }); fs.renameSync(path.join(undoAt, 'pricecalc-old'), path.join(pmod, '.arsenal-undo', 'pricecalc-old'));
+  ud = await call('prices/undo', { mod: pmod }); assert.strictEqual(ud.tag, 'pricecalc-old');
+  assert.ok(fs.readFileSync(path.join(pmod, U, 'soldiers.set')).equals(modSold), 'old inside undo: byte for byte');
+  await refuses('prices/apply', { mod: pmod, tag: 'pricecalc-old' }, /older undo copy inside the mod/);
+  assert.ok(fs.readFileSync(path.join(pmod, U, 'soldiers.set')).equals(modSold) && !fs.existsSync(path.join(undoAt, 'pricecalc-old')), 'refused before a byte is written');
+  assert.ok(JSON.parse(fs.readFileSync(path.join(pmod, '.arsenal-undo', 'pricecalc-old', 'manifest.json'), 'utf8')).undone, 'the old copy stays where it is, marked undone');
+  fs.rmSync(path.join(pmod, '.arsenal-undo'), { recursive: true, force: true });   // the scratch mod only: the later views read a mod without it
+  ok('prices: an old undo copy inside the mod is still undone (Undo last finds it); its tag is not reused for a write');
 
   // the card on the page, every price view through the block rules
   const PB = blocksPage(pmod);
@@ -359,11 +374,12 @@ function blocksPage(m) {
     assert.ok(sent[0].view === 'data' && sent[0].start === 'set/multiplayer/units' && kin('balance.cards.q').value === 'rus/x.set', 'cards Browse ' + JSON.stringify(sent[0]) + ' ' + kin('balance.cards.q').value);
     FD.type(PB.doc, kin('balance.cards.q'), '');
     FD.userClick(PB.doc, ptab('breeds')); await FD.settle();
-    ans = 'set/breed/mp/rus/rifle.set'; kin('balance.breeds.q')._sk.browseButton.click(); await new Promise(r => setTimeout(r, 150));
+    const brows = () => { const t = PB.root.all(c => c.dataset.blk === 'prices.breeds.table')[0]; return t ? t.all(c => c.tagName === 'TR').slice(1) : []; };
+    ans = 'set/breed/mp/rus/rifle.set'; kin('balance.breeds.q')._sk.browseButton.click(); await WT.until(() => brows().length === 1, { who: 'balance test', what: 'breeds narrowed to the picked file' });
     assert.ok(sent[1].view === 'data' && sent[1].start === 'set/breed/mp' && sent[1].exts.join() === 'set' && kin('balance.breeds.q').value === 'rus/rifle', 'breeds Browse ' + JSON.stringify(sent[1]));
-    const bt = PB.root.all(c => c.dataset.blk === 'prices.breeds.table')[0], trs = bt ? bt.all(c => c.tagName === 'TR').slice(1) : [];
+    const trs = brows();
     assert.ok(trs.length === 1 && /^russ*rifle/.test(trs[0].textContent), 'breeds: the picked file narrows the table to its breed ' + trs.map(r => r.textContent.slice(0, 30)).join(' / '));
-    FD.type(PB.doc, kin('balance.breeds.q'), ''); await new Promise(r => setTimeout(r, 150));
+    FD.type(PB.doc, kin('balance.breeds.q'), ''); await WT.until(() => brows().length > 1, { who: 'balance test', what: 'breeds back to all rows' });
     FD.userClick(PB.doc, ptab('cards')); await FD.settle();
   }
   FD.userClick(PB.doc, ptab('model')); await FD.settle();
@@ -422,7 +438,7 @@ function blocksPage(m) {
   }
 
   // ---------- hero button cards, the point values (MP per SP / DP), in-game names: a mod with a hero card, game mode budgets and its own texts
-  const hmod = path.join(game, 'mods', 'heromod'); fs.rmSync(hmod, { recursive: true, force: true });
+  const hmod = path.join(game, 'mods', 'heromod'); for (const d of [hmod, hmod + '.arsenal-undo']) fs.rmSync(d, { recursive: true, force: true });
   const putH = (rel, t) => { const f = path.join(hmod, rel); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, Buffer.from(t.replace(/\r?\n/g, '\r\n'), 'utf8')); };
   putH(U + 'soldiers.set', fs.readFileSync(path.join(game, U, 'soldiers.set'), 'latin1'));
   putH(U + 'squads.set', fs.readFileSync(path.join(game, U, 'squads.set'), 'latin1') + '("squad_with2types" side(rus) name(hero_guards) c(30) g(h1) c1(squadleader:1) c2(rifle:2) b(hero) t(all hero) level(1) cost(2) f(-0.5))\n');
@@ -466,14 +482,16 @@ function blocksPage(m) {
   assert.ok(HB.sent.some(s => s.url === '/api/x/balance/prices/names'), 'names asked when ticked');
   assert.ok(btnTxt(/^Guards Heroes$/).length === 1 && btnTxt(/^riflemans\(rus\)$/).length, 'in-game name shown, a card with no text keeps its internal name');
   const hq = HB.root.all(c => c.tagName === 'INPUT' && c.getAttribute('aria-label') === en['balance.pr.f.q'])[0];
-  FD.type(HB.doc, hq, 'guards heroes'); await new Promise(r => setTimeout(r, 400)); await FD.settle();
+  FD.type(HB.doc, hq, 'guards heroes'); await WT.until(() => btnTxt(/^Guards Heroes$/).length === 1 && !btnTxt(/^riflemans/).length, { who: 'balance test', what: 'search "guards heroes" drawn' }); await FD.settle();
   assert.ok(btnTxt(/^Guards Heroes$/).length === 1 && !btnTxt(/^riflemans/).length, 'search finds the in-game name');
-  FD.type(HB.doc, hq, 'hero_guards'); await new Promise(r => setTimeout(r, 400)); await FD.settle();
+  // clear first so the next search has something to take away (riflemans): its result is then visible, not a time
+  FD.type(HB.doc, hq, ''); await WT.until(() => btnTxt(/^riflemans/).length, { who: 'balance test', what: 'cards back without a search' });
+  FD.type(HB.doc, hq, 'hero_guards'); await WT.until(() => btnTxt(/^Guards Heroes$/).length === 1 && !btnTxt(/^riflemans/).length, { who: 'balance test', what: 'search "hero_guards" drawn' }); await FD.settle();
   assert.ok(btnTxt(/^Guards Heroes$/).length === 1, 'search finds the internal name too');
   FD.userClick(HB.doc, btnTxt(/^Guards Heroes$/)[0]); await FD.settle();
   assert.ok(HB.root.all(c => c.tagName === 'TD' && c.textContent === 'Strelok (rus/rifle)').length === 1, 'member breed named in the card detail');
   assert.deepStrictEqual(checkBlocks(HB.root), [], 'cards with names and the detail');
-  FD.type(HB.doc, hq, ''); await new Promise(r => setTimeout(r, 400));
+  FD.type(HB.doc, hq, ''); await WT.until(() => btnTxt(/^riflemans\(rus\)$/).length || btnTxt(/^riflemans/).length, { who: 'balance test', what: 'cards back without a search' });
   FD.userClick(HB.doc, htab('breeds')); await FD.settle();
   assert.ok(cbx('balance.pr.f.loc').checked && btnTxt(/^Strelok$/).length, 'breeds view: the same box, the in-game breed name');
   FD.userClick(HB.doc, htab('model')); await FD.settle();

@@ -12,9 +12,11 @@ o=$(node "$d/../keylint.js" "$d/ok" -q | grep ' findings$' | cut -d' ' -f1)
 p=$(node "$d/pick.js")   # GoH exe in the game dir picks vocab.goh.json; AS2/no dir does not; explicit --vocab wins
 k=$(node "$d/pak.test.js")   # GoH pak mod outside <game>/mods read through its paks; AS2 dir unchanged (GOHMOD-3)
 bl=$(node "$d/blow.test.js")   # set/blow keys judged against  (TOOLFIX-MIX)
+un=$(node "$d/undo.test.js")   # .arsenal-undo left out by default, --restore-points brings it back; sync = async (read-ahead) report
 ex=$(node "$d/exe.test.js")   # --exe: mowas_2 mount without as64/core, vocab.mowas2.json, GoH field table fields.goh.json
+fa=$(node "$d/fast.test.js")   # KEYLINT_FAST on/off same report, fallback on a fault, incremental line numbers (X6)
 # DET-KEY: same input twice -> same stdout bytes (no clock value in default output; elapsed ms only with --time)
 node "$d/../keylint.js" "$d/bad" > "$G/.run1"; node "$d/../keylint.js" "$d/bad" > "$G/.run2"
 if [ -s "$G/.run1" ] && cmp -s "$G/.run1" "$G/.run2" && ! grep -qE ' in [0-9]+ ms$' "$G/.run1"; then t=TWICE-OK; else t=TWICE-BAD; diff "$G/.run1" "$G/.run2" | head -5; fi
-echo "bad $b ok-findings $o $p $k $bl $ex $t"; rm -f "$G/.got" "$G/.want" "$G/.run1" "$G/.run2"
-[ "$b" = ok ] && [ "$o" = 0 ] && [ "$p" = PICK-OK ] && [ "$k" = PAK-OK ] && [ "$bl" = BLOW-OK ] && [ "$ex" = EXE-OK ] && [ "$t" = TWICE-OK ] && echo PASS
+echo "bad $b ok-findings $o $p $k $bl $ex $fa $un $t"; rm -f "$G/.got" "$G/.want" "$G/.run1" "$G/.run2"
+[ "$b" = ok ] && [ "$o" = 0 ] && [ "$p" = PICK-OK ] && [ "$k" = PAK-OK ] && [ "$bl" = BLOW-OK ] && [ "$ex" = EXE-OK ] && [ "$fa" = FAST-OK ] && [ "$un" = UNDO-OK ] && [ "$t" = TWICE-OK ] && echo PASS

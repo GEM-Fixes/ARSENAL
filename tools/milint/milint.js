@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // milint: mission + map + MP-preset linter. rows MIS-02..06,08..10,13,14,17..19,21,24 MAP-01..03,09,10,11,12..15,18
 //   node milint.js <mod folder> [--game dir] [--exe as64|mowas_2|goh] [--mods a,b] [-q]   mod dir under <game>/mods auto-mounts
+//   --restore-points: also read <mod>/.arsenal-undo (restore points, never mounted; left out by default)
 //   node milint.js --vfs [--game dir] [--exe ..] [-q]                 whole vanilla index (consistency run); --rc F --no-rc --format F -o FILE
 // codes (finding = counted; hints via info):
 //   MAP_MODE_UNDEFINED (MAP-01,MIS-24) MAP_NO_MODE (MIS-24) MAP_PLAYERS (MAP-02) MAP_MATERIAL_SHADOWED (MAP-03)
@@ -65,14 +66,16 @@ const GOH_OFF = [
 const GOH_OFF_CODES = new Set(GOH_OFF.flatMap(g => g[0]));
 // known vanilla GoH faults: "<file>\t<CODE>\t<name, JSON>", name = the first quoted name of the finding, else its first number
 let KNOWN_GOH = null;
+const INC_RE = /\(\s*include\s+"([^"]*)"/gi;   // an (include "..") call in raw text (read once: keepIncludes)
 const knownGoh = () => KNOWN_GOH || (KNOWN_GOH = new Set(fs.readFileSync(path.join(__dirname, 'known-vanilla-goh.txt'), 'utf8').split(/\r?\n/).filter(l => l && l[0] !== ';')));
 const knownKey = (rel, code, msg) => { const m = /"([^"]*)"/.exec(msg) || /(\d+)/.exec(msg); return String(rel).replace(/\\/g, '/') + '\t' + code + '\t' + JSON.stringify((m ? m[1] : '').toLowerCase()); };
 const games = require('../lib/games');
 const NEW_CLASSES = new Set(['armored_warfare', 'combined_arms']);
 
 // ---- light tree: {name, vals:[{k,text,value}], kids:[lite], line, file}; MOD blocks are flattened (content kept)
+// ln = lc(name), set once per node (the checks compare lower-case names on every node, many times per tree)
 function lite(b) {
-  const o = { name: null, vals: [], kids: [], line: b.line, file: b.file, disabled: !!b.disabled };
+  const o = { name: null, vals: [], kids: [], line: b.line, file: b.file, disabled: !!b.disabled, ln: '' };
   const walk = items => {
     for (const it of items) {
       if (it.k === 'BLOCK') o.kids.push(lite(it));
@@ -82,30 +85,76 @@ function lite(b) {
     }
   };
   walk(b.items);
+  o.ln = lc(o.name);
   return o;
 }
+// MILINT_FAST=0: the old way (no kept lower-case names, map points scanned per mission, line numbers by slicing); also used for a file
+// whose checks throw with the speed-ups on (perFile below)
+let FAST = process.env.MILINT_FAST !== '0';
+const FAULT = process.env.MILINT_TEST_FAULT || null;   // test only: perFile of this key throws while FAST (fallback test)
 const lc = s => (s == null ? '' : String(s)).toLowerCase();
-const kid = (n, name) => n.kids.find(k => lc(k.name) === lc(name));
-const kidsOf = (n, name) => n.kids.filter(k => lc(k.name) === lc(name));
+const lnOf = n => (FAST && n.ln !== undefined ? n.ln : lc(n.name));
+const kid = (n, name) => { if (!FAST) return n.kids.find(k => lc(k.name) === lc(name)); const l = lc(name); return n.kids.find(k => lnOf(k) === l); };
+const kidsOf = (n, name) => { if (!FAST) return n.kids.filter(k => lc(k.name) === lc(name)); const l = lc(name); return n.kids.filter(k => lnOf(k) === l); };
 const str = (n, name) => { const k = kid(n, name); return k && k.vals.length ? String(k.vals[0].value) : null; };
 const num = (n, name) => { const k = kid(n, name); if (!k || !k.vals.length) return null; const v = Number(k.vals[0].value); return isNaN(v) ? null : v; };
 const ser = ns => ns.map(n => '{' + lc(n.name) + ' ' + n.vals.map(v => v.text).join(' ') + ser(n.kids) + '}').join('');
 // library entry e is covered by mtl block m: same layers, every key of e present with equal value in m (library omits defaults)
 const covered = (e, m) => {
   const a = e.kids, b = m.kids;
-  return a.length === b.length && a.every((x, i) => lc(x.name) === lc(b[i].name) && x.vals.map(v => v.text).join(' ') === b[i].vals.map(v => v.text).join(' ') && x.kids.every(y => b[i].kids.some(z => ser([y]) === ser([z]))));
+  return a.length === b.length && a.every((x, i) => lnOf(x) === lc(b[i].name) && x.vals.map(v => v.text).join(' ') === b[i].vals.map(v => v.text).join(' ') && x.kids.every(y => b[i].kids.some(z => ser([y]) === ser([z]))));
 };
+// newlines(s) -> offsets of every '\n'; lineIn(nl, ix) = s.slice(0, ix).split('\n').length (newlines before ix, + 1)
+function newlines(s) { const a = []; for (let j = s.indexOf('\n'); j >= 0; j = s.indexOf('\n', j + 1)) a.push(j); return a; }
+function lineIn(nl, ix) { let lo = 0, hi = nl.length; while (lo < hi) { const mid = (lo + hi) >> 1; if (nl[mid] < ix) lo = mid + 1; else hi = mid; } return lo + 1; }
 function each(n, f, depth = 0) { f(n, depth); for (const k of n.kids) each(k, f, depth + 1); }
 
-function check(o) {
+// Speed wave 2b): every file is read once per map folder (the source's memo, emptied when the per-file loop
+// moves to another folder) and every map/mission tree is parsed once per folder (before: a map file read 11 times and parsed 6
+// times). check(o) is sync as before; checkAsync(o) (the CLI) gives the same report and reads the loose mod files ahead, window
+// ARSENAL_READ_WINDOW (default 32) at a time (lib/sdlset readAhead). o.restorePoints: read <mod>/.arsenal-undo too (off: sdlset).
+// checkAsync(o, ra): ra = a readAhead stand-in to read through (lib/modset read-once pass, ctx.js), closed at the end
+function check(o) { const g = body(o, null); let r = g.next(); while (!r.done) r = g.next(); return r.value; }
+async function checkAsync(o, ra0) {
+  const ra = ra0 || sdlset.readAhead({ window: +process.env.ARSENAL_READ_WINDOW || 32 });
+  try { const g = body(o, ra); let r = g.next(); while (!r.done) { if (r.value) await r.value; r = g.next(); } return r.value; } finally { ra.close(); }
+}
+function* body(o, ra) {
   const rep = createReport();
+  // FAST fallback: a step's findings are held until it ends; a step that throws with the speed-ups on is run again the old way
+  // (its held findings dropped), so a fault in a speed-up costs time, not findings. Off (MILINT_FAST=0): steps run as before
+  const radd = rep.add, rinfo = rep.info;
+  let held = null;
+  rep.add = (...a) => { if (held) held.push([radd, a]); else radd(...a); };
+  rep.info = (...a) => { if (held) held.push([rinfo, a]); else rinfo(...a); };
+  const step = fn => {
+    if (!FAST) return fn();
+    held = [];
+    try { fn(); } catch (e) { held = null; FAST = false; try { fn(); } finally { FAST = true; } return; }
+    const h = held; held = null;
+    for (const [f, a] of h) f(...a);
+  };
   let mods = o.mods;
   if (!mods && o.folder && o.gameDir && path.dirname(path.resolve(o.folder)).toLowerCase() === path.resolve(o.gameDir, 'mods').toLowerCase()) mods = [path.basename(path.resolve(o.folder))];
-  const src = sdlset.createSource({ gameDir: o.gameDir, mods, folder: o.folder, exe: games.exeOf(o.exe) || undefined });
+  const src = sdlset.createSource({ gameDir: o.gameDir, mods, folder: o.folder, exe: games.exeOf(o.exe) || undefined, ...(o.restorePoints != null ? { restorePoints: !!o.restorePoints } : {}) });
+  src.memo(true);                              // read once (milint never writes); emptied per folder in the per-file loop
+  // keep: loose files read in many folders (includes, units sets), taken from the read-ahead once and kept for the whole run (the
+  // memo above is emptied per folder); every other file comes from ra as before. An included file keepIncludes did not foresee
+  // (a games set a map folder's check parses) is kept too: from ra when it holds it, else from disk (then let go there)
+  const keep = new Map();
+  if (ra) src.ahead({ take: key => {
+    let b = keep.get(key); if (b !== undefined) return b;
+    b = ra.take(key);
+    if (!src.included.has(key)) return b;
+    if (b === undefined) { b = fs.readFileSync(src.local.get(key)); ra.drop(key); }
+    keep.set(key, b); return b;
+  } });
   const exe = src.v ? src.v.exe : (games.exeOf(o.exe) || 'as64'), goh = exe === 'goh';   // the game whose rules apply
   const vfsMode = !!o.vfs;
   const all = new Set([...(src.v ? src.v.files.keys() : []), ...src.local.keys()]);
-  const inRes = k => !src.hasRes || relPath(src.folder, src.local.get(k)).toLowerCase().startsWith('resource/');   // VFS-26: with resource/ only it is mounted
+  const F = src.folder || '', FL = F.length;
+  const isRes = f => (f.length > FL + 9 && f.startsWith(F) && (f[FL] === '\\' || f[FL] === '/')) ? f.slice(FL + 1, FL + 10).toLowerCase().replace('\\', '/') === 'resource/' : relPath(F, f).toLowerCase().startsWith('resource/');
+  const inRes = k => !src.hasRes || isRes(src.local.get(k));   // VFS-26: with resource/ only it is mounted
   const mine = new Set(vfsMode ? all : [...[...src.local.keys()].filter(inRes), ...(src.v ? [...src.v.files.keys()].filter(k => src.isModKey(k)) : [])]);
   const shown = k => (src.local.has(k) ? relPath(src.folder, src.local.get(k)) : k);
   if (goh) {   // GoH: rules not known for GoH are not reported (GOH_OFF); a known vanilla GoH site is info
@@ -118,18 +167,23 @@ function check(o) {
   const addAt = (k, n, code, msg) => rep.add(n.file || shown(k), n.line, code, msg);   // node may come from an include (.inc): cite that file
   const hint = (k, line, code, msg) => rep.info(shown(k), line, code, msg);
   const gohSoft = (k, n, code, msg) => (goh ? rep.info(n.file || shown(k), n.line, code, msg + ' [AS2 rule; GoH vanilla ships this, GoH effect unverified]') : addAt(k, n, code, msg));
-  const trees = new Map(), mapIdCache = new Map();
+  const trees = new Map(), mapIdCache = new Map(), mapPts = new Map();   // mapPts: folder -> map file points (FAST)
+  const flagMaps = new Map(), botModes = new Map();   // FAST: folder -> its map file names a flag_point; mode -> its games set enables bots
+  const mapTrees = new Map();                 // map/mission trees are big: kept for the folder the per-file loop is in only
   const incMiss = new Map();                  // map/mission key -> [{file,line,msg}] INCLUDE_MISSING from the sdlx read
   const tree = key => {                       // lite root (children of file root) or null; errors ignored (sdllint's job)
-    if (trees.has(key)) return trees.get(key);
+    const isMapKey = key.startsWith('resource/map/'), cache = isMapKey ? mapTrees : trees;
+    if (cache.has(key)) return cache.get(key);
     let t = null;
+    const miss = [];
     try {
       const r = src.read({ key, file: key, get: () => src.get(key) }, (file, line, code, msg) => {   // only a missing include is ours: the engine stops the load (chain-n g1)
-        if (code === 'INCLUDE_MISSING' && key.startsWith('resource/map/')) (incMiss.get(key) || incMiss.set(key, []).get(key)).push({ file, line, msg });
+        if (code === 'INCLUDE_MISSING' && isMapKey) miss.push({ file, line, msg });
       });
       if (r) t = lite(r.root);
     } catch (e) { t = null; }
-    if (!key.startsWith('resource/map/')) trees.set(key, t);   // map/mission trees are big: not cached
+    if (isMapKey && !incMiss.has(key)) incMiss.set(key, miss);   // one parse's list (before: appended again by every re-parse)
+    cache.set(key, t);
     return t;
   };
   const text = key => { const b = src.get(key); return b ? b.toString('latin1') : ''; };
@@ -166,7 +220,75 @@ function check(o) {
   }
 
   // ---------- per-file checks
+  // reads(k): the files the checks of k read first, in order (k, and for a mission the map.info / mode .info and the map file);
+  // the read-ahead takes them in loop order. Others (includes, units sets) are read when asked, once (memo).
+  const reads = k => {
+    const b = baseOf(k), isMap = k.startsWith('resource/map/');
+    if (isMap && (b === 'map' || b.endsWith('.mi'))) return b === 'map' || !k.startsWith('resource/map/multi/') ? [k] : [k, goh ? k.slice(0, -3) + '.info' : dirOf(k) + 'map.info', dirOf(k) + 'map'];
+    if (isMap && (b.endsWith('.info') || b === 'map.net' || b.endsWith('.materials'))) return [k];
+    if (k.startsWith('resource/set/multiplayer/games/') && /\.(set|inc)$/.test(k)) return [k];
+    if (k === 'resource/set/pather.set' || /\/pather[^/]*\.set$/.test(k)) return [k];
+    if (k.startsWith('resource/script/multiplayer/') && k.endsWith('.lua')) return [k];
+    if (/^resource\/set\/multiplayer\/armies\/[^/]+\.set$/.test(k)) return [k];
+    if (k.startsWith('resource/') && k.endsWith('.ext')) return [k];
+    return null;
+  };
+  const work = new Map(), last = new Map();   // key -> files it reads; file -> the last key that reads it
+  for (const k of mine) { const r = reads(k); if (r) { work.set(k, r); for (const x of r) last.set(x, k); } }
+  // read once: the loose units sets (units(), botData()) come first, kept for the run
+  const unitSets = ra ? [...all].sort().filter(k => /^resource\/set\/multiplayer\/units\/.+\.set$/.test(k) && src.loosePath(k)) : [];
+  if (ra) { const added = new Set(); for (const x of unitSets) { added.add(x); ra.add(x, src.loosePath(x)); } for (const r of work.values()) for (const x of r) if (!added.has(x)) { added.add(x); const p = src.loosePath(x); if (p) ra.add(x, p); } }
+  if (unitSets.length) yield* keepAll(unitSets);
+  let group = null;
   for (const k of mine) {
+    const r = work.get(k);
+    if (r) {
+      const g = dirOf(k);
+      if (g !== group) { group = g; src.memo(false); src.memo(true); mapTrees.clear(); }   // a new folder: let the last one's bytes and trees go
+      if (ra) { const ws = r.map(x => ra.wait(x)).filter(Boolean); if (ws.length) yield Promise.all(ws); yield* keepIncludes(r); }
+    }
+    step(() => perFile(k));
+    if (r && ra) for (const x of r) if (last.get(x) === k) ra.drop(x);   // read ahead and not taken (a memo hit): let go
+  }
+  step(patches);
+  step(botData);
+  if (goh) for (const [codes, why] of GOH_OFF) rep.info('-', 0, 'GOH_NOT_CHECKED', 'not checked for GoH: ' + codes.join(' ') + ': ' + why);
+  return rep;
+
+  // keepAll(keys): the loose files of keys taken from the read-ahead into keep (added there first when not yet); a file it does not
+  // hold (failed, not loose) is read when asked, as before
+  function* keepAll(keys) {
+    const ks = keys.filter(x => !keep.has(x));
+    for (const x of ks) ra.add(x, src.loosePath(x));
+    for (let i = 0; i < ks.length; i += 32) {   // 32 waits at a time (each wait starts its read)
+      const part = ks.slice(i, i + 32), ws = part.map(x => ra.wait(x)).filter(Boolean);
+      if (ws.length) yield Promise.all(ws);
+      for (const x of part) { const b = ra.take(x); if (b !== undefined) keep.set(x, b); }
+    }
+  }
+  // keepIncludes(r): the loose files the files of r include (any depth, resolved as sdlx does), read through the read-ahead into
+  // keep before the checks parse r, so an include many folders share is read once. A guess from the raw text: an include it misses
+  // is read when asked, as before; one it adds that no parse asks for (a commented-out line) is read and not used. Same findings
+  function* keepIncludes(r) {
+    const seen = new Set(r);
+    let front = r.filter(x => src.loosePath(x));
+    while (front.length) {
+      const next = [];
+      for (const x of front) {
+        let b; try { b = src.get(x); } catch (e) { b = null; }
+        if (!b) continue;
+        for (const m of b.toString('latin1').matchAll(INC_RE)) {
+          const q = sdlx.resolveInclude(m[1], x);
+          if (q.kind === 'virtual' && !seen.has(q.key)) { seen.add(q.key); if (src.loosePath(q.key)) next.push(q.key); }
+        }
+      }
+      if (next.length) yield* keepAll(next);
+      front = next;
+    }
+  }
+
+  function perFile(k) {
+    if (FAST && FAULT === k) throw new Error('MILINT_TEST_FAULT ' + k);   // test hook (test/fastfix.js): the fallback path
     const b = baseOf(k), isMap = k.startsWith('resource/map/');
     if (isMap && (b === 'map' || b.endsWith('.mi'))) mapFile(k, b === 'map');
     if (isMap && (goh ? b.endsWith('.info') && b !== 'map.info' : b === 'map.info')) mapInfo(k);   // GoH: the mode's <mission>.info {game} (no map.info)
@@ -180,10 +302,6 @@ function check(o) {
     if (/^resource\/set\/multiplayer\/armies\/[^/]+\.set$/.test(k)) army(k);
     if (k.startsWith('resource/') && k.endsWith('.ext')) fixInventory(k);
   }
-  patches();
-  botData();
-  if (goh) for (const [codes, why] of GOH_OFF) rep.info('-', 0, 'GOH_NOT_CHECKED', 'not checked for GoH: ' + codes.join(' ') + ': ' + why);
-  return rep;
 
   // ---- map / mission files
   function mapFile(k, isMapFile) {
@@ -192,27 +310,31 @@ function check(o) {
     if (!t) return;
     const topName = isMapFile ? 'map' : 'mission';
     for (const top of t.kids) {
-      if (lc(top.name) !== topName) continue;
-      for (const c of top.kids) if (isMapFile && lc(c.name) === 'clip') addAt(k, c, 'MAP_CLIP_OBSOLETE', 'obsolete {Clip} block: engine warns "Obsolete block clip. Resave map"');
-      each(top, n => {
-        if (lc(n.name) !== 'xform') return;
+      if (lnOf(top) !== topName) continue;
+      for (const c of top.kids) if (isMapFile && lnOf(c) === 'clip') addAt(k, c, 'MAP_CLIP_OBSOLETE', 'obsolete {Clip} block: engine warns "Obsolete block clip. Resave map"');
+      const xformAt = n => {
         const toks = n.vals.filter(v => v.k === 'IDENT' || v.k === 'STRING');
         for (const v of toks) if (!XFORM.has(lc(v.text))) addAt(k, n, 'MAP_XFORM_TOKEN', `xform token '${v.text}' (only zl zw y scale): engine reports unexpected token`);
         for (const c of n.kids) addAt(k, c, 'MAP_XFORM_TOKEN', `xform sub-block {${c.name}}: only tokens zl zw y scale are read`);
-      });
-      each(top, n => {                         // MAP-25: Entity {Position x y [z]}, third number = fixed height
-        if (lc(n.name) !== 'entity') return;
-        for (const p of kidsOf(n, 'Position'))
-          if (p.vals.length < 2 || p.vals.length > 3 || p.vals.some(v => isNaN(Number(v.value)))) addAt(k, p, 'WARN_MAP_POSITION', `Position has ${p.vals.length} value(s): reader takes 'x y [z]' (3rd = fixed height; omit to snap to terrain)`);
-      });
+      };
+      const badPos = n => kidsOf(n, 'Position').filter(p => p.vals.length < 2 || p.vals.length > 3 || p.vals.some(v => isNaN(Number(v.value))));   // MAP-25: Entity {Position x y [z]}, third number = fixed height
+      const posAt = p => addAt(k, p, 'WARN_MAP_POSITION', `Position has ${p.vals.length} value(s): reader takes 'x y [z]' (3rd = fixed height; omit to snap to terrain)`);
+      if (FAST) {   // one walk of the tree for both rules; the Position findings still come after every xform one
+        const pos = [];
+        each(top, n => { const l = lnOf(n); if (l === 'xform') xformAt(n); else if (l === 'entity') for (const p of badPos(n)) pos.push(p); });
+        for (const p of pos) posAt(p);
+      } else {
+        each(top, n => { if (lnOf(n) === 'xform') xformAt(n); });
+        each(top, n => { if (lnOf(n) === 'entity') for (const p of badPos(n)) posAt(p); });
+      }
       if (isMapFile) continue;
       modeFlags(k, top);
       const h = kid(top, 'Helpers');
-      if (h) for (const c of h.kids) if (c.name !== null && !HELPERS.has(lc(c.name))) addAt(k, c, 'MI_HELPER_UNKNOWN', `Helpers sub-block '${c.name}' unknown: engine reports unexpected token`);
+      if (h) for (const c of h.kids) if (c.name !== null && !HELPERS.has(lnOf(c))) addAt(k, c, 'MI_HELPER_UNKNOWN', `Helpers sub-block '${c.name}' unknown: engine reports unexpected token`);
       const pl = kid(top, 'Players'); if (pl) players(k, pl);
       let maxPlayers = null;
       if (k.startsWith('resource/map/multi/')) {   // GoH: no map.info, each mode has its own <mode>.info {game {maxPlayers}}
-        const mi = tree(goh ? k.slice(0, -3) + '.info' : dirOf(k) + 'map.info'), g = mi && mi.kids.find(x => lc(x.name) === 'game');
+        const mi = tree(goh ? k.slice(0, -3) + '.info' : dirOf(k) + 'map.info'), g = mi && mi.kids.find(x => lnOf(x) === 'game');
         if (g) maxPlayers = num(g, 'maxPlayers');
       }
       lintMi({ k, top, add, hint, maxPlayers, mapIds: () => mapEntityIds(dirOf(k)), defCat, game: goh ? 'goh' : 'as2' });
@@ -237,13 +359,23 @@ function check(o) {
   // TST-34: each lobby slot needs a map point team(a|b) order(1..maxPlayers/2), or an order-0 point of that team
   function mapPoints(k, top, mx) {
     const pts = { a: new Set(), b: new Set() };
-    const scan = t => each(t, n => {
-      if (lc(n.name) !== 'extender' || !n.vals.length || lc(n.vals[0].value) !== 'map_point') return;
+    const scan = (t, into = pts) => each(t, n => {
+      if (lnOf(n) !== 'extender' || !n.vals.length || lc(n.vals[0].value) !== 'map_point') return;
       const tm = lc(str(n, 'team') || ''), od = num(n, 'order'), vis = lc(str(n, 'visor') || '');
-      if ((tm === 'a' || tm === 'b') && !/flag/.test(vis)) pts[tm].add(od === null ? 0 : od);
+      if ((tm === 'a' || tm === 'b') && !/flag/.test(vis)) into[tm].add(od === null ? 0 : od);
     });
     scan(top);
-    const d = dirOf(k); if (src.get(d + 'map')) { const t = tree(d + 'map'); if (t) scan(t); }
+    const d = dirOf(k);
+    if (!FAST) { if (src.get(d + 'map')) { const t = tree(d + 'map'); if (t) scan(t); } }
+    else {   // the folder's map file points: scanned once per folder (each mode .mi of the folder asked again before)
+      let mp = mapPts.get(d);
+      if (!mp) {
+        const got = { a: new Set(), b: new Set() };
+        if (src.get(d + 'map')) { const t = tree(d + 'map'); if (t) scan(t, got); }
+        mapPts.set(d, mp = got);
+      }
+      for (const tm of ['a', 'b']) for (const x of mp[tm]) pts[tm].add(x);
+    }
     const need = Math.ceil(mx / 2);
     for (const tm of ['a', 'b']) {
       if (pts[tm].has(0)) continue;
@@ -257,7 +389,7 @@ function check(o) {
     if (!src.get(mk)) return;
     const t = tree(mk); if (!t) return;
     const names = new Set();
-    for (const top of t.kids) if (lc(top.name) === 'map') for (const c of kidsOf(top, 'Clips')) for (const e of c.kids) if (e.name) names.add(lc(e.name));
+    for (const top of t.kids) if (lnOf(top) === 'map') for (const c of kidsOf(top, 'Clips')) for (const e of c.kids) if (e.name) names.add(lnOf(e));
     const miss = ['captureflaga', 'captureflagb'].filter(n => !names.has(n));
     if (miss.length) (vfsMode ? hint : add)(mk, 0, 'MAP_CAPTURE_CLIPS', `captureflag.mi beside this map, but {Clips} lacks ${miss.join(', ')}: crash at start "Clipper 'captureflaga' is not found!"; add both clip blocks (copy "[auto]", cut to each team's half) or drop captureflag.mi`);
   }
@@ -265,16 +397,27 @@ function check(o) {
   function modeFlags(k, top) {
     if (!k.startsWith('resource/map/multi/')) return;
     const mode = baseOf(k).slice(0, -3), defs = [];
-    for (const e of top.kids) if (lc(e.name) === 'entity' && e.vals.length && /^flag_point/i.test(String(e.vals[0].value))) defs.push(lc(String(e.vals[0].value)));
+    for (const e of top.kids) if (lnOf(e) === 'entity' && e.vals.length && /^flag_point/i.test(String(e.vals[0].value))) defs.push(lc(String(e.vals[0].value)));
     const numbered = defs.filter(d => /^flag_point_[0-9]+$/.test(d)).length, front = defs.filter(d => d === 'flag_point_frontlines').length;
     if (mode === 'combat' && defs.length) addAt(k, top, 'WARN_MAP_MODE_FLAGS', `combat.mi has ${defs.length} flag_point entities; vanilla combat maps have spawn map_points only (flags belong to battle_zones.mi)`);
     else if (/^battle_zones/.test(mode) && !numbered) addAt(k, top, 'WARN_MAP_MODE_FLAGS', `${mode}.mi has no flag_point_N entities: vanilla battle_zones maps hand-place maxPlayers+1 flags (MAP-20)`);
     else if (mode === 'captureflag' && !front) addAt(k, top, 'WARN_MAP_MODE_FLAGS', 'captureflag.mi has no flag_point_frontlines entity (vanilla: one, name captureflag)');
-    if (!goh && !defs.length && gameSets.has(mode) && botsOn(mode) && !/"flag_point/i.test(text(dirOf(k) + 'map'))) addAt(k, top, 'MIS_BOT_NO_FLAGS', `games/${mode}.set enables bots but ${mode}.mi has no flag_point entity: bots buy units and never give an order; place flag_point entities or turn bots off for this mode`);
+    if (!goh && !defs.length && gameSets.has(mode) && botsOn(mode) && !mapHasFlag(dirOf(k))) addAt(k, top, 'MIS_BOT_NO_FLAGS', `games/${mode}.set enables bots but ${mode}.mi has no flag_point entity: bots buy units and never give an order; place flag_point entities or turn bots off for this mode`);
   }
-  function botsOn(mode) {                      // MIS-65: {enableBots} (bare or non-zero) anywhere in the mode's game set
+  // FAST: both answers kept for the run (per mode / per map folder; the files do not change during it)
+  function mapHasFlag(d) {
+    if (!FAST) return /"flag_point/i.test(text(d + 'map'));
+    let r = flagMaps.get(d); if (r === undefined) flagMaps.set(d, r = /"flag_point/i.test(text(d + 'map')));
+    return r;
+  }
+  function botsOn(mode) {
+    if (!FAST) return botsOn0(mode);
+    let r = botModes.get(mode); if (r === undefined) botModes.set(mode, r = botsOn0(mode));
+    return r;
+  }
+  function botsOn0(mode) {                     // MIS-65: {enableBots} (bare or non-zero) anywhere in the mode's game set
     const t = tree(`resource/set/multiplayer/games/${mode}.set`); let on = false;
-    if (t) each(t, n => { if (lc(n.name) === 'enablebots' && (!n.vals.length || Number(n.vals[0].value) !== 0)) on = true; });
+    if (t) each(t, n => { if (lnOf(n) === 'enablebots' && (!n.vals.length || Number(n.vals[0].value) !== 0)) on = true; });
     return on;
   }
   function mapEntityIds(d) {                   // entity ids + MIDs the folder's `map` file defines (missions {Link}/{mids} may point at them)
@@ -282,7 +425,7 @@ function check(o) {
     const r = { ids: new Set(), mids: new Set(), has: false };
     const t = src.get(d + 'map') ? tree(d + 'map') : null;
     if (t) for (const top of t.kids) {
-      if (lc(top.name) !== 'map') continue;
+      if (lnOf(top) !== 'map') continue;
       r.has = true;
       for (const e of top.kids) {
         if (e.vals.length >= 2 && e.vals[1].k === 'INTEGER' && e.kids.length) r.ids.add(Number(e.vals[1].value));
@@ -308,7 +451,7 @@ function check(o) {
   function mapInfo(k) {
     const t = tree(k); if (!t) return;
     for (const g of t.kids) {
-      if (lc(g.name) !== 'game') continue;
+      if (lnOf(g) !== 'game') continue;
       const mx = num(g, 'maxPlayers'), mn = num(g, 'minPlayers');
       if (mx !== null) {
         if (mx % 2) add(k, kid(g, 'maxPlayers').line, 'MAP_PLAYERS', `maxPlayers ${mx} is odd: engine rounds up to ${mx + 1}`);
@@ -324,22 +467,22 @@ function check(o) {
         const a = num(rk, 'minPlayers'), c = num(rk, 'maxPlayers');
         for (const [nm, x] of [['minPlayers', a], ['maxPlayers', c]]) if (x !== null && (x < 2 || x > MP_MAX_PLAYERS)) addAt(k, rk, 'MAP_PLAYERS', `ranked ${nm} ${x} outside 2..${MP_MAX_PLAYERS}: clamped`);
       }
-      each(g, n => { if (lc(n.name) === 'gameduration') duration(k, n); });
+      each(g, n => { if (lnOf(n) === 'gameduration') duration(k, n); });
     }
   }
   function duration(k, n) {
     if (!n.vals.length || n.vals[0].k !== 'STRING') return;
     if (!DURATIONS.has(lc(n.vals[0].value))) addAt(k, n, 'MIS_DURATION', `gameDuration "${n.vals[0].value}" not in the lobby list (10 15 20 25 30 40 50 60 90 120 min)`);
   }
-  function durations(k) { const t = tree(k); if (t) each(t, n => { if (lc(n.name) === 'gameduration') duration(k, n); }); }
+  function durations(k) { const t = tree(k); if (t) each(t, n => { if (lnOf(n) === 'gameduration') duration(k, n); }); }
   function materials(k) {
     const t = tree(k); if (!t) return;
     for (const m of t.kids) {
-      if (lc(m.name) !== 'materials') continue;
+      if (lnOf(m) !== 'materials') continue;
       for (const e of m.kids) {
-        const mk = e.name && dirOf(k) + lc(e.name) + '.mtl';
+        const mk = e.name && dirOf(k) + lnOf(e) + '.mtl';
         if (!mk || !all.has(mk)) continue;
-        const mt = tree(mk), mb = mt && mt.kids.find(x => lc(x.name) === 'material');
+        const mt = tree(mk), mb = mt && mt.kids.find(x => lnOf(x) === 'material');
         if (mb && covered(e, mb)) hint(k, e.line, 'MAP_MATERIAL_SHADOWED', `library entry "${e.name}" duplicates ${e.name}.mtl (harmless)`);
         else addAt(k, e, 'MAP_MATERIAL_SHADOWED', `library entry "${e.name}" ignored and differs: ${e.name}.mtl exists in the map folder and is read first`);
       }
@@ -348,7 +491,7 @@ function check(o) {
   function pather(k) {
     const t = tree(k); if (!t) return;
     each(t, n => {
-      if (lc(n.name) !== 'height' || !n.vals.length) return;
+      if (lnOf(n) !== 'height' || !n.vals.length) return;
       const nums = n.vals.filter(v => v.k === 'INTEGER' || v.k === 'FLOAT').length;
       if (nums !== 15) addAt(k, n, 'MAP_SLOPE_TABLE', `Height table has ${nums} entries (15 slope classes of 6 degrees)`);
     });
@@ -358,7 +501,7 @@ function check(o) {
   function preset(k) {
     const t = tree(k); if (!t) return;
     each(t, (n, dep) => {
-      const nm = lc(n.name);
+      const nm = lnOf(n);
       if (nm === 'common') { const bg = kid(n, 'budgets'); if (bg && bg.kids.length && !kid(bg, 'vehicle')) addAt(k, bg, 'MIS_BUDGET_NO_VEHICLE', 'common budgets have no budget named "vehicle" (hard-coded by bot Income(), HUD, KOTH)'); }
       else if (nm === 'budgets') budgets(k, n);
       else if (nm === 'unitset') {
@@ -375,7 +518,7 @@ function check(o) {
           if (!cf || !str(cf, 'value')) gohSoft(k, e, 'MIS_BALANCE_NO_CHARGE', `${nm} entry "${e.name}" sets balancingFactorBonus but chargeFactors.value is empty: it falls back to common`);
         }
       } else if (nm === 'teamsettings') {
-        for (const key of ['minTeamPlayers', 'maxTeamPlayers']) each(n, c => { if (lc(c.name) === lc(key)) (vfsMode ? hint : add)(k, c.line, 'MIS_TEAMKEY_UNREAD', `${key} is not read; use ${key.replace('Players', 'Slots')}`); });
+        for (const key of ['minTeamPlayers', 'maxTeamPlayers']) each(n, c => { if (lnOf(c) === lc(key)) (vfsMode ? hint : add)(k, c.line, 'MIS_TEAMKEY_UNREAD', `${key} is not read; use ${key.replace('Players', 'Slots')}`); });
       } else if (nm === 'class' && n.vals.length && dep === 2) {
         const c = lc(n.vals[0].value);
         if (NEW_CLASSES.has(c) && !miTitles.has(c)) addAt(k, n, 'MIS_CLASS_NO_MI', `class ${c} has no stock rules: needs a map with <mode>.mi (none found)`);
@@ -447,11 +590,13 @@ function check(o) {
   // MIS-07: army id < 0 is not selectable
   function army(k) {
     const t = tree(k); if (!t) return;
-    for (const a of t.kids) if (lc(a.name) === 'army') { const id = kid(a, 'id'), v = num(a, 'id'); if (v !== null && v < 0) addAt(k, id, 'MIS_ARMY_ID_NEGATIVE', `army id ${v} is negative: the army cannot be picked in the lobby; use an id of 0 or more`); }
+    for (const a of t.kids) if (lnOf(a) === 'army') { const id = kid(a, 'id'), v = num(a, 'id'); if (v !== null && v < 0) addAt(k, id, 'MIS_ARMY_ID_NEGATIVE', `army id ${v} is negative: the army cannot be picked in the lobby; use an id of 0 or more`); }
   }
   // MIS-67: fix_inventory on human brains skips the breed kit: bot men spawn unarmed
   function fixInventory(k) {
-    text(k).split('\n').forEach((ln, i) => {
+    const s = text(k);
+    if (FAST && !/fix_inventory/i.test(s)) return;   // no line can match without the word
+    s.split('\n').forEach((ln, i) => {
       const m = ln.replace(/;.*$/, '').match(/\{\s*fix_inventory(\s+(\S+?))?\s*\}/i);
       if (m && !/^(0|false|no|off)$/i.test(m[2] || '1')) add(k, i + 1, 'WARN_MIS_FIX_INVENTORY', 'fix_inventory on a human brain: bot men skip their breed kit and fight unarmed (no firearm kills); remove it');
     });
@@ -488,14 +633,15 @@ function check(o) {
     for (const kk of all) {
       if (!/^resource\/set\/multiplayer\/units\/.+\.set$/.test(kk)) continue;
       const t = tree(kk); if (!t) continue;
-      for (const u of t.kids) if (lc(u.name) === 'units') for (const e of u.kids) if (e.name) {
-        const prev = units.get(lc(e.name));
-        units.set(lc(e.name), { nfs: !!kid(e, 'not_for_sale') || (prev && prev.nfs && !e.kids.length) });
+      for (const u of t.kids) if (lnOf(u) === 'units') for (const e of u.kids) if (e.name) {
+        const prev = units.get(lnOf(e));
+        units.set(lnOf(e), { nfs: !!kid(e, 'not_for_sale') || (prev && prev.nfs && !e.kids.length) });
       }
     }
     const ps = s.indexOf('Purchases');
     if (ps < 0) return;
-    const body = s.slice(ps), lineOf = off => s.slice(0, ps + off).split('\n').length;
+    const nl = FAST ? newlines(s) : null;   // FAST: line by a search in the newline offsets (before: slice + split per call)
+    const body = s.slice(ps), lineOf = off => nl ? lineIn(nl, ps + off) : s.slice(0, ps + off).split('\n').length;
     const seenUnit = new Set();
     const used = new Set([...body.matchAll(/\[\s*"(\w+)"\s*\]\s*=\s*\{/g)].map(m => lc(m[1])));   // armies some stage serves
     for (const a of armies) if (!used.has(a)) hint(key, 0, 'MIS_BOT_ARMY_MISSING', `army "${a}" has no Units in any Purchases stage: its bots buy nothing`);
@@ -518,8 +664,8 @@ function check(o) {
       mats: new Set(['undef', 'ground', 'air', 'underwater', 'shallow_water', 'water', 'deep_water', 'bridge', 'bridge_wood']), have: false };
     const t = tree('resource/set/interaction_terrain/terrains.set');
     if (!t) return known;
-    for (const top of t.kids) if (lc(top.name) === 'terrains') for (const e of top.kids) if (e.name) {
-      known.have = true; known.mats.add(lc(e.name));
+    for (const top of t.kids) if (lnOf(top) === 'terrains') for (const e of top.kids) if (e.name) {
+      known.have = true; known.mats.add(lnOf(e));
       for (const p of (str(e, 'pp') || '').split(/[ \t]+/)) if (p) known.types.add(lc(p));
     }
     return known;
@@ -529,8 +675,8 @@ function check(o) {
     if (!m.cell || !m.width || !m.height) return;
     const t = src.get(dirOf(k) + 'map') ? tree(dirOf(k) + 'map') : null; if (!t) return;
     let n = 0, out = 0;
-    for (const top of t.kids) if (lc(top.name) === 'map') for (const e of top.kids) {
-      if (lc(e.name) !== 'entity') continue;
+    for (const top of t.kids) if (lnOf(top) === 'map') for (const e of top.kids) {
+      if (lnOf(e) !== 'entity') continue;
       const p = kid(e, 'Position'); if (!p || p.vals.length < 2) continue;
       const cx = (Number(p.vals[0].value) + m.offX) / m.cell, cy = (Number(p.vals[1].value) + m.offY) / m.cell;
       if (isNaN(cx) || isNaN(cy)) continue;
@@ -581,10 +727,10 @@ function check(o) {
       try {
         const r = sdlx.read(pak.read(ents, e), { file: '.patch', key: '.patch', open: () => null, onError() {} });
         const t = lite(r.root);
-        for (const top of t.kids) if (lc(top.name) === 'id' && top.vals.length) id = Number(top.vals[0].value);
-        if (id === null) each(t, c => { if (id === null && lc(c.name) === 'id' && c.vals.length) id = Number(c.vals[0].value); });
+        for (const top of t.kids) if (lnOf(top) === 'id' && top.vals.length) id = Number(top.vals[0].value);
+        if (id === null) each(t, c => { if (id === null && lnOf(c) === 'id' && c.vals.length) id = Number(c.vals[0].value); });
         each(t, c => {                         // KEY-23: patches run after the mod's resource/ mount, so a delete hits the mod's own file
-          if (lc(c.name) !== 'delete' || !c.vals.length) return;
+          if (lnOf(c) !== 'delete' || !c.vals.length) return;
           const p = 'resource/' + lc(String(c.vals[0].value)).replace(/\\/g, '/').replace(/^\/+/, '');
           if (src.local.has(p)) rep.add(rel, 0, 'WARN_MAP_PATCH_DELETE_OWN', `${baseOf(k)} deletes "${c.vals[0].value}", a file this mod ships in resource/: the patch runs after the mount and removes the mod's copy; drop the delete or rename the file`);
         });
@@ -594,21 +740,25 @@ function check(o) {
   }
 }
 
-module.exports = { check, lite };
+module.exports = { check, checkAsync, lite, main };
 // .lintrc + --format wiring (own arg parser): rc from --rc FILE, else nearest .lintrc walking up from `start`; --no-rc disables
 const { rcPrint } = require('../lib/cli');
-if (require.main === module) {
-  const args = process.argv.slice(2), o = {}, pos = [];
+// main(args, {ra, onError}): the CLI (and ctx.js, the read-once module form: the pass's reader as ra, no onError = the error
+// rejects the promise and the pass runs milint as a program instead)
+function main(args, { ra, onError } = {}) {
+  const o = {}, pos = [];
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (a === '--game') o.gameDir = args[++i]; else if (a === '--mods') o.mods = args[++i].split(',').filter(Boolean);
     else if (a === '--exe') { o.exe = args[++i]; if (!games.get(o.exe)) { console.error('milint: --exe ' + o.exe + ': as64, mowas_2 (mowas2) or goh'); process.exit(2); } }
-    else if (a === '--vfs') o.vfs = true; else if (a === '--rc') o.rcFile = args[++i]; else if (a === '--no-rc') o.noRc = true; else if (a === '--format') o.format = args[++i]; else if (a === '-o') o.output = args[++i]; else if (a === '-q') o.q = true; else pos.push(a);
+    else if (a === '--vfs') o.vfs = true; else if (a === '--restore-points') o.restorePoints = true; else if (a === '--rc') o.rcFile = args[++i]; else if (a === '--no-rc') o.noRc = true; else if (a === '--format') o.format = args[++i]; else if (a === '-o') o.output = args[++i]; else if (a === '-q') o.q = true; else pos.push(a);
   }
   o.folder = pos[0];
   if (o.exe && !o.gameDir && (games.kindOf(o.exe) === 'goh' || o.vfs)) o.gameDir = games.install(o.exe).dir || undefined;   // --exe goh: the GoH install; --vfs --exe x: that game's install
   if (!o.folder && !o.vfs || o.vfs && !o.gameDir) { console.error('usage: milint <mod folder> [--game dir] [--exe as64|mowas_2|goh] [--mods a,b] [-q] | --vfs --game dir [--exe ..]'); process.exit(2); }
-  const rep = check(o);
+  return checkAsync(o, ra).then(rep => {
   if (o.q) for (const f of rep.toJSON().info) if (f.code === 'GOH_NOT_CHECKED') console.error('milint: ' + f.msg);   // -q hides info: the GoH skip list still shows
   rcPrint(rep, o, o.folder || o.gameDir, 'milint', { showInfo: !o.q, byCode: true });
+  }, onError);
 }
+if (require.main === module) main(process.argv.slice(2), { onError: e => { console.error('milint: ' + (e && e.stack || e)); process.exit(2); } });

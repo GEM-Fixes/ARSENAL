@@ -170,7 +170,7 @@ A skill is a short router (SKILL.md, at most 60 lines) plus sub-files (at most 8
   - `search-boxes.md` (29 lines): arsenal-gui-dev: search and filter boxes
   - `shape.md` (32 lines): arsenal-gui-dev: how the GUI is built
   - `strings.md` (31 lines): arsenal-gui-dev: strings and translations
-  - `tests-files.md` (34 lines): arsenal-gui-dev: which test file guards what
+  - `tests-files.md` (36 lines): arsenal-gui-dev: which test file guards what
   - `tests-which.md` (35 lines): arsenal-gui-dev: what to run after which change
   - `write-routes.md` (33 lines): arsenal-gui-dev: a route that writes into a mod
 - `arsenal-gui-use` (SKILL.md 49 lines): Do a modding task THROUGH the ARSENAL GUI (the local web window of this repo, node tools/gui/gui.js, game tabs MoW:AS2 / AS64 / GoH for Men of War Assault Squad 2, its 64-bit build and Gates of Hell) or guide the...
@@ -183,7 +183,7 @@ A skill is a short router (SKILL.md, at most 60 lines) plus sub-files (at most 8
   - `pages-ide.md` (24 lines): arsenal-gui-use: pages of tab IDE (`ide`)
   - `pages-maps.md` (33 lines): arsenal-gui-use: pages of tab Maps & Missions (`maps`)
   - `pages-models.md` (27 lines): arsenal-gui-use: pages of tab Models & Sim (`models`)
-  - `pages-mods.md` (31 lines): arsenal-gui-use: pages of tab Mods (`mods`)
+  - `pages-mods.md` (32 lines): arsenal-gui-use: pages of tab Mods (`mods`)
   - `pages-share.md` (37 lines): arsenal-gui-use: pages of tab Test, Share & Play (`share`)
   - `pages-tools.md` (27 lines): arsenal-gui-use: pages of tab Tools & Settings (`tools`)
   - `pages-top.md` (22 lines): arsenal-gui-use: above the tabs
@@ -226,7 +226,7 @@ A skill is a short router (SKILL.md, at most 60 lines) plus sub-files (at most 8
   - `lint-syntax.md` (41 lines): mow-mod-check-fix: syntax errors (sdllint)
   - `lint-text.md` (43 lines): mow-mod-check-fix: text findings (lnglint, loccover)
   - `mod-info-check.md` (42 lines): mow-mod-check-fix: check mod.info
-  - `one-pass-check.md` (43 lines): mow-mod-check-fix: check a mod in one pass
+  - `one-pass-check.md` (46 lines): mow-mod-check-fix: check a mod in one pass
   - `patch-mod-apply-recheck.md` (38 lines): mow-mod-check-fix: write the patch mod and re-check with it
   - `read-the-verdict.md` (41 lines): mow-mod-check-fix: read the load verdict
   - `reading-findings.md` (51 lines): mow-mod-check-fix: read findings (classes, codes, orphans, .lintrc)

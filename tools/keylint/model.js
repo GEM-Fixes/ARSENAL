@@ -42,8 +42,19 @@ function parts(b, isRoot) {
   return { keyTok, key, toks, kids, groups };
 }
 
+// partsM(b) = parts(b, false), kept on the block (a symbol key: not in JSON or Object.keys) while memo(true); keylint only, whose
+// trees are never changed after the parse. memo(on) -> the old setting. Off (KEYLINT_FAST=0): parts every call, as before
+const PK = Symbol('keylint.parts');
+let MEMO = process.env.KEYLINT_FAST !== '0';
+function memo(on) { const was = MEMO; MEMO = !!on; return was; }
+const fast = () => MEMO;   // keylint's speed-ups on (KEYLINT_FAST, default on)
+function partsM(b) {
+  if (!MEMO) return parts(b, false);
+  return b[PK] || (b[PK] = parts(b, false));
+}
+
 // recursive nesting (bone/bone/bone, if/if) collapses: a child with the same key as its parent shares the parent's path
-const childPath = (p, key) => !p ? key : (p === key || p.endsWith('/' + key)) ? p : p + '/' + key;
+const childPath = (p, key) => !p ? key : (p === key || p.length > key.length && p.endsWith(key) && p.charCodeAt(p.length - key.length - 1) === 47) ? p : p + '/' + key;
 
 const hexColor = s => /^(0x)?[0-9a-f]{6}$|^(0x)?[0-9a-f]{8}$/i.test(s);
 function lev(a, b) {
@@ -64,4 +75,4 @@ function nearest(name, cands) {
   return bd <= lim ? best : null;
 }
 
-module.exports = { MAX_DEPTH, kindOf, sigOf, keyName, parts, childPath, hexColor, lev, nearest };
+module.exports = { MAX_DEPTH, kindOf, sigOf, keyName, parts, partsM, memo, fast, childPath, hexColor, lev, nearest };

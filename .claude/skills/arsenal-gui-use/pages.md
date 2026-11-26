@@ -7,7 +7,7 @@ Which file holds which tab. Read this, then ONLY the file of the tab the task is
 
 ## Tabs and files (generated)
 <!-- gen:pages -->
-registry sig 58a557fd8c410eb876fa3fccb81441e14bf1b5af · 31 pages · 447 routes · 23 commands
+registry sig f76ba94e969bfbc6ebeed080ddd6cb3679c4399d · 31 pages · 450 routes · 23 commands
 
 ### Tab -> file (read only the file of the tab the task is in)
 - above the tabs (guided task, file viewers, jobs, core routes, `/api/run` commands) -> `pages-top.md`

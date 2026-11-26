@@ -564,8 +564,13 @@ async function realTests() {
       async function runJob(body) {
         const s = await call2('POST', 'job', Object.assign({}, ident, body));
         if (!s.v) return { e: s.e };
-        let j = null; const end = Date.now() + 240000;
-        while (Date.now() < end) { const g = await call2('GET', 'job?id=' + s.v.id); j = g.v; if (!j || ['done', 'failed', 'cancelled', 'timeout'].includes(j.state)) break; await new Promise(r => setTimeout(r, 30)); }
+        // by time; at the backstop a WAIT line and once more twice as long, then the check after it reports
+        let j = null, lim = 240000;
+        for (let round = 0; round < 2; round++, lim *= 2) {
+          const end = Date.now() + lim;
+          while (Date.now() < end) { const g = await call2('GET', 'job?id=' + s.v.id); j = g.v; if (!j || ['done', 'failed', 'cancelled', 'timeout'].includes(j.state)) return { v: j }; await new Promise(r => setTimeout(r, 30)); }
+          process.stderr.write('WAIT mapviz pictures test: job ' + s.v.id + ' not ended after ' + lim / 1000 + ' s\n');
+        }
         return { v: j };
       }
       const q0 = qs({ target: fx.target, game: fx.gameDir, map: MAP });

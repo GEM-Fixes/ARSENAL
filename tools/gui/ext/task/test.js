@@ -17,6 +17,13 @@ const ok = (c, m, extra) => { if (c) passes++; else { fails++; console.log('FAIL
 const errs = list => list.filter(x => x.level === 'error').map(x => x.msg);
 const throwsAsync = async (fn, re, status) => { try { await fn(); return 'no refusal'; } catch (e) { if (re && !re.test(e.message)) return 'wrong message: ' + e.message; if (status && e.status !== status) return 'status ' + e.status + ' not ' + status; return ''; } };
 const tick = () => new Promise(r => setImmediate(r));
+// the page waits: ticks(n) is n turns, then on while a route call the page made has no answer yet (a busy PC: file reads, children),
+// then n turns more; tickUntil(f) polls f by time. Backup, never a hang: at 60 s a WAIT line and the check after it reports
+const W = require('../../../lib/test/wait');
+let inflight = 0;
+const counted = p => { inflight++; return Promise.resolve(p).finally(() => { inflight--; }); };
+const ticks = async n => { for (let i = 0; i < n; i++) await tick(); if (!inflight) return; await W.until(() => !inflight, { who: 'task page test', what: 'a route call answered', step: 1 }); for (let i = 0; i < n; i++) await tick(); };
+const tickUntil = f => W.until(f, { who: 'task page test', what: String(f).slice(0, 100), step: 1 });
 const clone = o => JSON.parse(JSON.stringify(o));
 
 (async () => {
@@ -431,7 +438,7 @@ async function pageTest(ctx) {
       const fn = routes[m + ' ' + p] || VROUTES[m + ' ' + p];
       if (fn) {
         if (m === 'POST') posts.push(p);
-        return Promise.resolve().then(() => fn(url, o && o.body ? JSON.parse(o.body) : null, ctx)).then(r => resp(r), e => resp({ error: e.message }, e.status || 500));
+        return counted(Promise.resolve().then(() => fn(url, o && o.body ? JSON.parse(o.body) : null, ctx)).then(r => resp(r), e => resp({ error: e.message }, e.status || 500)));
       }
       return new Promise(() => {});
     },
@@ -439,10 +446,10 @@ async function pageTest(ctx) {
   w.window = w; vm.createContext(w);
   try { vm.runInContext(/<script>([\s\S]*)<\/script>/.exec(html)[1], w, { filename: 'page.js:script' }); }
   catch (e) { ok(false, 'the page script runs', e.stack); return; }
-  for (let i = 0; i < 400 && !w.__as2gui; i++) await tick();
+  await tickUntil(() => w.__as2gui);
   ok(!!w.__as2gui, 'the page finished building', doc.getElementById('main').textContent.slice(0, 300));
   ok(!!w.TASK && typeof w.TASK.open === 'function', 'window.TASK is there');
-  for (let i = 0; i < 200 && !row.querySelector('button[data-task-start]'); i++) await tick();
+  await tickUntil(() => row.querySelector('button[data-task-start]'));
   const start = row.querySelector('button[data-task-start]'), rs = row.querySelector('select[data-task-recipe]'), vs = row.querySelector('select[data-task-verb]');
   ok(!!start && !!rs && !!vs && !!row.querySelector('input[data-task-filter]'), 'the row has the verb, the filter, the task list and Start', row.textContent);
   ok(row.querySelector('span.tk-lbl') && row.querySelector('span.tk-lbl').textContent.length > 0, 'the row has its label');
@@ -459,7 +466,7 @@ async function pageTest(ctx) {
   // the single-player mission row: Start opens the Missions page at the card (no task window)
   { const o = rs.querySelectorAll('option').find(x => x.attrs.value === 'spmission');
     ok(o && !o.disabled && o.textContent.indexOf('a single-player mission') >= 0, 'the make list has "a single-player mission"', o && o.textContent);
-    rs.value = 'spmission'; rs.fire ? rs.fire('change') : 0; start.click(); for (let i = 0; i < 20; i++) await tick();
+    rs.value = 'spmission'; rs.fire ? rs.fire('change') : 0; start.click(); await ticks(20);
     const tw = doc.getElementById('taskwin');
     const scr = [...store.entries()].filter(([k]) => /screen/.test(k)).map(([k, v]) => k + '=' + v);
     ok(scr.some(x => /missions/.test(x)) && (!tw || tw.hidden), 'Start on it: the Missions page (the single-player card), no task window', scr.join());
@@ -467,7 +474,7 @@ async function pageTest(ctx) {
 
   // open the mod task: the window, the body class, the steps
   await w.TASK.open('mod', 'make');
-  for (let i = 0; i < 50; i++) await tick();
+  await ticks(50);
   const win = doc.getElementById('taskwin');
   ok(!!win && !win.hidden, 'the task window opens');
   ok(doc.body.classList.contains('task-open'), 'the body has task-open (tabs and pages hidden)');
@@ -484,46 +491,46 @@ async function pageTest(ctx) {
   let inp = win.querySelector('input[data-task-input]');
   ok(!!inp, 'the title question has an input');
   inp.value = 'Page Mod 2!';
-  w.TASK.next(); for (let i = 0; i < 30; i++) await tick();
+  w.TASK.next(); await ticks(30);
   ok(w.TASK.state().at === 1, 'Next goes to the place question', w.TASK.state().at);
   ok(D.load(ctx, st0.draft.id).answers.title.value === 'Page Mod 2!', 'the answer is saved in the draft');
   // place: a choice, the game's mods folder picked; Another folder adds the where question
   const pl = win.querySelectorAll('input[name=tkq]');
   ok(pl.length === 2 && pl[0].checked && pl[0].attrs.value === 'game', 'the place is a choice with the game mods folder picked', pl.map(p => p.attrs.value + (p.checked ? '*' : '')).join(','));
   pl[1].checked = true; pl[1].fire('change');
-  w.TASK.next(); for (let i = 0; i < 30; i++) await tick();
+  w.TASK.next(); await ticks(30);
   ok(w.TASK.state().steps[w.TASK.state().at].id === 'q:where', 'Another folder goes to the where question', JSON.stringify(w.TASK.state().steps[w.TASK.state().at]));
   inp = win.querySelector('input[data-task-input]'); inp.value = where;
-  w.TASK.next(); for (let i = 0; i < 30; i++) await tick();
+  w.TASK.next(); await ticks(30);
   ok(w.TASK.state().at === 3, 'Next goes to the folder question', w.TASK.state().at);
   // folder: suggested from the title (seeded: no suggestion would leave it empty)
   inp = win.querySelector('input[data-task-input]');
   ok(inp && inp.value === 'page_mod_2', 'the folder name is suggested from the title', inp && inp.value);
   // a bad name is refused with a message and the example of the form, a good one goes on
   inp.value = 'Bad Name';
-  w.TASK.next(); for (let i = 0; i < 30; i++) await tick();
+  w.TASK.next(); await ticks(30);
   const rf = win.querySelector('div[data-task-refuse]');
   ok(w.TASK.state().at === 3 && !!rf && /my_first_mod/.test(rf.textContent), 'a folder name that breaks the rule is refused with an example', rf && rf.textContent);
   fs.mkdirSync(path.join(where, 'taken'), { recursive: true });
   inp = win.querySelector('input[data-task-input]'); inp.value = 'taken';
-  w.TASK.next(); for (let i = 0; i < 30; i++) await tick();
+  w.TASK.next(); await ticks(30);
   ok(w.TASK.state().at === 3, 'a folder that is already there is refused', w.TASK.state().at);
   inp = win.querySelector('input[data-task-input]'); inp.value = 'pagemod';
-  w.TASK.next(); for (let i = 0; i < 30; i++) await tick();
+  w.TASK.next(); await ticks(30);
   ok(w.TASK.state().at === 4, 'a free folder name goes on');
-  w.TASK.back(); for (let i = 0; i < 10; i++) await tick();
+  w.TASK.back(); await ticks(10);
   ok(w.TASK.state().at === 3, 'Back goes one step back');
   const sofar = win.querySelector('div[data-task-sofar]');
   ok(sofar && /pagemod/.test(sofar.textContent), 'So far shows the answers', sofar && sofar.textContent);
   // Esc closes: the window hides, the body class goes, the draft is under Continue
   win.fire('keydown', { key: 'Escape', target: win });
-  for (let i = 0; i < 40; i++) await tick();
+  await ticks(40);
   ok(win.hidden && !doc.body.classList.contains('task-open'), 'Esc closes the window');
-  for (let i = 0; i < 40 && !row.querySelector('button[data-task-continue]'); i++) await tick();
+  await tickUntil(() => row.querySelector('button[data-task-continue]'));
   ok(!!row.querySelector('button[data-task-continue]') && !!row.querySelector('button[data-task-del]'), 'Continue and Delete show once a draft exists');
-  await w.TASK.resume(st0.draft.id); for (let i = 0; i < 30; i++) await tick();
+  await w.TASK.resume(st0.draft.id); await ticks(30);
   ok(!win.hidden && w.TASK.state().at === 3, 'Continue opens the draft where it was left', w.TASK.state().at);
-  await w.TASK.close(); for (let i = 0; i < 30; i++) await tick();
+  await w.TASK.close(); await ticks(30);
   ok(!fs.existsSync(path.join(where, 'pagemod')), 'the page wrote nothing on its own');
 
   // the hand-off card: programs, found or not, steps, Open it through the confirm box, the folder, I am done
@@ -532,7 +539,7 @@ async function pageTest(ctx) {
     { id: 'snd', kind: 'handoff', ask: 'task.zh.q', picker: { sources: ['ext', 'file'], kinds: ['sound'], ext: ['audacity', 'blender-gem2'] } }] }], compile: () => ({}) };
   const keep = S.recipes(); S.setRecipes(Object.values(keep).concat([zh]));
   try {
-    await w.TASK.open('zh', 'make'); for (let i = 0; i < 60; i++) await tick();
+    await w.TASK.open('zh', 'make'); await ticks(60);
     const card = win.querySelector('div[data-task-hocard]');
     ok(!!card, 'the hand-off question shows the program card', win.querySelector('div[data-task-q]') && win.querySelector('div[data-task-q]').textContent.slice(0, 300));
     const progs = win.querySelectorAll('input[data-task-prog]');
@@ -542,57 +549,57 @@ async function pageTest(ctx) {
     ok(card && !!card.querySelector('button[data-task-hofolder]') && !!card.querySelector('button[data-task-hodone]'), 'the card has the folder button and I am done');
     const ob = card && card.querySelector('button[data-task-hoopen]');
     ok(!!ob, 'the card has Open it');
-    if (ob) { ob.click(); for (let i = 0; i < 60; i++) await tick(); }
+    if (ob) { ob.click(); await ticks(60); }
     ok(STARTS.length === 1 && /Audacity\.exe$/.test(STARTS[0].file) && STARTS[0].so.shell === false, 'Open it plans, asks (the confirm box) and only then starts the fake program', JSON.stringify(STARTS));
-    progs[1].checked = true; progs[1].fire('change'); for (let i = 0; i < 10; i++) await tick();
+    progs[1].checked = true; progs[1].fire('change'); await ticks(10);
     const c2 = win.querySelector('div[data-task-hocard]');
     ok(c2 && c2.querySelector('div[data-task-found]').dataset['task-found'] === '0' && !!c2.querySelector('button[data-task-guides]') && !c2.querySelector('button[data-task-hoopen]'), 'a program not on this PC says so, points at Guides & External Tools and has no Open it', c2 && c2.textContent.slice(0, 300));
-    c2.querySelector('button[data-task-hodone]').click(); for (let i = 0; i < 10; i++) await tick();
+    c2.querySelector('button[data-task-hodone]').click(); await ticks(10);
     ok(!!win.querySelector('input[data-task-file]'), 'I am done goes to the upload source');
     const probs = BC.checkScreen(win, 'task');
     ok(!probs.length, 'the hand-off card follows the blocks contract', probs.slice(0, 5).join(' | '));
-    await w.TASK.close(); for (let i = 0; i < 30; i++) await tick();
+    await w.TASK.close(); await ticks(30);
   } finally { S.setRecipes(Object.values(keep)); E._reset(); }
 
   // picker.branch as a list: the "what kind" choice before Start, the child is that recipe, So far names the kind
   const keep2 = S.recipes(); S.setRecipes(Object.values(keep2).concat([zka, zkb, zkkOf(null)]));
-  const toReturn = async () => { for (let i = 0; i < 12 && !win.querySelector('button[data-task-return]'); i++) { w.TASK.next(); for (let j = 0; j < 20; j++) await tick(); } return win.querySelector('button[data-task-return]'); };
+  const toReturn = async () => { for (let i = 0; i < 12 && !win.querySelector('button[data-task-return]'); i++) { w.TASK.next(); await ticks(20); } return win.querySelector('button[data-task-return]'); };
   try {
-    await w.TASK.open('zkk', 'make'); for (let i = 0; i < 40; i++) await tick();
+    await w.TASK.open('zkk', 'make'); await ticks(40);
     const pid = w.TASK.state().draft.id, kinds = win.querySelectorAll('input[data-task-kind]');
     ok(kinds.length === 2 && kinds[0].attrs.value === 'zka' && kinds[1].attrs.value === 'zkb', 'a question with several recipes shows the kind choice', kinds.map(k => k.attrs.value).join(','));
     // seeded defect: Start with no kind picked is refused on the page, no child made
-    win.querySelector('button[data-task-branch]').click(); for (let i = 0; i < 20; i++) await tick();
+    win.querySelector('button[data-task-branch]').click(); await ticks(20);
     ok(!!win.querySelector('div[data-task-refuse]') && !D.childrenOf(ctx, pid).length && w.TASK.state().stack === 0, 'Start with no kind picked is refused');
-    kinds[1].checked = true; kinds[1].fire('change'); for (let i = 0; i < 5; i++) await tick();
-    win.querySelector('button[data-task-branch]').click(); for (let i = 0; i < 40; i++) await tick();
+    kinds[1].checked = true; kinds[1].fire('change'); await ticks(5);
+    win.querySelector('button[data-task-branch]').click(); await ticks(40);
     ok(w.TASK.state().draft.recipe === 'zkb' && w.TASK.state().stack === 1, 'Start opens a child of the kind picked', JSON.stringify({ r: w.TASK.state().draft.recipe, s: w.TASK.state().stack }));
     let back = await toReturn();
     ok(!!back, 'the child task has its way back');
-    if (back) { back.click(); for (let i = 0; i < 40; i++) await tick(); }
+    if (back) { back.click(); await ticks(40); }
     const pa = D.load(ctx, pid).answers.one;
     ok(w.TASK.state().draft.id === pid && pa && pa.src === 'branch' && pa.recipe === 'zkb' && !!pa.child, 'back in the parent, the answer keeps the kind', JSON.stringify(pa));
     const sf1 = win.querySelector('div[data-task-sofar]');
     ok(sf1 && /zkb/.test(sf1.textContent), 'So far names the kind', sf1 && sf1.textContent);
     // the list question: each line picks its kind
-    w.TASK.next(); for (let i = 0; i < 30; i++) await tick();
-    win.querySelector('button[data-task-addline]').click(); for (let i = 0; i < 5; i++) await tick();
-    const ls = win.querySelector('select[data-task-linesrc]'); ls.value = 'branch'; ls.fire('change'); for (let i = 0; i < 5; i++) await tick();
+    w.TASK.next(); await ticks(30);
+    win.querySelector('button[data-task-addline]').click(); await ticks(5);
+    const ls = win.querySelector('select[data-task-linesrc]'); ls.value = 'branch'; ls.fire('change'); await ticks(5);
     const lk = win.querySelector('select[data-task-linekind]');
     ok(!!lk && lk.querySelectorAll('option').length === 3, 'a branch line has its own kind choice', lk && lk.textContent);
-    win.querySelector('button[data-task-linebranch]').click(); for (let i = 0; i < 20; i++) await tick();
+    win.querySelector('button[data-task-linebranch]').click(); await ticks(20);
     ok(!!win.querySelector('div[data-task-refuse]') && w.TASK.state().stack === 0, 'a line with no kind picked is refused');
-    const lk2 = win.querySelector('select[data-task-linekind]'); lk2.value = 'zka'; lk2.fire('change'); for (let i = 0; i < 5; i++) await tick();
-    win.querySelector('button[data-task-linebranch]').click(); for (let i = 0; i < 40; i++) await tick();
+    const lk2 = win.querySelector('select[data-task-linekind]'); lk2.value = 'zka'; lk2.fire('change'); await ticks(5);
+    win.querySelector('button[data-task-linebranch]').click(); await ticks(40);
     ok(w.TASK.state().draft.recipe === 'zka' && w.TASK.state().draft.parent.line === 0, 'the line opens a child of its kind', JSON.stringify(w.TASK.state().draft.parent));
-    back = await toReturn(); if (back) { back.click(); for (let i = 0; i < 40; i++) await tick(); }
+    back = await toReturn(); if (back) { back.click(); await ticks(40); }
     const la = D.load(ctx, pid).answers.many;
     ok(la && la.src === 'list' && la.items[0] && la.items[0].recipe === 'zka' && !!la.items[0].child, 'the list line keeps its kind', JSON.stringify(la));
     const sf2 = win.querySelector('div[data-task-sofar]');
     ok(sf2 && /zka/.test(sf2.textContent), 'So far names the kind of a list line', sf2 && sf2.textContent);
     const probs = BC.checkScreen(win, 'task');
     ok(!probs.length, 'the kind choice follows the blocks contract', probs.slice(0, 5).join(' | '));
-    await w.TASK.close(); for (let i = 0; i < 30; i++) await tick();
+    await w.TASK.close(); await ticks(30);
     D.remove(ctx, pid);
   } finally { S.setRecipes(Object.values(keep2)); }
   await pageCore3(w, doc, win, sstore, ctx, html, BC);
@@ -843,7 +850,7 @@ async function jobsFixes(ctx, call) {
 async function pageJobs(w, doc, win, sstore, ctx) {
   const keep = S.recipes(), k = jobKit(ctx, 'pagejobmod');
   S.setRecipes(Object.values(keep).concat([k.recipe]));
-  const settle = async n => { for (let i = 0; i < (n || 40); i++) await tick(); };
+  const settle = n => ticks(n || 40);
   const q = s => win.querySelector(s), qa = s => win.querySelectorAll(s);
   const go = async st => { const b = qa('button.tk-step').find(e => e.dataset.step === st); if (b) b.click(); await settle(60); return !!b; };
   const toastEl = doc.getElementById('toast'), names = [];
@@ -852,8 +859,8 @@ async function pageJobs(w, doc, win, sstore, ctx) {
   fetchHook = (key, url, o) => {
     if (key !== 'POST /api/x/task/write' && key !== 'POST /api/x/task/plan') return null;
     const stopAt = (key.endsWith('/plan') ? k.nextPlan : k.nextWrite) || ''; k.fresh(); k.stopAt = stopAt;
-    return Promise.resolve().then(() => EXT.routes[key](url, JSON.parse(o.body), k.jctx)).then(r => (k.job.cancelled ? resp({ error: 'cancelled', key: 'job.cancelled' }, 499) : resp(r)), e => resp({ error: e.message }, e.status || 500))
-      .then(async r => { for (let i = 0; i < 6; i++) await tick(); return r; });   // long enough for the footer to list the request
+    return counted(Promise.resolve().then(() => EXT.routes[key](url, JSON.parse(o.body), k.jctx)).then(r => (k.job.cancelled ? resp({ error: 'cancelled', key: 'job.cancelled' }, 499) : resp(r)), e => resp({ error: e.message }, e.status || 500))
+      .then(async r => { for (let i = 0; i < 6; i++) await tick(); return r; }));   // long enough for the footer to list the request
   };
   let id = null;
   try {
@@ -1065,7 +1072,7 @@ async function coreFixes4(ctx, call) {
 async function pageCore3(w, doc, win, sstore, ctx, html, BC) {
   const fakedom = require(path.join(GUI, 'test', 'fakedom'));
   const keep = S.recipes(); S.setRecipes(Object.values(keep).concat([zqOf()]));
-  const settle = async n => { for (let i = 0; i < (n || 40); i++) await tick(); };
+  const settle = n => ticks(n || 40);
   const q = s => win.querySelector(s), qa = s => win.querySelectorAll(s);
   const by = (s, k, v) => qa(s).find(e => e.dataset[k] === v);
   const stepIds = () => qa('button.tk-step').map(b => b.dataset.step).join(',');
@@ -1077,8 +1084,8 @@ async function pageCore3(w, doc, win, sstore, ctx, html, BC) {
       localStorage: w.localStorage, sessionStorage: w.sessionStorage, confirm: () => true, fetch: w.fetch };
     w2.window = w2; vm.createContext(w2);
     vm.runInContext(/<script>([\s\S]*)<\/script>/.exec(html)[1], w2, { filename: 'page.js:reload' });
-    for (let i = 0; i < 400 && !w2.__as2gui; i++) await tick();
-    for (let i = 0; i < 200 && !r2.querySelector('button[data-task-start]'); i++) await tick();
+    await tickUntil(() => w2.__as2gui);
+    await tickUntil(() => r2.querySelector('button[data-task-start]'));
     return { w: w2, doc: d2, row: r2 };
   };
   let id = null;
@@ -1133,7 +1140,7 @@ async function pageCore3(w, doc, win, sstore, ctx, html, BC) {
     const saved = JSON.parse(sstore.get('task.open') || '{}');
     ok(saved.id === id && saved.step === 'review', 'sessionStorage holds the open task and its step', JSON.stringify(saved));
     const p2 = await mkPage();
-    for (let i = 0; i < 200 && !(p2.w.TASK.state().draft); i++) await tick();
+    await tickUntil(() => p2.w.TASK.state().draft);
     await settle(20);
     const s2 = p2.w.TASK.state(), win2 = p2.doc.getElementById('taskwin');
     ok(s2.draft && s2.draft.id === id && s2.steps[s2.at].id === 'review' && win2 && !win2.hidden, 'after a reload the task opens again at its step', JSON.stringify({ d: s2.draft && s2.draft.id, at: s2.steps[s2.at] && s2.steps[s2.at].id }));
@@ -1259,7 +1266,7 @@ async function pageCore4(w, doc, win, sstore, ctx, BC) {
     lookups: { why: async () => ({ results: [], why: 'No folder is set here.', do: 'Pick it first.' }) },
     values: () => ({ n1: 7 }), compile: () => ({ notes: ['zw'] }) };
   S.setRecipes(Object.values(keep).concat([zqOf(), zw]));
-  const settle = async n => { for (let i = 0; i < (n || 40); i++) await tick(); };
+  const settle = n => ticks(n || 40);
   const q = s => win.querySelector(s), qa = s => win.querySelectorAll(s);
   const go = async st => { const b = qa('button.tk-step').find(e => e.dataset.step === st); if (b) b.click(); await settle(40); return !!b; };
   const cur = () => { const s = w.TASK.state(); return s.steps[s.at] && s.steps[s.at].id; };
@@ -1379,7 +1386,7 @@ async function pageCore5(w, doc, win, sstore, ctx, BC) {
     values: (c, base) => (base && base.id ? { newid: base.id + '_m2', sell: true, n1: 3 } : {}),
     compile: () => ({}) };
   S.setRecipes(Object.values(keep).concat([zv]));
-  const settle = async n => { for (let i = 0; i < (n || 40); i++) await tick(); };
+  const settle = n => ticks(n || 40);
   const q = s => win.querySelector(s), qa = s => win.querySelectorAll(s);
   const go = async st => { const b = qa('button.tk-step').find(e => e.dataset.step === st); if (b) b.click(); await settle(40); return !!b; };
   const cur = () => { const s = w.TASK.state(); return s.steps[s.at] && s.steps[s.at].id; };

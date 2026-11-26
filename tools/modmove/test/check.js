@@ -6,7 +6,10 @@ const T = __dirname, W = path.join(T, 'work'), MM = path.join(T, '..', 'modmove.
 process.env.MODMOVE_NO_CACHE = '1';
 const fails = [];
 const ok = (c, m) => { if (!c) { fails.push(m); console.log('FAIL: ' + m); } };
-const mm = (args, env) => { const r = cp.spawnSync(process.execPath, [MM, ...args], { encoding: 'utf8', env: Object.assign({}, process.env, env || {}), timeout: 300000 }); return { out: r.stdout + '', err: r.stderr + '', status: r.status }; };
+const Wt = require('../../lib/test/wait');
+// by time, not by a fixed sleep: polls f every 100 ms. Backup, never a hang: after 60 s a WAIT line and the check after it reports
+const untilSync = (f, what) => { const t0 = Date.now(); for (;;) { if (f()) return true; if (Date.now() - t0 >= Wt.COND_MS) { Wt.say('modmove', what, Wt.COND_MS); return false; } Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 100); } };
+const mm = (args, env) => { const r = Wt.spawnSync(process.execPath, [MM, ...args], { encoding: 'utf8', env: Object.assign({}, process.env, env || {}), timeout: 300000 }, 'modmove ' + args[0]); return { out: r.stdout + '', err: r.stderr + '', status: r.status }; };
 const sha = f => require('crypto').createHash('sha1').update(fs.readFileSync(f)).digest('hex');
 const AS2 = path.join(W, 'as2'), GOH = path.join(W, 'goh'), HOME = path.join(W, 'home'), PROF = path.join(HOME, 'profiles', 'p1', 'options.set');
 const GOHLOG = path.join(W, 'gohlog');
@@ -63,7 +66,7 @@ const live = (targets, extra, env, tag) => {
   const out = path.join(W, 'out-' + tag);
   const a = ['live', '--targets', targets, '--as2', AS2, '--goh', GOH, '--user-dir', HOME, '--goh-user-dir', GOHLOG, '--no-proc',
     '--exe-as64', STUB, '--exe-mowas2', STUB, '--exe-goh', STUB, '--args-as64', 'as64', '--args-mowas2', 'mowas2', '--args-goh', 'goh',
-    '--quiet', '2', '--poll', '300', '--wait', '40', '--relaunch-grace', '2000', '--out', out, '--backup', path.join(W, 'bak-' + tag), ...extra];
+    '--quiet', '2', '--poll', '300', '--wait', '300', '--relaunch-grace', '2000', '--out', out, '--backup', path.join(W, 'bak-' + tag), ...extra];
   const r = mm(a, Object.assign({ STUB_CFG: cfgFile }, env || {}));
   return Object.assign(r, { out: r.out, dir: out });
 };
@@ -119,12 +122,12 @@ restored('D');
 // E. exe already running -> refuse, do not kill it
 cfg();
 const pre = cp.spawn(process.execPath, [STUB, 'as64'], { stdio: 'ignore', env: Object.assign({}, process.env, { STUB_CFG: cfgFile }), detached: true });
-cp.spawnSync(process.execPath, ['-e', 'setTimeout(()=>{},1500)']);
+untilSync(() => C.listProcs().filter(C.matcherFor(STUB)).some(p => p.pid === pre.pid), 'E: the pre-started stub in the process list');
 r = live('as64', [], null, 'e');
 ok(/MOVE_LIVE_RUNNING/.test(r.out), 'E: running exe refused: ' + r.out);
 ok(C.listProcs().some(p => p.pid === pre.pid), 'E: pre-existing process still alive (never killed)');
 C.killTree(pre.pid);
-cp.spawnSync(process.execPath, ['-e', 'setTimeout(()=>{},500)']);
+untilSync(() => !C.listProcs().some(p => p.pid === pre.pid), 'E: the pre-started stub gone after the kill');
 
 // F. stage rules + skip
 cfg();

@@ -21,7 +21,7 @@
   },
   {
    "exit": true,
-   "within": 1,
+   "within": 30,
    "row": "TST-16"
   }
  ]

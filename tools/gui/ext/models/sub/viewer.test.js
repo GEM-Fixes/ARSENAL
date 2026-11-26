@@ -432,9 +432,11 @@ const near = (a, b, m) => { assert.strictEqual(a.length, b.length, m); a.forEach
     win2.addEventListener = (k, f) => { (WL[k] = WL[k] || []).push(f); };
     win2.removeEventListener = (k, f) => { const i = (WL[k] || []).indexOf(f); if (i >= 0) WL[k].splice(i, 1); };
     const mk = () => EXT2.models.parts.viewer({ set: { target: 'pz4h' }, mod: 'M' }, {});
-    const wA = mk(); wA.isConnected = true; await tick(); await new Promise(r => setTimeout(r, 40));   // drawn while on the page: seen
+    // drawn while on the page: seen (the draw is a 16 ms timer; wait for it by its frame, not by a fixed time)
+    const drawn = w => require('../../../../lib/test/wait').until(() => Object.keys(w._st().LAST).length > 0, { who: 'models viewer test', what: 'the viewer drew' });
+    const wA = mk(); wA.isConnected = true; await tick(); await drawn(wA);
     assert.deepStrictEqual([WL.mousemove.length, WL.mouseup.length], [1, 1], 'one pair of window listeners per viewer');
-    const wB = mk(); wB.isConnected = true; await tick(); await new Promise(r => setTimeout(r, 40));
+    const wB = mk(); wB.isConnected = true; await tick(); await drawn(wB);
     assert.deepStrictEqual([WL.mousemove.length, WL.mouseup.length], [2, 2], 'a second viewer on the page adds its own pair');
     wA.isConnected = false; wB.isConnected = false;
     const wC = mk(); await tick();
@@ -797,30 +799,31 @@ const near = (a, b, m) => { assert.strictEqual(a.length, b.length, m); a.forEach
         for (const c of kids || []) if (c != null) e.appendChild(typeof c === 'string' ? { text: c } : c); return e; };
       const EXT5 = { models: { parts: {}, subs: {} } };
       new Function('EXT_SCREENS', 'h', 'tx', 'api', 'S', 'window', 'document', 'LS', script)(EXT5, h5, tx, apiS, { mod: '' }, win2, { createElement: node5, documentElement: {} }, LSs);
-      const wait = ms => new Promise(r => setTimeout(r, ms)), scenes = () => api5.filter(a => a[0] === '/api/x/models/viewer/scene').map(a => a[1].target);
+      // wait: on what the check after it reads (backstop 60 s, WAIT line), not a fixed time
+      const wait = f => require('../../../../lib/test/wait').until(f, { who: 'models viewer test', what: String(f).slice(0, 100) }), scenes = () => api5.filter(a => a[0] === '/api/x/models/viewer/scene').map(a => a[1].target);
       const V5 = EXT5.models.parts.viewer, vp = V5({ set: { target: 'far' }, mod: 'M' }, { doc: false, compact: true });
       const got = []; const d0 = draws.n;
       vp.snapshot({ width: 76, height: 38 }, (url, info) => got.push([url, info.camera]));
       vp.snapshot({ width: 38, height: 38, camera: false }, (url, info) => got.push([url, info.camera]));
-      assert.strictEqual(got.length, 0, 'not before the scene is there'); await wait(150);
+      assert.strictEqual(got.length, 0, 'not before the scene is there'); await wait(() => got.length >= 2);
       assert.deepStrictEqual(got, [['data:image/png;base64,AAAA1', 'preview-fit'], ['data:image/png;base64,AAAA2', 'fit']], 'both pictures, one after the other');
       assert.deepStrictEqual(shots, [[76, 38], [38, 38]], 'the canvas has the picture\'s size while it is taken');
       let s5 = vp._st(); assert.ok(draws.n > d0 && s5.show.grid === true && s5.show.meshes === true && s5.L.panes[0].mode === 'shaded', 'the view\'s own switches are back');
       assert.ok(api5.some(a => a[0] === '/api/x/models/viewer/texture'), 'the pictures of the meshes were asked before the snapshot');
-      assert.strictEqual(vp.setTarget('near'), true); vp.snapshot({ width: 38, height: 38 }, (url, info) => got.push([url, info.camera])); await wait(150);
+      assert.strictEqual(vp.setTarget('near'), true); vp.snapshot({ width: 38, height: 38 }, (url, info) => got.push([url, info.camera])); await wait(() => got.length >= 3);
       assert.deepStrictEqual([scenes(), got[2]], [['far', 'near'], ['data:image/png;base64,AAAA3', 'fit']], 'setTarget loads another model into the same view');
-      scene5 = () => ({ ok: false, error: 'No entity named "x".' }); vp.setTarget('x'); let none = 0; vp.snapshot({ width: 38, height: 38 }, url => { none = url === null ? 1 : 2; }); await wait(60);
+      scene5 = () => ({ ok: false, error: 'No entity named "x".' }); vp.setTarget('x'); let none = 0; vp.snapshot({ width: 38, height: 38 }, url => { none = url === null ? 1 : 2; }); await wait(() => none !== 0);
       assert.strictEqual(none, 1, 'a model that cannot be read: null, at once');
       ok('snapshot: a PNG data URL of the asked size once the scene and its pictures are there, only meshes drawn, the view left as it was; setTarget; null when the model cannot be read');
       // the queue: one hidden view, one model at a time, each picture made once per data signature
       scene5 = t => ({ ok: true, scene: JSON.parse(JSON.stringify(base)) });
       let sigv = 'g1|m1'; const P = V5.pictures({ sig: () => sigv, mod: () => 'M2' }), out = [], n0 = scenes().length;
       P.get('a', 76, 38, u => out.push('a1 ' + u)); P.get('a', 76, 38, u => out.push('a2 ' + u)); P.get('b', 38, 38, u => out.push('b ' + u)); P.get('', 38, 38, u => out.push('none ' + u));
-      assert.deepStrictEqual([out, P.peek('a', 76, 38)], [['none null'], undefined], 'nothing blocks: the pictures come later'); await wait(300);
+      assert.deepStrictEqual([out, P.peek('a', 76, 38)], [['none null'], undefined], 'nothing blocks: the pictures come later'); await wait(() => out.length >= 4 && P.stats().made >= 2);
       assert.deepStrictEqual([scenes().slice(n0), out.slice(1).map(x => x.split(' ')[0]), out[1].split(' ')[1] === out[2].split(' ')[1], P.stats().made], [['a', 'b'], ['a1', 'a2', 'b'], true, 2]);
       assert.ok(api5.filter(a => a[0] === '/api/x/models/viewer/scene').slice(n0).every(a => a[1].mod === 'M2'), 'the mod of the caller');
       let again = null; P.get('a', 76, 38, u => { again = u; }); assert.ok(again && again === P.peek('a', 76, 38) && scenes().length === n0 + 2, 'kept: answered at once, not rendered again');
-      sigv = 'g1|m2'; P.get('a', 76, 38, () => {}); await wait(150); assert.deepStrictEqual([scenes().length, P.stats().kept], [n0 + 3, 3], 'another mod: its own picture');
+      sigv = 'g1|m2'; P.get('a', 76, 38, () => {}); await wait(() => scenes().length >= n0 + 3 && P.stats().kept >= 3); assert.deepStrictEqual([scenes().length, P.stats().kept], [n0 + 3, 3], 'another mod: its own picture');
       ok('pictures: one hidden view renders the asked models one at a time, the same picture asked twice is made once, kept per data signature + model + size');
     }
   }

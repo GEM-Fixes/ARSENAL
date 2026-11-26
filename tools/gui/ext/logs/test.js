@@ -4,13 +4,14 @@ const fs = require('fs'), path = require('path'), cp = require('child_process');
 const work = path.resolve(process.argv[2] || fs.mkdtempSync(path.join(require('os').tmpdir(), 'logsx-')));
 fs.mkdirSync(work, { recursive: true });
 const TOOLS = path.join(__dirname, '..', '..', '..');
+const WT = require('../../../lib/test/wait');   // a child: backstop 5 min, killed: once more with twice the limit; a condition: 60 s + WAIT
 let bad = 0;
 const ok = (c, m) => { if (!c) { bad++; console.log('FAIL ' + m); } };
 
 // fixture: home/<Documents>/my games/.../log + extra copy
 const fxWork = path.join(work, 'lt');
 fs.mkdirSync(fxWork, { recursive: true });
-const mk = cp.spawnSync(process.execPath, [path.join(TOOLS, 'logtriage', 'test', 'mkfixture.js')], { env: Object.assign({}, process.env, { TEST_WORK: fxWork }), encoding: 'utf8' });
+const mk = WT.spawnSync(process.execPath, [path.join(TOOLS, 'logtriage', 'test', 'mkfixture.js')], { env: Object.assign({}, process.env, { TEST_WORK: fxWork }), encoding: 'utf8' }, 'logs test');
 ok(mk.status === 0, 'mkfixture ' + (mk.stderr || '').slice(0, 200));
 const fx = path.join(fxWork, 'fixture');
 const home = path.join(work, 'home');
@@ -36,7 +37,7 @@ const routes = require('./index').routes;
 const ctx = {
   tools: TOOLS, tmpRoot: work, game: () => game, allowLaunch: false,
   runTool: (tool, entry, args, o = {}) => new Promise(res => {
-    const r = cp.spawnSync(process.execPath, [path.join(TOOLS, entry), ...args], { encoding: 'utf8', timeout: o.timeoutMs || 60000, env: process.env, maxBuffer: 32 << 20 });
+    const r = WT.spawnSync(process.execPath, [path.join(TOOLS, entry), ...args], { encoding: 'utf8', timeout: o.timeoutMs || 60000, env: process.env, maxBuffer: 32 << 20 }, 'logs test');
     res({ code: r.status, stdout: r.stdout || '', stderr: r.stderr || '', timedOut: !!r.error });
   }),
 };
@@ -149,8 +150,10 @@ const call = (m, n, q, body) => routes[m + ' /api/x/logs/' + n](U((q || n)), bod
     {   // searchKit on the unit box (owner 2026-11-19): Browse, History and an index of the unit names from GET /api/x/logs/units
       const wrap = P.root.all(c => c.className === 'sk' && c.dataset.sk === 'logs.unit')[0], uin = wrap && wrap.children[0];
       ok(wrap && wrap.children.map(c => c.tagName).join() === 'INPUT,BUTTON,BUTTON,DIV', 'unit box is a searchKit box (Browse, History, list)');
-      uin.value = 'tk'; uin.selectionStart = 2; uin.fire('input'); await settle(); await new Promise(r => setTimeout(r, 20));
-      const opts = wrap.children[3].children.filter(c => c.getAttribute('role') === 'option').map(c => c.textContent).join('|');
+      uin.value = 'tk'; uin.selectionStart = 2; uin.fire('input'); await settle();
+      const optsNow = () => wrap.children[3].children.filter(c => c.getAttribute('role') === 'option').map(c => c.textContent).join('|');
+      await WT.until(() => /tk1/.test(optsNow()) && /tk2/.test(optsNow()), { who: 'logs test', what: 'the unit index offers tk1 and tk2' });
+      const opts = optsNow();
       ok(/tk1/.test(opts) && /tk2/.test(opts) && !/gun9/.test(opts) && P.sent.filter(x => /\/logs\/units/.test(x.url)).length === 1, 'unit box: the index offers the unit names that match, read once (' + opts + ')');
       const n0 = P.sent.filter(x => /\/logs\/unit$/.test(x.url)).length;
       const dd = wrap.children[3]; dd.fire('click', { target: dd.children.find(c => c.getAttribute('role') === 'option' && /tk2/.test(c.textContent)) }); await settle();
@@ -179,7 +182,7 @@ const call = (m, n, q, body) => routes[m + ' /api/x/logs/' + n](U((q || n)), bod
   }
   // game parity (MoW:AS2 and GoH branches): its own file, own scratch folder
   {
-    const g = cp.spawnSync(process.execPath, [path.join(__dirname, 'test-games.js'), path.join(work, 'games')], { encoding: 'utf8', timeout: 600000, maxBuffer: 32 << 20 });
+    const g = WT.spawnSync(process.execPath, [path.join(__dirname, 'test-games.js'), path.join(work, 'games')], { encoding: 'utf8', timeout: 600000, maxBuffer: 32 << 20 }, 'logs test');
     const out = String(g.stdout || '') + String(g.stderr || '');
     ok(g.status === 0 && /logs games PASS/.test(out), 'games: ' + out.trim().split(/\r?\n/).slice(-6).join(' | '));
   }

@@ -54,7 +54,9 @@ function resolveInclude(p, fromKey) {
   return { kind: 'virtual', key: out.join('/') };
 }
 
+const progress = require('./progress');
 function read(buf, opt) {
+  if (progress.on) progress.file(opt && (opt.key || opt.file), buf && buf.length);   // names the file to a parent tool before the parse (lib/progress.js)
   const defines = opt.defines || new Map();
   const errSeen = new Set();
   const passed = new Set(), cands = [];   // SDL-56: param names passed by any call / `%word` that only a shorter passed name prefixes

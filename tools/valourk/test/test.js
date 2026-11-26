@@ -57,7 +57,7 @@ ok(gp2.goh === '75mm_kwk40' && gp2.as2 === '50mm_kwk38' && gp2.slot === null, 'n
 {
   const fs = require('fs'), cp = require('child_process'), src = fs.readFileSync(path.join(__dirname, '..', 'valourk.js'), 'utf8');
   ok(!/[A-Za-z]:[\\/]/.test(src.replace(/^\s*\/\/.*$/gm, '')), 'no drive path in valourk.js code');
-  const r = cp.spawnSync(process.execPath, [path.join(__dirname, '..', 'valourk.js'), '--goh', path.join(__dirname, 'no-such-goh'), '--as2', path.join(__dirname, 'no-such-as2'), '--goh-mod', __dirname, '--as2-mod', __dirname], { encoding: 'utf8' });
+  const r = require('../../lib/test/wait').spawnSync(process.execPath, [path.join(__dirname, '..', 'valourk.js'), '--goh', path.join(__dirname, 'no-such-goh'), '--as2', path.join(__dirname, 'no-such-as2'), '--goh-mod', __dirname, '--as2-mod', __dirname], { encoding: 'utf8' });
   ok(r.status === 2 && /^valourk: --goh not found/.test(r.stderr), 'a missing install: exit 2, one line: ' + r.status + ' ' + r.stderr);
 }
 console.log(`PASS ${n} checks`);

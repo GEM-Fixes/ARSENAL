@@ -3,6 +3,15 @@
 //   as2 refcheck <gameDir|-> [--mods a,b] [--folder dir] [--cache f] [--scope all|mod] [--exe as64|mowas_2|mowas2|goh] [-q] [--summary]
 //   builds/refreshes the entityindex cache first (only changed files re-parsed), then checks. read-only on game data.
 //   --scope mod  keep findings located in a mod file or about an entity whose winning def is from a mod
+//   --folder dir reads only what the game mounts from a mod root (lib/sdlset keepOf); --restore-points reads <dir>/.arsenal-undo
+//                too (restore points, never mounted; off by default). The folder is listed once (lib/modtree scan) and its files
+//                read ahead through the thread pool (entityindex buildAsync; env ARSENAL_READ_WINDOW, default 32)
+//   --no-file-cache  (env ARSENAL_FILE_CACHE=0 the same) the old way: no slot (slot.js: when the --cache file is new, e.g. a tools/check
+//                overlay run, the index of the last check of this mod is put there first, so only changed files are parsed; records
+//                check themselves by the files they came from) and MIS-50 parses every units file each run (on: card1 table of the
+//                index, per file). Findings are the same either way
+//   --listing f  f = a lib/modtree scan as JSON (wouldload hands its own) of the --folder or of a mod --mods mounts: that folder is
+//                not listed or walked again (a stat per file). Ignored when it does not read. Findings are the same either way
 //   --exe X      the game whose vfs view is checked (lib/games): as64 (default when as64.exe is in the folder, as before), mowas_2 (no
 //                as64/core), goh (the GoH install from lib/games install('goh') when no gameDir is given). One entityindex cache per exe.
 //                GoH: GOH_KEY (DMG-20) is not reported (GoH reads OvermatchCalibre, GHDMG-27); SPEED_BEFORE_LOCO / SPEED_ORDER are not
@@ -34,7 +43,7 @@ const { kidsOf, nameOf, argsOf, str0 } = ix;
 
 const args = process.argv.slice(2), pos = [];
 const o = { mods: null, folder: null, cache: null };
-let quiet = false, summary = false, scope = 'all';
+let quiet = false, summary = false, scope = 'all', restorePoints = false;
 for (let i = 0; i < args.length; i++) {
   const a = args[i];
   if (a === '--mods' || a === '--mod') o.mods = args[++i].split(',').map(s => s.trim()).filter(Boolean);
@@ -46,11 +55,14 @@ for (let i = 0; i < args.length; i++) {
   else if (a === '--format') o.format = args[++i];
   else if (a === '--rc') o.rcFile = args[++i];
   else if (a === '--no-rc') o.noRc = true;
+  else if (a === '--restore-points') restorePoints = true;
+  else if (a === '--listing') o.listing = args[++i];
+  else if (a === '--no-file-cache') o.fileCache = false;
   else if (a === '-o') o.output = args[++i];
   else if (a === '--exe') { const g = games.get(args[++i]); if (!g) { console.error(`refcheck: --exe ${args[i]}: one of as64 mowas_2 mowas2 goh`); process.exit(2); } o.exe = g.exe; }
   else pos.push(a);
 }
-const USAGE = 'usage: ARSENAL refcheck <gameDir|-> [--mods a,b] [--folder dir] [--cache f] [--scope all|mod] [--exe as64|mowas_2|mowas2|goh] [-q] [--summary] [--rc F|--no-rc] [--format json|sarif|csv|html] [-o FILE]\n  gameDir omitted: --game/AS2_GAME/as2.json/Steam (--exe goh: the GoH install); "-" = folder only, no game (vanilla refs then show as missing)';
+const USAGE = 'usage: ARSENAL refcheck <gameDir|-> [--mods a,b] [--folder dir] [--restore-points] [--listing f] [--cache f] [--scope all|mod] [--exe as64|mowas_2|mowas2|goh] [-q] [--summary] [--rc F|--no-rc] [--format json|sarif|csv|html] [-o FILE]\n  gameDir omitted: --game/AS2_GAME/as2.json/Steam (--exe goh: the GoH install); "-" = folder only, no game (vanilla refs then show as missing)';
 if (args.includes('--help') || args.includes('-h')) { console.log(USAGE); process.exit(0); }
 const dash = pos[0] === '-';
 if (pos[0] && !dash) o.gameDir = pos.shift(); else if (dash) pos.shift();
@@ -164,7 +176,32 @@ const auxSpec = {
     const out = []; rawLines(b).forEach((l, i) => { for (const m of l.matchAll(/\{\s*loudness\s+"([^"]+)"\s*\}/gi)) out.push([m[1].toLowerCase(), i + 1]); });
     return out.length ? out : null;
   } },
+  // MIS-50: per units file, every crewed card content "veh ( crew )" as [file, line, card, vehicle] in walk order; the entity lookup
+  // and the one-finding-per-site rule stay live (section 7). Cached tables are not re-extracted when this code changes: rename the
+  // table (card1 -> card2) with any change here
+  card1: { select: k => k.startsWith('resource/set/multiplayer/units/') && k.endsWith('.set'), extract: t => cardSites(t) },
 };
+// the MIS-50 walk of one units tree: [file, line, card, vehicle] per "veh ( crew )" in a {content} of a card
+function cardSites(t) {
+  const out = [];
+  (function walk(b, card) {
+    for (const c of kidsOf(b)) {
+      if (c.disabled) continue;
+      const n = lc(nameOf(c) || ''), own = c.items[0] && c.items[0].k === 'STRING' ? c.items[0].value : card;
+      if (n === 'content' && card != null) {
+        const toks = argsOf(c).filter(x => x.k === 'STRING').map(x => x.value).join(' ').replace(/\(/g, ' ( ').replace(/\)/g, ' ) ').split(/\s+/).filter(Boolean);
+        toks.forEach((tk, i) => {
+          if (toks[i + 1] !== '(' || tk === '(' || tk === ')' || tk.includes('%')) return;
+          out.push([b.file, b.line, card, tk === '*' ? card : tk.split(':')[0]]);
+        });
+      }
+      walk(c, own);
+    }
+  })(t, null);
+  return out.length ? out : null;
+}
+// off (--no-file-cache / ARSENAL_FILE_CACHE=0): no slot, and MIS-50 parses every units file here as before (no card1 table)
+if (o.fileCache === false || process.env.ARSENAL_FILE_CACHE === '0') { o.fileCache = false; delete auxSpec.card1; }
 // text lines with ; comments cut (quotes respected)
 function rawLines(b) {
   return b.toString('latin1').split(/\r?\n/).map(raw => { let q = false; for (let p = 0; p < raw.length; p++) { if (raw[p] === '"') q = !q; else if (raw[p] === ';' && !q) return raw.slice(0, p); } return raw; });
@@ -183,25 +220,6 @@ function seedCache() {
     fs.mkdirSync(path.dirname(to), { recursive: true }); fs.copyFileSync(from, to); return to;
   } catch (e) { try { fs.rmSync(to, { force: true }); } catch (e2) { /* keep */ } return null; }   // no seed (a full disk too): cold, as before
 }
-const seeded = seedCache();
-let built;
-try { built = ix.build({ ...o, aux: auxSpec }); }
-catch (e) {   // --mods naming a mod the vfs did not mount: entityindex refuses (no silent vanilla index). --folder alone never trips it
-  if (seeded) try { require('fs').rmSync(seeded, { force: true }); } catch (e2) { /* keep */ }
-  if (e.code !== 'MOD_NOT_MOUNTED') throw e;
-  // the hint follows the reason: a mod the game skips for its mod.info version range is in <game>/mods, the --folder hint would mislead
-  const why = (e.unmounted || []).map(u => u.why.join(' ')).join(' ');
-  const hint = /\bMOD_VERSION:/.test(why)
-    ? 'refcheck: the game skips the mod for its mod.info version range (minGameVersion / maxGameVersion): fix the range, or check its files with --folder <mod dir> and no --mods for it'
-    : 'refcheck: a folder outside <game>/mods is checked with --folder <dir> and no --mods for it';
-  console.error(e.message + '\n' + hint); process.exit(3);
-}
-const { idx, src, keys, stats } = built;
-// the game the vfs used (a GoH folder with no --exe is goh too); folder-only: the --exe named
-const isGoh = (src.v ? src.v.exe : o.exe) === 'goh';
-const rep = createReport();
-const has = k => keys.has(k);
-
 // ---------- finding aggregation ----------
 const groups = new Map();   // file|line|code|msg -> { ent:Set, info }
 // GoH: every rule runs (the 2026-11-23 vanilla run gave 62 findings in DISABLED_ON REF_ANIM_MISSING REF_SOUND_MISSING ENV_PRESET_MISSING
@@ -213,6 +231,47 @@ function add(file, line, code, msg, ent, info) {
   if (!g) groups.set(k, g = { file, line, code, msg, ents: new Set(), info: !!info, mod: false });
   if (ent) { g.ents.add(ent.name); if (ent.source === 'mod') g.mod = true; }
 }
+
+// the index is built with entityindex buildAsync (the same records in the same order as build; loose files read ahead through
+// the thread pool), so the checks below run in main(). The body keeps the indentation it had at the top level.
+async function main() {
+// restore points: the source entityindex builds takes the process default (lib/sdlset restorePoints)
+require('../lib/sdlset').restorePoints(restorePoints);
+// the folder listed once (lib/modtree scan, readdir + stat through the thread pool): lib/sdlset createSource takes this
+// process's fresh scan instead of walking it. A scan that fails = the walk as before
+// --listing f: a scan the caller made just before (wouldload), of the --folder or of a mounted mod: taken as this process's scan
+// (modtree.adopt), so neither the folder nor the mod's view is walked again; the folder is scanned here only when f does not cover it
+const mt = require('../lib/modtree');
+if (o.listing) { try { mt.adopt(JSON.parse(require('fs').readFileSync(o.listing, 'utf8'))); } catch (e) { /* listed as before */ } }
+if (o.folder && !mt.fresh(path.resolve(o.folder))) { try { if (require('fs').statSync(o.folder).isDirectory()) await mt.scan(path.resolve(o.folder)); } catch (e) { /* walk */ } }
+// the slot (slot.js): this mod's index from the last check when the --cache file is new (a tools/check overlay run), else none.
+// It needs a listing of each mod folder (the slot is keyed by the .presets / paks in it): a mounted mod is scanned here when no
+// --listing covers it (the vfs view is then listed from that scan, the same records)
+const slotDirs = o.gameDir && o.fileCache !== false ? (o.folder ? [path.resolve(o.folder)] : (o.mods || []).map(m => path.resolve(o.gameDir, 'mods', String(m).split(':')[0]))) : [];
+for (const d of slotDirs) if (!mt.fresh(d)) { try { if (require('fs').statSync(d).isDirectory()) await mt.scan(d); } catch (e) { /* no slot */ } }
+const slot = o.gameDir ? require('./slot').seed(o, ix.cachePath(o.cache, o.exe, o.gameDir), restorePoints, slotDirs.map(d => mt.fresh(d))) : null;
+const seeded = seedCache();
+const win = process.env.ARSENAL_READ_WINDOW, aheadWindow = win === undefined || win === '' ? 32 : Math.max(0, Math.min(1024, Math.floor(+win) || 0));
+let built;
+try { built = await ix.buildAsync({ ...o, aux: auxSpec, aheadWindow: aheadWindow || undefined, readAhead: aheadWindow > 0 }); }
+catch (e) {   // --mods naming a mod the vfs did not mount: entityindex refuses (no silent vanilla index). --folder alone never trips it
+  if (seeded) try { require('fs').rmSync(seeded, { force: true }); } catch (e2) { /* keep */ }
+  if (slot && slot.used) try { require('fs').rmSync(ix.cachePath(o.cache, o.exe, o.gameDir), { force: true }); } catch (e2) { /* keep */ }
+  if (e.code !== 'MOD_NOT_MOUNTED') throw e;
+  // the hint follows the reason: a mod the game skips for its mod.info version range is in <game>/mods, the --folder hint would mislead
+  const why = (e.unmounted || []).map(u => u.why.join(' ')).join(' ');
+  const hint = /\bMOD_VERSION:/.test(why)
+    ? 'refcheck: the game skips the mod for its mod.info version range (minGameVersion / maxGameVersion): fix the range, or check its files with --folder <mod dir> and no --mods for it'
+    : 'refcheck: a folder outside <game>/mods is checked with --folder <dir> and no --mods for it';
+  console.error(e.message + '\n' + hint); process.exit(3);
+}
+const { idx, src, keys, stats } = built;
+if (slot) slot.save();
+// the game the vfs used (a GoH folder with no --exe is goh too); folder-only: the --exe named
+const isGoh = (src.v ? src.v.exe : o.exe) === 'goh';
+const rep = createReport();
+const has = k => keys.has(k);
+
 const isModFile = f => scope !== 'mod' || !src.v ? true : src.isModKey(f) || src.local.has(f);
 
 // ---------- cached tree reads for the small set files (settings, LOD, pather) ----------
@@ -478,7 +537,17 @@ for (const [k, r] of auxAll('inc')) {
 // MIS-50: crewed card content "veh ( crew )": the vehicle must exist as an entity, else spawned.back() on an empty list crashes on buy
 {
   const done = new Set();
-  for (const k of [...keys].filter(k => k.startsWith('resource/set/multiplayer/units/') && k.endsWith('.set')).sort()) {
+  const card = (file, line, card, v) => {
+    if (idx.byName(v).length) return;
+    const at = file + ':' + line + ':' + v; if (done.has(at)) return; done.add(at);
+    add(file, line, 'CARD_VEHICLE_MISSING', `card "${card}" content "${v} ( crew )": no .def named "${v}" on the mount: the vehicle is not created and the crew step crashes the match on buy; add the entity, fix the name, or remove the card (MIS-50)`);
+  };
+  // the card sites from the index (card1 table, per file), else (file cache off) parsed here
+  if (auxSpec.card1) for (const k of [...keys].filter(k => k.startsWith('resource/set/multiplayer/units/') && k.endsWith('.set')).sort()) {
+    const r = idx.aux.card1 && idx.aux.card1[k];
+    if (r && r.data) for (const s of r.data) card(s[0], s[1], s[2], s[3]);
+  }
+  else for (const k of [...keys].filter(k => k.startsWith('resource/set/multiplayer/units/') && k.endsWith('.set')).sort()) {
     const t = treeOf(k); if (!t) continue;
     (function walk(b, card) {
       for (const c of kidsOf(b)) {
@@ -574,4 +643,7 @@ for (const g of out) {
   (g.info || known ? rep.info : rep.add).call(rep, g.file, g.line, g.code, g.msg + extra + (known ? ' [known vanilla defect]' : ''));
 }
 require('../lib/cli').rcPrint(rep, o, o.folder || o.gameDir, 'refcheck', { byCode: true, showInfo: !quiet, summary });
-if (process.env.REFCHECK_TIME) console.error(`index: ${stats.entities} entities, parsed ${stats.parsed}, reused ${stats.reused}, ${stats.ms} ms`);
+if (process.env.REFCHECK_TIME) console.error(`index: ${stats.entities} entities, parsed ${stats.parsed}, reused ${stats.reused}, ${stats.ms} ms` + (stats.ahead ? ` (read ahead ${stats.ahead.taken}/${stats.ahead.added})` : ''));
+if (process.env.REFCHECK_TIME) console.error(slot ? `file cache: slot ${slot.used ? 'used' : 'empty'}, ${slot.saved ? 'saved ' + slot.saved + ' bytes' : 'not saved'}, aux parsed ${stats.auxParsed} reused ${stats.auxReused}, ${slot.ms} ms` : `file cache: ${o.fileCache === false ? 'off' : 'no slot (own cache file)'}`);
+}
+main().catch(e => { console.error(e && e.stack || e); process.exit(1); });

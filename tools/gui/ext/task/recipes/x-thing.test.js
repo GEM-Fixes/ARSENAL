@@ -18,6 +18,9 @@ const GUI = path.resolve(__dirname, '..', '..', '..');
 let p = 0, f = 0;
 const ok = (c, m, x) => { if (c) p++; else { f++; console.log('FAIL ' + m + (x !== undefined ? '\n  ' + String(x).slice(0, 800) : '')); } };
 const tick = async (n) => { for (let i = 0; i < (n || 6); i++) await new Promise(r => setImmediate(r)); };
+// tickUntil: by time, not by count: ticks until f() holds; backstop 60 s, then a WAIT line and the check after it reports. Never a hang
+const WT = require('../../../../lib/test/wait');
+const tickUntil = async (f, what) => { const t0 = Date.now(); while (!f()) { if (Date.now() - t0 > WT.COND_MS) { WT.say('x-thing test', what, WT.COND_MS); break; } await tick(1); } };
 
 function el(tag, attrs, kids) {
   const e = { tag: String(tag).toUpperCase(), tagName: String(tag).toUpperCase(), attrs: {}, kids: [], ev: {}, _t: '', checked: false, value: '', disabled: false };
@@ -95,10 +98,10 @@ async function realPage() {
   };
   w.window = w; vm.createContext(w);
   vm.runInContext(/<script>([\s\S]*)<\/script>/.exec(html)[1], w, { filename: 'page.js:script' });
-  for (let i = 0; i < 400 && !w.__as2gui; i++) await tick(1);
+  await tickUntil(() => w.__as2gui, 'the real page is built');
   ok(!!w.__as2gui && !!w.TASK, 'the real page is built with the task window');
   if (!w.TASK) return;
-  for (let i = 0; i < 200 && !row.querySelector('button[data-task-start]'); i++) await tick(1);
+  await tickUntil(() => row.querySelector('button[data-task-start]'), 'the task row shows its start buttons');
   const settle = async () => { for (let i = 0; i < 40; i++) await tick(1); };
 
   // x-log: three questions, then Done with the next buttons
@@ -150,7 +153,7 @@ async function realRoutes(game) {
     P.calls.push([u, b]);
     return fn ? Promise.resolve().then(() => fn(url, b ? JSON.parse(JSON.stringify(b)) : null, ctx)) : Promise.reject(new Error('no route ' + url.pathname));
   };
-  const wait = async (host, test, n) => { for (let i = 0; i < (n || 400) && !test(); i++) await new Promise(r => setTimeout(r, 5)); return host; };
+  const wait = async (host, test) => { await WT.until(() => test(), { who: 'x-thing test', what: 'a real screen shows what it read' }); return host; };   // by time: backstop 60 s + WAIT, then the check reports
   const draw = async (kind, d, test, n) => { const hh = el('div'); P.kinds[kind].draw({ id: kind === 'xt-find' ? 'thing' : kind }, { draft: d }, hh); await wait(hh, () => test(hh), n); return hh; };
   const nomod = hh => by(hh, 'data-xt-nomod').length;
   const failed = hh => /k\.(fail|nolink)/.test(hh.textContent);
@@ -171,7 +174,7 @@ async function realRoutes(game) {
     // a loaded PC may run out the route's time budget: the screen then says the search stopped early (data-xt-cut), an honest answer
     ['xt-used', hh => by(hh, 'data-xt-link').length || by(hh, 'data-xt-cut').length || nomod(hh) || failed(hh), 'where it is used lists the places (ide/refs)'],
     ['xt-price', hh => by(hh, 'data-xt-prow').length || /k\.pr\.none/.test(hh.textContent), 'its price reads the balance sheet of the game']]) {
-    host = await draw(k, ud, test, k === 'xt-used' ? 3000 : 400);
+    host = await draw(k, ud, test);
     ok(test(host) && !nomod(host) && !failed(host), 'real, no mod, ' + ud.answers.thing.value + ': ' + what, host.textContent.slice(0, 300));
   }
   host = await draw('xt-modchg', ud, hh => nomod(hh));

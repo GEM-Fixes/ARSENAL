@@ -15,6 +15,8 @@
 //     PANEL_SPECIAL_UNLOADED); a {Key "id"} in an action file makes that keys.set id read (no KEYS_ACTION_NO_HOTKEY / WARN_KEYS_ID_UNREAD);
 //     `plant` does nothing (WARN_PLANT_NOOP, GHINT-11); button pictures are info only [I]. AS2 games: a keys.set {"category" ..} is info
 //     KEYS_CATEGORY_IGNORED (GHUI-251: GoH-only)
+//   --restore-points  also read <mod folder>/.arsenal-undo (restore points; the game never mounts them, so off by default)
+//   CLI lists the folder once and reads the walked files through the thread pool (checkAsync); check() = same findings, one at a time
 // files: set/panel_control/*.set, interface/action/*.set, **/keys.set, interface/font/*.font. context (compiled action names,
 // pictures, fonts) comes from the whole vfs + folder, so a mod folder is judged against the data it would be mounted over.
 // Author: Imperator_Aug (ARSENAL, ia-e4069c86)
@@ -22,7 +24,7 @@ require('../lib/help')(__filename); // --help / -h: header usage, exit 0 (HELPFI
 const fs = require('fs'), path = require('path');
 const sdlset = require('../lib/sdlset');
 const { createReport, relPath } = require('../lib/report');
-const T = require('./tables');
+const T = require('./tables'), fast = require('../strlint/fastread');
 
 const lc = s => String(s).toLowerCase();
 const tokText = t => t.k === 'STRING' ? t.value : t.text;
@@ -39,11 +41,17 @@ function parts(b) {
 const topBlocks = root => { const out = []; for (const it of root.items) { if (it.k === 'BLOCK' && !it.disabled) out.push(it); else if (it.k === 'MOD') for (const j of it.items) if (j.k === 'BLOCK' && !j.disabled) out.push(j); } return out; };
 const base = k => k.slice(k.lastIndexOf('/') + 1);
 
-function check(opts) {
+const kinds = { panel: /^resource\/set\/panel_control\/[^/]+\.set$/, action: /^resource\/interface\/action\/[^/]+\.set$/, keys: /(^|\/)keys\.set$/, font: /^resource\/interface\/font\/[^/]+\.font$/ };
+const PROFILE_RE = /^resource\/interface\/profile\//;
+const walked = key => PROFILE_RE.test(key) || Object.keys(kinds).some(n => kinds[n].test(key));   // keys the main loop reads
+// the check as steps: yields a Promise only while a read-ahead file (io.ra, async run) is still being read
+function* steps(opts, io) {
   const rep = createReport();
   let mods = opts.mods;
   if (!mods && opts.folder && opts.gameDir && path.basename(path.dirname(path.resolve(opts.folder))).toLowerCase() === 'mods') mods = [path.basename(path.resolve(opts.folder))];
-  const src = sdlset.createSource({ gameDir: opts.gameDir, mods, folder: opts.folder, exe: opts.exe });
+  const ra = io && io.ra;
+  // each walked file and each include read once per run (fastread)
+  const F = fast.wrap(sdlset.createSource({ gameDir: opts.gameDir, mods, folder: opts.folder, exe: opts.exe, ...fast.srcOpts(opts) }), ra), src = F.src;
   const vfsMode = !!opts.vfs;
   const goh = (opts.exe || (src.v && src.v.exe)) === 'goh';
   const G = goh ? { ...T, ...T.GOH } : T;   // the game's tables (AS64 and MoW:AS2: the AS2 tables)
@@ -79,7 +87,6 @@ function check(opts) {
   const rd = t => { try { return src.read(t, () => {}); } catch (e) { return null; } };
   const mine = t => items.has(t) ? items.get(t) : null;
 
-  const kinds = { panel: /^resource\/set\/panel_control\/[^/]+\.set$/, action: /^resource\/interface\/action\/[^/]+\.set$/, keys: /(^|\/)keys\.set$/, font: /^resource\/interface\/font\/[^/]+\.font$/ };
   let nfiles = 0;
   const known = new Set(T.CODE_KEY_IDS);   // plus every id vanilla ships
   if (src.v) for (const [k, r] of src.v.files) if (/(^|\/)keys\.set$/.test(k) && !src.isModKey(k) && !src.local.has(k)) {
@@ -87,13 +94,18 @@ function check(opts) {
     for (const b of topBlocks(root.root)) for (const c of parts(b).kids) { const p = parts(c); if (p.name && p.name.k === 'STRING') known.add(p.name.value); }
   }
 
-  for (const [key, t] of items) {
+  if (ra) for (const [key, t] of items) if (walked(key) && t.path) ra.add(key, t.path);
+  for (const [key, t0] of items) {
+    if (!walked(key)) continue;
+    if (ra && t0.path) { const w = ra.wait(key); if (w) yield w; }
+    try { checkFile(key, F.item(t0)); } finally { F.done(t0); }
+  }
+  function checkFile(key, t) {
     const kind = Object.keys(kinds).find(n => kinds[n].test(key));
-    if (!kind && !/^resource\/interface\/profile\//.test(key)) continue;
-    const r = rd(t); if (!r) continue;
+    const r = rd(t); if (!r) return;
     nfiles++;
     const rel = t.file;
-    if (!kind) continue;
+    if (!kind) return;
     const tops = topBlocks(r.root);
     if (kind === 'panel') panel(key, rel, tops);
     else if (kind === 'action') action(key, rel, tops);
@@ -245,21 +257,37 @@ function check(opts) {
   }
   return { rep, files: nfiles, mods: mods || [] };   // mods: the mods actually mounted (given, or the folder's own name under <game>/mods)
 }
+// check(opts) -> { rep, files, mods }   sync, files read one at a time
+// opts: { folder|vfs, gameDir, mods, exe, restorePoints (also read <folder>/.arsenal-undo, off by default), listing }
+function check(opts) { return fast.drive(steps(opts, null)); }
+// checkAsync(opts) -> Promise<same>: the folder listed once through the thread pool, walked files read ahead
+// checkAsync(opts, ra0): ra0 = a readAhead stand-in to read through (lib/modset read-once pass, ctx.js), closed at the end; no
+// listing of its own then (lib/sdlset lists the folder from the pass's scan this thread adopted, else walks as before)
+async function checkAsync(opts, ra0) {
+  try {
+    const { opts: o, ra } = ra0 ? { opts, ra: ra0 } : await fast.prepare(opts);
+    try { return await fast.driveAsync(steps(o, { ra })); } finally { if (ra) ra.close(); }
+  } finally { if (ra0) ra0.close(); }
+}
 
 // .lintrc + --format wiring (own arg parser): rc from --rc FILE, else nearest .lintrc walking up from `start`; --no-rc disables
 const { rcPrint } = require('../lib/cli'), games = require('../lib/games');
-if (require.main === module) {
-  const args = process.argv.slice(2), o = {}, pos = [];
+// thread pool 16 (libuv default 4): more reads queued at the disk at once (as keylint)
+if (require.main === module && !process.env.UV_THREADPOOL_SIZE) process.env.UV_THREADPOOL_SIZE = '16';
+// main(args, {ra}): the CLI (and ctx.js, the read-once module form, with the pass's reader as ra); an error rejects
+async function main(args, { ra } = {}) {
+  const o = {}, pos = [];
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (a === '--game') o.gameDir = args[++i]; else if (a === '--mods') o.mods = args[++i].split(',').filter(Boolean);
     else if (a === '--exe') { const x = args[++i], g = games.get(x); if (!g || /\.exe$/i.test(String(x))) { console.error('uilint: --exe must be one of as64|mowas_2|mowas2|goh'); process.exit(2); } o.exe = g.exe; }
+    else if (a === '--restore-points') o.restorePoints = true;
     else if (a === '--vfs') o.vfs = true; else if (a === '--rc') o.rcFile = args[++i]; else if (a === '--no-rc') o.noRc = true; else if (a === '--format') o.format = args[++i]; else if (a === '-o') o.output = args[++i]; else if (a === '-q') o.q = true; else if (a === '--summary') o.summary = true; else pos.push(a);
   }
   o.folder = pos[0];
   if (!o.gameDir && o.exe === 'goh') { o.gameDir = games.install('goh').dir || undefined; o.gameAuto = !!o.gameDir; }   // --exe goh with no --game: the GoH install (folder and --vfs mode)
-  if (!o.folder && !o.vfs || o.vfs && !o.gameDir) { if (o.vfs && !o.gameDir && o.exe === 'goh') console.error('uilint: no GoH install found (set GOH_GAME or give --game)'); console.error('usage: uilint <mod folder> [--game dir] [--exe as64|mowas_2|mowas2|goh] [--mods a,b] [-q] [--summary] | --vfs --game dir [--exe ..] | --vfs --exe goh'); process.exit(2); }
-  const { rep, files, mods: used } = check(o);
+  if (!o.folder && !o.vfs || o.vfs && !o.gameDir) { if (o.vfs && !o.gameDir && o.exe === 'goh') console.error('uilint: no GoH install found (set GOH_GAME or give --game)'); console.error('usage: uilint <mod folder> [--game dir] [--exe as64|mowas_2|mowas2|goh] [--mods a,b] [--restore-points] [-q] [--summary] | --vfs --game dir [--exe ..] | --vfs --exe goh'); process.exit(2); }
+  const { rep, files, mods: used } = await checkAsync(o, ra);
   rcPrint(rep, o, o.folder || o.gameDir, 'uilint', { showInfo: !o.q, byCode: true, summary: o.summary });
   console.log(`${files} files`);
   if (!files && o.folder) {   // was 0 findings with no word on an Enhanced-mode folder (w5-w8)
@@ -270,4 +298,5 @@ if (require.main === module) {
         : (!used.length ? `; if it ships paks, mount it: ${o.gameAuto ? '' : '--game <dir> '}--exe ${o.exe} --mods ${name}` : '')));   // as64+ (Enhanced mode) is AS64 only
   }
 }
-module.exports = { check };
+if (require.main === module) main(process.argv.slice(2)).catch(e => { console.error(e && e.stack || String(e)); process.exit(1); });
+module.exports = { check, checkAsync, main };

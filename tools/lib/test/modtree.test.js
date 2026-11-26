@@ -89,6 +89,35 @@ const diff = (a, b) => mt.AREAS.filter(k => a.areas[k] !== b.areas[k]);
     assert.deepEqual(mt.stamps(null, ['set', 'all']), { 'mod:set': '', 'mod:all': '' });
     assert.throws(() => mt.stamps(A, ['sets']), /unknown area/);
   });
+  await t('restore points: .arsenal-undo left out (any depth, any case) unless restorePoints; such a scan is not kept', async () => {
+    const m3 = mkmod('m3');
+    put(m3, '.arsenal-undo/t1/files/resource/set/a.set', 'u'); put(m3, 'resource/set/.Arsenal-Undo/x.set', 'u');
+    mt._reset({ store: null });
+    const D = await mt.scan(m3);
+    assert.equal(D.count, FILES.length); assert.equal(D.all, A.all, 'same signature as the mod without restore points');
+    assert.ok(D.left.includes('.arsenal-undo') && D.left.includes('resource/set/.Arsenal-Undo'), 'in left: ' + D.left.join(','));
+    assert.ok(!D.files.some(f => /arsenal-undo/i.test(f[0])));
+    assert.ok(mt.fresh(m3) === D);
+    const R = await mt.scan(m3, { restorePoints: true });
+    assert.equal(R.count, FILES.length + 2); assert.ok(R.files.some(f => f[0] === '.arsenal-undo/t1/files/resource/set/a.set'));
+    assert.ok(!R.left.some(l => /arsenal-undo/i.test(l))); assert.notEqual(R.all, D.all);
+    assert.ok(mt.fresh(m3) === D && mt.last(m3) === D, 'the restorePoints scan is not kept');
+  });
+  await t('names only: same names, no sizes, rel-only signature, not kept', async () => {
+    const m4 = mkmod('m4'); put(m4, '.arsenal-undo/p/q.set', 'u'); put(m4, '.git/x', 'g');
+    mt._reset({ store: null });
+    const S = await mt.scan(m4), N = await mt.scan(m4, { names: true, conc: 3 });
+    assert.equal(N.names, true); assert.equal(S.names, undefined);
+    assert.equal(N.count, S.count); assert.equal(N.bytes, 0);
+    assert.deepEqual(N.files.map(f => f[0]), S.files.map(f => f[0]).sort());
+    assert.ok(N.files.every(f => f[1] === -1 && f[2] === -1));
+    assert.deepEqual(N.left, S.left);
+    const sha = rows => require('crypto').createHash('sha1').update(rows.map(r => r + '\n').join('')).digest('hex');
+    assert.equal(N.all, sha(N.files.map(f => f[0])));
+    assert.ok(mt.fresh(m4) === S, 'the names scan is not kept');
+    put(m4, 'resource/set/a.set', 'longer text'); assert.equal((await mt.scan(m4, { names: true })).all, N.all, 'size change: names signature stands');
+    const R = await mt.scan(m4, { names: true, restorePoints: true }); assert.equal(R.count, N.count + 1);
+  });
   await t('missing folder rejects; last of an unknown mod is null', async () => {
     await assert.rejects(mt.scan(path.join(root, 'nope')), /ENOENT/);
     await assert.rejects(mt.ensure(path.join(root, 'nope')), /ENOENT/);
@@ -165,6 +194,20 @@ const diff = (a, b) => mt.AREAS.filter(k => a.areas[k] !== b.areas[k]);
     assert.equal(mt.last(big), null); assert.equal((await mt.ensure(big)).count, 1200, 'a throwing store = memory only');
     mt._reset();                                               // the real store (or none): must work either way
     const z = await mt.ensure(big); assert.equal(z.count, 1200); assert.ok(mt.last(big) === z);
+  });
+  await t('adopt: a scan from elsewhere becomes fresh; names-only, sizeless and older ones refused; never stored', async () => {
+    let puts = 0; mt._reset({ store: { get: () => null, put: () => { puts++; return { bytes: 1 }; } } });
+    const T = JSON.parse(JSON.stringify(await mt.scan(big)));   // as read back from a --listing file
+    puts = 0; mt._reset({ store: { get: () => null, put: () => { puts++; return { bytes: 1 }; } } });
+    assert.equal(mt.fresh(big), null);
+    assert.equal(mt.adopt({ ...T, names: true }), false, 'names-only');
+    assert.equal(mt.adopt({ ...T, files: T.files.map(r => [r[0]]) }), false, 'rows without sizes');
+    assert.equal(mt.adopt({ dir: T.dir, files: T.files, left: [] }), false, 'not a scan (no signatures)');
+    assert.equal(mt.fresh(big), null);
+    assert.equal(mt.adopt(T), true); assert.ok(mt.fresh(big) === T); assert.ok(mt.last(big) === T); assert.equal(puts, 0, 'not written to the store');
+    assert.ok((await mt.ensure(big)) === T, 'ensure takes it while young');
+    const N = await mt.scan(big); assert.equal(mt.adopt({ ...T, at: N.at - 1 }), false, 'an older one does not replace a newer own scan');
+    assert.ok(mt.fresh(big) === N);
   });
 
   mt._reset({ store: null });

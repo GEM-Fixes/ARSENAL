@@ -132,6 +132,7 @@ const isB = e => !!(e && e.dataset && e.dataset.blk != null);
   {
     const { make } = require(path.join(__dirname, '..', '..', 'test', 'fakedom'));
     const calls = [], toasts = [], asks = [], saved = [];
+    let inFlight = 0;   // route calls out (tick waits for them)
     const run = (gameId, extra) => {
       const doc = make(); doc.body = doc.body || doc.createElement('body');
       const box = Object.assign({
@@ -140,8 +141,8 @@ const isB = e => !!(e && e.dataset && e.dataset.blk != null);
         tx: (k, p) => { const v = L.en[k]; return v == null ? k : v.replace(/\{(\w+)\}/g, (a, b) => (p && p[b] != null ? String(p[b]) : a)); },
         toast: m => toasts.push(m), loading: (el, k) => { el.textContent = L.en[k] || k; return el; }, result: (el, kind, text) => { el.className = kind; el.textContent = text; return el; },
         askDo: o => { asks.push(o); return Promise.resolve(box.answer !== false); },
-        api: (u, body, opt) => { const url = new URL('http://x' + u), key = (body === undefined ? 'GET ' : 'POST ') + url.pathname; calls.push({ key, body, opt, q: url.search });
-          return Promise.resolve().then(() => routes[key](url, body === undefined ? null : JSON.parse(JSON.stringify(body)), mkctx())).then(r => JSON.parse(JSON.stringify(r)), x => { throw { message: x.message, status: x.status }; }); },
+        api: (u, body, opt) => { const url = new URL('http://x' + u), key = (body === undefined ? 'GET ' : 'POST ') + url.pathname; calls.push({ key, body, opt, q: url.search }); inFlight++;
+          return Promise.resolve().then(() => routes[key](url, body === undefined ? null : JSON.parse(JSON.stringify(body)), mkctx())).then(r => JSON.parse(JSON.stringify(r)), x => { throw { message: x.message, status: x.status }; }).finally(() => { inFlight--; }); },
         atob: b => Buffer.from(b, 'base64').toString('latin1'), Uint8Array, Blob: function (parts, o) { this.parts = parts; this.type = o.type; },
       }, extra || {});
       box.window = { URL: { createObjectURL: b => { saved.push(b); return 'blob:x'; }, revokeObjectURL: () => {} } };
@@ -152,7 +153,10 @@ const isB = e => !!(e && e.dataset && e.dataset.blk != null);
       const scr = box.EXT_SCREENS.claude(root);
       return { root, scr, box, doc };
     };
-    const tick = async () => { for (let i = 0; i < 12; i++) await new Promise(r => setImmediate(r)); };
+    // a fixed count of turns was a time limit: the real routes read files, and on a busy PC the list had not answered yet (no cards).
+    // Now: the turns, then until no route call is out (backstop 60 s, WAIT line), then the turns again for the drawing after it
+    const turns = async () => { for (let i = 0; i < 12; i++) await new Promise(r => setImmediate(r)); };
+    const tick = async () => { await turns(); if (inFlight) { await require('../../../lib/test/wait').until(() => inFlight === 0, { who: 'claude page test', what: 'route calls answered', step: 2 }); await turns(); } };
     const btns = (el, k) => el.all().filter(e => e.tagName === 'BUTTON' && e.textContent === L.en[k]);
     const blkOf = (root, id) => root.all().find(e => e.dataset && e.dataset.blk === id);
     const cards = root => root.all().filter(e => e.dataset && e.dataset.piece);

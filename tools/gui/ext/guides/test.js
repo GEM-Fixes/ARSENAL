@@ -18,6 +18,8 @@ const get = (n, qs) => routes['GET /api/x/guides/' + n](new URL('http://x/api/x/
 const post = (n, body) => routes['POST /api/x/guides/' + n](new URL('http://x/api/x/guides/' + n), body, ctx);
 const st = async p => { try { await p; return 0; } catch (x) { return x.status || -1; } };
 const qd = d => '?dir=' + encodeURIComponent(d);
+// the update's end: by time, not by count. Backup, never a hang: after 60 s WAIT on stderr and the last progress (the check reports)
+const ended = async () => (await require('../../../lib/test/wait').until(async () => { const p = await get('update/progress'); return p.running ? null : p; }, { who: 'guides test', what: 'the index update to end', step: 50 })) || get('update/progress');
 // structure rules of tools/gui/test/blockcheck.js (checkScreen), for the state the page reaches after server replies
 const BC = require(path.join(__dirname, '..', '..', 'test', 'blockcheck'));
 const isB = e => !!(e && e.dataset && e.dataset.blk != null);
@@ -101,7 +103,7 @@ const checkScreen = sec => (sec.all().filter(isB).length < 10 ? ['fewer than 10 
   const sr = await post('update/start', { dir: data, token: pl2.token });
   ok(sr.started, 'update start');
   ok(await st(post('update/start', { dir: data, token: pl2.token })) === 400, 'update start: one run at a time, token used once');
-  let pg; for (let i = 0; i < 100; i++) { pg = await get('update/progress'); if (!pg.running) break; await new Promise(z => setTimeout(z, 50)); }
+  let pg = await ended();
   ok(!pg.running && pg.result && pg.result.saved === 3 && pg.result.requests === 0 && pg.log.length, 'update: finished, no request left this machine ' + JSON.stringify(pg.result || pg.error));
   const files = require(path.join(__dirname, '..', '..', '..', 'gemindex', 'lib', 'bundle')).walk(data, '', []);
   ok(files.filter(f => !f.startsWith('scrape/')).sort().join() === 'builtin/builtin-faq.json,builtin/builtin-pages.pack,guides.json', 'update writes only in <folder>/scrape');
@@ -118,14 +120,14 @@ const checkScreen = sec => (sec.all().filter(isB).length < 10 ? ['fewer than 10 
   const run2 = JL.list().filter(j => j.kind === 'bg' && j.state === 'running');
   ok(run2.length === 1 && run2[0].canCancel === true, 'jobs: a running update can be cancelled ' + JSON.stringify(run2));
   ok(run2.length === 1 && JL.cancel(run2[0].id) === true, 'jobs: cancel reaches the update');
-  for (let i = 0; i < 100; i++) { pg = await get('update/progress'); if (!pg.running) break; await new Promise(z => setTimeout(z, 50)); }
+  pg = await ended();
   ok(!pg.running && pg.result && pg.result.stopped === true && pg.result.saved < pl3.count, 'jobs: the cancelled update ended stopped ' + JSON.stringify(pg.result || pg.error));
   ok(run2.length === 1 && JL.get(run2[0].id).state === 'cancelled', 'jobs: its job ended cancelled');
   // the same stop from the page's own button (update/stop), and a failure: the job ends every time
   const pl4 = await post('update/plan', { dir: data, mode: 'missing', limit: 3 });
   await post('update/start', { dir: data, token: pl4.token });
   ok((await post('update/stop', {})).running === true, 'update stop while running: asked');
-  for (let i = 0; i < 100; i++) { pg = await get('update/progress'); if (!pg.running) break; await new Promise(z => setTimeout(z, 50)); }
+  pg = await ended();
   ok(pg.result && pg.result.stopped === true && JL.list().filter(j => j.kind === 'bg' && j.state === 'running').length === 0 && JL.list().filter(j => j.state === 'cancelled').length === 2, 'jobs: Stop on the page ends the job cancelled too');
   ok(await post('update/start', { dir: data, token: pl4.token }).then(() => false, x => x.status === 400) && JL.list().filter(j => j.state === 'running').length === 0, 'jobs: a refused start leaves no job');
   const rsrc = fs.readFileSync(path.join(__dirname, 'routes.js'), 'utf8');

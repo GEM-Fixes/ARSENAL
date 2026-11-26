@@ -175,6 +175,17 @@ ok(!/WARN_REL_STRAY_FILE/.test(r.o), 'release --exe goh: localizations/ mounted'
   t = ''; try { t = fs.readFileSync(path.join(W, 'g6', 'envcheck.txt'), 'utf8'); } catch { /* checked below */ }
   ok(r.rc === 0 && /resource\/map\/multi\/a\/map: DOC_MAP_LOOSE_SHADOWS_PAK loose map file shadows pak copy in dlc1\.pak/.test(t), 'envcheck goh: root pak (no resource/map/) read, no crash', r.o + r.e + t);
 }
+// 1B: --restore-points reaches sdllint and refcheck (argument lists only: the linters' own handling is theirs), not modinfo; absent by default
+{
+  const O1 = path.join(W, 'rp1'), O2 = path.join(W, 'rp0');
+  run([path.join(A, 'mods', 'f'), '--only', 'sdllint,refcheck,modinfo', '--restore-points', '--out', O1]);
+  run([path.join(A, 'mods', 'f'), '--only', 'sdllint,refcheck,modinfo', '--out', O2]);
+  for (const t of ['sdllint', 'refcheck']) {
+    ok(args(O1, t) && args(O1, t).includes('--restore-points'), `--restore-points: ${t} did not get it`, JSON.stringify(args(O1, t)));
+    ok(args(O2, t) && !args(O2, t).includes('--restore-points'), `default: ${t} got --restore-points`, JSON.stringify(args(O2, t)));
+  }
+  ok(args(O1, 'modinfo') && !args(O1, 'modinfo').includes('--restore-points'), '--restore-points: modinfo (no folder walk) got it', JSON.stringify(args(O1, 'modinfo')));
+}
 fs.rmSync(W, { recursive: true, force: true });
 console.log(fail ? `games-test: ${fail} FAIL` : 'games-test: PASS');
 process.exitCode = fail ? 1 : 0;

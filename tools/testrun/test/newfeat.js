@@ -17,26 +17,27 @@ const nextInst = () => String(inst++);
   const D = path.join(F, 'wl'), log = path.join(D, 'log', 'game.log');
   fs.mkdirSync(path.dirname(log), { recursive: true });
   fs.writeFileSync(log, 'old run\nMARKER_DONE\n'); const old = new Date(Date.now() - 3600e3); fs.utimesSync(log, old, old);
-  const sc = wj(path.join(D, 'wl.json'), { name: 'wl', mode: 'menu', steps: [{ cmd: 'echo hi' }, { wait_log: 'MARKER_(DONE|X)', timeout: 30 }], verdict: [{ reply: 'echo hi', match: '^hi$' }] });
+  const sc = wj(path.join(D, 'wl.json'), { name: 'wl', mode: 'menu', steps: [{ cmd: 'echo hi' }, { wait_log: 'MARKER_(DONE|X)', timeout: 60 }], verdict: [{ reply: 'echo hi', match: '^hi$' }] });
   const t0 = Date.now();
-  const p = spawn(process.execPath, [T, '--scenario', sc, '--mock', '--inst', nextInst(), ...logArgs(D), '--connect-timeout', '5', '--exit-wait', '2'], { stdio: ['ignore', 'pipe', 'pipe'] });
-  // the exe rewrites game.log once the run is under way (after "connected": a fixed delay lost the race on a loaded machine, node start > 1.2 s)
-  let out = '', wrote = false; const rewrite = () => { if (!wrote && /^connected /m.test(out)) { wrote = true; setTimeout(() => fs.writeFileSync(log, 'new run\nMARKER_DONE\n'), 1200); } };
+  const p = spawn(process.execPath, [T, '--scenario', sc, '--mock', '--inst', nextInst(), ...logArgs(D), '--connect-timeout', '60', '--exit-wait', '30'], { stdio: ['ignore', 'pipe', 'pipe'] });
+  // the exe rewrites game.log once the run is under way (after the "echo hi" reply, so the wait_log offset is taken: a fixed delay
+  // after "connected" lost the race on a loaded machine); the 1.2 s pause then is part of the scenario (dt > 1000: the stale line did not match)
+  let out = '', wrote = false; const rewrite = () => { if (!wrote && /^> echo hi/m.test(out)) { wrote = true; setTimeout(() => fs.writeFileSync(log, 'new run\nMARKER_DONE\n'), 1200); } };
   p.stdout.on('data', d => { out += d; rewrite(); }); p.stderr.on('data', d => { out += d; rewrite(); });
   const code = await new Promise(r => p.on('close', r));
   const dt = Date.now() - t0;
   assert.strictEqual(code, 0, out);
   assert.ok(/game\.log \/MARKER_\(DONE\|X\)\/ after \d+ ms/.test(out), out);
-  assert.ok(dt > 1000 && dt < 15000, 'wait_log took ' + dt + ' ms (stale line must not match, fresh one must end the wait): ' + out);
+  assert.ok(dt > 1000 && dt < 120000, 'wait_log took ' + dt + ' ms (stale line must not match, fresh one must end the wait): ' + out);
   assert.ok(!/WAITLOG_TIMEOUT/.test(out), out);
   // timeout
   fs.writeFileSync(log, 'nothing here\n');
   const sc2 = wj(path.join(D, 'wl2.json'), { name: 'wl2', mode: 'menu', steps: [{ wait_log: 'NEVER', timeout: 1 }], verdict: [{ event: 'hello' }] });
-  const r = run(['--scenario', sc2, '--mock', '--inst', nextInst(), ...logArgs(D), '--connect-timeout', '5', '--exit-wait', '2']);
+  const r = run(['--scenario', sc2, '--mock', '--inst', nextInst(), ...logArgs(D), '--connect-timeout', '60', '--exit-wait', '30']);
   assert.ok(/TESTRUN_WAITLOG_TIMEOUT no game\.log line matching \/NEVER\/ in 1s/.test(r.stdout), r.stdout);
   assert.strictEqual(r.status, 1);
   // plan + lint
-  assert.ok(/wait game\.log line \/MARKER_\(DONE\|X\)\/ \(timeout 30s\)/.test(run(['--scenario', sc, '--dry']).stdout));
+  assert.ok(/wait game\.log line \/MARKER_\(DONE\|X\)\/ \(timeout 60s\)/.test(run(['--scenario', sc, '--dry']).stdout));
   wj(path.join(D, 'lint', 'bad.json'), { name: 'bad', mode: 'menu', steps: [{ wait_log: 'oops(' }, { wait_log: 'plain (text) here' }], verdict: [{ event: 'hello' }] });
   const l = run(['--lint', path.join(D, 'lint')]).stdout;
   assert.ok(/LINT_REGEX wait_log regex \/oops\(\/ does not compile/.test(l), l);
@@ -47,14 +48,14 @@ const nextInst = () => String(inst++);
 
   // ---- 2. dead pipe: pipe closing ends waits and holds now; two unanswered commands stop the rest
   const D2 = path.join(F, 'dead');
-  const w = wj(path.join(D2, 'w.json'), { name: 'w', mode: 'menu', steps: [{ wait: 'neverevent', timeout: 60 }, { wait: 60 }], verdict: [{ event: 'hello' }] });
+  const w = wj(path.join(D2, 'w.json'), { name: 'w', mode: 'menu', steps: [{ wait: 'neverevent', timeout: 300 }, { wait: 300 }], verdict: [{ event: 'hello' }] });
   let t1 = Date.now();
-  let r2 = run(['--scenario', w, '--mock', '--mock-close-ms', '600', '--inst', nextInst(), ...logArgs(D2), '--connect-timeout', '5', '--exit-wait', '1']);
-  assert.ok(Date.now() - t1 < 15000, 'closed pipe must end the waits: ' + (Date.now() - t1) + ' ms\n' + r2.stdout);
-  assert.ok(/TESTRUN_WAIT_TIMEOUT no "neverevent" event in 60s \(pipe closed\)/.test(r2.stdout), r2.stdout);
+  let r2 = run(['--scenario', w, '--mock', '--mock-close-ms', '600', '--inst', nextInst(), ...logArgs(D2), '--connect-timeout', '60', '--exit-wait', '1']);
+  assert.ok(Date.now() - t1 < 120000, 'closed pipe must end the waits: ' + (Date.now() - t1) + ' ms\n' + r2.stdout);   // the waits are 300 s each: under 120 s they ended on the close
+  assert.ok(/TESTRUN_WAIT_TIMEOUT no "neverevent" event in 300s \(pipe closed\)/.test(r2.stdout), r2.stdout);
   const h = wj(path.join(D2, 'h.json'), { name: 'h', mode: 'menu', steps: [{ cmd: 'echo a', timeout: 1 }, { cmd: 'echo b', timeout: 1 }, { cmd: 'echo c', timeout: 1 }], verdict: [{ event: 'hello' }] });
   t1 = Date.now();
-  r2 = run(['--scenario', h, '--mock', '--mock-hang', 'echo', '--inst', nextInst(), ...logArgs(D2), '--connect-timeout', '5', '--exit-wait', '1']);
+  r2 = run(['--scenario', h, '--mock', '--mock-hang', 'echo', '--inst', nextInst(), ...logArgs(D2), '--connect-timeout', '60', '--exit-wait', '1']);
   assert.ok(/TESTRUN_CMD_STOPPED two commands in a row got no reply/.test(r2.stdout), r2.stdout);
   assert.ok(!/echo c/.test(r2.stdout.replace(/TESTRUN_CMD_FAIL[^\n]*/g, '')) && (r2.stdout.match(/TESTRUN_CMD_FAIL echo/g) || []).length === 2, 'third command must not be sent: ' + r2.stdout);
   console.log('dead pipe ok');
@@ -64,7 +65,7 @@ const nextInst = () => String(inst++);
   const bad = n => wj(path.join(qs, n + '.json'), { name: n, mode: 'menu', steps: [{ cmd: 'nosuch' }], verdict: [{ event: 'hello' }] });
   const good = n => wj(path.join(qs, n + '.json'), { name: n, mode: 'menu', steps: [{ cmd: 'echo ' + n }], verdict: [{ reply: 'echo ' + n, match: '^' + n + '$' }] });
   ['a1', 'a2', 'a3', 'a4', 'a5'].forEach(bad);
-  const qr = (extra, out) => run(['--queue-dir', qs, '--mock', '--inst', nextInst(), ...logArgs(Q), '--connect-timeout', '5', '--exit-wait', '1', '--out', out, ...extra]);
+  const qr = (extra, out) => run(['--queue-dir', qs, '--mock', '--inst', nextInst(), ...logArgs(Q), '--connect-timeout', '60', '--exit-wait', '30', '--out', out, ...extra]);
   let rep1 = path.join(Q, 'r1.json');
   let r3 = qr([], rep1);
   let j = JSON.parse(fs.readFileSync(rep1, 'utf8'));
@@ -91,7 +92,7 @@ const nextInst = () => String(inst++);
   good('a1'); good('a2');
   wj(path.join(qs, 'a3.json'), { name: 'a3', mode: 'menu', quarantine: 'flaky: hangs the lobby', steps: [{ cmd: 'echo a3' }], verdict: [{ reply: 'echo a3', match: 'a3' }] });
   const rep5 = path.join(Q, 'r5.json');
-  r3 = run(['--rerun', rep3, '--mock', '--inst', nextInst(), ...logArgs(Q), '--connect-timeout', '5', '--exit-wait', '1', '--out', rep5]);
+  r3 = run(['--rerun', rep3, '--mock', '--inst', nextInst(), ...logArgs(Q), '--connect-timeout', '60', '--exit-wait', '30', '--out', rep5]);
   j = JSON.parse(fs.readFileSync(rep5, 'utf8'));
   assert.deepStrictEqual(j.queue.map(x => x.name + ':' + x.status), ['a1:PASS', 'a2:PASS', 'a3:NORUN', 'a4:FAIL', 'a5:FAIL'], r3.stdout);
   assert.ok(/^NORUN a3: quarantined: flaky: hangs the lobby/m.test(r3.stdout), r3.stdout);
@@ -116,7 +117,7 @@ const nextInst = () => String(inst++);
   const OG = path.join(O, 'game'); fs.mkdirSync(path.join(OG, 'mods'), { recursive: true });
   const repO = path.join(O, 'o.json');
   const opf = path.join(O, 'options.set'); fs.writeFileSync(opf, '{mods "e2e_test:0"}'); // own list, never the real profile's
-  const ro = run(['--queue-dir', os_, '--overlap', '--mock', '--mock-no-loaded', '--timeout', '1', '--exit-wait', '1', '--inst', nextInst(), '--game', OG, '--no-preflight', '--no-seed', '--profile', opf, '--backup', path.join(O, 'bk'), '--out', repO, ...logArgs(O), '--connect-timeout', '5']);
+  const ro = run(['--queue-dir', os_, '--overlap', '--mock', '--mock-no-loaded', '--timeout', '1', '--exit-wait', '1', '--inst', nextInst(), '--game', OG, '--no-preflight', '--no-seed', '--profile', opf, '--backup', path.join(O, 'bk'), '--out', repO, ...logArgs(O), '--connect-timeout', '60']);
   j = JSON.parse(fs.readFileSync(repO, 'utf8'));
   assert.ok(/overlap: 1 launch/.test(ro.stdout), ro.stdout);
   assert.deepStrictEqual(j.overlap.retried, [], 'crash must not be retried solo: ' + ro.stdout);
@@ -163,12 +164,12 @@ const nextInst = () => String(inst++);
   fs.mkdirSync(path.join(EG, 'mods'), { recursive: true });
   // unseeded instance: its own list decides the mode at startup, so it must already name as64+ (modeClash)
   const eprof = path.join(E, 'options.set'); fs.writeFileSync(eprof, '{mods "as64+:0"}\n');
-  const re = run(['--scenario', esc, '--stage-as', 'e2e_test', '--game', EG, '--mock', '--no-preflight', '--no-seed', '--profile', eprof, '--relist', '--inst', nextInst(), ...logArgs(E), '--backup', path.join(E, 'bk'), '--connect-timeout', '5', '--exit-wait', '1']);
+  const re = run(['--scenario', esc, '--stage-as', 'e2e_test', '--game', EG, '--mock', '--no-preflight', '--no-seed', '--profile', eprof, '--relist', '--inst', nextInst(), ...logArgs(E), '--backup', path.join(E, 'bk'), '--connect-timeout', '60', '--exit-wait', '30']);
   assert.ok(/as64\+ added to mod_set/.test(re.stdout + re.stderr) || /^> mod_set as64\+ e2e_test$/m.test(re.stdout), re.stdout + re.stderr);
   assert.ok(/^> mod_set as64\+ e2e_test$/m.test(re.stdout), re.stdout);
   // unseeded + profile without as64+: the as64+ the run adds to mod_set counts, so no MODE_MIX refusal (fix-later 65)
   fs.writeFileSync(eprof, '{mods "e2e_test:0"}\n'); // the stage folder alone, no as64+ (a real unseeded profile of that shape)
-  const re2 = run(['--scenario', esc, '--stage-as', 'e2e_test', '--game', EG, '--mock', '--no-preflight', '--no-seed', '--profile', eprof, '--relist', '--inst', nextInst(), ...logArgs(E), '--backup', path.join(E, 'bk2'), '--connect-timeout', '5', '--exit-wait', '1']);
+  const re2 = run(['--scenario', esc, '--stage-as', 'e2e_test', '--game', EG, '--mock', '--no-preflight', '--no-seed', '--profile', eprof, '--relist', '--inst', nextInst(), ...logArgs(E), '--backup', path.join(E, 'bk2'), '--connect-timeout', '60', '--exit-wait', '30']);
   assert.ok(!/TESTRUN_MODE_MIX/.test(re2.stdout + re2.stderr), re2.stdout + re2.stderr);
   assert.ok(/^> mod_set as64\+ e2e_test$/m.test(re2.stdout), re2.stdout);
   console.log('as64+ ok');
@@ -178,7 +179,7 @@ const nextInst = () => String(inst++);
   const W = path.join(F, 'wk'), wq = path.join(W, 'q');
   ['w1', 'w2', 'w3', 'w4'].forEach(n => wj(path.join(wq, n + '.json'), { name: n, mode: 'menu', steps: [{ cmd: 'echo ' + n }, { wait: 0.5 }], verdict: [{ reply: 'echo ' + n, match: n }] }));
   const rw = path.join(W, 'r.json');
-  const rk = run(['--queue-dir', wq, '--workers', '2', '--mock', '--inst', '4850', '--no-seed', ...logArgs(W), '--connect-timeout', '5', '--exit-wait', '1', '--out', rw]);
+  const rk = run(['--queue-dir', wq, '--workers', '2', '--mock', '--inst', '4850', '--no-seed', ...logArgs(W), '--connect-timeout', '60', '--exit-wait', '30', '--out', rw]);
   j = JSON.parse(fs.readFileSync(rw, 'utf8'));
   assert.deepStrictEqual([...new Set(j.queue.map(x => x.inst))].sort(), [4850, 4851], rk.stdout + rk.stderr);
   console.log('batch inst ok');

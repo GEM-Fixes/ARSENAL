@@ -298,4 +298,17 @@ require('./model-dds-bc5.test')(t, assert);
 require('./model-ddsenc.test')(t, assert);
 require('./model-scenecache.test')(t, assert);
 require('./userdir.test')(t, assert);
+t('modset read-once pass (modset.test.js, async: own process)', () => {
+  const r = require('./wait').spawnSync(process.execPath, [path.join(__dirname, 'modset.test.js')], { encoding: 'utf8' }, 'lib test');   // backstop 5 min, once more with 10 min: never a hang
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+});
+t('gitview read-only git (gitview.test.js, own process)', () => { const r = require('./wait').spawnSync(process.execPath, [path.join(__dirname, 'gitview.test.js')], { encoding: 'utf8' }, 'lib test'); assert.equal(r.status, 0, r.stdout + r.stderr); });
+t('checkcache whole-check reuse key (checkcache.test.js, async: own process)', () => {
+  const r = require('./wait').spawnSync(process.execPath, [path.join(__dirname, 'checkcache.test.js')], { encoding: 'utf8' }, 'lib test');
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+});
+t('gamecache game layers by fingerprint (gamecache.test.js, own process)', () => {
+  const r = require('./wait').spawnSync(process.execPath, [path.join(__dirname, 'gamecache.test.js')], { encoding: 'utf8' }, 'lib test');
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+});
 console.log(`${n} passed`);

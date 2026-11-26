@@ -14,6 +14,7 @@ const fakedom = require('./fakedom'), contract = require(path.join(GUI, 'contrac
 let pass = 0, failN = 0;
 const ok = (c, m, extra) => { if (c) { pass++; console.log('ok ' + m); } else { failN++; console.log('FAIL ' + m + (extra !== undefined ? '\n  ' + String(extra).slice(0, 900) : '')); } };
 const tick = () => new Promise(r => setImmediate(r));
+const WT = require('../../lib/test/wait');
 const clone = o => JSON.parse(JSON.stringify(o));
 const GAMEP = 'F:\\Games\\Men of War Assault Squad 2', MODA = GAMEP + '\\mods\\lazy_a', MODB = GAMEP + '\\mods\\lazy_b';
 const GOOD = { dir: GAMEP, source: 'steam', ok: true, exes: ['as64.exe', 'mowas_2.exe'], hasMods: true, codes: [] };
@@ -55,7 +56,7 @@ async function load(ls, ans) {
   w.window = w; vm.createContext(w);
   vm.runInContext(/<script>([\s\S]*)<\/script>/.exec(html)[1], w, { filename: 'page.js:script' });
   w.JOBS.tune({ wait: 1e12 });
-  for (let i = 0; i < 800 && !w.__as2gui; i++) { await tick(); adv(20); }
+  { const t0 = Date.now(); while (!w.__as2gui && Date.now() - t0 < WT.COND_MS) { await tick(); adv(20); } if (!w.__as2gui) WT.say('test-lazy', 'page build', WT.COND_MS); }   // by real time, not by count
   await settle(3000);
   Object.assign(P, { w, adv, settle, S: w.__as2gui });
   P.show = async id => { w.__as2in.show(id); await settle(400); };

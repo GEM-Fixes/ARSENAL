@@ -170,6 +170,7 @@ const S = {
   MOD_DUP_FOLDER: ['Two mod folders have the same name.', 'Only one is mounted.', ['Rename or remove one.']],
   MOD_WORKSHOP_COPY: ['The mod is a copy of a Workshop mod.', 'Both may load and fight each other.', ['Keep one copy.']],
   WARN_LOOSE_SHADOWS_PAK: ['A loose file replaces a file inside a pak of the same mod.', 'The loose file wins; the pak copy is never read.', ['Delete the one you do not want.']],
+  PACK_SPEED_LAYOUT: ['The paks were written in the speed layout (--speed).', 'Text and map .net / .grs files are compressed, everything else (textures, sounds, models, animations) is stored, and the text files come first in each pak, so the game and the check read them in one sweep.', ['Nothing to fix: this is a note. Pack without --speed for the old layout.'], 'I'],
   CONFLICT_FILE_OVERRIDES: ['This mod replaces a whole file another mod also changes.', 'Only one mod\'s version is used; the other mod\'s change is lost.', ['Turn the file into a {mod} patch, or set the load order on purpose.'], 'I'],
   CONFLICT_KEY_OVERRIDDEN: ['A key this mod sets is set again by a later mod.', 'This mod\'s value is lost.', ['Check the load order.'], 'I'],
   // ---- localisation
@@ -416,7 +417,8 @@ const F = [
   [/^WARN_/, 'A warning (%c).', 'Not a definite error; the game may still behave unexpectedly.', ['Read the message and look at the line shown.'], 'I'],
 ];
 // codes the scanner picks up that are not finding codes (labels, sentinels, test markers)
-const NOT_CODES = new Set(['ABORT_ERR', 'CLIP_DISTANCE', 'CULL_DISTANCE', 'RENDER_TARGET_ARRAY_INDEX', 'VIEWPORT_ARRAY_INDEX', 'VERTEX_ID', 'PRIMITIVE_ID', 'INSTANCE_ID', 'IS_FRONT_FACE', 'SAMPLE_INDEX', 'LOADS_STATIC', 'LIKELY_CRASH', 'WARN_X', 'OVERMATCH_SHORT', 'GOH_ORIGIN_CHANGED', 'GOH_ORIGIN_GONE', 'VANILLA_SAME', 'VANILLA_CHANGED', 'VANILLA_REMOVED', 'AS2_GAME',
+// env names and node error codes in the read-once, reuse and cache code (2026-11-25) look like codes but are not findings
+const NOT_CODES = new Set(['UV_THREADPOOL_SIZE', 'ARSENAL_CACHE', 'ARSENAL_TEST_STORE', 'ARSENAL_TMP', 'CHECK_TEST_ARGS', 'ERR_WORKER_OUT_OF_MEMORY', 'ABORT_ERR', 'CLIP_DISTANCE', 'CULL_DISTANCE', 'RENDER_TARGET_ARRAY_INDEX', 'VIEWPORT_ARRAY_INDEX', 'VERTEX_ID', 'PRIMITIVE_ID', 'INSTANCE_ID', 'IS_FRONT_FACE', 'SAMPLE_INDEX', 'LOADS_STATIC', 'LIKELY_CRASH', 'WARN_X', 'OVERMATCH_SHORT', 'GOH_ORIGIN_CHANGED', 'GOH_ORIGIN_GONE', 'VANILLA_SAME', 'VANILLA_CHANGED', 'VANILLA_REMOVED', 'AS2_GAME',
   'XDG_DATA_HOME', 'XDG_CONFIG_HOME', 'XDG_CACHE_HOME']);   // environment variable names read by lib/platform.js
 
 let LIM = null;

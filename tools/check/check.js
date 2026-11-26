@@ -13,24 +13,38 @@
 // --fast on GoH with the mod outside <GoH>/mods: wouldload reads the mod folder against the GoH install itself (direct, its own files; no
 // reach gate, NOTE FAST_DIRECT), the overlay is for doctor only. An overlay run keeps wouldload's and doctor's refcheck caches in the
 // overlay's temp folder (deleted at the end): a new game folder per run, so a shared cache file for it would never be read again.
+// games (1C, owner 2026-11-24): wouldload checks the TARGET build only (--exe <target>); --all-games = every game build (the others print
+// as info), --exe a,b names them. restore points (<mod>/.arsenal-undo, 1B): left out by default; --restore-points passes --restore-points
+// to wouldload and doctor (which hands it to sdllint, refcheck and any linter that takes it). CHECK_TEST_ARGS=<dir>: each child's argv
+// is written to <dir>/<tool>.args (test hook).
+// --no-read-once: doctor runs every linter as its own program (the way before read-once, phase 2; env
+// ARSENAL_READ_ONCE=0 the same); NOTE READ_ONCE says which way ran (and READ_ONCE fallback <tool> when one reran as a program).
+// full check (not --fast, not --no-load-check): sdllint + refcheck findings of the target build come from wouldload's own run of them
+// (wouldload --keep-out, doctor --reuse-dir: same arguments or doctor runs them itself, NOTE REUSED / REUSE_MISS), listed as doctor's.
 // The reach gate takes the target build's reach only. doctor writes its full outputs to a temp folder of this run.
 // game (lib/games): the target build (--target; else the one --exe; else a mod in <GoH>/mods = goh; else mod.info: every bound "any" or below 2 = goh,
 // MaxGameVersion < 3.3 = mowas2, else as64) is the game doctor lints for: mowas2 = doctor --exe mowas_2 on the AS2 install; goh = doctor
 // --exe goh --game <GoH install> (--goh, else the install above mods/, else lib/games install('goh')), and a GoH mod outside <GoH>/mods
 // gets an overlay of the GoH install. as64: doctor's arguments as before.
 // check-false (gate.js): crash rows on files the engine never loads (wouldload --reach-all: unused unit, .def outside resource/entity/, unnamed mesh) list under REVIEW with a note; same file:line meanings from several linters merge into one row (also: ...)
+// reuse (X1, lib/checkcache): a check whose mod files, game, required mods, tools and arguments are all the same as a stored one
+// replays that report, JSON and exit code with a last line NOTE REUSED_CHECK. Stored only after a run with no error, no tool issue,
+// no rerun, and the same signature after the run as before it. --no-reuse / ARSENAL_CHECK_REUSE=0: off (neither read nor written).
+// The replayed JSON gets reusedCheck {at, ms, compareMs}. CHECK_REUSE_DEBUG=1: one stderr line REUSE ... says why a run was (not) stored.
 // Author: Imperator_Aug (ARSENAL, ia-0d7daa76)
 const fs = require('fs'), os = require('os'), path = require('path'), cp = require('child_process');
 const registry = require('../lib/registry'), C = require('../modmove/lib/common'), { isDirLike } = require('../lib/dirlike');
 
-function usage(m, rc = 2) { (rc ? console.error : console.log)((m ? m + '\n' : '') + 'usage: ARSENAL check <mod folder, anywhere> [--with <fix/upgrade patch folder>] [--exe as64,mowas2,goh] [--target as64|mowas2|goh] [--game G] [--goh H] [--json f] [--only tool,tool] [--fast] [-j N] [--locs N] [--timing] [--pass-limit sec] [-q] [--plain [--raw]]\n  no time limit: a big mod runs as long as it needs. --pass-limit sec stops one wouldload pass (sdllint, refcheck) after sec seconds; callers with a time limit of their own use it.\n  --plain: the result in plain words only. Line 1 = the overall result for the target build ("Looks good for ...", "Not ready for ...: N problems that can crash the game", "... will not load this mod: ...", "The check did not finish ..."); then one line per finding ("Can crash the game: <what> (N places, first: file:line)."; other labels: Silently ignored by the game, Can split a multiplayer match, Worth a look, Looks or reads wrong); then one line per other build ("Other game, <name>: ..."); last, with --fast, a "Quick check" line. No rule codes, no limit ids. --raw (with --plain): the full report follows after a line "--- full report ---".\n  --json always holds overall {target, verdict: ok|crash|refused|unfinished, crash, silent, text} and plain (the same lines as --plain)\n  exit follows the TARGET build (--target; else the one --exe; else goh for a mod in <GoH>/mods or with mod.info bounds below 2, mowas2 if MaxGameVersion < 3.3, else as64; the other builds print as info; doctor lints for the target game): 0 = LOADS_STATIC (static, not run), 1 = LIKELY_CRASH or REFUSED, 2 = usage, a tool failed, no verdict or UNKNOWN'); process.exit(rc); }
+function usage(m, rc = 2) { (rc ? console.error : console.log)((m ? m + '\n' : '') + 'usage: ARSENAL check <mod folder, anywhere> [--with <fix/upgrade patch folder>] [--exe as64,mowas2,goh] [--target as64|mowas2|goh] [--game G] [--goh H] [--json f] [--only tool,tool] [--no-load-check] [--all-games] [--restore-points] [--fast] [-j N] [--locs N] [--timing] [--pass-limit sec] [--no-read-once] [--no-reuse] [--listing f] [-q] [--plain [--raw]]\n  --no-reuse: run the whole check even when a stored one of the same mod files, game, required mods, tools and arguments exists (by default that one is shown again, last line NOTE REUSED_CHECK; env ARSENAL_CHECK_REUSE=0 = off).\n  --no-read-once: every linter runs as its own program (the old way); by default the linters that can share one read of the mod do (NOTE READ_ONCE says which; env ARSENAL_READ_ONCE=0 = off).\n  --listing f: a lib/modtree scan of the mod folder (JSON) made just before by the caller (the watch of the GUI): the load check takes it instead of listing the mod again; a speed hint, never in the report (env ARSENAL_CHECK_LISTING=0 = ignored).\n  no time limit: a big mod runs as long as it needs. --pass-limit sec stops one wouldload pass (sdllint, refcheck) after sec seconds; callers with a time limit of their own use it.\n  games: only the target build is checked (see exit below); --all-games checks every game build (as64, mowas2, goh; the others as info); --exe a,b names the builds.\n  --restore-points: also read restore points the GUI keeps inside the mod (<mod>/.arsenal-undo); left out by default.\n  --plain: the result in plain words only. Line 1 = the overall result for the target build ("Looks good for ...", "Not ready for ...: N problems that can crash the game", "... will not load this mod: ...", "The check did not finish ..."); then one line per finding ("Can crash the game: <what> (N places, first: file:line)."; other labels: Silently ignored by the game, Can split a multiplayer match, Worth a look, Looks or reads wrong); then one line per other build checked ("Other game, <name>: ..."; with --all-games or --exe a,b), or one line that the other builds were not checked; a line when restore points inside the mod were left out; last, with --fast, a "Quick check" line. No rule codes, no limit ids. --raw (with --plain): the full report follows after a line "--- full report ---".\n  --json always holds overall {target, verdict: ok|crash|refused|unfinished, crash, silent, text} and plain (the same lines as --plain)\n  exit follows the TARGET build (--target; else the one --exe; else goh for a mod in <GoH>/mods or with mod.info bounds below 2, mowas2 if MaxGameVersion < 3.3, else as64; the other builds print as info; doctor lints for the target game): 0 = LOADS_STATIC (static, not run), 1 = LIKELY_CRASH or REFUSED, 2 = usage, a tool failed, no verdict or UNKNOWN'); process.exit(rc); }
 const o = { exe: null, locs: 50 }, pos = [], argv = process.argv.slice(2);
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i], nx = () => { if (i + 1 >= argv.length) usage(a + ' needs a value'); return argv[++i]; };
   if (a === '--help' || a === '-h') usage('', 0);
   else if (a === '--exe') o.exe = nx(); else if (a === '--target') o.target = nx(); else if (a === '--game') o.game = nx(); else if (a === '--goh') o.goh = nx(); else if (a === '--json') o.json = nx();
-  else if (a === '--with') o.with = nx(); else if (a === '-j') o.j = +nx(); else if (a === '--only') o.only = nx(); else if (a === '--timing') o.timing = true; else if (a === '--fast') o.fast = true; else if (a === '--locs') o.locs = Math.max(0, +nx() || 0);
+  else if (a === '--with') o.with = nx(); else if (a === '-j') o.j = +nx(); else if (a === '--only') o.only = nx(); else if (a === '--timing') o.timing = true; else if (a === '--fast') o.fast = true; else if (a === '--no-load-check') o.noLoad = true; else if (a === '--all-games') o.allGames = true; else if (a === '--restore-points') o.restorePoints = true; else if (a === '--no-read-once') o.noReadOnce = true; else if (a === '--locs') o.locs = Math.max(0, +nx() || 0);
   else if (a === '--pass-limit') { const v = nx(); if (!/^\d+(\.\d+)?$/.test(v)) usage('--pass-limit needs seconds (0 = none)'); o.passLimit = +v; }
+  else if (a === '--no-reuse') o.noReuse = true;
+  else if (a === '--listing') o.listing = nx();
   else if (a === '-q') o.q = true; else if (a === '--plain') o.plain = true; else if (a === '--raw') o.raw = true; else if (a[0] === '-') usage('unknown option ' + a); else pos.push(a);
 }
 if (pos.length !== 1) usage();
@@ -49,7 +63,8 @@ if (o.exe) for (const x of o.exe.split(',').map(s => s.trim()).filter(Boolean)) 
 if (o.target) o.target = games.idOf(o.target);
 { const b = path.basename(path.resolve(pos[0])); if (b !== b.toLowerCase()) plain(`The mod folder "${b}" has capital letters. The game reads mod folder names in lowercase and does not load this one (VFS-12): rename it to "${b.toLowerCase()}" and run check again.`); }
 // the report is held back and printed after the verdict in words (first line); PROGRESS lines stream live (GUI)
-const util = require('util'), realLog = console.log.bind(console), held = [];
+const util = require('util'), realLog0 = console.log.bind(console), held = [], printed = [];
+const realLog = l => { printed.push(l); realLog0(l); };   // printed: the stdout lines of this run, what a reuse stores
 let flushed = false;
 console.log = (...a) => { const s = util.format(...a); if (/^PROGRESS /.test(s)) console.error(s);   // DET-FIX: live progress is a race (finish order) and carries seconds: stderr only, never in the report
   else if (flushed) realLog(s); else held.push(s); };
@@ -77,6 +92,23 @@ function stagePatch(pr, dst) {
 // ---- where does the mod sit? under <game>/mods it is checked in place; anywhere else (or with --with) an overlay game dir is built in temp:
 // game root files copied (exes, paks, pats), game dirs + every real mod as junctions, the mod (or source+patch merged copy) at mods/<name>.
 const bareSrc = () => !fs.existsSync(path.join(srcMod, 'mod.info'));
+// --listing f (X8): a lib/modtree scan of the mod folder the caller made just before (the GUI's watch of the picked mod), handed to wouldload
+// as its scan of the folder it reads (dir: wMod, the same tree in place, linked as mods/<name> or read direct). A speed hint only: dropped
+// (the mod is listed as before) for --with or a bare folder (another tree), a file that is not a full scan of this folder, a wouldload that
+// does not take --listing, or env ARSENAL_CHECK_LISTING=0. Never part of the report.
+function handListing(f, dir) {
+  if (process.env.ARSENAL_CHECK_LISTING === '0' || o.with || bareSrc()) return null;
+  try {
+    const pa = /function parseArgs\([\s\S]*?\n}/.exec(fs.readFileSync(path.join(C.TOOLS, 'wouldload', 'wouldload.js'), 'utf8'));
+    if (!pa || !pa[0].includes("'--listing'")) return null;
+    const T = JSON.parse(fs.readFileSync(f, 'utf8'));
+    if (!T || typeof T.dir !== 'string' || T.names || typeof T.all !== 'string' || !Array.isArray(T.files) || !Array.isArray(T.left) || !same(T.dir, srcMod)) return null;
+    T.dir = path.resolve(dir);
+    const out = path.join(os.tmpdir(), `check-listing-${process.pid}.json`);
+    fs.writeFileSync(out, JSON.stringify(T)); cleanup.push(() => fs.rmSync(out, { force: true }));
+    return out;
+  } catch { return null; }
+}
 const SYNTH = '{Mod\r\n\t{Name "bare folder, synthetic mod.info by tools/check"}\r\n\t{MinGameVersion "0.0"}\r\n\t{MaxGameVersion "9999.0"}\r\n}\r\n';
 function overlay() {
   // goh target: the overlay is built on the GoH install (its binaries/, resource/, localizations/ linked; nothing written there)
@@ -115,7 +147,7 @@ function overlay() {
   console.log(`MODE outside-mods: overlay game dir built from base ${C.fwd(real)} (${g.source}); ${how}. The base game and the mod are only read.`);
   return { ov, dst, real };
 }
-let OV = null, TARGET = null, tGoh = false;
+let OV = null, TARGET = null, tGoh = false, PLACE = null;
 // the target build: --target; else the one game --exe names; else (no --exe, or goh among them) a mod in <GoH>/mods or a mod.info whose
 // bounds are all below 2 (GoH versions are 1.x, PORT-46) = goh; else MaxGameVersion < 3.3 = mowas2; else as64 (T-DOORFIX, as before)
 const exeIds = o.exe ? [...new Set(o.exe.split(',').map(s => games.idOf(s.trim())).filter(Boolean))] : [];
@@ -145,7 +177,12 @@ function targetOf(inGohMods) {
   if (gohHere && !o.goh) o.goh = path.dirname(par);
   TARGET = targetOf(gohHere); tGoh = TARGET === 'goh';
   // the mod is read in place only under the target game's own mods/ (an AS2 target in <GoH>/mods, or goh in <AS2>/mods: overlay of the target)
-  if (o.with || !inMods || bareSrc() || tGoh !== gohHere) { OV = overlay(); mod = OV.dst; if (tGoh) o.goh = OV.ov; else o.game = OV.ov; }
+  PLACE = { par, inMods, needOv: !!(o.with || !inMods || bareSrc() || tGoh !== gohHere) };
+}
+// where the mod is read (overlay or in place) + the Workshop copy warning: after the reuse lookup (X1), before any other line
+function place() {
+  const { par, inMods, needOv } = PLACE;
+  if (needOv) { OV = overlay(); mod = OV.dst; if (tGoh) o.goh = OV.ov; else o.game = OV.ov; }
   else console.log(`MODE in-place: mod sits under ${C.fwd(par)}`);
   // FileId of mod.info = a Workshop item id. an installed Workshop copy can be what the engine mounts (as64, VFS-51), not this folder: warn, naming both
   const fid = !bareSrc() && /\{\s*FileId\s+"?(\d+)"?\s*\}/i.exec(fs.readFileSync(path.join(srcMod, 'mod.info'), 'latin1'));
@@ -172,6 +209,7 @@ const FAST_RUN = ['modinfo', 'lnglint', 'vfs', 'ialint', 'uilint', 'strlint', 'm
 const TOOL_MS = (n => (n > 0 && n <= 2147483647 ? n : 0))(+(process.env.CHECK_TOOL_TIMEOUT_MS || 0));
 const spawnTool = (tool, args) => new Promise(resolve => {
   const t0 = Date.now(), chunks = [];
+  if (process.env.CHECK_TEST_ARGS) { try { fs.mkdirSync(process.env.CHECK_TEST_ARGS, { recursive: true }); fs.writeFileSync(path.join(process.env.CHECK_TEST_ARGS, tool + '.args'), JSON.stringify(args)); } catch { /* test hook only */ } }
   const p = cp.spawn(process.execPath, [path.join(C.TOOLS, tool, tool + '.js'), ...args], { windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
   let part = '';   // doctor --progress lines go to stderr: echo them live (GUI streams them), keep the rest
   p.stdout.on('data', d => chunks.push(d));
@@ -186,18 +224,61 @@ const spawnTool = (tool, args) => new Promise(resolve => {
   p.on('close', code => { clearTimeout(timer); resolve({ out: timedOut ? '' : Buffer.concat(chunks).toString('utf8'), code, ms: Date.now() - t0, timedOut }); });
 });
 
+// X1 whole-check reuse: what the check reads (lib/checkcache signature): the mod, the --with patch, every game folder a part of
+// the check may read (the resolved AS2 install, --game, --goh, the GoH install when GoH is read, the game above mods/), the
+// arguments that shape the report (not --json's file name: the JSON is stored and written there)
+function reuseSpec() {
+  const gs = [], src = {};
+  const r = require('../lib/gamedir').resolve({ arg: o.game }); if (r.dir) gs.push(r.dir); src.game = r.source || null;
+  if (o.game) gs.push(o.game);
+  if (o.goh) gs.push(o.goh);
+  if (tGoh || o.allGames || exeIds.includes('goh')) { const g = games.install('goh', { goh: o.goh }); if (g.dir) gs.push(g.dir); src.goh = g.source; }
+  if (PLACE.inMods) gs.push(path.dirname(PLACE.par));
+  const args = { target: TARGET, exe: o.exe || null, game: o.game ? path.resolve(o.game) : null, goh: o.goh ? path.resolve(o.goh) : null, src, needOv: PLACE.needOv, inMods: PLACE.inMods,
+    j: o.j || null, only: o.only || null, timing: !!o.timing, fast: !!o.fast, noLoad: !!o.noLoad, allGames: !!o.allGames, restorePoints: !!o.restorePoints,
+    noReadOnce: !!o.noReadOnce, locs: o.locs, passLimit: o.passLimit || 0, plain: !!o.plain, raw: !!o.raw };
+  return { mod: srcMod, with: o.with ? path.resolve(o.with) : null, restorePoints: !!o.restorePoints, games: gs, args };
+}
+function replay(hit, sig) {
+  flushed = true;
+  for (const l of hit.lines) realLog0(l);
+  realLog0(`NOTE REUSED_CHECK the mod files, the game, the required mods, the tools and the arguments are the same as at the check of ${new Date(hit.at).toISOString()} (it took ${(hit.ms / 1000).toFixed(0)} s), so its report is shown again (compared in ${(sig.ms / 1000).toFixed(1)} s; --no-reuse runs it again)`);
+  if (o.json) { const J = JSON.parse(hit.json); J.reusedCheck = { at: new Date(hit.at).toISOString(), ms: hit.ms, compareMs: sig.ms }; fs.writeFileSync(o.json, JSON.stringify(J, null, 1)); }
+  process.exitCode = hit.code;
+}
+
 (async () => {
+  let RU = null;   // reuse on: {cc, spec, sig, t0}; a lookup that fails = the check runs as before and is not stored
+  const cc = require('../lib/checkcache');
+  if (!cc.offWhy(o)) {
+    try {
+      const spec = reuseSpec(), sig = await cc.signature(spec), hit = cc.get(sig);
+      if (hit && (!o.json || typeof hit.json === 'string')) return replay(hit, sig);
+      RU = { spec, sig, t0: Date.now() };
+    } catch (e) { RU = null; if (process.env.CHECK_REUSE_DEBUG) console.error('REUSE lookup failed: ' + e.stack); }
+  }
+  place();
   const jf = path.join(os.tmpdir(), `check-wl-${process.pid}.json`);
   const lj = path.join(os.tmpdir(), `check-locs-${process.pid}.json`);
   // doctor's full outputs go to a folder of this run (its default <tmp>/as2-doctor/<mod> is shared by every run on the same mod name)
   const dOut = fs.mkdtempSync(path.join(os.tmpdir(), 'check-doc-'));
   cleanup.push(() => fs.rmSync(dOut, { recursive: true, force: true }));
   // wouldload's passes: no time limit unless --pass-limit names one (the GUI pages that give check a time limit of their own pass 600)
-  const wl = ['--json', jf, '--reach-all', '--timeout', String(o.passLimit || 0)], dc = ['-q', '--progress', '--out', dOut];
+  // NO TIME LIMIT on wouldload's passes unless --pass-limit names one (owner 2026-11-17, again 2026-11-24 after a check that stood
+  // still 16000 s for a user: no limit; show what it is doing (--progress: pass, file, size) and let the user skip it, --no-load-check)
+  const wl = ['--json', jf, '--reach-all', '--progress', '--timeout', String(o.passLimit || 0)], dc = ['-q', '--progress', '--out', dOut];
   // every location (not --locs N): the reach gate + dedupe (gate.js) work per location; samples are capped to --locs after them
   dc.push('--locs', '1000000', '--locs-json', lj);
-  if (o.exe) wl.push('--exe', o.exe);
+  // 1C: the target build only, unless --exe names builds or --all-games asks for every one (wouldload's default)
+  const games0 = o.exe ? 'named' : o.allGames ? 'all' : 'target';
+  if (o.exe) wl.push('--exe', o.exe); else if (!o.allGames) wl.push('--exe', TARGET);
+  if (o.restorePoints) { wl.push('--restore-points'); dc.push('--restore-points'); }
   dc.push('-j', String(o.j || 8));
+  if (o.noReadOnce) dc.push('--no-read-once');
+  // wave 2a: doctor takes sdllint + refcheck from wouldload's run of the target build when the arguments are the
+  // same (doctor --reuse-dir; wouldload --keep-out writes each pass's output there); else it runs them itself as before (REUSE_MISS note)
+  const reuseDir = !o.noLoad && !o.fast && (!o.only || /(^|,)(sdllint|refcheck)(,|$)/.test(o.only)) ? fs.mkdtempSync(path.join(os.tmpdir(), 'check-reuse-')) : null;
+  if (reuseDir) { cleanup.push(() => fs.rmSync(reuseDir, { recursive: true, force: true })); wl.push('--keep-out', reuseDir); dc.push('--reuse-dir', reuseDir); }
   const skipped = [];
   if (o.fast) {
     // keylint/milint/binhdr/humlint/expcheck took 123/96/80/50/23 s on the godny robz mod (--timing); sdllint/refcheck are what the verdict is built from, wouldload runs them itself
@@ -220,18 +301,21 @@ const spawnTool = (tool, args) => new Promise(resolve => {
   if (o.game && !tGoh) dc.push('--game', o.game);
   if (TARGET === 'mowas2') dc.push('--exe', 'mowas_2');
   if (tGoh) { const gh = o.goh || games.install('goh').dir; dc.push('--exe', 'goh', ...(gh ? ['--game', gh] : [])); }
-  console.log('PROGRESS start wouldload');
+  if (!o.noLoad) console.log('PROGRESS start wouldload');
   const wMod = wlDirect ? srcMod : mod;
+  if (o.listing && !o.noLoad) { const lf = handListing(o.listing, wMod); if (lf) wl.push('--listing', lf); }
   const R0notes = [];
   if (wlDirect) R0notes.push(`FAST_DIRECT wouldload read the mod folder ${C.fwd(srcMod)} against the GoH install ${C.fwd(OV.real)} (not mounted, its own files only), so no reach gate: crash rows on units nothing uses stay crash`);
-  const wP = spawnTool('wouldload', [wMod, ...wl]).then(r => { console.log(`PROGRESS done wouldload ${(r.ms / 1000).toFixed(0)}s`); return r; });
+  const wP = o.noLoad ? Promise.resolve({ out: '', ms: 0, skipped: true }) : spawnTool('wouldload', [wMod, ...wl]).then(r => { console.log(`PROGRESS done wouldload ${(r.ms / 1000).toFixed(0)}s`); if (reuseDir) fs.writeFileSync(path.join(reuseDir, 'END'), ''); return r; });
   const [w0, d] = await Promise.all([wP, spawnTool('doctor', [mod, ...dc])]);
   let w = w0, W = null;
   const readW = () => { try { return JSON.parse(fs.readFileSync(jf, 'utf8')); } catch { return null; /* wouldload failed */ } finally { fs.rmSync(jf, { force: true }); } };
   W = readW();
   let L = null;
   try { L = JSON.parse(fs.readFileSync(lj, 'utf8')); } catch { /* no --locs or doctor failed */ } finally { fs.rmSync(lj, { force: true }); }
-  const R = { mod, read: {}, verdicts: {}, findings: [], errors: [], notes: [...R0notes], toolIssues: [], locs: o.locs, fast: !!o.fast };
+  const R = { mod, read: {}, verdicts: {}, findings: [], errors: [], notes: [...R0notes], toolIssues: [], locs: o.locs, fast: !!o.fast, games: games0, restorePoints: !!o.restorePoints };
+  if (games0 === 'target' && !o.noLoad) R.notes.push(`GAMES target only: the load check read ${TARGET} only; the other game builds were not checked (--all-games for every build)`);
+  if (!o.restorePoints && fs.existsSync(path.join(srcMod, '.arsenal-undo'))) { R.restoreLeftOut = true; R.notes.push(`RESTORE_POINTS left out: ${C.fwd(path.join(srcMod, '.arsenal-undo'))} (restore points the GUI keeps inside the mod) was not read (--restore-points to include it)`); }
   // a wouldload pass (sdllint/refcheck) that ran out of memory or time beside doctor: rerun wouldload alone once (GUI-LOC item 4)
   const failedIn = X => X ? Object.values(X.exes || {}).flatMap(e => e.toolFailed || []) : [];
   if (failedIn(W).length) {
@@ -245,7 +329,7 @@ const spawnTool = (tool, args) => new Promise(resolve => {
     console.log(`PROGRESS done wouldload (rerun alone) ${(w.ms / 1000).toFixed(0)}s`);
   }
   // doctor notes: JOBS (-j capped by RAM), RERAN (a tool rerun alone after running out of memory), DEP_MISSING, NOT_MOUNTED
-  for (const l of d.out.split(/\r?\n/)) if (/^(JOBS|RERAN|DEP_MISSING|NOT_MOUNTED|GAME_SKIP|EXE_NOT_PASSED) /.test(l) && (o.timing || !/^JOBS /.test(l))) R.notes.push(l);   // DET-FIX: JOBS carries free RAM, a machine reading: only with --timing
+  for (const l of d.out.split(/\r?\n/)) if (/^(JOBS|RERAN|DEP_MISSING|NOT_MOUNTED|GAME_SKIP|EXE_NOT_PASSED|REUSED|REUSE_MISS|READ_ONCE) /.test(l) && (o.timing || !/^JOBS /.test(l))) R.notes.push(l);   // DET-FIX: JOBS carries free RAM, a machine reading: only with --timing
   if (L) for (const [t, x] of Object.entries(L.tools || {})) {
     if (x.reran && !x.err) R.toolIssues.push({ tool: t, kind: 'reran', text: `${t} ran out of memory beside other tools; reran alone: ok` });
     else if (x.err && x.oom) R.toolIssues.push({ tool: t, kind: 'oom', text: `${t} ran out of memory, also when run alone: ${x.err}` });
@@ -266,7 +350,8 @@ const spawnTool = (tool, args) => new Promise(resolve => {
   };
   const sampleStr = x => typeof x === 'string' ? x : (x.text || x.file + (x.line ? ':' + x.line : '')) + (x.repeat ? ' x' + x.repeat : '') + (x.also ? ' (also ' + x.also.join(', ') + ')' : '');
   console.log(`check ${C.fwd(srcMod)}${o.with ? ' + ' + C.fwd(path.resolve(o.with)) : ''}`);
-  if (!W) { R.errors.push(w.timedOut ? `wouldload was stopped after ${TOOL_MS / 1000} s (timeout), so it gave no result` : 'wouldload gave no result: ' + w.out.split('\n').slice(-3).join(' ').slice(0, 200)); console.log('wouldload: NO RESULT (' + R.errors[0] + ')'); }
+  if (o.noLoad) { R.loadSkipped = true; R.notes.push(`LOAD_CHECK_SKIPPED --no-load-check: wouldload did not run, so there is no "would it load" verdict and no reach gate${o.fast ? '; in --fast its two passes (sdllint, refcheck) did not run at all' : '; sdllint and refcheck still ran in doctor, their findings are listed'}`); console.log('wouldload: SKIPPED (--no-load-check): no load verdict'); }
+  else if (!W) { R.errors.push(w.timedOut ? `wouldload was stopped after ${TOOL_MS / 1000} s (timeout), so it gave no result` : 'wouldload gave no result: ' + w.out.split('\n').slice(-3).join(' ').slice(0, 200)); console.log('wouldload: NO RESULT (' + R.errors[0] + ')'); }
   else {
     const mi = W.modInfo || {};
     console.log(`mod.info: Min "${mi.min}" Max "${mi.max}" (${tGoh ? 'GoH range' : mi.modern ? 'modern' : 'legacy'})${mi.requires && mi.requires.length ? ' Require ' + mi.requires.join(',') : ''}`);
@@ -348,14 +433,26 @@ const spawnTool = (tool, args) => new Promise(resolve => {
   const bad = [];
   if (crashN || vs.includes('LIKELY_CRASH')) bad.push(`Known crash pattern found: ${crashN} crash finding${crashN === 1 ? '' : 's'} (CRASH below). Fix ${crashN === 1 ? 'it' : 'them'} before you play.`);
   if (refused.length) bad.push(`The game will not load this mod (${refused.map(([k, e]) => `${k}: ${e.text}`).join('; ')}).`);
-  if (R.errors.length || !vs.length || vs.includes('UNKNOWN')) bad.push(`${bad.length ? 'Also, the' : 'No verdict: the'} check did not finish (ERROR lines below); run it again once that is fixed.`);
+  if (R.errors.length || (!vs.length && !R.loadSkipped) || vs.includes('UNKNOWN')) bad.push(`${bad.length ? 'Also, the' : 'No verdict: the'} check did not finish (ERROR lines below); run it again once that is fixed.`);
   R.words = [bad.length ? bad.join(' ') : o.fast ? `No known crash pattern in the fast check (${skipped.length} tools skipped; run without --fast for all). This does not mean it works: play it.` : 'No known crash pattern. This does not mean it works: play it.'];
+  if (R.loadSkipped) R.words.push('The load check was skipped (--no-load-check): no "would it load" verdict.');
   if (silentN) R.words.push(`${silentN} finding${silentN === 1 ? '' : 's'} can silently disable or desync part of the mod (SILENT below).`);
   // GT-02/GT-18: one overall result for the target (crash rows count even when the wouldload verdict says LOADS_STATIC) and the plain lines
   const P = require('./plain');
-  R.target = target; R.overall = P.overall(R, target); R.plain = P.lines(R, target, { fast: o.fast });
-  if (o.json) fs.writeFileSync(o.json, JSON.stringify(R, null, 1));
+  R.target = target; R.overall = P.overall(R, target); R.plain = P.lines(R, target, { fast: o.fast, targetOnly: games0 === 'target' && !o.noLoad, restoreLeftOut: !!R.restoreLeftOut });
+  const jsonStr = o.json || RU ? JSON.stringify(R, null, 1) : null;
+  if (o.json) fs.writeFileSync(o.json, jsonStr);
   if (o.plain) { const raw = held.splice(0); if (o.raw) held.push('--- full report ---', ...R.words, ...raw); flush(R.plain); }
   else flush(R.words);
   process.exitCode = vs.some(v => v === 'LIKELY_CRASH' || v === 'REFUSED') ? 1 : !vs.length || R.errors.length || vs.some(v => v === 'UNKNOWN') ? 2 : 0;
+  // X1: stored only when nothing in the run was by chance (an error, a tool that ran out of memory or time, a rerun, a pass that did
+  // not finish) and the signature after the run is the one before it (nothing changed while it ran)
+  const chance = R.errors.length || R.toolIssues.length || w.timedOut || d.timedOut || R.notes.some(n => /^(RERAN|REUSE_MISS)\b|^READ_ONCE fallback/.test(n)) || (process.exitCode === 2 && !o.noLoad);
+  if (RU && !chance) {
+    try {
+      const sig2 = await cc.signature(RU.spec), ok = cc.same(RU.sig, sig2);
+      if (ok) cc.put(RU.sig, { lines: printed.slice(), json: jsonStr, code: process.exitCode, ms: Date.now() - RU.t0 });
+      if (process.env.CHECK_REUSE_DEBUG) console.error('REUSE ' + (ok ? 'stored' : 'not stored, changed meanwhile: ' + JSON.stringify(RU.sig.stamps) + ' -> ' + JSON.stringify(sig2.stamps)));
+    } catch (e) { if (process.env.CHECK_REUSE_DEBUG) console.error('REUSE not stored: ' + e.stack); }   // the next check runs in full
+  } else if (process.env.CHECK_REUSE_DEBUG) console.error('REUSE not stored: ' + (RU ? 'a part of the run was by chance' : 'reuse off or lookup failed'));
 })().catch(e => { console.error('check failed: ' + e.stack); process.exitCode = 2; }).finally(() => { for (const f of cleanup) { try { f(); } catch { /* temp only */ } } });

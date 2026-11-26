@@ -8,7 +8,7 @@
 // usage: node tools/gui/ext/mapviz/test.js [scratch dir]
 // Author: Imperator_Aug (ARSENAL, ia-e31a0a37)
 'use strict';
-const fs = require('fs'), path = require('path'), os = require('os'), vm = require('vm'), { spawnSync } = require('child_process');
+const fs = require('fs'), path = require('path'), os = require('os'), vm = require('vm'), WT = require('../../../lib/test/wait');
 
 const OWN = !process.argv[2];
 const W = path.resolve(process.argv[2] || fs.mkdtempSync(path.join(os.tmpdir(), 'mapviz-page-')));
@@ -105,7 +105,8 @@ function runPartTests(dir, scratch) {
   for (const f of files) {
     const part = f.slice(0, -8), sw = path.join(scratch, 'sub-' + part);
     fs.mkdirSync(sw, { recursive: true });
-    const r = spawnSync(process.execPath, [path.join(dir, f), sw], { encoding: 'utf8', timeout: 240000, windowsHide: true, env: Object.assign({}, process.env, { ARSENAL_CACHE: path.join(sw, 'cache') }) });
+    const r = WT.spawnSync(process.execPath, [path.join(dir, f), sw], { encoding: 'utf8', timeout: 600000, windowsHide: true, env: Object.assign({}, process.env, { ARSENAL_CACHE: path.join(sw, 'cache') }) }, 'mapviz test');
+    String(r.stderr || '').split(/\r?\n/).filter(s => /^WAIT /.test(s)).forEach(s => process.stderr.write(s + '\n'));
     const lines = String(r.stdout || '').split(/\r?\n/).filter(s => s.trim());
     const last = lines.length ? lines[lines.length - 1].trim() : '';
     const passLine = new RegExp('^PASS mapviz ' + part + ' \\(\\d+\\)$').test(last);

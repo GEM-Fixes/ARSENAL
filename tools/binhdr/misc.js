@@ -132,7 +132,7 @@ function checkDds(ctx) {
 function checkNet(ctx) {
   const { buf, rep, rel } = ctx, goh = ctx.game === 'goh';
   const add = (code, msg) => rep.add(rel, 0, code, msg);
-  const r = new Reader(buf);
+  const r = ctx.mkReader ? ctx.mkReader(buf, 0) : new Reader(buf);   // binhdr: a reader over a partly read file (list.js sparse)
   try {
     const cell = r.u8(), ver0 = r.u8(), w = r.i16(), h = r.i16();
     r.skip(8);
@@ -159,19 +159,21 @@ function checkNet(ctx) {
 }
 
 // ---- .wav
+// ctx.buf = the whole file, or ctx.len + ctx.at(pos, n) -> Buffer (binhdr list.wavHead: only the chunk headers are read)
 function checkWav(ctx) {
   const { buf, rep, rel } = ctx;
+  const len = buf ? buf.length : ctx.len, at = buf ? (q, n) => buf.subarray(q, q + n) : ctx.at;
   const add = (code, msg) => rep.add(rel, 0, code, msg);
-  if (buf.length < 12 || buf.toString('latin1', 0, 4) !== 'RIFF' || buf.toString('latin1', 8, 12) !== 'WAVE') return add('WAV_NOT_RIFF', 'not a RIFF/WAVE file (Miles AIL_WAV_info fails)');
+  if (len < 12 || at(0, 4).toString('latin1') !== 'RIFF' || at(8, 4).toString('latin1') !== 'WAVE') return add('WAV_NOT_RIFF', 'not a RIFF/WAVE file (Miles AIL_WAV_info fails)');
   let p = 12, fmt = false, data = false;
-  while (p + 8 <= buf.length) {
-    const id = buf.toString('latin1', p, p + 4), sz = buf.readUInt32LE(p + 4);
+  while (p + 8 <= len) {
+    const h = at(p, 8), id = h.toString('latin1', 0, 4), sz = h.readUInt32LE(4);
     if (id === 'fmt ') fmt = true; else if (id === 'data') data = true;
     p += 8 + sz + (sz & 1);
   }
   if (!fmt) add('WAV_NOT_RIFF', 'no fmt chunk');
   else if (!data) add('WAV_NOT_RIFF', 'no data chunk');
-  else if (buf.readUInt32LE(4) + 8 > buf.length) add('WAV_NOT_RIFF', 'RIFF size larger than file (truncated)');
+  else if (at(4, 4).readUInt32LE(0) + 8 > len) add('WAV_NOT_RIFF', 'RIFF size larger than file (truncated)');
 }
 
 // ---- .ebm / .tex (SDL text)

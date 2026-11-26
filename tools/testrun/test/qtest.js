@@ -14,7 +14,7 @@ fs.mkdirSync(path.join(G, 'mods', 'e2e_test'), { recursive: true });
 fs.writeFileSync(path.join(G, 'mods', 'e2e_test', 'orig.cfg'), 'orig');
 const inst = n => path.join(BASE + ' - instance ' + n, 'profiles', 'p1', 'options.set');
 const t = (args, opt) => spawnSync(process.execPath, [T, ...args], Object.assign({ encoding: 'utf8' }, opt));
-const logArgs = ['--logdir', path.join(process.env.TEST_WORK || __dirname, 'fixture', 'log'), '--archive', path.join(F, 'arch'), '--connect-timeout', '5', '--exit-wait', '2', '--home', home];
+const logArgs = ['--logdir', path.join(process.env.TEST_WORK || __dirname, 'fixture', 'log'), '--archive', path.join(F, 'arch'), '--connect-timeout', '60', '--exit-wait', '30', '--home', home];
 
 // default log dir follows the instance; mock ids (>9) keep instance 0
 let r = t(['--map', 'm', '--dry', '--inst', '2', '--home', home]);
@@ -79,7 +79,7 @@ console.log('qtest ok');
   const info = (n, v) => { const d = path.join(g2, 'mods', n); fs.mkdirSync(d, { recursive: true }); fs.writeFileSync(path.join(d, 'mod.info'), `{Mod "${n}"}\r\n{MinGameVersion "${v}"}\r\n`); };
   info('newm', '3.301'); info('oldm', '3.262');
   const sc = (n, mods) => { const f = path.join(sd, n + '.json'); fs.writeFileSync(f, JSON.stringify({ name: n, rows: ['ENG-26'], mods, mode: 'menu', steps: [{ cmd: 'mp_state' }], verdict: [] })); return f; };
-  const base = ['--mock', '--game', g2, '--no-preflight', '--logdir', ld, '--archive', path.join(M, 'arch'), '--connect-timeout', '5', '--exit-wait', '2', '--home', home];
+  const base = ['--mock', '--game', g2, '--no-preflight', '--logdir', ld, '--archive', path.join(M, 'arch'), '--connect-timeout', '60', '--exit-wait', '30', '--home', home];
   const seededOf = n => /\{mods[^}]*\}/.exec(fs.readFileSync(inst(n), 'latin1'))[0];
   r = t(['--scenario', sc('m', ['newm']), '--inst', '5', ...base]);
   assert.strictEqual(seededOf(5), '{mods "as64+:0" "newm:0"}', r.stdout);

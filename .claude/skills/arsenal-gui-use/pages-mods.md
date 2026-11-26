@@ -9,6 +9,7 @@ All three game tabs hold the same pages; a part a game cannot run says so on the
 | bring an old mod to AS64, or port it to MoW:AS2 or GoH | `upgrade` > Port to another target (upgrade) | `run upgrade` (plan first) | `as2 upgrade <mod> --to as64 --plan` |
 | see the mod's files, which copy the game uses, edit raw text, restore | `files` (Advanced) > Files, Editor, Search, Undo | `files/tree`, `files/which`, `files/open`, `files/save`, `files/copy`, `files/search`, `files/undo`, `files/restore` | `vfs` |
 | check a mod without starting the game | `check` > Check a mod | `run check`; cards `/api/explain`, `/api/limit`, `/api/peek` | `as2 check <mod> [--exe as64,mowas2,goh]` |
+| check again by itself when the mod changes; keep the mod's file list warm | `check` > box "check again when the mod changes" (off by default); `settings` > Watch the picked mod (on by default) | `POST /api/modwatch {dir}`, `GET /api/modwatch/status?dir=`; a check of the watched mod gets `--listing` | `as2 check <mod> --listing f` |
 | fix what check found (patch folder, never the source mod) | `check` > guided fix | `run fix` (`mode: plan`, then `apply`) | `as2 fix <mod> plan` |
 | explain my last game log, a crash | `logs` > Explain my last game log, Log files the game left | `logs/find`, `logs/explain`, `logs/dump` | `logtriage` |
 | see what the game has switched on, why my mod is not in the list | `logs` > What the game has switched on, Why is my mod not in the list? | `logs/enabled`, `logs/modwhy` | `wouldload`, `modinfo` |
@@ -16,7 +17,7 @@ All three game tabs hold the same pages; a part a game cannot run says so on the
 
 ## Pages and routes (generated)
 <!-- gen:pages -->
-registry sig 58a557fd8c410eb876fa3fccb81441e14bf1b5af · 31 pages · 447 routes · 23 commands
+registry sig f76ba94e969bfbc6ebeed080ddd6cb3679c4399d · 31 pages · 450 routes · 23 commands
 
 ### Sub-tabs and pages (same in MoW:AS2, AS64, GoH; GoH adds what is marked)
 **Mods** (tab `mods`, Alt+2)

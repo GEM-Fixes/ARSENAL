@@ -6,7 +6,7 @@
 // usage: node tools/mapviz/test/fixture.test.js [scratch dir]
 // Author: Imperator_Aug (ARSENAL, ia-5d8f94d3)
 'use strict';
-const fs = require('fs'), path = require('path'), os = require('os'), { spawnSync } = require('child_process');
+const fs = require('fs'), path = require('path'), os = require('os'), { spawnSync } = require('../../lib/test/wait');   // wait.js spawnSync: limit at least 5 min, killed by it -> WAIT and one rerun with twice the limit
 
 const W = path.resolve(process.argv[2] || fs.mkdtempSync(path.join(os.tmpdir(), 'mapviz-fixture-')));
 fs.mkdirSync(W, { recursive: true });

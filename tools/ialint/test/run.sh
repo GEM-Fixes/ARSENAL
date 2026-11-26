@@ -35,6 +35,12 @@ echo "game $g"
 # --vfs --exe goh with no --game and no GoH install found: one line says so, then the usage, exit 2
 nl=$(AS2_NO_STEAM=1 GOH_GAME= node "$d/../ialint.js" --vfs --exe goh 2>&1 >/dev/null | head -1); nrc=$(AS2_NO_STEAM=1 GOH_GAME= node "$d/../ialint.js" --vfs --exe goh >/dev/null 2>&1; echo $?)
 if [ "$nl" = 'ialint: no GoH install found (set GOH_GAME or give --game)' ] && [ "$nrc" = 2 ]; then echo "noinstall ok"; else b=BAD; echo "noinstall BAD [$nl] rc $nrc"; fi
+# restore points: a place named only in <mod>/.arsenal-undo is not read by default (WARN_FIRE_PLACE), read with --restore-points
+u="$G/rpmod"; mkdir -p "$u/resource/set/interaction_entity" "$u/.arsenal-undo/t1/resource/entity"
+printf '{entities\r\n {"x"\r\n  {on fire "rp_gun"\r\n   {con "x"}\r\n  }\r\n }\r\n}\r\n' > "$u/resource/set/interaction_entity/entity.set"
+printf '{place "rp_gun"}\r\n' > "$u/.arsenal-undo/t1/resource/entity/x.def"
+r1=$(node "$d/../ialint.js" "$u" -q 2>/dev/null | grep -c ': WARN_FIRE_PLACE '); r2=$(node "$d/../ialint.js" "$u" -q --restore-points 2>/dev/null | grep -c ': WARN_FIRE_PLACE ')
+if [ "$r1" = 1 ] && [ "$r2" = 0 ]; then echo "restore-points ok"; else b=BAD; echo "restore-points BAD default $r1 with flag $r2"; fi
 (cd "$d" && sh ../../binhdr/test/rcwire.sh node ../ialint.js bad) || exit 1
 node "$d/shape.js" > /dev/null || { echo "shape FAIL"; exit 1; }
 [ "$b" = ok ] && [ "$n" = 0 ] && echo PASS

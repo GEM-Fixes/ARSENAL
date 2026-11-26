@@ -7,6 +7,7 @@ const fs = require('fs'), path = require('path'), cp = require('child_process'),
 const ext = require('./index');
 const fx = require('./fixture');
 const TOOLS = path.resolve(__dirname, '..', '..', '..');
+const WT = require('../../../lib/test/wait');   // waits by time: backstop (60 s a condition, 5 min a child) + WAIT line, never a hang
 const scratch = path.resolve(process.argv[2] || path.join(__dirname, 'work'));
 fs.mkdirSync(scratch, { recursive: true });
 const { game, mod } = fx.make(scratch);
@@ -14,7 +15,7 @@ const tmpRoot = path.join(scratch, 'tmp'); fs.rmSync(tmpRoot, { recursive: true,
 const ctx = {
   gamedir: game, tools: TOOLS, tmpRoot, allowLaunch: false, modAgeMs: 0, game: () => game,
   runTool: async (tool, entry, args, o) => {
-    const r = cp.spawnSync(process.execPath, [path.join(TOOLS, entry), ...args], { encoding: 'utf8', timeout: (o && o.timeoutMs) || 60000 });
+    const r = WT.spawnSync(process.execPath, [path.join(TOOLS, entry), ...args], { encoding: 'utf8', timeout: (o && o.timeoutMs) || 60000 }, 'units test');
     return { code: r.status, stdout: r.stdout, stderr: r.stderr, timedOut: !!(r.error && r.error.code === 'ETIMEDOUT') };
   },
 };
@@ -290,10 +291,10 @@ let n = 0; const ok = m => { n++; console.log('ok ' + n + ' ' + m); };
     assert.deepStrictEqual(await kc('kit/items', {}), ki);
     const kmf = path.join(fk.mod, 'resource/set/stuff/med/bandage'); fs.mkdirSync(path.dirname(kmf), { recursive: true }); fs.writeFileSync(kmf, '{item\r\n\t{inventory {size 1 1}{weight 1}}\r\n}\r\n', 'latin1');
     // (the page's read-only lists take the last walk of the mod while a new one runs: the request after it sees the edit)
-    let ki2 = null; for (let i = 0; i < 50 && !(ki2 && ki2.items.some(x => x.item === 'bandage')); i++) { ki2 = await kc('kit/items', {}); await new Promise(r => setTimeout(r, 20)); }
+    let ki2 = null; await WT.until(async () => { ki2 = await kc('kit/items', {}); return ki2.items.some(x => x.item === 'bandage'); }, { who: 'units test', what: 'kit/items sees the new bandage', step: 20 });
     assert.deepStrictEqual([ki2.items.length, ki2.groups.find(g => g.id === 'medical'), ki2.items.find(i => i.item === 'bandage').file], [ki.items.length + 1, { id: 'medical', n: 1 }, 'set/stuff/med/bandage']);
     fs.rmSync(path.join(fk.mod, 'resource/set/stuff'), { recursive: true, force: true });
-    for (let i = 0; i < 50 && (await kc('kit/items', {})).items.length !== ki.items.length; i++) await new Promise(r => setTimeout(r, 20));
+    await WT.until(async () => (await kc('kit/items', {})).items.length === ki.items.length, { who: 'units test', what: 'kit/items without the removed folder', step: 20 });
     const kuf = path.join(fk.mod, 'resource/map/x.txt'); fs.mkdirSync(path.dirname(kuf), { recursive: true }); fs.writeFileSync(kuf, 'x');
     assert.deepStrictEqual(await kc('kit/items', {}), ki); fs.rmSync(path.join(fk.mod, 'resource/map'), { recursive: true, force: true });
     ok('kit/items: the same answer when asked again, rebuilt when the mod gets an item file, unchanged by an unrelated mod file');
@@ -645,13 +646,13 @@ let n = 0; const ok = m => { n++; console.log('ok ' + n + ' ' + m); };
   assert.ok(uix.units.some(u => u.id === 't34_0' && u.buyable) && uix.armies.length, JSON.stringify(uix).slice(0, 300));
   assert.ok(wix.weapons.some(w => w.name === '76mm_f34' && w.group === 'gun') && !wix.weapons.some(w => /\.pattern$/.test(w.name)), JSON.stringify(wix).slice(0, 300));
   FD.type(doc, inputBy('units.search'), 't-34');
-  let skRows = []; for (let i = 0; i < 100 && !skRows.length; i++) { await FD.settle(); skRows = root.all(c => / sk-index/.test(' ' + c.className)); }
+  let skRows = []; await WT.until(async () => { await FD.settle(); skRows = root.all(c => / sk-index/.test(' ' + c.className)); return skRows.length; }, { who: 'units test', what: 'skRows.length', step: 1 });
   assert.ok(skRows.some(o => /T-34\/76/.test(o.textContent) && /t34_0/.test(o.textContent)), skRows.map(o => o.textContent).join(' | '));
   assert.strictEqual(P.sent.filter(s => s.url === '/api/x/units/index').length, 1, 'the index is asked once');
   FD.type(doc, inputBy('units.search'), 't-3'); await FD.settle(); await FD.settle();
   assert.strictEqual(P.sent.filter(s => s.url === '/api/x/units/index').length, 1, 'typing on asks no new index');
   FD.type(doc, inputBy('units.rc.weapon'), '76mm_f');
-  skRows = []; for (let i = 0; i < 100 && !skRows.length; i++) { await FD.settle(); skRows = root.all(c => / sk-index/.test(' ' + c.className) && /76mm_f34/.test(c.textContent)); }
+  skRows = []; await WT.until(async () => { await FD.settle(); skRows = root.all(c => / sk-index/.test(' ' + c.className) && /76mm_f34/.test(c.textContent)); return skRows.length; }, { who: 'units test', what: 'skRows.length', step: 1 });
   assert.ok(skRows.length, 'weapon index hit');
   inputBy('units.search').value = ''; inputBy('units.rc.weapon').value = '';
   ok('searchKit: search and weapon boxes have Browse, History and an index (units once per data load, weapon files of game + mod)');
@@ -667,7 +668,7 @@ let n = 0; const ok = m => { n++; console.log('ok ' + n + ' ' + m); };
 
   // Equipment card (owner 2026-11-22): pick a soldier, the grid and the list show its items, add one, preview, write
   {
-    const kc = cardBy('units.kit.h'), until = async f => { let v = null; for (let i = 0; i < 200 && !(v = f()); i++) await FD.settle(); return v; };
+    const kc = cardBy('units.kit.h'), until = f => WT.until(async () => f() || (await FD.settle(), f()), { who: 'units test', what: String(f).slice(0, 120), step: 1 });   // by time, not by count
     const tile = name => kc.all(c => c.tagName === 'BUTTON' && c.attrs && c.attrs['data-kit'] === name)[0];
     // equipment browser (owner 2026-11-22), on its own: no soldier picked. Closed at first, nothing asked or built until opened
     const kbHead = id => kc.all(c => c.tagName === 'BUTTON' && c.attrs && c.attrs['data-kbg'] === id)[0];
@@ -832,7 +833,7 @@ let n = 0; const ok = m => { n++; console.log('ok ' + n + ' ' + m); };
     }
     // a vehicle (owner 2026-11-22): its box as the grid, its weapon slots, what a slot takes, another weapon put into the slot
     {
-      let vrow = null; for (let i = 0; i < 100 && !vrow; i++) { await FD.settle(); vrow = root.all(c => c.tagName === 'TR' && /T-34\/85/.test(c.textContent))[0]; }
+      let vrow = null; await WT.until(async () => { await FD.settle(); vrow = root.all(c => c.tagName === 'TR' && /T-34\/85/.test(c.textContent))[0]; return vrow; }, { who: 'units test', what: 'vrow', step: 1 });
       assert.ok(vrow, 'search list has the T-34/85'); vrow.fire('click');
       await until(() => root.all(c => c.tagName === 'H3' && /t34_3/.test(c.textContent)).length);
       const slotBox = n => kc.all(c => c.attrs && c.attrs['data-kslotbox'] === n)[0], slBtn = n => kc.all(c => c.tagName === 'BUTTON' && c.attrs && c.attrs['data-kslot'] === n)[0];
@@ -876,7 +877,7 @@ let n = 0; const ok = m => { n++; console.log('ok ' + n + ' ' + m); };
     }
     // skin and texture variant (owner 2026-11-22): the part under the equipment of the open soldier or vehicle
     {
-      const wait = async f => { let v = null; for (let i = 0; i < 2000 && !(v = f()); i++) { await FD.settle(); await new Promise(r => setTimeout(r, 2)); } return v; };
+      const wait = f => WT.until(async () => f() || (await FD.settle(), f()), { who: 'units test', what: String(f).slice(0, 120), step: 2 });   // by time, not by count
       const blkOf = id => kc.all(c => c.attrs && c.attrs['data-blk'] === id)[0], sk = blkOf('kit.skin');
       const texSel = () => sk.all(c => c.tagName === 'SELECT' && c.getAttribute('aria-label') === en['units.sk.tex'])[0];
       // the vehicle is open: no skin, the variant select, no skin search
@@ -944,9 +945,9 @@ let n = 0; const ok = m => { n++; console.log('ok ' + n + ' ' + m); };
   }
 
   // open t34_0 from the search list
-  let row = null; for (let i = 0; i < 100 && !row; i++) { await FD.settle(); row = root.all(c => c.tagName === 'TR' && /T-34\/76/.test(c.textContent))[0]; }
+  let row = null; await WT.until(async () => { await FD.settle(); row = root.all(c => c.tagName === 'TR' && /T-34\/76/.test(c.textContent))[0]; return row; }, { who: 'units test', what: 'row', step: 1 });
   assert.ok(row, 'search list'); row.fire('click');
-  let gunTxt = ''; for (let i = 0; i < 100 && !gunTxt; i++) { await FD.settle(); const l = root.all(c => c.tagName === 'DIV' && c.textContent.startsWith(en['units.s.gun']))[0]; gunTxt = l ? l.textContent : ''; }
+  let gunTxt = ''; await WT.until(async () => { await FD.settle(); const l = root.all(c => c.tagName === 'DIV' && c.textContent.startsWith(en['units.s.gun']))[0]; gunTxt = l ? l.textContent : ''; return gunTxt; }, { who: 'units test', what: 'gunTxt', step: 1 });
   assert.ok(/penetration at 100 m 85/.test(gunTxt) && !/\?/.test(gunTxt), gunTxt); ok('GT-13 the stats card shows the gun numbers, no "?"');
   {
     // owner 2026-11-22: rank hidden until "Show rank" is on; infantry armour reads N/A; the stats show the unlock time, no head start line
@@ -985,17 +986,17 @@ let n = 0; const ok = m => { n++; console.log('ok ' + n + ' ' + m); };
     // owner 2026-11-22: a group buy lists what it brings and has no armour of its own
     const sc = cardBy('units.search.h'), q = inputBy('units.search'), stat = () => root.all(c => c.attrs && c.attrs['data-blk'] === 'stats')[0];
     FD.type(doc, q, 'strike'); let tr = null;
-    for (let i = 0; i < 100 && !tr; i++) { await FD.settle(); tr = sc.all(c => c.tagName === 'TR' && /strike_group/.test(c.textContent))[0]; }
+    await WT.until(async () => { await FD.settle(); tr = sc.all(c => c.tagName === 'TR' && /strike_group/.test(c.textContent))[0]; return tr; }, { who: 'units test', what: 'tr', step: 1 });
     assert.ok(tr, 'the group is found');
     assert.ok(tr.all(c => c.tagName === 'TD')[4].textContent === en['units.na'] && /2 x T-34\/76, 6 x /.test(tr.textContent), tr.textContent);
     tr.fire('click'); let line = null;
-    for (let i = 0; i < 100 && !line; i++) { await FD.settle(); line = stat().all(c => c.tagName === 'DIV' && c.classList.contains('row') && c.textContent.startsWith(en['units.s.brings']))[0]; }
+    await WT.until(async () => { await FD.settle(); line = stat().all(c => c.tagName === 'DIV' && c.classList.contains('row') && c.textContent.startsWith(en['units.s.brings']))[0]; return line; }, { who: 'units test', what: 'line', step: 1 });
     assert.ok(line && /2 x T-34\/76 \(crew: 3 x .*, 1 x .*\), 6 x /.test(line.textContent), line && line.textContent);
     assert.ok(stat().textContent.includes('In all: 2 vehicles and 14 soldiers') && stat().textContent.includes(en['units.s.armor'] + en['units.na']), stat().textContent.slice(0, 600));
     // back to t34_0 for the tests below
     FD.type(doc, q, 't34'); let t0 = null;
-    for (let i = 0; i < 100 && !t0; i++) { await FD.settle(); t0 = sc.all(c => c.tagName === 'TR' && /t34_0/.test(c.textContent) && !/strike/.test(c.textContent))[0]; }
-    t0.fire('click'); for (let i = 0; i < 100 && !/t34_0/.test((stat().all(c => c.tagName === 'H3')[0] || {}).textContent || ''); i++) await FD.settle();
+    await WT.until(async () => { await FD.settle(); t0 = sc.all(c => c.tagName === 'TR' && /t34_0/.test(c.textContent) && !/strike/.test(c.textContent))[0]; return t0; }, { who: 'units test', what: 't0', step: 1 });
+    t0.fire('click'); await WT.until(async () => /t34_0/.test((stat().all(c => c.tagName === 'H3')[0] || {}).textContent || '') || (await FD.settle(), /t34_0/.test((stat().all(c => c.tagName === 'H3')[0] || {}).textContent || '')), { who: 'units test', what: 'the stats of t34_0 open', step: 1 });
     ok('a group buy on the page: the search row and the stats list "2 x T-34/76 (crew ..), 6 x rifle", the totals, and armour N/A');
   }
   {
@@ -1014,7 +1015,7 @@ let n = 0; const ok = m => { n++; console.log('ok ' + n + ' ' + m); };
     const rn = inputBy('units.ch.name'); assert.ok(rn.value === 'T-34/76', rn.value);
     FD.type(doc, rn, 'T-34 early'); const n1 = P.sent.length;
     btnIn(blkIn(mk, 'change.name'), 'units.preview').click();
-    for (let i = 0; i < 100 && !P.sent.slice(n1).some(x => /units\/change$/.test(x.url)); i++) await FD.settle();
+    await WT.until(async () => P.sent.slice(n1).some(x => /units\/change$/.test(x.url)) || (await FD.settle(), P.sent.slice(n1).some(x => /units\/change$/.test(x.url))), { who: 'units test', what: 'a units/change request', step: 1 });
     const sentCh = P.sent.slice(n1).find(x => /units\/change$/.test(x.url));
     assert.ok(sentCh && sentCh.body.field === 'name' && sentCh.body.value === 'T-34 early' && !sentCh.body.write, JSON.stringify(sentCh && sentCh.body));
     ok('the split: Units keeps Rename + Bigger squad in one tab; the number change card (price, armour, unlock time, rank, head start) sits in the Balance quick changes with the range card; Rename previews through /change');
@@ -1029,7 +1030,7 @@ let n = 0; const ok = m => { n++; console.log('ok ' + n + ' ' + m); };
   btnIn(ch, 'units.preview').click(); await FD.settle(); await FD.settle();
   const n0 = P.sent.length;
   FD.userClick(doc, btnIn(ch, 'units.write'));
-  for (let i = 0; i < 100 && !/410/.test(rd2()); i++) await FD.settle();
+  await WT.until(async () => /410/.test(rd2()) || (await FD.settle(), /410/.test(rd2())), { who: 'units test', what: 'the 410 line', step: 1 });
   function rd2() { try { return fs.readFileSync(path.join(f2.mod, 'resource/set/multiplayer/units/vehicles_rus.set'), 'latin1'); } catch (e) { return ''; } }
   assert.ok(P.sent.slice(n0).some(s => s.body && s.body.write === true), 'no write request sent');
   assert.ok(/"t34_0".*\{cost 410\}/.test(rd2())); ok('GT-33 Write by mouse click after a preview sends the write');

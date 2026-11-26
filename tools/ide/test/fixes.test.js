@@ -241,8 +241,7 @@ if (hasGame) {
   const t1 = Date.now(), p = F.warm(ictx);
   const syncMs = Date.now() - t1;
   ok(!F.ready(ictx), 'warm returns before the index is built');
-  await p;
-  clearInterval(iv);
+  try { await p; } finally { clearInterval(iv); }   // a warm that fails must not leave the 2 ms timer holding the process open
   const total = Date.now() - t1;
   ok(F.ready(ictx), 'game define index ready');
   ok(syncMs < 300, 'warm sync part ' + syncMs + ' ms');

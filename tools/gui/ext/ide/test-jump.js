@@ -23,7 +23,9 @@ module.exports = async function (env) {
     for (const k of Object.keys(files)) wr(path.join(mod, k), files[k]);
     const ctx2 = Object.assign({}, env.ctx, { game: () => game, tmpRoot: path.join(W, 'tmp') });
     env.R._reset();
-    const run = async (b) => { let r = null, all = []; for (let i = 0; i < 400; i++) { r = await env.post('modcheck', Object.assign({ mod, from: all.length }, b), ctx2); all = all.concat(r.files); if (r.done) break; await new Promise(z => setTimeout(z, 5)); } return { r, all }; };
+    // by time, not by count: backstop 60 s + WAIT line, then the checks after it report
+    const WT = require('../../../lib/test/wait');
+    const run = async (b) => { let r = null, all = []; await WT.until(async () => { r = await env.post('modcheck', Object.assign({ mod, from: all.length }, b), ctx2); all = all.concat(r.files); return r.done; }, { who: 'ide jump', what: 'the whole-mod check ends' }); return { r, all }; };
     let { r, all } = await run({});
     ok(r && r.done && r.total === 4 && r.checked === 4, 'jump route: only the text data files are checked (4 .set; not .txt, .mdl, .mtl, map, dot or restore folders)', JSON.stringify(r && { done: r.done, total: r.total, checked: r.checked }));
     const rels = all.map(x => x.rel).join();
@@ -43,7 +45,7 @@ module.exports = async function (env) {
     await env.rejects(() => env.post('modcheck', { mod, from: -1 }, ctx2), 400, /from/, 'jump route: a bad from -> 400');
     ok(Object.keys(files).every(k => fs.readFileSync(path.join(mod, k), 'utf8') === files[k]), 'jump route: reads only');
     ok(!require('../../remote').ALLOW.has('POST /api/x/ide/modcheck'), 'jump route: not open to a phone');
-    for (let i = 0; i < 400; i++) { const x = await env.post('modcheck', { mod, from: 0 }, ctx2); if (x.done) break; await new Promise(z => setTimeout(z, 5)); }
+    await WT.until(async () => (await env.post('modcheck', { mod, from: 0 }, ctx2)).done, { who: 'ide jump', what: 'the again check ends' });
   }
 
   // ================================================================ page

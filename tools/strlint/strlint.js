@@ -7,6 +7,8 @@
 //   STR_COLLIDER_PROFILE_GOH  a colliders.set (the mod's copy replaces vanilla) with no profile "tpc_camera" (GHDC-41: camera clip Find null,
 //                          crash on first hit [I]) or "human_tpc" (GHDC-49: foot direct control sets it)
 //          known-vanilla-goh.txt = the GoH vanilla defect list (known-vanilla.txt is AS2 vanilla)
+//        [--restore-points] also read <mod folder>/.arsenal-undo (restore points; the game never mounts them, so off by default)
+//   CLI lists the folder once and reads the walked files through the thread pool (checkAsync); check() = same findings, one at a time
 // codes (rows: new STR area, see REPORT.json specIssues):
 //   STR_MDL_MISSING        Extension .mdl not found
 //   WARN_STR_VOLUME_NO_SHAPE  def {Volume "n"} (written in the def itself, non-empty) has no {Volume "n"} in the mdl; vanilla: 452 -> info
@@ -32,6 +34,7 @@ const path = require('path');
 const sdlset = require('../lib/sdlset'), sdlx = require('../lib/sdlx');
 const games = require('../lib/games');
 const { createReport } = require('../lib/report');
+const fast = require('./fastread');
 
 const low = s => String(s).toLowerCase();
 const DEF_RE = /^resource\/entity\/(construction|social\/fortification)\/.*\.def$/;
@@ -60,11 +63,16 @@ function resolveRel(val, fromKey) {
   return path.posix.normalize(fromKey.slice(0, fromKey.lastIndexOf('/') + 1) + s);
 }
 
-function check(opts) {
+// keys the main loop reads
+const walked = key => ENT_DEF_RE.test(key) || TEAR_RE.test(key) || key === 'resource/set/colliders.set' || X_MDL_RE.test(key);
+// the check as steps: yields a Promise only while a read-ahead file (io.ra, async run) is still being read
+function* steps(opts, io) {
   const rep = createReport();
   let mods = opts.mods;
   if (!mods && opts.folder && opts.gameDir && path.dirname(path.resolve(opts.folder)).toLowerCase() === path.resolve(opts.gameDir, 'mods').toLowerCase()) mods = [path.basename(path.resolve(opts.folder))];
-  const src = sdlset.createSource({ gameDir: opts.gameDir, mods, folder: opts.folder, exe: games.exeOf(opts.exe) || undefined });
+  const ra = io && io.ra;
+  // each walked file and each include read once per run (fastread)
+  const F = fast.wrap(sdlset.createSource({ gameDir: opts.gameDir, mods, folder: opts.folder, exe: games.exeOf(opts.exe) || undefined, ...fast.srcOpts(opts) }), ra), src = F.src;
   const goh = (src.v ? src.v.exe : games.exeOf(opts.exe)) === 'goh';
   const items = new Map();
   if (opts.vfs) for (const t of src.vfsItems()) items.set(t.key, t);
@@ -338,31 +346,52 @@ function check(opts) {
       }
     }
   }
-  for (const [key, t] of items) {
-    if (ENT_DEF_RE.test(key)) { const r = readItem(t, () => {}); if (r) checkObstacleNames(t, r.root); }
-    if (DEF_RE.test(key)) { files++; checkDef(key, t); }
-    else if (TEAR_RE.test(key)) { files++; checkEntitySet(); checkTear(key, t); checkTearLiterals(key, t); }
-    else if (key === 'resource/set/colliders.set') { files++; checkColliders(key, t); }
-    else if (X_MDL_RE.test(key)) { files++; checkXmdl(key, t); }
+  if (ra) for (const [key, t] of items) if (walked(key) && t.path) ra.add(key, t.path);
+  for (const [key, t0] of items) {
+    if (!walked(key)) continue;
+    if (ra && t0.path) { const w = ra.wait(key); if (w) yield w; }
+    const t = F.item(t0);
+    try {
+      if (ENT_DEF_RE.test(key)) { const r = readItem(t, () => {}); if (r) checkObstacleNames(t, r.root); }
+      if (DEF_RE.test(key)) { files++; checkDef(key, t); }
+      else if (TEAR_RE.test(key)) { files++; checkEntitySet(); checkTear(key, t); checkTearLiterals(key, t); }
+      else if (key === 'resource/set/colliders.set') { files++; checkColliders(key, t); }
+      else if (X_MDL_RE.test(key)) { files++; checkXmdl(key, t); }
+    } finally { F.done(t0); }
   }
   return { rep, files };
+}
+// check(opts) -> { rep, files }   sync, files read one at a time
+// opts: { folder|vfs, gameDir, mods, exe, restorePoints (also read <folder>/.arsenal-undo, off by default), listing }
+function check(opts) { return fast.drive(steps(opts, null)); }
+// checkAsync(opts) -> Promise<same>: the folder listed once through the thread pool, walked files read ahead
+// checkAsync(opts, ra): ra = a readAhead stand-in to read through (lib/modset read-once pass, ctx.js), closed at the end
+async function checkAsync(opts, ra0) {
+  const { opts: o, ra } = await fast.prepare(opts, ra0);
+  try { return await fast.driveAsync(steps(o, { ra })); } finally { if (ra) ra.close(); }
 }
 
 // .lintrc + --format wiring (own arg parser): rc from --rc FILE, else nearest .lintrc walking up from `start`; --no-rc disables
 const { rcPrint } = require('../lib/cli');
-if (require.main === module) {
-  const args = process.argv.slice(2), o = {}, pos = [];
+// thread pool 16 (libuv default 4): more reads queued at the disk at once (as keylint)
+if (require.main === module && !process.env.UV_THREADPOOL_SIZE) process.env.UV_THREADPOOL_SIZE = '16';
+// main(args, {ra}): the CLI (and ctx.js, the read-once module form, with the pass's reader as ra; an error rejects, and the
+// pass runs strlint as a program instead)
+async function main(args, { ra } = {}) {
+  const o = {}, pos = [];
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (a === '--game') o.gameDir = args[++i]; else if (a === '--mods') o.mods = args[++i].split(',').filter(Boolean);
     else if (a === '--exe') { o.exe = args[++i]; if (!games.get(o.exe)) { console.error('strlint: --exe ' + o.exe + ': as64, mowas_2 (mowas2) or goh'); process.exit(2); } }
+    else if (a === '--restore-points') o.restorePoints = true;
     else if (a === '--vfs') o.vfs = true; else if (a === '--rc') o.rcFile = args[++i]; else if (a === '--no-rc') o.noRc = true; else if (a === '--format') o.format = args[++i]; else if (a === '-o') o.output = args[++i]; else if (a === '-q') o.q = true; else if (a === '--summary') o.summary = true; else pos.push(a);
   }
   o.folder = pos[0];
   if (o.exe && !o.gameDir && (games.kindOf(o.exe) === 'goh' || o.vfs)) o.gameDir = games.install(o.exe).dir || undefined;
-  if (!o.folder && !o.vfs || o.vfs && !o.gameDir) { console.error('usage: node tools/strlint/strlint.js <mod folder> | --vfs --game <dir> [--exe as64|mowas_2|goh] [--mods a,b] [-q] [--summary]'); process.exit(2); }
-  const { rep, files } = check(o);
+  if (!o.folder && !o.vfs || o.vfs && !o.gameDir) { console.error('usage: node tools/strlint/strlint.js <mod folder> | --vfs --game <dir> [--exe as64|mowas_2|goh] [--mods a,b] [--restore-points] [-q] [--summary]'); process.exit(2); }
+  const { rep, files } = await checkAsync(o, ra);
   rcPrint(rep, o, o.folder || o.gameDir, 'strlint', { showInfo: !o.q, byCode: true, summary: o.summary });
   console.log(`${files} files`);
 }
-module.exports = { check };
+if (require.main === module) main(process.argv.slice(2)).catch(e => { console.error(e && e.stack || String(e)); process.exit(1); });
+module.exports = { check, checkAsync, main };

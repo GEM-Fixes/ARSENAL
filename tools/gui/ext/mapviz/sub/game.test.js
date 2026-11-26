@@ -348,7 +348,7 @@ const ops = (log, op) => log.filter(x => x.op === op);
     const W = loadPick({ routes }), PK = W.PK;
     PK.open({ gameId: 'mowas2', map: 'map/' + SPKEY, mission: '03_test.mi', onPick: () => {} });
     const o = ov(W.doc); stat = o.all().find(e => e.getAttribute('role') === 'status');
-    for (let i = 0; i < 400 && !(o.has(en('mapviz.game.pk.picShown'))); i++) { seen.push(stat.textContent); await new Promise(r => setTimeout(r, 3)); }
+    await H.until(() => { seen.push(stat.textContent); return o.has(en('mapviz.game.pk.picShown')); });
     const pq = W.calls.find(c => /places/.test(c.path)), job = W.calls.find(c => c.method === 'POST');
     ok(pq && /target=mowas2/.test(pq.url) && /map=single%2Ft%2F03_test/.test(pq.url) && /mode=03_test/.test(pq.url) && /game=%3Cgame%3E/.test(pq.url), 'picker with a map: GET places with the game, its folder, the map key and the mission', pq && pq.url);
     ok(o.has('Flag B2') || PK._t.state().places.some(p => p.id === 'flag_b02'), 'picker with a map: the mission places are there');
@@ -368,7 +368,7 @@ const ops = (log, op) => log.filter(x => x.op === op);
     ok(JSON.stringify(a.play) === '[-1000,-1000,1000,1000]', 'route: GET places answers the playable area', a.play);
     const W = loadPick({ routes: { 'GET /api/x/mapviz/places': PLACES } }), PK = W.PK; let got = null;
     PK.open({ gameId: 'mowas2', map: 'map/' + TKEY, mission: '04_two', onPick: r => { got = r; } });
-    for (let i = 0; i < 200 && !PK._t.playBox(); i++) await new Promise(r => setTimeout(r, 3));
+    await H.until(() => PK._t.playBox());
     const o = ov(W.doc), cv = o.all().find(e => e.tagName === 'CANVAS'), ln = () => o.all().find(e => e.attrs && e.attrs.id && /-ln$/.test(e.attrs.id));
     ok(JSON.stringify(PK._t.playBox()) === '[-1000,-1000,1000,1000]', 'picker: the playable area comes from GET places (it was null: wbox only)', PK._t.playBox());
     { const a0 = PK._t.toScreen(-1000, 1000), a1 = PK._t.toScreen(1000, -1000);
@@ -400,7 +400,7 @@ const ops = (log, op) => log.filter(x => x.op === op);
   for (const c of ['en', 'ru', 'uk', 'zh']) {
     const W = loadPick({ code: c, routes: { 'GET /api/x/mapviz/places': async () => { throw Object.assign(new Error('MV_NOT_FOUND: no such map'), { status: 404, key: 'mapviz.err.MV_NOT_FOUND' }); } } });
     W.PK.open({ gameId: 'mowas2', map: SPKEY, mission: '04_two', mapName: 'Usa Overlord', onPick: () => {} });
-    await new Promise(r => setTimeout(r, 20));
+    await H.until(() => ov(W.doc).textContent.includes(LG[c]['mapviz.game.pk.placesFault'].replace('{why}', LG[c]['mapviz.game.pk.why.nf'])));
     const o = ov(W.doc), hd = o.all().find(e => e.className === 'mvpk-head'), txt = o.textContent;
     ok(txt.includes(LG[c]['mapviz.game.pk.placesFault'].replace('{why}', LG[c]['mapviz.game.pk.why.nf'])) && !/MV_[A-Z]|undefined|{why}/.test(txt), 'picker fault in ' + c + ': a sentence, no code', txt.slice(0, 300));
     ok(hd.children[0].textContent === LG[c]['mapviz.game.pk.missionOn'].replace('{name}', 'Usa Overlord') && !hd.children[0].textContent.includes(SPKEY) && hd.children[1].textContent.includes(SPKEY), 'picker header in ' + c + ': the map name in the main line, the path only small', hd.textContent);
@@ -412,7 +412,7 @@ const ops = (log, op) => log.filter(x => x.op === op);
     ok(W.PK._t.keyOf('resource\\map\\single\\t\\03_test') === SPKEY && W.PK._t.keyOf('map/../x') === null, 'picker: map keys as other pages name them'); }
 
   // ---- the inline view (MAPVIZ_PICK.embed): the same map inside another page's card, with the mission drawn on it ----
-  { const TKEY = 'single/t/04_two', wait = async f => { for (let i = 0; i < 300 && !f(); i++) await new Promise(r => setTimeout(r, 3)); return !!f(); };
+  { const TKEY = 'single/t/04_two', wait = f => H.until(f);
     const ROS = []; global.ResizeObserver = function (cb) { this.cb = cb; this.seen = []; this.off = false; this.observe = e => this.seen.push(e); this.disconnect = () => { this.off = true; }; ROS.push(this); };
     const routes = { 'GET /api/x/mapviz/places': PLACES,
       'GET /api/x/mapviz/tiles': async u => { if (u.searchParams.get('map') !== SPKEY) throw Object.assign(new Error('not made'), { status: 404, key: 'mapviz.err.MV_NOT_MADE', params: { need: { what: 'topo', args: { map: TKEY } } } });
@@ -511,7 +511,7 @@ const ops = (log, op) => log.filter(x => x.op === op);
     { const ro = ROS.find(r => r.seen[0] === cv), nc = W.calls.length, ng = got.length; let err = null;
       E.update({ map: 'map/' + TKEY, mission: '04_two' }); E.close();
       try { E.close(); E.update({ map: 'map/' + SPKEY }); E.fit(); cv.fire('click', { offsetX: 300, offsetY: 200 }); cv.fire('mousemove', { offsetX: 300, offsetY: 200 }); cv.fire('keydown', { key: 'Enter' }); cv.fire('wheel', { deltaY: 1 }); ro.cb([]); bts[0].click(); bts[2].click(); bts[3].click(); } catch (e) { err = e.message; }
-      await new Promise(r => setTimeout(r, 30));
+      await new Promise(r => setTimeout(r, 30));   // room for a late answer that must do nothing
       ok(!err && E.state() === null && E.el.parentNode === null && ro.off === true && got.length === ng && W.calls.length <= nc + 2 && !W.calls.slice(nc).some(c => /03_test/.test(c.url)), 'embed: close() stops everything; later calls and late answers do nothing', [err, W.calls.slice(nc).map(c => c.url)]); }
     delete global.ResizeObserver;
     { const Wr = loadPick({ rmt: true }), Er = Wr.PK.embed({ map: SPKEY, places: GIVEN, marks: MARKS });

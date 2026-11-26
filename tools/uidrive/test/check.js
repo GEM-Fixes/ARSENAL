@@ -35,7 +35,7 @@ const U = require('../uidrive');
   assert.throws(() => U.loadMap(mk('bad', { game: 'nope' })), /must be goh or mowas2/);
   {
     // CLI: an AS64 map is refused with the games.notFor line and exit 2; a malformed map stays exit 1
-    const cli = p => require('child_process').spawnSync(process.execPath, [path.join(__dirname, '..', 'uidrive.js'), 'where', p], { encoding: 'utf8' });
+    const cli = p => require('../../lib/test/wait').spawnSync(process.execPath, [path.join(__dirname, '..', 'uidrive.js'), 'where', p], { encoding: 'utf8' }, 'uidrive check');
     const r = cli(mk('as64c', { game: 'as64' }));
     assert.strictEqual(r.status, 2, r.stderr);
     assert.strictEqual(r.stderr.trim(), 'uidrive: not available for AS64: AS64 is driven through its control pipe (testrun), not by window input (TST-17)');

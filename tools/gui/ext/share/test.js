@@ -14,7 +14,7 @@ const fx = path.join(tools, 'conflicts', 'test', 'fixture', 'game');
 fs.cpSync(fx, game, { recursive: true });
 const ctx = {
   gamedir: game, tools, tmpRoot: work, allowLaunch: false, game: () => game,
-  runTool: async (tool, entry, args) => { const r = cp.spawnSync(process.execPath, [path.join(tools, entry)].concat(args), { encoding: 'utf8', timeout: 90000 }); return { code: r.status, stdout: r.stdout || '', stderr: r.stderr || '', timedOut: !!r.error }; },
+  runTool: async (tool, entry, args) => { const r = require('../../../lib/test/wait').spawnSync(process.execPath, [path.join(tools, entry)].concat(args), { encoding: 'utf8', timeout: 90000 }, 'share test'); return { code: r.status, stdout: r.stdout || '', stderr: r.stderr || '', timedOut: !!r.error }; },
 };
 const R = n => mod.routes[n];
 const U = q => new URL('http://x/?' + q);

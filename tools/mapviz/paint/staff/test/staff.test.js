@@ -172,7 +172,7 @@ ok(r640.stats.contourLines > 0 && r640.stats.treeStamps === 3 && r640.stats.inte
   ].join('\n');
   let best = null;
   for (let r = 0; r < 2 && !(best && best.worst <= 250); r++) {
-    const out = JSON.parse(require('child_process').execFileSync(process.execPath, ['-e', src], { encoding: 'utf8' }));
+    const out = JSON.parse(require('../../../../lib/test/wait').execFileSync(process.execPath, ['-e', src], { encoding: 'utf8' }));
     if (!best || out.worst < best.worst) best = out;
   }
   ok(best.worst <= 250 && best.n > 100, 'size 2048: ticks at most 250 ms apart: worst ' + Math.round(best.worst) + ' ms before ' + best.at + ' (' + best.n + ' ticks)');

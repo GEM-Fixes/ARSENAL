@@ -2,7 +2,7 @@
 //   cell 5, version 2: AS64 / MoW:AS2 NET_CELL (PORT-70); GoH no finding (GHMAP-06)
 //   cell 10, version 1 (4-byte cells): AS64 / MoW:AS2 no finding; GoH NET_VERSION (version byte ignored, read as v2: GHMAP-16)
 //   bad --exe: exit 2
-// Author: Imperator_Aug (ARSENAL, ia-c1a2e0b7)
+// Author: Imperator_Aug (ARSENAL, ia-95725614)
 const fs = require('fs'), path = require('path'), os = require('os'), assert = require('assert'), cp = require('child_process');
 const cli = path.join(__dirname, '..', 'binhdr.js');
 const dir = fs.mkdtempSync(path.join(process.env.TEST_WORK || os.tmpdir(), 'binhdr-game-'));

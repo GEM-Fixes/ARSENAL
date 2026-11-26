@@ -13,7 +13,8 @@ const T = fs.mkdtempSync(path.join(os.tmpdir(), 'check-games-'));
 const wr = (p, s) => { fs.mkdirSync(path.dirname(p), { recursive: true }); fs.writeFileSync(p, s); };
 const A = path.join(T, 'as2'), H = path.join(T, 'goh');
 const env = { AS2_GAME: A, AS2_NO_STEAM: '1', GOH_GAME: H, ARSENAL_CACHE: path.join(T, 'cache') };
-const run = args => { const r = cp.spawnSync(process.execPath, [CHK, ...args], { encoding: 'utf8', maxBuffer: 1 << 26, env: { ...process.env, ...env } }); return { rc: r.status, o: r.stdout || '', e: r.stderr || '' }; };
+const WT = require('../../lib/test/wait');   // children: backstop 5 min, killed: once more with twice the limit (never a hang)
+const run = args => { const r = WT.spawnSync(process.execPath, [CHK, ...args], { encoding: 'utf8', maxBuffer: 1 << 26, env: { ...process.env, ...env } }); return { rc: r.status, o: r.stdout || '', e: r.stderr || '' }; };
 const json = f => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return {}; } };
 try {
   // shared AS2 install: as64.exe + mowas_2.exe + as64/plus; mod d = modern (Min 3.301, no Max)
@@ -78,7 +79,7 @@ try {
   // newmod --target goh writes Min = Max = the exe version (1.067 for an exe with no PE version, as modinfo and lib/vfs read it): check picks
   // goh from those bounds, doctor mounts it (no NOT_MOUNTED), modinfo raises no version finding and wouldload's gate lets it load
   const nm = path.join(T, 'work', 'ngoh');
-  const nr = cp.spawnSync(process.execPath, [path.join(__dirname, '..', '..', 'newmod', 'newmod.js'), nm, '--name', 'Ngoh', '--target', 'goh', '--game', H, '--game-version', '1.067', '-q'], { encoding: 'utf8', env: { ...process.env, ...env } });
+  const nr = WT.spawnSync(process.execPath, [path.join(__dirname, '..', '..', 'newmod', 'newmod.js'), nm, '--name', 'Ngoh', '--target', 'goh', '--game', H, '--game-version', '1.067', '-q'], { encoding: 'utf8', env: { ...process.env, ...env } });
   const ninfo = (() => { try { return fs.readFileSync(path.join(nm, 'mod.info'), 'latin1'); } catch { return ''; } })();
   ok(/MinGameVersion "1\.067"/.test(ninfo) && /MaxGameVersion "1\.067"/.test(ninfo), 'newmod goh: mod.info bounds 1.067/1.067', ninfo + (nr.stderr || ''));
   const j9 = path.join(T, 'n9.json'), nc = run([nm, '--only', 'modinfo', '--json', j9]), R9 = json(j9);
@@ -94,7 +95,7 @@ try {
   // doctor killed by the timer: the error says so (CHECK_TOOL_TIMEOUT_MS test hook), the DOCTOR line does not claim "no game"
   // (wouldload is stopped too and says so). The timer is 10 ms: no node child starts and finishes in that time, so the doctor is always
   // still running when it fires. The old 0.3 s raced: the doctor of this two-file fixture often finished inside 0.3 s on a fast machine.
-  const to = cp.spawnSync(process.execPath, [CHK, path.join(A, 'mods', 'd')], { encoding: 'utf8', maxBuffer: 1 << 26, env: { ...process.env, ...env, CHECK_TOOL_TIMEOUT_MS: '10' } });
+  const to = WT.spawnSync(process.execPath, [CHK, path.join(A, 'mods', 'd')], { encoding: 'utf8', maxBuffer: 1 << 26, env: { ...process.env, ...env, CHECK_TOOL_TIMEOUT_MS: '10' } });
   ok(/doctor was stopped after 0\.01 s \(timeout\)/.test(to.stdout) && /DOCTOR: stopped after 0\.01 s \(timeout\)/.test(to.stdout) && !/no game: folder tools only/.test(to.stdout), 'timeout: named', to.stdout + to.stderr);
   // bad words stop with one line
   const b1 = run([o, '--target', 'mow3']); ok(b1.rc === 2 && /^Unknown --target mow3/.test(b1.e), 'bad --target', b1.e);

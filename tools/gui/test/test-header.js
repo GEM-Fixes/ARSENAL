@@ -20,6 +20,7 @@ const ORDER = ['en', 'ru', 'uk', 'zh'];
 let pass = 0, failN = 0;
 const ok = (c, m, extra) => { if (c) { pass++; console.log('ok ' + m); } else { failN++; console.log('FAIL ' + m + (extra !== undefined ? '\n  ' + String(extra).slice(0, 600) : '')); } };
 const tick = () => new Promise(r => setImmediate(r));
+const W = require('../../lib/test/wait');
 const clone = o => JSON.parse(JSON.stringify(o));
 const MODP = 'C:\\Games\\MyMod';
 const GAMEP = 'C:\\Games\\Men of War Assault Squad 2';
@@ -58,11 +59,12 @@ async function load(o) {
   };
   w.window = w; vm.createContext(w);
   vm.runInContext(/<script>([\s\S]*)<\/script>/.exec(html)[1], w, { filename: 'page.js:script' });
-  for (let i = 0; i < 600 && !w.__as2gui; i++) await tick();
+  { const t0 = Date.now(); while (!w.__as2gui && Date.now() - t0 < W.COND_MS) await tick(); if (!w.__as2gui) W.say('test-header', 'page build', W.COND_MS); }
   // a toast is the #toast element's text
   return { doc, w, store, posts, toasts, row, S: () => w.__as2gui, toast: () => doc.getElementById('toast').textContent };
 }
-const until = async (f, n = 300) => { for (let i = 0; i < n; i++) { let v; try { v = f(); } catch (e) { v = false; } if (v) return v; await tick(); } return null; };
+// by time, not by count (a busy PC needs more ticks): at least 60 s, then a WAIT line and null; the check after it reports
+const until = async (f, ms = W.COND_MS) => { const t0 = Date.now(); for (;;) { let v; try { v = f(); } catch (e) { v = false; } if (v) return v; if (Date.now() - t0 >= ms) { W.say('test-header', String(f).slice(0, 120), ms); return null; } await tick(); } };
 
 (async () => {
   const EN = LANG('en'), TEN = {}; for (const r of TASKL) TEN[r[0]] = r[1];

@@ -7,7 +7,7 @@
 // The real game folder is read-only except mods/t_door_1, which this tool's install creates (and uninstall removes). Refuses if it already exists.
 // usage: node tools/dist/test/door.js pre|post --game <game folder> --scratch <dir> [--inst 2] [--port 47931]
 // Author: Imperator_Aug (ARSENAL, ia-722f4245)
-const fs = require('fs'), path = require('path'), zlib = require('zlib'), http = require('http'), { spawnSync, spawn } = require('child_process');
+const fs = require('fs'), path = require('path'), zlib = require('zlib'), http = require('http'), { spawnSync, spawn } = require('child_process'), Wt = require('../../lib/test/wait');
 const ZIP = path.join(__dirname, '..', 'zip.js');
 const argv = process.argv.slice(2), phase = argv[0];
 const opt = (n, d) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : d; };
@@ -24,7 +24,7 @@ const rows = []; let fails = 0;
 const rec = (step, cmd, exit, result, ok) => { rows.push([step, cmd, exit, result]); if (!ok) fails++; console.log(`${ok ? 'ok  ' : 'FAIL'} | ${step} | ${cmd} | exit ${exit} | ${result}`); };
 const first = s => (String(s).split(/\r?\n/).find(l => l.trim()) || '(no output)').trim().slice(0, 150);
 const run = (args, cwd) => {
-  const r = spawnSync(exe, args, { cwd: cwd || work, env, encoding: 'utf8', timeout: 600000, maxBuffer: 1 << 26, windowsHide: true });
+  const r = Wt.spawnSync(exe, args, { cwd: cwd || work, env, encoding: 'utf8', timeout: 600000, maxBuffer: 1 << 26, windowsHide: true }, 'dist door');
   try { fs.mkdirSync(path.join(root, 'logs'), { recursive: true }); fs.writeFileSync(path.join(root, 'logs', phase + '-' + args[0] + '.txt'), `exit ${r.status}\n--- stdout\n${r.stdout}\n--- stderr\n${r.stderr}\n`); } catch (e) { /* log only */ }
   return r;
 };
@@ -41,9 +41,12 @@ function unzip(f, dest) {
     p += 46 + nl + xl + cl;
   }
 }
-const get = p => new Promise((res, rej) => {
+// a request with no answer in 2 min: WAIT, asked once more, then the error (backup, never a hang)
+const get = (p, again = true) => new Promise((res, rej) => {
+  let late = false;
   const r = http.request({ host: '127.0.0.1', port, path: p }, s => { const b = []; s.on('data', d => b.push(d)); s.on('end', () => res({ status: s.statusCode, text: Buffer.concat(b).toString('utf8') })); });
-  r.on('error', rej); r.setTimeout(30000, () => r.destroy(new Error('timeout'))); r.end();
+  r.on('error', x => { if (late && again) { Wt.say('dist door', 'GET ' + p, 120000); res(get(p, false)); } else rej(x); });
+  r.setTimeout(120000, () => { late = true; r.destroy(new Error('timeout')); }); r.end();
 });
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -76,7 +79,7 @@ async function pre() {
   let o = '', e = ''; child.stdout.on('data', d => o += d); child.stderr.on('data', d => e += d);
   let gone = null; child.on('exit', c => gone = c);
   try {
-    for (let i = 0; i < 100 && !/gui: http/.test(o) && gone === null; i++) await sleep(200);
+    await Wt.until(() => /gui: http/.test(o) || gone !== null, { who: 'dist door', what: 'gui start line', step: 50 });
     const h = JSON.parse((await get('/api/health')).text), pg = await get('/'), g = JSON.parse((await get('/api/game')).text);
     rec('4 gui', 'ARSENAL.exe gui --no-open --port ' + port, 0, `${first(o)} | /api/health sea=${h.sea} | page ${pg.status} ${pg.text.length} bytes | /api/game dir found ${!!g.dir}`, h.sea === true && pg.status === 200 && pg.text.length > 20000 && !!g.dir);
   } catch (x) { rec('4 gui', 'ARSENAL.exe gui --no-open', 'n/a', 'exception: ' + x.message + ' ' + e.slice(0, 200), false); }

@@ -233,7 +233,7 @@ const codes = o => o.verdict.why.map(w => w.code);
   // a pak entry: the copy line and the temp path as where
   const h5 = doc.createElement('div'); doc.body.appendChild(h5);
   box.VIEW.mount(h5, { mod, rel: 'resource.pak:\x3avideo/good.avi' }, 'good.avi', { kind: 'video' }); await flush();
-  for (let i = 0; i < 200 && !h5.querySelector('button.vw-vd-ext'); i++) { await new Promise(r => setTimeout(r, 10)); await flush(); }
+  await require('../../../../lib/test/wait').until(async () => h5.querySelector('button.vw-vd-ext') || (await flush(), h5.querySelector('button.vw-vd-ext')), { who: 'video kind test', what: 'the open-outside button', step: 10 });   // by time: 60 s + WAIT, then the check reports
   h5.querySelector('button.vw-vd-ext').click(); await flush();
   const a1p = asks[2] || { lines: [] };
   ok(a1p.lines.length === 4 && /inside resource\.pak, so a copy is first unpacked to the temp folder/.test(a1p.lines[2]) && a1p.where === path.join(work, 'view-video', path.basename(a1p.where)) && /good\.avi$/.test(a1p.where), 'page pak entry: the copy line, the temp path as where');

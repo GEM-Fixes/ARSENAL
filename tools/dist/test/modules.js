@@ -42,7 +42,7 @@ if (b.status === 0) {
   }
   ok(miss.length === 0, '2 embedded tools require files that are not embedded:\n  ' + miss.slice(0, 20).join('\n  '));
   // 3
-  const run = a => spawnSync(exe, a, { encoding: 'utf8', timeout: 60000 });
+  const run = a => require('../../lib/test/wait').spawnSync(exe, a, { encoding: 'utf8' }, 'dist modules');
   for (const t of ['goh2as2', 'gen']) { const r = run([t, '--help']); ok(r.status === 0 && /usage: ARSENAL /i.test(r.stdout), `3 ${t} --help rc ${r.status}\n${r.stdout}${r.stderr}`); }
   for (const t of ['q', 'notes', 'score', 'wpn', 'covanm']) { const r = run([t]); ok(r.status === 2 && /unknown tool/.test(r.stderr), `3 ${t}: want unknown tool rc 2, got ${r.status}\n${r.stderr}`); }
   const hl = run(['help', '--all']).stdout;

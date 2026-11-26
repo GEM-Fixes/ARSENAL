@@ -157,7 +157,7 @@ const tick = async (k = 8) => { for (let i = 0; i < k; i++) await new Promise(r 
     const snap = () => { const o = []; (function w(d) { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const f = path.join(d, e.name); if (e.isDirectory()) { if (f !== fx.mod) w(f); } else o.push(f + ':' + fs.statSync(f).size); } })(fx.game); return o.sort().join('\n'); };
     const before = snap();
     const ctx = { gamedir: fx.game, tools: TOOLS, tmpRoot, allowLaunch: false, modAgeMs: 0, game: () => fx.game,
-      runTool: async (tool, entry, args, o) => { const r = cp.spawnSync(process.execPath, [path.join(TOOLS, entry), ...args], { encoding: 'utf8', timeout: (o && o.timeoutMs) || 60000 }); return { code: r.status, stdout: r.stdout, stderr: r.stderr, timedOut: !!(r.error && r.error.code === 'ETIMEDOUT') }; } };
+      runTool: async (tool, entry, args, o) => { const r = require('../../../../lib/test/wait').spawnSync(process.execPath, [path.join(TOOLS, entry), ...args], { encoding: 'utf8', timeout: (o && o.timeoutMs) || 60000 }, 'models look test'); return { code: r.status, stdout: r.stdout, stderr: r.stderr, timedOut: !!(r.error && r.error.code === 'ETIMEDOUT') }; } };
     const call = (r, b) => SRV.routes['POST /api/x/models/' + r]('/api/x/models/' + r, Object.assign({ gid: 'as64' }, b), ctx);
     const vs = j => j.variants.map(v => v.name + ':' + v.textures + ':' + v.meshes).join(' ');
 

@@ -12,7 +12,7 @@
 // %LOCALAPPDATA%\Programs\ARSENAL and Start menu ARSENAL.lnk are as before.
 // usage: node tools/dist/test/install-test.js [--scratch dir] [--keep]
 // Author: Imperator_Aug (ARSENAL, ia-b74a8197)
-const fs = require('fs'), os = require('os'), path = require('path'), zlib = require('zlib'), crypto = require('crypto'), { spawnSync, spawn } = require('child_process');
+const fs = require('fs'), os = require('os'), path = require('path'), zlib = require('zlib'), crypto = require('crypto'), { spawnSync, spawn } = require('child_process'), Wt = require('../../lib/test/wait');
 const DIST = path.join(__dirname, '..'), TOOLS = path.join(DIST, '..');
 const Z = require(path.join(DIST, 'zip.js')), L = require(path.join(DIST, 'launch.js')), SEA = require(path.join(DIST, 'sea.js'));
 const argv = process.argv.slice(2), opt = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : undefined; };
@@ -70,7 +70,7 @@ for (const [k, v] of Object.entries(process.env)) if (!CLEAR.test(k)) env[k] = v
 Object.assign(env, PROF, { TMP: PROF.TEMP, HOME: PROF.USERPROFILE, PATH: [SYS32, SYSROOT].join(';') });
 function cmd(script, rawArgs) {
   const line = `"${script}"${rawArgs ? ' ' + rawArgs : ''}`;
-  const r = spawnSync(path.join(SYS32, 'cmd.exe'), ['/d', '/s', '/c', `"${line}"`], { env, cwd: PROF.USERPROFILE, encoding: 'utf8', windowsVerbatimArguments: true, timeout: 300000, maxBuffer: 1 << 26, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
+  const r = Wt.spawnSync(path.join(SYS32, 'cmd.exe'), ['/d', '/s', '/c', `"${line}"`], { env, cwd: PROF.USERPROFILE, encoding: 'utf8', windowsVerbatimArguments: true, timeout: 300000, maxBuffer: 1 << 26, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true }, 'dist install-test ' + path.basename(script));
   return { rc: r.status, out: (r.stdout || '') + (r.stderr || '') };
 }
 // snapshot: every file under the folders that must not change (path, size, sha256)
@@ -85,11 +85,12 @@ const list = d => fs.existsSync(d) ? fs.readdirSync(d).sort() : null;
 
 async function startServer() {
   server = spawn(process.execPath, [path.join(__dirname, 'fixserve.js'), SRV, LOG], { stdio: ['ignore', 'pipe', 'inherit'], windowsHide: true });
-  return new Promise((res, rej) => {
-    let buf = ''; const t = setTimeout(() => rej(new Error('fixture server did not start')), 15000);
-    server.stdout.on('data', d => { buf += d; const m = /port (\d+)/.exec(buf); if (m) { clearTimeout(t); res(Number(m[1])); } });
+  const up = new Promise((res, rej) => {
+    let buf = '';
+    server.stdout.on('data', d => { buf += d; const m = /port (\d+)/.exec(buf); if (m) res(Number(m[1])); });
     server.on('exit', c => rej(new Error('fixture server exited ' + c)));
   });
+  return Wt.late(up, { who: 'dist install-test', what: 'fixture server port line' }).then(p => p || Promise.reject(new Error('fixture server did not start')));
 }
 
 async function main() {

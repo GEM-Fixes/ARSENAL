@@ -4,8 +4,8 @@
 //     writes no checkpoint. checkpointEvery 0 writes none.
 //   seed: a folder index (GoH, exe goh, game + --folder as the Units page reads it) and a mods index (AS2, exe as64 and exe mowas_2)
 //     with no cache of their own start from vanilla.<exe>.json of the same exe and game folder: only the files the folder or mod
-//     replaces are parsed again, the answer is the same as a cold build without a seed (seed: false), and an exe never seeds from
-//     another exe's vanilla cache.
+//     replaces are parsed again, the answer is the same as a cold build without a seed (seed: false), and an exe seeds only from
+//     its own exe's vanilla file (here the twin the as64 stock build wrote: no as64/core in this install).
 //   usage: node seed.js <workdir>   (run.sh gives its temp dir; nothing written beside the test)
 // Author: Imperator_Aug (ARSENAL, ia-9812e7cd)
 const fs = require('fs'), path = require('path'), os = require('os');
@@ -72,10 +72,15 @@ const m64 = ix.build({ gameDir: AS2, exe: 'as64', mods: ['m1'], cache: mc });
 if (!m64.stats.seeded || path.basename(m64.stats.seeded) !== 'vanilla.json' || m64.stats.parsed !== 1) fail('as64 mods index seeded from vanilla.json: ' + JSON.stringify(m64.stats));
 const mod5 = m64.idx.byName('as2_e5')[0];
 if (!mod5 || mod5.source !== 'mod' || !/mod_e5/.test(JSON.stringify(mod5.refs))) fail('as64: the mod file wins: ' + JSON.stringify(mod5));
-// mowas_2 has no vanilla.mowas_2.json yet: it must not seed from the as64 vanilla.json
+// no as64/core here: the as64 stock build also wrote vanilla.mowas_2.json (meta.exe mowas_2, the twin); a mowas_2 mods index seeds
+// from that file (never from the as64 vanilla.json itself) and answers as a cold build does
+const twin = ix.cachePath(van, 'mowas_2');
+if (!a.stats.twin || a.stats.twin !== twin || JSON.parse(fs.readFileSync(twin, 'utf8')).meta.exe !== 'mowas_2') fail('as64 stock build writes the mowas_2 twin: ' + JSON.stringify(a.stats));
 const mw0 = ix.build({ gameDir: AS2, exe: 'mowas_2', mods: ['m1'], cache: mc });
-if (mw0.stats.seeded || mw0.stats.reused !== 0) fail('mowas_2 never seeds from the as64 cache: ' + JSON.stringify(mw0.stats));
-fs.rmSync(ix.cachePath(mc, 'mowas_2'));
+if (!mw0.stats.seeded || path.basename(mw0.stats.seeded) !== 'vanilla.mowas_2.json' || mw0.stats.parsed !== 1) fail('mowas_2 seeds from its own (twin) stock file: ' + JSON.stringify(mw0.stats));
+const mwc = ix.build({ gameDir: AS2, exe: 'mowas_2', mods: ['m1'], cache: shared('mods-cold.json'), seed: false });
+if (view(mwc) !== view(mw0)) fail('a mowas_2 index seeded from the twin answers the same as a cold one');
+fs.rmSync(ix.cachePath(mc, 'mowas_2')); fs.rmSync(twin);
 ix.build({ gameDir: AS2, exe: 'mowas_2', cache: van });
 const mw = ix.build({ gameDir: AS2, exe: 'mowas_2', mods: ['m1'], cache: mc });
 if (!mw.stats.seeded || path.basename(mw.stats.seeded) !== 'vanilla.mowas_2.json' || mw.stats.parsed !== 1) fail('mowas_2 mods index seeded from vanilla.mowas_2.json: ' + JSON.stringify(mw.stats));

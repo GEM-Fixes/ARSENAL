@@ -277,7 +277,7 @@ let n = 0; const ok = m => { n++; console.log('ok ' + n + ' ' + m); };
 
   // ---------- one real run: tools/soedit/soedit.js spawned, no stub ----------
   const tools = path.resolve(__dirname, '..', '..', '..', '..');
-  const spawn = (entry, args) => { const p = require('child_process').spawnSync(process.execPath, [path.join(tools, entry)].concat(args), { encoding: 'utf8', timeout: 60000 });
+  const spawn = (entry, args) => { const p = require('../../../../lib/test/wait').spawnSync(process.execPath, [path.join(tools, entry)].concat(args), { encoding: 'utf8', timeout: 60000 }, 'models anim test');
     return { code: p.status, stdout: p.stdout || '', stderr: p.stderr || '' }; };
   const realCtx = { tmpRoot: ctx.tmpRoot, game: () => game, runTool: async (tool, entry, args) => spawn(entry, args) };
   const rcall = (verb, body) => S.routes['POST /api/x/models/anim/' + verb]('/api/x/models/anim/' + verb, body, realCtx);

@@ -1,7 +1,10 @@
 // sdlset: which files are SDL data + a resolver/reader over (mod folder -> vfs) shared by sdllint, keylint.
 //   isSdl(key) extOf(key)   key = virtual key 'resource/...'
-//   const s = createSource({ gameDir?, mods?, exe?, folder?, gameVersion?, disableVersionControl? })   (last two go to vfs.build)
-//     s.v        vfs index (or null)       s.local  Map key -> abs path of loose folder files    s.folder (abs)
+//   const s = createSource({ gameDir?, mods?, exe?, folder?, gameVersion?, disableVersionControl?, restorePoints?, listing? })
+//     (gameVersion, disableVersionControl go to vfs.build; restorePoints: read <mod>/.arsenal-undo too, default restorePoints();
+//      listing: a lib/modtree scan of folder to list it from, else the process's fresh one, else a walk. See keepOf. A full
+//      (not names-only) listing is also taken as this process's fresh scan (modtree.adopt), so a mounted mod's view comes from it)
+//     s.v        vfs index (or null)       s.local  Map key -> abs path of loose folder files the game mounts (keepOf)    s.folder (abs)
 //     s.hasRes   folder has resource/ (then only resource/ is mounted, VFS-26)
 //     s.get(key) Buffer | null   folder (+ its paks, mount order) first, then vfs      s.readVfs(key)  vfs only
 //     s.packed() folder paks Map key -> {file '<pak>!<entry>'}   s.winner(key) 'local'|'pak'|'vfs'|null
@@ -10,7 +13,8 @@
 //     s.preInclude(key)          [keys] loader-implicit includes (stuff dir .presets)
 //     s.read(item, onError)      sdlx.read of {key,file,get}; null for binary
 //     s.modItems() / s.isModKey(key)   vfs files whose winning layer is an active mod (paks of a mounted mod)
-//     s.folderItems()            [{key,file,get}] SDL files of the folder     s.vfsItems()  same for the whole vfs
+//     s.folderItems()            [{key,file,path,get}] SDL files of the folder (path: abs, for a readAhead)     s.vfsItems()  {key,file,get} for the whole vfs
+//   restorePoints(on) -> was   process default of createSource o.restorePoints (off)
 //     s.memo(on) -> was          on: get/open read each key once until memo(false) (a read-only phase of the caller); off by default
 //     s.prefetch(keys) -> Promise<n>   memo on: the loose folder files of keys read through the thread pool into the memo (see there)
 //     s.ahead(ra) -> was         get/open take a loose folder file from the readAhead ra when it holds it (null = off, the default)
@@ -19,7 +23,7 @@
 // Author: Imperator_Aug (ARSENAL, ia-a308519e)
 const fs = require('fs'), path = require('path');
 const { bomKind } = require('./enc'), sdlx = require('./sdlx'), vfs = require('./vfs'), pak = require('./pak');
-const { walkFiles, relPath } = require('./report');
+const { relPath } = require('./report');
 const gameview = require('./gameview'), modtree = require('./modtree');
 
 // the game (+ listed mods) view: the shared one of lib/gameview (the game is mounted once per process, a listed mod is read from
@@ -29,18 +33,53 @@ function viewOf(o) {
   const bo = { gameDir: o.gameDir, mods: o.mods, exe: o.exe, gameVersion: o.gameVersion, disableVersionControl: o.disableVersionControl };
   const e = o.exe, shared = !e || e === 'mowas_2' || e === 'mowas2' || e === 'goh' || (e === 'as64' && fs.existsSync(path.join(o.gameDir, 'as64.exe')));
   if (!shared || (o.mods != null && !Array.isArray(o.mods))) return vfs.build(bo);
+  // o.listing (a full scan of the folder, also the scan a worker thread is handed): when that folder is a mounted mod, the view
+  // lists it from there too (lib/vfs listings: same records), not by a walk with a stat per file (~22 s on a 112k-file mod)
+  if (o.listing && vfs.usableListing(o.listing) && !o.listing.names) modtree.adopt(o.listing);
   return gameview.withModsSync({ gameDir: o.gameDir, exe: e, list: o.mods || [], gameVersion: o.gameVersion, disableVersionControl: o.disableVersionControl }, { noAge: true });
 }
-// every file of the folder, as report.walkFiles(folder, /./) gives them, from the folder's modtree scan when this process has a
-// fresh one (no readdir per folder): the listed files, plus what the scan leaves out and walkFiles takes (a link is one file,
-// a folder modtree does not enter is walked)
-function folderFiles(folder, T) {
-  if (!T) return walkFiles(folder, /./);
-  const acc = T.files.map(r => path.join(folder, r[0]));
+// what of a mod folder the loose map takes (1B,: the game mounts only resource/, resource.pak, localization*
+// (GoH localizations/) and N.pat from a mod root (modweb vfs/mount:23, VFS-26). keepOf({ layout, rp }) -> keep(rel) on a path
+// below the folder (forward slashes, a folder or a file):
+//   rp false (the default): nothing under a folder .arsenal-undo (restore points, never mounted) at any depth
+//   layout (the folder has resource/): root files (mod.info, N.pat, resource.pak, as before) + resource/ + localization*/; any
+//     other root folder is not mounted and not read (before: keyed resource/<folder>/..., e.g. resource/.arsenal-undo/...).
+//     rp true keeps <mod>/.arsenal-undo there too, under the key it had before (resource/.arsenal-undo/...)
+//   no layout (a loose resource tree): every folder but .arsenal-undo (rp false), as before
+// restorePoints(on) -> was: the default of createSource o.restorePoints for this process (a caller that builds its source
+// through another module, refcheck through entityindex)
+let RP_DEFAULT = false;
+const sameDir = (a, b) => { const A = path.resolve(String(a)), B = path.resolve(String(b)); return process.platform === 'win32' ? A.toLowerCase() === B.toLowerCase() : A === B; };
+const restorePoints = on => { const was = RP_DEFAULT; RP_DEFAULT = !!on; return was; };
+const UNDO = '.arsenal-undo';
+function keepOf({ layout, rp }) {
+  return rel => {
+    const l = rel.toLowerCase();
+    if (!rp && (l === UNDO || l.startsWith(UNDO + '/') || l.includes('/' + UNDO + '/') || l.endsWith('/' + UNDO))) return false;
+    if (!layout) return true;
+    const i = l.indexOf('/'), top = i < 0 ? null : l.slice(0, i);
+    return top === null ? true : top === 'resource' || top.startsWith('localization') || (rp && top === UNDO);
+  };
+}
+// report.walkFiles(dir, /./) that does not enter a folder keep() refuses (rel = below folder)
+function walkKept(dir, relDir, keep, acc) {   // relDir: '' or 'a/b/'
+  const ents = fs.readdirSync(dir, { withFileTypes: true });   // throws as walkFiles did
+  for (const e of ents) {
+    const p = path.join(dir, e.name), rel = relDir + e.name;
+    if (e.isDirectory()) { if (keep(rel + '/')) walkKept(p, rel + '/', keep, acc); } else if (keep(rel)) acc.push(p);
+  }
+}
+// every file of the folder keep() takes, as report.walkFiles(folder, /./) gives them, from the folder's modtree scan when this
+// process has a fresh one (no readdir per folder): the listed files, plus what the scan leaves out and walkFiles takes (a link
+// is one file, a folder modtree does not enter is walked)
+function folderFiles(folder, T, keep) {
+  const acc = [];
+  if (!T) { walkKept(folder, '', keep, acc); return acc.sort(); }
+  for (const r of T.files) if (keep(r[0])) acc.push(path.join(folder, r[0]));
   for (const rel of T.left) {
     const p = path.join(folder, rel);
     let st; try { st = fs.lstatSync(p); } catch (x) { continue; }
-    if (st.isDirectory()) { for (const f of walkFiles(p, /./)) acc.push(f); } else acc.push(p);
+    if (st.isDirectory()) { if (keep(rel + '/')) walkKept(p, rel + '/', keep, acc); } else if (keep(rel)) acc.push(p);
   }
   return acc.sort();
 }
@@ -120,13 +159,18 @@ function createSource(o) {
   const local = new Map(), folder = o.folder && path.resolve(o.folder);
   const keyRel = r => { const rel = r.toLowerCase(); return rel.startsWith('resource/') ? rel : 'resource/' + rel; };
   const keyOf = f => keyRel(relPath(folder, f));
-  // the folder's scan of this process (lib/modtree fresh: untouched since), when there is one: no walk, no stat per file
-  let FT = null; try { FT = folder ? modtree.fresh(folder) : null; } catch (x) { FT = null; }
+  // the folder's scan: o.listing (a lib/modtree scan of this folder the caller hands over, e.g. to a worker thread), else this
+  // process's (modtree fresh: untouched since), when there is one: no walk, no stat per file
+  let FT = null;
+  if (folder && vfs.usableListing(o.listing) && sameDir(o.listing.dir, folder)) FT = o.listing;
+  else { try { FT = folder ? modtree.fresh(folder) : null; } catch (x) { FT = null; } }
   if (!vfs.usableListing(FT)) FT = null;
   // (from a scan: the path below the folder is cut off the string, path.relative for 100k files costs a second)
   const cut = FT && !/[\\/]$/.test(folder) ? folder.length + 1 : 0;
-  if (folder && fs.statSync(folder).isDirectory()) for (const f of folderFiles(folder, FT)) local.set(cut ? keyRel(f.slice(cut).split(path.sep).join('/')) : keyOf(f), f);
   const hasRes = !!folder && fs.existsSync(path.join(folder, 'resource'));
+  // restore points (<mod>/.arsenal-undo) read only when asked (o.restorePoints, else the process default restorePoints())
+  const rp = o.restorePoints != null ? !!o.restorePoints : RP_DEFAULT, keep = keepOf({ layout: hasRes, rp });
+  if (folder && fs.statSync(folder).isDirectory()) for (const f of folderFiles(folder, FT, keep)) local.set(cut ? keyRel(f.slice(cut).split(path.sep).join('/')) : keyOf(f), f);
   const included = new Set();
   // the folder's own paks count unless the folder is itself one of the mods mounted in v (then v holds them). Before, any
   // `mods` value (also []) dropped them, so a mod given as a folder read the vanilla copy of every packed file.
@@ -158,7 +202,7 @@ function createSource(o) {
         const p = path.join(dir, nm), lnm = nm.toLowerCase(), e = byName.get(nm);
         let isDir = e.isDirectory();
         if (!isDir && !e.isFile()) { let st; try { st = fs.statSync(p); } catch (x) { continue; } isDir = st.isDirectory(); }
-        if (isDir) { if (lnm !== '.git' && lnm !== '.svn') walk(p, root + lnm + '/'); }
+        if (isDir) { if (lnm !== '.git' && lnm !== '.svn' && (rp || lnm !== UNDO)) walk(p, root + lnm + '/'); }
         else if (/\.pak$/.test(lnm)) addPak(p, root);
         else seqIdx.set(keyOf(p), ++n);
       }
@@ -171,10 +215,10 @@ function createSource(o) {
         if (c === vfs.LIST_FS) {
           const p = path.join(dir, nm);
           let st; try { st = fs.statSync(p); } catch (x) { continue; }
-          if (st.isDirectory()) { if (lnm !== '.git' && lnm !== '.svn') walk(p, root + lnm + '/'); }
+          if (st.isDirectory()) { if (lnm !== '.git' && lnm !== '.svn' && (rp || lnm !== UNDO)) walk(p, root + lnm + '/'); }
           else if (/\.pak$/.test(lnm)) addPak(p, root);
           else seqIdx.set(keyOf(p), ++n);
-        } else if (c instanceof Map) { if (lnm !== '.git' && lnm !== '.svn') walkL(c, path.join(dir, nm), root + lnm + '/', rel + nm + '/'); }
+        } else if (c instanceof Map) { if (lnm !== '.git' && lnm !== '.svn' && (rp || lnm !== UNDO)) walkL(c, path.join(dir, nm), root + lnm + '/', rel + nm + '/'); }
         else if (/\.pak$/.test(lnm)) addPak(path.join(dir, nm), root);
         else seqIdx.set(keyRel(rel + nm), ++n);
       }
@@ -264,7 +308,7 @@ function createSource(o) {
   };
   const folderItems = () => {
     const acc = [];
-    for (const [k, f] of local) if (isSdl(k) && (!hasRes || k.startsWith('resource/')) && !/(^|\/)\.(git|svn)\//.test(k)) acc.push({ key: k, file: relPath(folder, f), get: () => fs.readFileSync(f) });
+    for (const [k, f] of local) if (isSdl(k) && (!hasRes || k.startsWith('resource/')) && !/(^|\/)\.(git|svn)\//.test(k)) acc.push({ key: k, file: relPath(folder, f), path: f, get: () => fs.readFileSync(f) });
     return acc;
   };
   const vfsItems = () => { const acc = []; if (v) for (const [k] of v.files) if (isSdl(k)) acc.push({ key: k, file: k, get: () => readVfs(k) }); return acc; };
@@ -274,4 +318,4 @@ function createSource(o) {
   return { v, local, packed, readPacked, winner, folder, hasRes, get, readVfs, open, included, preInclude, read, folderItems, vfsItems, modItems, isModKey, memo, prefetch, loosePath, ahead: ra => { const was = ahead; ahead = ra || null; return was; } };
 }
 
-module.exports = { isSdl, extOf, createSource, readAhead, SDL_EXT, NOT_SDL };
+module.exports = { isSdl, extOf, createSource, readAhead, restorePoints, SDL_EXT, NOT_SDL };

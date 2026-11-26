@@ -15,4 +15,8 @@ node "$d/false.test.js" || exit 1
 node "$d/chk.test.js" || exit 1
 node "$d/det.test.js" || exit 1
 node "$d/exe.test.js" || exit 1
+node "$d/undo.test.js" || exit 1
+node "$d/par.test.js" || exit 1
+node "$d/listing.test.js" || exit 1
+node "$d/filecache.test.js" || exit 1
 [ "$b" = ok ] && [ "$o" = 0 ] && echo PASS

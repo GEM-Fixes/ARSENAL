@@ -69,7 +69,7 @@ let n = 0; const ok = m => { n++; console.log('ok ' + n + ' ' + m); };
   if (process.env.UC_LIVE) {
     const out = fs.mkdtempSync(path.join(process.env.UC_TMP || os.tmpdir(), 'ucr-'));
     const unit = process.env.UC_UNIT || 't34_76';
-    const L = cp.spawnSync(process.execPath, [path.join(__dirname, '..', 'render.js'), '--game', 'as64', '--dir', process.env.UC_LIVE, '--unit', unit, '--kinds', 'card', '--out', out, '--scale', '2', '--json'], { encoding: 'utf8', timeout: 600000 });
+    const L = require('../../lib/test/wait').spawnSync(process.execPath, [path.join(__dirname, '..', 'render.js'), '--game', 'as64', '--dir', process.env.UC_LIVE, '--unit', unit, '--kinds', 'card', '--out', out, '--scale', '2', '--json'], { encoding: 'utf8', timeout: 600000 }, 'unitcard render live');
     assert.strictEqual(L.status, 0, L.stdout + L.stderr);
     const f = path.join(out, unit + '_card.png'); assert.ok(fs.existsSync(f) && fs.statSync(f).size > 1000, 'a PNG');
     ok('live: ' + unit + ' card rendered headless');

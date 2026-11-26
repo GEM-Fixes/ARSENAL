@@ -247,7 +247,7 @@ for (const [name, fn, spec, code, row] of [
 // gen --describe --target goh: exit 2, the one line
 function describeGoh() {
 {
-  const r = cp.spawnSync(process.execPath, [path.join(__dirname, '..', 'gen.js'), '--describe', 'fast tank', '--target', 'goh'], { encoding: 'utf8' });
+  const r = require('../../lib/test/wait').spawnSync(process.execPath, [path.join(__dirname, '..', 'gen.js'), '--describe', 'fast tank', '--target', 'goh'], { encoding: 'utf8' }, 'gen parity');
   ok('describe on GoH: exit 2 with the plain line', r.status === 2 && /^gen --describe: not available for GoH: .*\(vanilla GoH resource\/set\/stuff\/gun\/\.presets and .*units_<army>\.set; open item\)\s*$/.test(r.stderr), r.status + ' ' + r.stderr);
 }
 }

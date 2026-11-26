@@ -16,6 +16,24 @@ L=$(grep 'SOUND_LOUDNESS_MISSING' "$W/out.txt"); case "$L" in *'"default"'*'"no_
 case "$L" in *'shoot loud'*) echo "FAIL: SOUND_LOUDNESS_MISSING names a present row"; exit 1;; esac
 (sh ../../binhdr/test/rcwire.sh node ../refcheck.js - --folder "$W/fx" --cache "$W/fx.cache.json") || { echo FAIL; exit 1; }
 node ../refcheck.js - --folder "$W/fx" --cache "$W/fx.cache.json" -q --format json -o "$W/fmt.json" >/dev/null 2>&1 && grep -q '"findings"\|"code"' "$W/fmt.json" || { echo "FAIL: --format json"; exit 1; }
+# 1B: restore points (<mod>/.arsenal-undo) are never read by default and change nothing with --restore-points (no entity key
+# lives there); read window 0 (one by one) gives the same report as the read-ahead
+mkdir -p "$W/fxu/.arsenal-undo/t1" && cp -r "$W/fx/resource" "$W/fxu/" && cp -r "$W/fx/resource" "$W/fxu/.arsenal-undo/t1/"
+node ../refcheck.js - --folder "$W/fxu" --cache "$W/fxu.cache.json" -q > "$W/outu.txt" 2>&1
+cmp -s "$W/out.txt" "$W/outu.txt" || { diff "$W/out.txt" "$W/outu.txt" | head; echo "FAIL: .arsenal-undo changed the report"; exit 1; }
+node ../refcheck.js - --folder "$W/fxu" --cache "$W/fxu.cache.json" -q --restore-points > "$W/outr.txt" 2>&1
+cmp -s "$W/out.txt" "$W/outr.txt" || { echo "FAIL: --restore-points"; exit 1; }
+ARSENAL_READ_WINDOW=0 node ../refcheck.js - --folder "$W/fxu" --cache "$W/fxu0.cache.json" -q > "$W/out0.txt" 2>&1
+cmp -s "$W/out.txt" "$W/out0.txt" || { echo "FAIL: ARSENAL_READ_WINDOW=0"; exit 1; }
+# --listing f (wouldload's scan of the folder): the same report; a file that does not read is ignored
+node -e "require('../../lib/modtree').scan(process.argv[1]).then(T => require('fs').writeFileSync(process.argv[2], JSON.stringify(T)))" "$W/fxu" "$W/L.json"
+node ../refcheck.js - --folder "$W/fxu" --cache "$W/fxuL.cache.json" -q --listing "$W/L.json" > "$W/outL.txt" 2>&1
+cmp -s "$W/out.txt" "$W/outL.txt" || { echo "FAIL: --listing"; exit 1; }
+node ../refcheck.js - --folder "$W/fxu" --cache "$W/fxuB.cache.json" -q --listing "$W/none.json" > "$W/outB.txt" 2>&1
+cmp -s "$W/out.txt" "$W/outB.txt" || { echo "FAIL: --listing of a missing file"; exit 1; }
+REFCHECK_TIME=1 node ../refcheck.js - --folder "$W/fxu" --cache "$W/fxu1.cache.json" -q 2>&1 >/dev/null | grep -q 'read ahead [1-9]' || { echo "FAIL: no read-ahead"; exit 1; }
 # game parity: --exe as64|mowas_2|goh (made-up install + the fixture under goh)
 node exe.js "$W" || { echo FAIL; exit 1; }
+# file cache: slot per mod across new --cache files (overlay runs) + card1 table; same stdout as --no-file-cache after each edit
+node slot.js "$W" || { echo FAIL; exit 1; }
 echo PASS

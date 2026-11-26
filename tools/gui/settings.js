@@ -12,7 +12,7 @@ const fs = require('fs'), os = require('os'), path = require('path');
 
 // the page's names: core (lang, theme, adv, hdlock = the header lock, games, gameId, mod, game, roots, screen, health, modByPage[.game], sub.<tab> and sub.<tab>-<sub>, layout = the Arrange
 // profiles, and ext pages (<ext>.<anything>; task = the Quick Guided Task row: task.verb, task.min folded)
-const KEY = /^as2gui\.(lang|theme|adv|hdlock|games|gameId|mod|game|roots|screen|health|layout|modByPage(\.[a-z0-9]{1,20})?|sub\.[A-Za-z0-9_-]{1,40}|(share|pro|models|ide|files|docs|doctrine|guides|bal|balance|art|logs|units|maps|bots|goh|help|xlate|test|missions|modes|task|sk|pk|mv|mapviz|prep).[^\u0000-\u001f]{1,300})$/;
+const KEY = /^as2gui\.(lang|theme|adv|hdlock|modwatch(\.auto)?|games|gameId|mod|game|roots|screen|health|layout|modByPage(\.[a-z0-9]{1,20})?|sub\.[A-Za-z0-9_-]{1,40}|(share|pro|models|ide|files|docs|doctrine|guides|bal|balance|art|logs|units|maps|bots|goh|help|xlate|test|missions|modes|task|sk|pk|mv|mapviz|prep).[^\u0000-\u001f]{1,300})$/;
 const DENY = /token|secret|passw|api[_.-]?key|credential|cookie/i;
 const MAX_VALUE = 256 << 10, MAX_FILE = 2 << 20;
 

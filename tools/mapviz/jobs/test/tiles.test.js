@@ -6,7 +6,7 @@
 // usage: node tools/mapviz/jobs/test/tiles.test.js [scratch dir]
 // Author: Imperator_Aug (ARSENAL, ia-ade6f466)
 'use strict';
-const fs = require('fs'), path = require('path'), { spawnSync } = require('child_process');
+const fs = require('fs'), path = require('path'), { spawnSync } = require('../../../lib/test/wait');   // wait.js spawnSync: limit at least 5 min, killed by it -> WAIT and one rerun with twice the limit
 const h = require('./harness')('jobs-tiles');
 const tiles = require('../tiles');
 const cli = require('../cli');

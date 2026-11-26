@@ -5,6 +5,9 @@
 //     areas  = limits row areas it checks ; build = build.js stage group (lint|ref|loc|mission|pack) or null ; doctor = run by doctor
 //     games  = optional list of game ids (lib/games: as64, mowas2, goh) its rules are written for; absent = all three
 //     exe    = optional true: the tool takes --exe as64|mowas_2|mowas2|goh (lib/cli parse gives it, or its own parser); absent = no --exe yet
+//     mem    = doctor tools: {base MB, text KB per text file of the mod}, peak RSS fit from runs alone with doctor's arguments on the AS2
+//              install (2026-11-24: jaben 2.9k text files, RobZ 1.31.0 32.8k; ww2 patch 30k a check; conflicts [I], not measured).
+//              doctor/jobs.js adds 1.5x and plans the parallel runs from it (MEM-PLAN)
 //   IGNORE: tools/<n>/<n>.js that are NOT linters (test enforces: every tools/*/<n>.js is in TOOLS or IGNORE)
 //   API: byName(n), names(), forDoctor(game?) (game = id or vfs exe: only the tools whose games include it; no game = all, as before),
 //        forGame(game) (every tool for that game), forBuild(group?), rcTools(), entryPath(n), IGNORE, TOOLS, severity(code),
@@ -61,26 +64,26 @@ const sevDiff = lm => {
 // No games limit left: uilint has its GoH tables (tables.js GOH: GHUI-75, GHUI-76, GHUI-251), binhdr takes GoH map.net cell 5 (GHMAP-06);
 // both give 0 findings on GoH vanilla (game parity check c-lint2).
 const TOOLS = [
-  T('modinfo', 'mod', { exe: true, areas: ['VFS'], build: 'lint', doctor: true }),
-  T('sdllint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['SDL'], build: 'lint', doctor: true }),
-  T('keylint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['SDL', 'KEY', 'MOD'], build: 'lint', doctor: true }),
-  T('ialint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['INT'], build: 'lint', doctor: true, needs: 'interaction files' }),
-  T('uilint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['UI'], build: 'lint', doctor: true, needs: 'ui files' }),
-  T('strlint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['STR'], build: 'lint', doctor: true }),
-  T('humlint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['HUM'], build: 'lint', doctor: true }),
-  T('movlint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['MOV'], build: 'lint', doctor: true }),
-  T('fxlint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['VIS'], build: 'lint', doctor: true }),
-  T('expcheck', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['FMT'], build: 'lint', doctor: true, needs: 'game dir' }),
-  T('refcheck', 'game', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['ENG', 'DMG', 'HUM', 'MOV', 'VIS'], build: 'ref', doctor: true }),
-  T('lnglint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['LOC'], build: 'loc', doctor: true }),
+  T('modinfo', 'mod', { exe: true, areas: ['VFS'], build: 'lint', doctor: true, mem: { base: 55 } }),
+  T('sdllint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['SDL'], build: 'lint', doctor: true, mem: { base: 1374, text: 25.9 } }),
+  T('keylint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['SDL', 'KEY', 'MOD'], build: 'lint', doctor: true, mem: { base: 771, text: 17.9 } }),
+  T('ialint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['INT'], build: 'lint', doctor: true, mem: { base: 139, text: 34.3 }, needs: 'interaction files' }),
+  T('uilint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['UI'], build: 'lint', doctor: true, mem: { base: 193, text: 8 }, needs: 'ui files' }),
+  T('strlint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['STR'], build: 'lint', doctor: true, mem: { base: 136, text: 28 } }),
+  T('humlint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['HUM'], build: 'lint', doctor: true, mem: { base: 643, text: 15.8 } }),
+  T('movlint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['MOV'], build: 'lint', doctor: true, mem: { base: 198, text: 8 } }),
+  T('fxlint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['VIS'], build: 'lint', doctor: true, mem: { base: 192, text: 17.2 } }),
+  T('expcheck', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['FMT'], build: 'lint', doctor: true, mem: { base: 234, text: 5.1 }, needs: 'game dir' }),
+  T('refcheck', 'game', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['ENG', 'DMG', 'HUM', 'MOV', 'VIS'], build: 'ref', doctor: true, mem: { base: 600, text: 4 } }),
+  T('lnglint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['LOC'], build: 'loc', doctor: true, mem: { base: 100 } }),
   T('loccover', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['LOC', 'VFS'], build: 'loc' }),
-  T('milint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['MIS', 'MAP'], build: 'mission', doctor: true, needs: 'map/mission files' }),
+  T('milint', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['MIS', 'MAP'], build: 'mission', doctor: true, mem: { base: 764, text: 21 }, needs: 'map/mission files' }),
   T('packer', 'mod', { exe: true, areas: ['VFS', 'SDL'], build: 'pack' }),
   // doctor-only / stand-alone checkers
-  T('vfs', 'game', { exe: true, mods: true, game: true, areas: ['VFS'], doctor: true }),
-  T('binhdr', 'game', { exe: true, format: true, mods: true, rc: true, areas: ['FMT'], doctor: true }),
-  T('conflicts', 'game', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['VFS'], doctor: true, note: 'needs --game + --mods (load-order view)' }),
-  T('mpsync', 'multi', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['NET'], doctor: true, note: '--mod <dir> mode in doctor' }),
+  T('vfs', 'game', { exe: true, mods: true, game: true, areas: ['VFS'], doctor: true, mem: { base: 172, text: 8.6 } }),
+  T('binhdr', 'game', { exe: true, format: true, mods: true, rc: true, areas: ['FMT'], doctor: true, mem: { base: 410 } }),
+  T('conflicts', 'game', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['VFS'], doctor: true, mem: { base: 200, text: 10 }, note: 'needs --game + --mods (load-order view)' }),
+  T('mpsync', 'multi', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['NET'], doctor: true, mem: { base: 177, text: 4.4 }, note: '--mod <dir> mode in doctor' }),
   T('overdiff', 'mod', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['VFS'] }),
   T('logtriage', 'file', { exe: true, format: true, mods: true, game: true, rc: true, areas: ['LOG', 'NET'] }),
   T('portdiff', 'multi', { areas: ['PORT'] }),

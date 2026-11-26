@@ -84,7 +84,8 @@ function routeApi(routes, calls) {
   };
 }
 const flush = async (n) => { for (let i = 0; i < (n || 30); i++) await new Promise(r => setImmediate(r)); };
-async function until(fn, ms) { const t = Date.now() + (ms || 60000); while (Date.now() < t) { if (fn()) return true; await new Promise(r => setTimeout(r, 15)); } return !!fn(); }
+// until: backstop at least 60 s whatever ms the caller names (a busy PC); then a WAIT line and the caller's check reports. Never a hang.
+async function until(fn, ms) { const lim = Math.max(ms || 0, 60000), t = Date.now() + lim; while (Date.now() < t) { if (fn()) return true; await new Promise(r => setTimeout(r, 15)); } if (fn()) return true; process.stderr.write('WAIT mapviz test: not met after ' + lim / 1000 + ' s: ' + String(fn).slice(0, 120) + '\n'); return false; }
 const blk = (root, id) => root.all().find(e => e.attrs['data-blk'] === id) || null;
 module.exports = { harness: { hOf, txOf, mergeLang, stubCtx, mkPage, routeApi, flush, until, blk, ImageStub } };
 if (require.main !== module) return;
@@ -686,7 +687,7 @@ global.LS = { m: {}, get(k, d) { return Object.prototype.hasOwnProperty.call(thi
     const n0 = calls.length;
     P.screen.refresh(); await flush();
     ok(P.V.q('map') == null, 'P1: a refresh while hidden takes in the folder change: the open map is closed', P.V.q('map'));
-    endNow = true; await pj.catch(() => {}); await flush(); await new Promise(r => setTimeout(r, 30)); await flush();
+    endNow = true; await pj.catch(() => {}); await flush(); await until(() => seen.ends >= 1); await new Promise(r => setTimeout(r, 30)); await flush();   // 30 ms: room for a request that must not come
     const after = calls.slice(n0).filter(c => c.path !== '/api/x/mapviz/job');
     ok(seen.ends === 1 && after.length === 0, 'P1: hidden, folder changed, the job ended: 0 requests but its polls (' + after.length + ')', after.map(c => c.method + ' ' + c.url));
     ok(seen.products === 0 && seen.late.length === 0, 'P1: no products event and the part read is held while hidden', [seen.products, seen.late]);
@@ -724,7 +725,7 @@ global.LS = { m: {}, get(k, d) { return Object.prototype.hasOwnProperty.call(thi
     const P = mkPage({ scripts: [CLIENT], lang: L, S: { gameId: 'mowas2', gameOv: '', mod: '', mapKey: '' }, canvas: false, api: routeApi(routes, calls), parts: [{ id: 'p2', init(V) { V.on('job', d => ev.push(d)); } }] });
     P.screen.refresh(); await flush();
     const a = P.V.job('grids', {}), b = P.V.job('grids', {});
-    const ra = await a, rb = await b; await new Promise(r => setTimeout(r, 30)); await flush();
+    const ra = await a, rb = await b; await until(() => ev.some(d => d.end)); await new Promise(r => setTimeout(r, 30)); await flush();   // 30 ms: room for a poll or end event that must not come
     ok(posts === 2 && ra && rb && ra.state === 'done' && rb.state === 'done', 'P2: both requests resolve with the one job', [posts, ra, rb]);
     ok(polls === 4, 'P2: one poll chain for the joined id (' + polls + ' polls)');
     ok(ev.filter(d => d.end).length === 1 && ev.filter(d => d.end)[0].state === 'done', 'P2: exactly one end event', ev.map(d => d.state + (d.end ? '!' : '')));
@@ -970,11 +971,11 @@ global.LS = { m: {}, get(k, d) { return Object.prototype.hasOwnProperty.call(thi
     P.screen.refresh(); await flush(30);
     const sk = R.all().find(e => e.attrs && e.attrs['data-sk'] === 'mapviz.layerFilter');
     ok(!!sk && blk(R, 'mv.filter').all().includes(sk) && sk.all().filter(e => e.tagName === 'BUTTON').length >= 2, 'kit: the filter is a searchKit box with Browse and History');
-    const fi = sk.all().find(e => e.tagName === 'INPUT'); fi.value = 'cover'; fi.fire('input'); await new Promise(r => setTimeout(r, 30)); await flush();
+    const fi = sk.all().find(e => e.tagName === 'INPUT'); fi.value = 'cover'; fi.fire('input'); await until(() => blk(R, 'mv.l.water.drown').hidden === true); await flush();
     ok(blk(R, 'mv.l.water.drown').hidden === true && blk(R, 'mv.l.k.b').hidden !== true, 'kit: typing filters the rows beside the box');
     sk.all().find(e => / sk-browse/.test(' ' + e.className)).click(); const b0 = global.MVPICK.pop();
     ok(!!b0 && b0.spec.mode === 'file' && b0.spec.view === 'disk' && (typeof b0.spec.start === 'function' ? b0.spec.start() : b0.spec.start) === 'E:/c/mv', 'kit: Browse opens the file picker in the product cache', b0 && b0.spec);
-    if (b0) { b0.done('E:/c/mv/x/water.drown.json', { name: 'water.drown.json' }); await new Promise(r => setTimeout(r, 30)); await flush();
+    if (b0) { b0.done('E:/c/mv/x/water.drown.json', { name: 'water.drown.json' }); await until(() => fi.value === 'water.drown' && blk(R, 'mv.l.k.b').hidden === true); await flush();
       ok(fi.value === 'water.drown' && blk(R, 'mv.l.water.drown').hidden !== true && blk(R, 'mv.l.k.b').hidden === true, 'kit: a picked file gives its name as the filter', fi.value); }
   }
   // views: each view names only layer ids that exist (checked on the joined page below); planted: an unknown id is caught
@@ -1547,12 +1548,21 @@ global.LS = { m: {}, get(k, d) { return Object.prototype.hasOwnProperty.call(thi
   const ident = { target: 'mowas2', game: fx.gameDir };
   const MODQ = '&modDir=' + enc(fx.modDirs[0]);
   const t0 = Date.now();
+  // pollJob: by time, not by count; at the backstop a WAIT line and once more twice as long, then the check after it reports
+  async function pollJob(id, ms, gone) {
+    let j = null, lim = ms;
+    for (let round = 0; round < 2; round++, lim *= 2) {
+      const end = Date.now() + lim;
+      while (Date.now() < end) { const g = await call('GET', 'job?id=' + id); j = g.v; if (gone(j)) return j; await new Promise(r => setTimeout(r, 20)); }
+      process.stderr.write('WAIT mapviz shell test: job ' + id + ' not ended after ' + lim / 1000 + ' s\n');
+    }
+    return j;
+  }
+  const ended = j => j && ['done', 'failed', 'cancelled', 'timeout'].includes(j.state);
   async function runJob(body) {
     const s = await call('POST', 'job', Object.assign({}, ident, body));
     if (!s.v) return { e: s.e };
-    let j = null;
-    const end = Date.now() + 180000;
-    while (Date.now() < end) { const g = await call('GET', 'job?id=' + s.v.id); j = g.v; if (!j || ['done', 'failed', 'cancelled', 'timeout'].includes(j.state)) break; await new Promise(r => setTimeout(r, 20)); }
+    const j = await pollJob(s.v.id, 180000, j => !j || ended(j));
     return { v: j, sub: s.v };
   }
   // JOBS: a real registry, seen by one route; the real runner's jobs land in it
@@ -1612,8 +1622,7 @@ global.LS = { m: {}, get(k, d) { return Object.prototype.hasOwnProperty.call(thi
   else {
     const cr = await call('POST', 'cancel', { id: cs.v.id });
     ok(cr.v && cr.v.id === cs.v.id && typeof cr.v.state === 'string', 'real: cancel answer {id, state}', cr);
-    let fin = null;
-    const end = Date.now() + 120000; while (Date.now() < end) { const g = await call('GET', 'job?id=' + cs.v.id); fin = g.v; if (fin && ['done', 'failed', 'cancelled', 'timeout'].includes(fin.state)) break; await new Promise(x => setTimeout(x, 20)); }
+    const fin = await pollJob(cs.v.id, 120000, ended);
     ok(fin && (fin.state === 'cancelled' || fin.state === 'done'), 'real: the cancelled job ends (' + (fin && fin.state) + ')');
   }
   r = await call('GET', 'doc?' + base + '&map=multi/mv_fixture&bogus=1'); ok(shape(r.e, 400, 'MV_USAGE'), 'real: unknown route argument -> error shape');

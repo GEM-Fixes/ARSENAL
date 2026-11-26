@@ -97,6 +97,17 @@ ARSENAL check <mod folder> --fast -q
 
 `--fast` 跳过较慢的检查，并在输出中说明。小型模组只需几秒；去掉 `--fast` 进行完整检查，大型模组需要几分钟。`--with <patch folder>` 会把模组与由 `ARSENAL fix` 生成的补丁文件夹一起检查。不要把它用于 `ARSENAL upgrade --out` 文件夹：那是一个带有自己 `mod.info` 的完整模组，请直接对它运行 `check`。
 
+#### 如何让检查更快
+
+1. 工作时保留 `--fast`（在窗口中：保持勾选“快速检查”）。在分享或发布模组之前，去掉它以进行完整检查。
+2. 如果模组的文件自上次完整检查以来没有变化，检查结果会从存储中再次显示，约需一秒。
+3. 修改一个文件后，大多数检查器会复用它们为未修改文件保存的内容，所以下一次检查比第一次短。
+4. 模组的第一次检查最慢，清空缓存文件夹后的第一次检查也是如此。不要让清理工具清空 `%LOCALAPPDATA%\ARSENAL\cache`。
+5. 把模组打包成 .pak 文件并放在内置 SSD 上：无论检查还是游戏，读取 pak 都比读取成千上万个散装文件快得多。打开“分享”标签（给朋友打包），保持勾选“为速度打包”（默认已开启）：它把文件按类型各放进一个 pak，只压缩文本和地图 .net、.grs 文件，其余原样存储，并把文本放在最前。放在 U 盘或网络共享上的模组读取要慢得多。
+6. 杀毒软件：把模组文件夹和 `%LOCALAPPDATA%\ARSENAL\cache` 加入实时扫描的排除项；否则检查读取的每个文件也都会被扫描。
+7. 检查会使用所有处理器核心：运行时请关闭其他占用资源大的程序。
+8. 在 `ARSENAL.exe` 中，每个检查器各自读取模组（共享的单次读取尚未进入 exe）。从源码文件夹用 Node.js 运行（窗口用 `node tools/gui/gui.js`，命令用 `node tools/as2/as2.js check <mod folder>`），检查器就会共享一次模组读取，在大型模组上更快。
+
 ### `fix`：针对常见问题的补丁模组
 
 ```
@@ -932,6 +943,8 @@ ARSENAL release-check --publish M
 细节见[第 20 章](../../20-packaging-and-release.md)。
 
 Gates of Hell 防护：如果模组的 `GOH-ORIGIN.tsv` 列出的某个文件仍然含有移植来的 Gates of Hell 字节（无论用原名还是别的名称），`packer` 和 `release-check --publish` 会拒绝它（退出码 1，`PACK_GOH_ORIGIN`、`PACK_GOH_RENAMED`、`PACK_PRIVATE`）；`packer --allow-private` 仍然把它打包为 `<role>-PRIVATE.pak`，只供你自己的机器使用，绝不能发布。
+
+`packer M --out <文件夹>`（也可与 `--package`、`--goh` 一起用）默认按速度布局写出 pak，即“分享”页面的“为速度打包”选项：文本和地图 `.net`、`.grs` 文件压缩，其余（纹理、声音、模型、动画）原样存储，每个 pak 里文本条目在前，其余按路径顺序排列；报告会多出一行信息 `PACK_SPEED_LAYOUT`。`--no-speed`（取消勾选）按旧方式写出：只压缩文本，文件按文件夹顺序排列。
 
 ## 10. 工具无法发现的问题
 

@@ -190,6 +190,8 @@ EXT_SCREENS.share=function(root){
  function secPack(){
   var box=pane('pack');if(!S.mod)return noMod(box);
   var o=outPick('pack.main.out'),res=h('div'),stat=h('div',{class:'hint'});
+  // Pack for speed (packer --speed): text and map .net/.grs deflated, the rest stored, text first; remembered for the next visit
+  var fast=h('input',{type:'checkbox','aria-label':T('pack.speed'),onchange:function(){LS.set('share.packSpeed',fast.checked)}});fast.checked=LS.get('share.packSpeed',true)!==false;
   function probs(x){if(!x.problems.length)return;
    res.appendChild(h('details',{},[h('summary',{text:T('pack.problemsN',{n:x.problems.length})}),h('pre',{class:'log',text:x.problems.map(function(p){return p.code+'  '+p.where+'  '+p.msg}).join('\n')})]))}
   function show(x,wrote){res.textContent='';
@@ -205,8 +207,9 @@ EXT_SCREENS.share=function(root){
    probs(x);
    if(wrote&&x.files){res.appendChild(h('div',{class:'hint',text:T('pack.written')}));res.appendChild(h('pre',{class:'log',text:x.files.map(function(f){return x.mod.folder+'/'+f}).join('\n')}))}}
   function run(write){if(write&&!o.inp.value.trim()){say(stat,'err',T('pack.need'));return}
-   say(stat,'hint',T(write?'pack.writing':'working'));api('/api/x/share/package',{mod:S.mod,out:o.inp.value.trim(),write:write},{what:T(write?'job.packw':'job.packp')}).then(function(x){if(!write||x.refused||!x.ok)stat.textContent='';show(x,write)}).catch(fail(stat))}
-  box.appendChild(card('pack.main',[hintB('pack.main.intro','pack.intro',T('b.intro')),hintB('pack.main.friend','pack.friend'),btns('pack.main.plan',[h('button',{type:'button',text:T('pack.plan'),onclick:function(){run(false)}})]),o.el,
+   say(stat,'hint',T(write?'pack.writing':'working'));api('/api/x/share/package',{mod:S.mod,out:o.inp.value.trim(),write:write,speed:fast.checked},{what:T(write?'job.packw':'job.packp')}).then(function(x){if(!write||x.refused||!x.ok)stat.textContent='';show(x,write)}).catch(fail(stat))}
+  box.appendChild(card('pack.main',[hintB('pack.main.intro','pack.intro',T('b.intro')),hintB('pack.main.friend','pack.friend'),
+   blk('pack.main.speed',[h('label',{class:'f chk'},[h('span',{class:'n',text:''}),h('span',{},[fast,' '+T('pack.speed')])]),h('div',{class:'hint',text:T('pack.speedHint')})],{'class':'fld',name:T('pack.speed')}),btns('pack.main.plan',[h('button',{type:'button',text:T('pack.plan'),onclick:function(){run(false)}})]),o.el,
    btns('pack.main.write',[h('button',{type:'button',class:'primary',text:T('pack.write'),onclick:function(){run(true)}})]),line('pack.main.stat',stat,T('b.stat')),line('pack.main.res',res,T('b.res'))],{name:T('b.main')}));
   modHead(box);
   api('/api/x/share/info?mod='+encodeURIComponent(S.mod),undefined,{what:T('job.info')}).then(function(r){bannerTop(box,r)}).catch(function(){});

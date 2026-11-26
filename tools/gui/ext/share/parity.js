@@ -182,6 +182,15 @@ module.exports = async function run(work, ok) {
   // package and Workshop copy
   await R('POST /api/x/share/package')(null, { mod: own }, gc);
   ok(has(last('packer'), '--goh') && has(last('packer'), '--dry'), 'goh package plan: packer --goh');
+  // Pack for speed is the packer default: box on = no flag, box off = --no-speed, on every game (GoH keeps --goh)
+  await R('POST /api/x/share/package')(null, { mod: own, speed: false }, gc);
+  ok(has(last('packer'), '--goh') && has(last('packer'), '--no-speed') && has(last('packer'), '--dry'), 'goh package plan without the box: packer --goh --no-speed');
+  for (const [c, nm] of [[as64, 'as64'], [mw, 'mowas2']]) {
+    await R('POST /api/x/share/package')(null, { mod: mma, speed: true }, c);
+    ok(!has(last('packer'), '--no-speed') && !has(last('packer'), '--goh'), nm + ' package plan for speed: the packer default, no --no-speed');
+    await R('POST /api/x/share/package')(null, { mod: mma, speed: false }, c);
+    ok(has(last('packer'), '--no-speed'), nm + ' package plan without the box: --no-speed');
+  }
   const po = await R('POST /api/x/share/package')(null, { mod: own, out: path.join(goh, 'out'), write: true }, gc);
   ok(po.refused && !fs.existsSync(path.join(goh, 'out')), 'goh package into the GoH install refused (' + (po.refused && po.refused.key) + ')');
   const wo = path.join(work, 'wsout');

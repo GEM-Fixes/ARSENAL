@@ -13,7 +13,9 @@
 //   apply  <mod> [--set-prices] write `;{price ...}` comment lines above each soldiers.set breed row and each priced card (and the model
 //                              file when absent). Hero cards (button hero / paid in SP...) never get a computed-MP line: with the
 //                              model's {point_value} `;{price {rule hero} {paid "sp"} {cost N} {point_value P} {mp_worth M}}`, without
-//                              one no line (a stale one is removed); --set-prices never rewrites their cost. Undo copies in <mod>/.arsenal-undo/<tag>/ (tag = --undo, default pricecalc-<date>-<time>).
+//                              one no line (a stale one is removed); --set-prices never rewrites their cost. Undo copies in <mod>.arsenal-undo/<tag>/ beside the mod
+//                              (lib/modwrite restoreRoot; a mod in a game folder: <mod>/.arsenal/undo) (tag = --undo, default pricecalc-<date>-<time>).
+//                              Old copies an earlier version left in <mod>/.arsenal-undo/<tag>/ are still read (undo, check, latest).
 //                              --set-prices (OFF by default): also rewrite the row's level_N reference (reuse a level with the same
 //                              cp/score/cw, else a new level_N define) and the card cost(N) (integer)
 //   undo   <mod> --undo tag    restore the files of that apply byte for byte (and delete files it created)
@@ -64,6 +66,7 @@ const fs = require('fs'), path = require('path');
 const { createReport } = require('../lib/report');
 const sdlx = require('../lib/sdlx');
 const writeguard = require('../lib/writeguard');
+const MW = require('../lib/modwrite');
 const RL = require('./rules');
 const M = require('./mod'), S = require('./sheet'), MD = require('./model'), CL = require('./calc'), C = require('./classify'), G = require('./grenade');
 
@@ -575,8 +578,20 @@ function buildPlan(d, model, sheet) {
   return { files: out, createModel, rep: r.rep, outside: [...outside] };
 }
 
-// a new undo tag that no earlier write used (two writes in one second get -2, -3, ...)
-function freshTag(modDir, base) { let tag = base, i = 1; while (fs.existsSync(path.join(modDir, '.arsenal-undo', tag))) tag = base + '-' + (++i); return tag; }
+// undo copies: written beside the mod (MW.restoreRoot: <mod>.arsenal-undo, the Files page rule: a folder inside the mod would ship
+// with a Workshop upload, VFS-32); read from there and from <mod>/.arsenal-undo, where older versions wrote them (left in place)
+const undoRoots = modDir => { const a = MW.restoreRoot(modDir), b = path.join(path.resolve(modDir), '.arsenal-undo'); return path.resolve(a) === path.resolve(b) ? [a] : [a, b]; };
+// the folder of an existing tag (the beside one first), else null
+const findTag = (modDir, tag) => { for (const r of undoRoots(modDir)) if (fs.existsSync(path.join(r, tag))) return path.join(r, tag); return null; };
+// the folder a write with this tag goes to: always beside; a tag only an old inside copy holds is refused (it would split one undo)
+function writeTagDir(modDir, tag) {
+  const d = path.join(MW.restoreRoot(modDir), tag), had = findTag(modDir, tag);
+  if (had && path.resolve(had) !== path.resolve(d)) throw new Error('undo tag ' + tag + ' is an older undo copy inside the mod (' + had + '): give a new tag');
+  return d;
+}
+const tagDir = (modDir, tag) => { const d = findTag(modDir, tag); if (!d) throw new Error('no pricecalc undo ' + tag + ' (looked in ' + undoRoots(modDir).join(' and ') + ')'); return d; };
+// a new undo tag that no earlier write used, in either place (two writes in one second get -2, -3, ...)
+function freshTag(modDir, base) { let tag = base, i = 1; while (findTag(modDir, tag)) tag = base + '-' + (++i); return tag; }
 const stamp = () => { const t = new Date(), p = n => String(n).padStart(2, '0'); return `${t.getFullYear()}${p(t.getMonth() + 1)}${p(t.getDate())}-${p(t.getHours())}${p(t.getMinutes())}${p(t.getSeconds())}`; };
 function writeKeep(abs, buf) {
   if (!fs.existsSync(abs)) { fs.mkdirSync(path.dirname(abs), { recursive: true }); fs.writeFileSync(abs, buf); return; }
@@ -610,7 +625,7 @@ function doApply(d, model, sheet, undoTag) {
   const p = buildPlan(d, model, sheet);
   if (!p.files.length && !p.createModel) return { tag: null, changed: [], created: [] };
   const tag = undoTag || freshTag(d.modDir, 'pricecalc-' + stamp());
-  const udir = path.join(d.modDir, '.arsenal-undo', tag);
+  const udir = writeTagDir(d.modDir, tag);
   guard(d, d.modDir);
   const manPath = path.join(udir, 'manifest.json');
   const man = fs.existsSync(manPath) ? JSON.parse(fs.readFileSync(manPath, 'utf8')) : { tool: 'pricecalc', tag, changed: [], created: [], setPrices: false };
@@ -630,12 +645,15 @@ function doApply(d, model, sheet, undoTag) {
 }
 
 function latestUndo(modDir) {
-  const base = path.join(modDir, '.arsenal-undo');
-  if (!fs.existsSync(base)) return null;
-  // newest pricecalc write not undone yet (manifest time; tag name breaks a tie). Other tools' undo folders are skipped
-  const man = t => { try { return JSON.parse(fs.readFileSync(path.join(base, t, 'manifest.json'), 'utf8')); } catch (e) { return null; } };
-  const tags = fs.readdirSync(base).filter(t => (m => m && m.tool === 'pricecalc' && !m.undone)(man(t)))
-    .map(t => ({ t, at: fs.statSync(path.join(base, t, 'manifest.json')).mtimeMs })).sort((a, b) => a.at - b.at || (a.t < b.t ? -1 : 1));
+  // newest pricecalc write not undone yet, beside the mod or (older versions) inside it (manifest time; tag name breaks a tie).
+  // Other tools' undo folders are skipped
+  const man = f => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch (e) { return null; } };
+  const tags = [];
+  for (const base of undoRoots(modDir)) {
+    let xs = []; try { xs = fs.readdirSync(base); } catch (e) { continue; }
+    for (const t of xs) { const f = path.join(base, t, 'manifest.json'), m = man(f); if (m && m.tool === 'pricecalc' && !m.undone && !tags.some(x => x.t === t)) tags.push({ t, at: fs.statSync(f).mtimeMs }); }
+  }
+  tags.sort((a, b) => a.at - b.at || (a.t < b.t ? -1 : 1));
   return tags.length ? tags[tags.length - 1].t : null;
 }
 
@@ -648,7 +666,7 @@ function doUndo(o) {
   const modDir = path.resolve(o.mod);
   const tag = o.undo || latestUndo(modDir);
   if (!tag) throw new Error('no pricecalc undo found (give --undo tag)');
-  const udir = path.join(modDir, '.arsenal-undo', tag), man = JSON.parse(fs.readFileSync(path.join(udir, 'manifest.json'), 'utf8'));
+  const udir = tagDir(modDir, tag), man = JSON.parse(fs.readFileSync(path.join(udir, 'manifest.json'), 'utf8'));
   const why = writeguard.refuseWrite(modDir, { game: o.game, purpose: 'pricecalc undo' }); if (why) throw new Error(why);
   for (const rel of man.changed) writeKeep(path.join(modDir, ...rel.split('/')), fs.readFileSync(path.join(udir, 'files', ...rel.split('/'))));
   for (const rel of man.created) { const a = path.join(modDir, ...rel.split('/')); if (fs.existsSync(a)) fs.unlinkSync(a); }
@@ -680,7 +698,7 @@ function checkRep(d, model, sheet, undoTag) {
   const tag = undoTag || latestUndo(d.modDir);
   if (!tag) rep.add('.arsenal-undo', 0, 'CHECK_NO_UNDO', 'no pricecalc apply found to check against (give --undo tag)');
   else {
-    const udir = path.join(d.modDir, '.arsenal-undo', tag), man = JSON.parse(fs.readFileSync(path.join(udir, 'manifest.json'), 'utf8'));
+    const udir = tagDir(d.modDir, tag), man = JSON.parse(fs.readFileSync(path.join(udir, 'manifest.json'), 'utf8'));
     for (const rel of man.changed) {
       const key = rel.toLowerCase().startsWith('resource/') ? rel.toLowerCase() : 'resource/' + rel.toLowerCase();
       const orig = fs.readFileSync(path.join(udir, 'files', ...rel.split('/'))), cur = fs.readFileSync(path.join(d.modDir, ...rel.split('/')));
@@ -810,14 +828,14 @@ function libSeed(s) {
   const r = seedText(s.d, s.sheet);
   return { text: r.text, items: s.d.items.size, fitted: r.seed.fitted || null, source: r.seed.sourceNote || null };
 }
-// save the model file (only price_model.inc), undo copy under <mod>/.arsenal-undo/<tag>/ (same manifest as apply)
+// save the model file (only price_model.inc), undo copy under <mod>.arsenal-undo/<tag>/ beside the mod (same manifest as apply)
 function libSaveModel(s, text, tag) {
   const d = s.d, abs = path.join(d.modDir, ...MODEL_KEY.split('/'));
   guard(d, d.modDir);
   const m = MD.readModel(Buffer.from(text, 'latin1'), '(save)');
   if (m.errs.length) throw new Error('model does not read: ' + m.errs[0].code + ' ' + m.errs[0].msg);
   tag = tag || freshTag(d.modDir, 'pricecalc-model-' + stamp());
-  const udir = path.join(d.modDir, '.arsenal-undo', tag), manPath = path.join(udir, 'manifest.json');
+  const udir = writeTagDir(d.modDir, tag), manPath = path.join(udir, 'manifest.json');
   const man = fs.existsSync(manPath) ? JSON.parse(fs.readFileSync(manPath, 'utf8')) : { tool: 'pricecalc', tag, changed: [], created: [], setPrices: false, model: true };
   delete man.undone;
   const existed = fs.existsSync(abs);
@@ -832,7 +850,7 @@ function libSaveModel(s, text, tag) {
   return { tag, rel: MODEL_KEY, created: !existed };
 }
 const lib = { open: libOpen, model: libModel, result: libResult, plan: libPlan, apply: libApply, undo: libUndo, check: libCheck, seed: libSeed, saveModel: libSaveModel,
-  names: libNames, latestUndo, MODEL_KEY };
+  names: libNames, latestUndo, undoRoots, MODEL_KEY };
 
 function main(argv) {
   const o = parseArgs(argv);

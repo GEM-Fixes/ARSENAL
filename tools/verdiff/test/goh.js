@@ -43,13 +43,13 @@ ok(m.file.added > 0 && m.renames.length === 0 && m.maybes.length === 0 && !m.key
 ok(m.lines.some(l => /renames and key level: skipped \(games differ\)/.test(l)), 'skip line');
 // games differ + --rules-out: no draft rows (cross-game removals are not upgrade rules), plain line, file not written
 const rf = path.join(w, 'rules.json');
-const r = require('child_process').spawnSync(process.execPath, [path.join(__dirname, '..', 'verdiff.js'), C, B, '--rules-out', rf, '-q'], { encoding: 'utf8' });
+const r = require('../../lib/test/wait').spawnSync(process.execPath, [path.join(__dirname, '..', 'verdiff.js'), C, B, '--rules-out', rf, '-q'], { encoding: 'utf8' });
 ok(r.status === 0, 'games differ --rules-out exit 0: ' + r.status + ' ' + r.stderr);
 ok(/no draft rules: the inputs are two games, not two releases/.test(r.stdout), 'no-draft-rules line: ' + r.stdout);
 ok(!fs.existsSync(rf), 'games differ: rules file not written');
 // two GoH releases still draft rows
 const rf2 = path.join(w, 'rules2.json');
-const r2 = require('child_process').spawnSync(process.execPath, [path.join(__dirname, '..', 'verdiff.js'), A, B, '--rules-out', rf2, '-q'], { encoding: 'utf8' });
+const r2 = require('../../lib/test/wait').spawnSync(process.execPath, [path.join(__dirname, '..', 'verdiff.js'), A, B, '--rules-out', rf2, '-q'], { encoding: 'utf8' });
 ok(r2.status === 0 && fs.existsSync(rf2) && /draft rows ->/.test(r2.stdout), 'two GoH dirs: rules file written: ' + r2.stdout + r2.stderr);
 console.log(bad ? 'goh FAIL' : 'goh PASS');
 process.exit(bad ? 1 : 0);

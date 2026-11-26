@@ -21,7 +21,7 @@ All three game tabs hold the same pages; a part a game cannot run says so on the
 
 ## Pages and routes (generated)
 <!-- gen:pages -->
-registry sig 58a557fd8c410eb876fa3fccb81441e14bf1b5af · 31 pages · 447 routes · 23 commands
+registry sig f76ba94e969bfbc6ebeed080ddd6cb3679c4399d · 31 pages · 450 routes · 23 commands
 
 ### Sub-tabs and pages (same in MoW:AS2, AS64, GoH; GoH adds what is marked)
 **Test, Share & Play** (tab `share`, Alt+8)
